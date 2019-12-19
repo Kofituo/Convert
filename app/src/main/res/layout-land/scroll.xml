@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/grid"
+    android:layout_width="match_parent"
+    android:splitMotionEvents="false"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_front"
+    android:paddingTop="7dp"
+    android:theme="@style/Theme.MaterialComponents.DayNight">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.97" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topGuide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Temperature"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/Area"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/topGuide"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/temperature"
+            android:src="@drawable/ic_temperature" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/temperature"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Area"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/Mass"
+        app:layout_constraintStart_toEndOf="@id/Temperature"
+        app:layout_constraintTop_toTopOf="@id/topGuide"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/area"
+            android:src="@drawable/ic_area" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/area"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Mass"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/Volume"
+        app:layout_constraintStart_toEndOf="@id/Area"
+        app:layout_constraintTop_toTopOf="@id/topGuide"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/mass"
+            android:src="@drawable/ic_dumb_bell" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/mass"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Volume"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/Length"
+        app:layout_constraintStart_toEndOf="@id/Mass"
+        app:layout_constraintTop_toTopOf="@id/topGuide"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/volume"
+            android:src="@drawable/ic_cylinder" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/volume"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Length"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/Volume"
+        app:layout_constraintTop_toTopOf="@id/topGuide"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/length"
+            android:src="@drawable/ic_ruler" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/length"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Angle"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/Pressure"
+        app:layout_constraintTop_toBottomOf="@id/Unknown7"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="67dp"
+            android:layout_height="57dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/angle"
+            android:src="@drawable/ic_angle1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/angle"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Pressure"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/Angle"
+        app:layout_constraintStart_toEndOf="@id/fuelEconomy"
+        app:layout_constraintTop_toBottomOf="@id/Angular_Velocity"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/angle"
+            android:src="@drawable/ic_blood_pressure1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/pressure"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Speed"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@+id/dataStorage"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@+id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@+id/Temperature"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/speed"
+            android:src="@drawable/ic_fast" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/speed"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Unknown20l"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/fuelEconomy"
+        app:layout_constraintStart_toEndOf="@id/Unknown8"
+        app:layout_constraintTop_toBottomOf="@id/concentration"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/time"
+            android:src="@drawable/ic_circular_clock" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/time"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/fuelEconomy"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/Pressure"
+        app:layout_constraintStart_toEndOf="@id/Unknown20l"
+        app:layout_constraintTop_toBottomOf="@id/angularAcceleration"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="71dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="11dp"
+            android:contentDescription="@string/temperature"
+            android:src="@drawable/ic_gas_station" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center"
+            android:lineSpacingMultiplier="0.88"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/fuel_economy"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/dataStorage"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/Currency"
+        app:layout_constraintStart_toEndOf="@id/Speed"
+        app:layout_constraintTop_toBottomOf="@+id/Area"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:contentDescription="@string/data_storage"
+            android:src="@drawable/ic_hard_drive" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center"
+            android:lineSpacingMultiplier="0.88"
+            android:maxWidth="100dp"
+            android:maxHeight="70dp"
+            android:text="@string/data_storage"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Currency"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/light"
+        app:layout_constraintStart_toEndOf="@id/dataStorage"
+        app:layout_constraintTop_toBottomOf="@id/Mass"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/currency"
+            android:src="@drawable/ic_exchange" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/currency"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/light"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/cooking"
+        app:layout_constraintStart_toEndOf="@id/Currency"
+        app:layout_constraintTop_toBottomOf="@id/Volume"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/light"
+            android:src="@drawable/ic_light_bulb" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center"
+            android:lineSpacingMultiplier="0.88"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/light"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/cooking"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/light"
+        app:layout_constraintTop_toBottomOf="@id/Length"
+        app:layout_constraintWidth_percent="0.17"
+        tools:layout_editor_absoluteX="345dp"
+        tools:layout_editor_absoluteY="413dp">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/time"
+            android:src="@drawable/ic_circular_clock" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+
+            android:maxHeight="60dp"
+            android:text="@string/time"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/capacitance"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/concentration"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/Speed"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="11dp"
+            android:contentDescription="@string/cooking"
+            android:src="@drawable/ic_cooking" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/cooking"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/concentration"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/angularAcceleration"
+        app:layout_constraintStart_toEndOf="@id/capacitance"
+        app:layout_constraintTop_toBottomOf="@id/dataStorage"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/capacitance"
+            android:src="@drawable/ic_capacitor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/capacitance"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/angularAcceleration"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/Angular_Velocity"
+        app:layout_constraintStart_toEndOf="@id/concentration"
+        app:layout_constraintTop_toBottomOf="@id/Currency"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="11dp"
+            android:contentDescription="@string/concentration"
+            android:src="@drawable/ic_agitator" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:lineSpacingMultiplier="0.88"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/concentration"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="13sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Angular_Velocity"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/Unknown7"
+        app:layout_constraintStart_toEndOf="@id/angularAcceleration"
+        app:layout_constraintTop_toBottomOf="@id/light"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="11dp"
+            android:contentDescription="@string/heatCapacity"
+            android:src="@drawable/ic_flame" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center_horizontal"
+            android:lineSpacingMultiplier="0.88"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/heatCapacity"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Unknown7"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/Angular_Velocity"
+        app:layout_constraintTop_toBottomOf="@id/cooking"
+        app:layout_constraintWidth_percent="0.17">
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="11dp"
+            android:contentDescription="@string/angularVelocity"
+            android:src="@drawable/ic_angular_velocity" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center_horizontal"
+
+            android:lineSpacingMultiplier="0.88"
+            android:text="@string/angularVelocity"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Unknown8"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintEnd_toStartOf="@id/Unknown20l"
+        app:layout_constraintStart_toEndOf="@id/Unknown20l"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/capacitance"
+        app:layout_constraintWidth_percent="0.17">
+
+
+        <ImageView
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="11dp"
+            android:contentDescription="@string/angularAcceleration"
+            android:src="@drawable/ic_angular_acceleration" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center"
+            android:lineSpacingMultiplier="0.88"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/angularAcceleration"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--
+
+
+    
+
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+    -->

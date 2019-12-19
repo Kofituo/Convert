@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.unitconverter.subclasses.MyMotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/motion"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#4DD0E1"
+    android:splitMotionEvents="false"
+    app:layoutDescription="@xml/front_page_scene">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="23dp"
+        android:fontFamily="casual"
+        android:lineSpacingMultiplier="0.88"
+        android:text="@string/header"
+        android:textAlignment="center"
+        android:splitMotionEvents="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="#030303"
+        android:textSize="37sp" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingStart="0dp"
+        android:elevation="4dp"
+        android:paddingEnd="10dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:splitMotionEvents="false"
+        app:layout_constraintBottom_toTopOf="@id/scrollable"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight" />
+
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:fontFamily="sans-serif-thin"
+        android:text="@string/app_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:splitMotionEvents="false"
+        android:textColor="#E6000000"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/app_bar"
+        app:layout_constraintStart_toStartOf="@id/header"
+        app:layout_constraintTop_toTopOf="@id/app_barGuideline" />
+
+    <com.example.unitconverter.subclasses.MyNestedScrollView
+        android:id="@+id/scrollable"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:splitMotionEvents="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar">
+
+        <include
+            layout="@layout/scroll"
+            android:splitMotionEvents="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.example.unitconverter.subclasses.MyNestedScrollView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/headerGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/app_barGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3" />
+
+</com.example.unitconverter.subclasses.MyMotionLayout>

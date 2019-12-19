@@ -1,0 +1,111 @@
+package com.example.unitconverter.subclasses
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.GestureDetector
+import android.view.MotionEvent
+import androidx.core.view.GestureDetectorCompat
+import androidx.core.widget.NestedScrollView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.math.abs
+
+var bugDetected =false
+class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedScrollView (context,attributeSet) ,
+            GestureDetector.OnGestureListener , GestureDetector.OnDoubleTapListener{
+
+    private var mScroll : Int = -1
+
+    private var scrollChanged = false
+
+    private var detectorCompat = GestureDetectorCompat(context,this)
+
+    override fun onShowPress(e: MotionEvent?) {
+    }
+
+    override fun onSingleTapUp(e: MotionEvent?): Boolean {
+        return true
+    }
+
+    override fun onDown(e: MotionEvent?): Boolean {
+        return true
+    }
+
+    override fun onFling(
+        e1: MotionEvent?,
+        e2: MotionEvent?,
+        velocityX: Float,
+        velocityY: Float
+    ): Boolean {
+
+        if (velocityY <= -2600) {
+            mScroll = 0
+        }
+        return true
+    }
+
+    override fun onScroll(
+        e1: MotionEvent?,
+        e2: MotionEvent?,
+        distanceX: Float,
+        distanceY: Float
+    ): Boolean {
+        return true
+    }
+
+    override fun onLongPress(e: MotionEvent?) {
+    }
+
+    override fun onDoubleTap(e: MotionEvent?): Boolean {
+        return true
+    }
+
+    override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
+        return true
+    }
+
+    override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+        return true
+    }
+
+
+    override fun onTouchEvent(ev: MotionEvent?): Boolean {
+        detectorCompat.onTouchEvent(ev)
+
+        performClick()
+        if (scrollChanged || !canScrollVertically(1)) {
+            scrollChanged = false
+            return super.onTouchEvent(ev)
+        }
+        if (mScroll == 0) {
+            mScroll = -1
+            when (ev?.actionMasked) {
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    GlobalScope.launch {
+                        delay(310)
+                        val first = mProgress
+                        delay(50)
+                        if (abs(mProgress - first) <= 0.04) {
+                            bugDetected = true
+                            com.example.unitconverter.handler.obtainMessage(1).sendToTarget()
+                        }
+                    }
+                }
+            }
+            return super.onTouchEvent(ev)
+        }
+        requestDisallowInterceptTouchEvent(true)
+        return super.onTouchEvent(ev)
+    }
+
+    override fun performClick(): Boolean {
+        super.performClick()
+        return true
+    }
+
+    override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
+        scrollChanged = true
+        super.onScrollChanged(l, t, oldl, oldt)
+    }
+}

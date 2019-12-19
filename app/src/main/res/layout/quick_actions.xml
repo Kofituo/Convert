@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/quick_actions"
+    android:layout_width="wrap_content"
+    android:layout_height="150dp"
+
+    android:theme="@style/Theme.MaterialComponents.DayNight">
+
+    <ImageView
+        android:id="@+id/arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="1dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/ic_arrow_drop_down_black_24dp"
+        android:contentDescription="@string/arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/firstCont" />
+
+    <com.example.unitconverter.subclasses.QuickActionCardView
+        android:id="@+id/firstCont"
+        android:layout_width="240dp"
+        android:layout_height="45dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFF9C4"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/arrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/quick_action_textView"
+            android:layout_marginStart="20dp"
+            android:drawableStart="@drawable/ic_lacee"
+            android:drawablePadding="15dp"
+            android:fontFamily="serif"
+            android:text="@string/convert"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#CC020202"
+            android:textSize="16sp" />
+
+    </com.example.unitconverter.subclasses.QuickActionCardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/secondCont"
+        android:layout_width="0dp"
+        android:layout_height="85dp"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/roundtest"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toTopOf="@id/firstCont"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.example.unitconverter.subclasses.QuickActionCardView
+            android:id="@+id/selectItems"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="#FFF9C4"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="-1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/favourite"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableTop="@drawable/ic_check_circle_black_24dp"
+                android:drawablePadding="5dp"
+                android:text="@string/selectItems"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#000000"
+                android:textSize="12sp" />
+        </com.example.unitconverter.subclasses.QuickActionCardView>
+
+        <com.example.unitconverter.subclasses.QuickActionCardView
+            android:id="@+id/favourite"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="#FFF9C4"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="-1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/info"
+            app:layout_constraintStart_toEndOf="@id/selectItems"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableTop="@drawable/ic_lacee"
+                android:drawablePadding="5dp"
+                android:text="@string/favourites"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#000000"
+                android:textSize="12sp" />
+
+        </com.example.unitconverter.subclasses.QuickActionCardView>
+
+        <com.example.unitconverter.subclasses.QuickActionCardView
+            android:id="@+id/info"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="#FFF9C4"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="-1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/favourite"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableTop="@drawable/ic_info"
+                android:drawablePadding="5dp"
+                android:text="@string/info"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#000000"
+                android:textSize="12sp" />
+
+        </com.example.unitconverter.subclasses.QuickActionCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
