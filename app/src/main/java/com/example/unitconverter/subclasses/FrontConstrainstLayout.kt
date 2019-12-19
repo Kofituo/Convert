@@ -20,7 +20,9 @@ class GridConstraintLayout (context: Context, attributeSet: AttributeSet? = null
     }
 
     init {
-        
+        setOnTouchListener { v, event ->
+            false
+        }
     }
 
 }
