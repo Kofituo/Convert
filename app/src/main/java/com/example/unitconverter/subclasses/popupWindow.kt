@@ -274,7 +274,7 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
     }
 
     override fun setContentView(contentView: View) {
-        quickAction = contentView
+        //quickAction = contentView
         mWindow.contentView = contentView
     }
 
