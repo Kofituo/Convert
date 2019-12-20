@@ -9,10 +9,7 @@ import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.Toast
-import com.example.unitconverter.R
-import com.example.unitconverter.animateFinal
-import com.example.unitconverter.animateStart
-import com.example.unitconverter.orient
+import com.example.unitconverter.*
 import com.google.android.material.card.MaterialCardView
 
 
@@ -83,7 +80,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
             true
         }
         setOnClickListener {
-            Toast.makeText(context,"called",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, this.name,Toast.LENGTH_SHORT).show()
         }
 
     }

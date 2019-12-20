@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.example.unitconverter.subclasses.GridConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/grid"
     android:layout_width="match_parent"
@@ -814,7 +814,7 @@
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
-</com.example.unitconverter.subclasses.GridConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <!--

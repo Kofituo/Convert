@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.unitconverter.subclasses.*
 import kotlinx.android.synthetic.main.front_page_activity.*
+import kotlinx.android.synthetic.main.scroll.*
 import kotlin.math.round
 
 
@@ -49,7 +50,6 @@ class MainActivity : AppCompatActivity() {
 
     private val motionEventMove: MotionEvent =
         MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_MOVE, xPoint, yPoint, metaState)
-    private lateinit var rootLayout: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,9 +77,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT > 22) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
-        scrollable.setOnClickListener {
-            Log.e("DSSD","sDADAF")
-        }
+
 
         if (motion != null) {
             handler = object : Handler(Looper.getMainLooper()) {
@@ -111,114 +109,23 @@ class MainActivity : AppCompatActivity() {
         //app_bar.viewTreeObserver.removeOnGlobalLayoutListener()
     }
 
-/*
 
-Mass.setOnClickListener {
-Mass.setOnTouchListener { v, event ->
-            val imageView = Mass.getChildAt(0) as ImageView
-            (Temperature.getChildAt(0) as ImageView).setImageDrawable(imageView.drawable)
-
-            false
-        }
-
-            var rect = Rect()
-            Mass.getGlobalVisibleRect(rect)
-            //Log.e(
-                //   "topleft  topright",
-                "${Area.width} ${Area.height} ${Area.top}  ${Area.y}  ${Area.x}  ${Area.bottom}   "
-            //)
-            Log.e("well","${rect.width()}  ${rect.height()}  ${rect.left}  ${rect.right}  ${rect.top}  ${rect.bottom} ")
-            val lo = IntArray(2)
-            Mass.getLocationOnScreen(lo)
-            Log.e("area", "${lo[0]} , ${lo[1]} , ${Mass.width}, ${Mass.height}")
-        }
-            mb?.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    v.background.setColorFilter(-0x1f0b8adf, PorterDuff.Mode.SRC_ATOP)
-                    v.invalidate()
-                }
-                MotionEvent.ACTION_UP -> {
-                    v.background.clearColorFilter()
-                    v.invalidate()
-                }
-            }
-            false
-        }
-
-
-
-        Temperature.setOnClickListener {
-            val icon = this.resources.getIdentifier("ic_lacee","drawable",this.packageName)
-            Log.e("adad","$icon")
-            val drawable = this.resources.getDrawable(icon,null)
-            drawable.setBounds(0,0,50,50)
-            tesid.setImageDrawable(drawable)
-        }
-
-
-        Area.setOnClickListener {
-            var rect = Rect()
-            //Area.getGlobalVisibleRect(rect)
-            Log.e("topleft  topright","${Area.width} ${Area.height} ${Area.top}  ${Area.y}  ${Area.x}  ${Area.bottom}   ")
-            //Log.e("well","${rect.width()}  ${rect.height()}  ${rect.left}  ${rect.right}  ${rect.top}  ${rect.bottom} ")
-            val lo = IntArray(2)
-            Area.getLocationOnScreen(lo)
-            Log.e("area","${lo[0]} , ${lo[1]} , ${Area.width }, ${Area.height}")
-            //Log.e("screen","${displayMetrics.widthPixels}  , ${displayMetrics.heightPixels}")
-
-            //pw.isTouchable = true
-            pw.setTouchInterceptor { v, event ->
-                Log.e("touch","$v  $event")
-                val icon = this.resources.getIdentifier("ic_lacee","drawable",this.packageName)
-                Log.e("adad","$icon")
-                val drawable = this.resources.getDrawable(icon,null)
-                drawable.setBounds(0,0,50,50)
-                tesid.setImageDrawable(drawable)
-                v.findViewById<View>(R.id.info).getGlobalVisibleRect(rect)
-                val displayMetrics = DisplayMetrics()
-
-                windowManager.defaultDisplay.getMetrics(displayMetrics)
-                Log.e("screen","${displayMetrics.widthPixels}  , ${displayMetrics.heightPixels}")
-                val plusTenPercent = round((2.toDouble()/100) * displayMetrics.widthPixels).toInt()
-                Log.e("percent","$plusTenPercent")
-                val lo = IntArray(2)
-                v.getLocationOnScreen(lo)
-
-                Log.e("quickaction  x  y  width   height","${lo[0]} , ${lo[1]} , ${v.width }, ${v.height}")
-                Mass.getLocationOnScreen(lo)
-                Log.e("mass","${lo[0]} , ${lo[1]} , ${Mass.width }, ${Mass.height}")
-                Area.getLocationOnScreen(lo)
-                Log.e("area","${lo[0]} , ${lo[1]} , ${Area.width }, ${Area.height}")
-                Temperature.getLocationOnScreen(lo)
-                Log.e("temp","${lo[0]} , ${lo[1]} , ${Temperature.width }, ${Temperature.height}")
-                false
-            }
-        }
-
-        /**********************************************************************************************/
-
- */
 
 
     fun test(v: View) {
-        Log.e("called", "called")
         Toast.makeText(this, "well", Toast.LENGTH_SHORT).show()
-
     }
 
     private fun myConfiguration(orientation: Int) {
         return when (orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                rootLayout = motion
                 orient = Configuration.ORIENTATION_PORTRAIT
                 if (mMotion == 1) {
-                    motion.progress = 1f
+                    motion?.progress = 1f
                 } else mMotion = 1
             }
 
             else -> {
-                rootLayout = motionLand
                 orient = Configuration.ORIENTATION_LANDSCAPE
                 mMotion = 1
             }
@@ -240,7 +147,6 @@ Mass.setOnTouchListener { v, event ->
             bugDetected = true
             handler.obtainMessage(1).sendToTarget()
         }
-        Log.e("event is back", "${ev.actionMasked}  ${ev.y}")
         endAnimation()
         return super.dispatchTouchEvent(ev)
     }
@@ -267,7 +173,6 @@ fun endAnimation(): Boolean {
         ////////////////////////////////////
         animateStart?.end()
         ///////////////////////////////////
-        Log.e("called ","called")
         ObjectAnimator.ofFloat(card, Y, cardY).start()
         animateFinal!!.apply {
             duration = 200
@@ -281,6 +186,24 @@ fun endAnimation(): Boolean {
 
 
 var app_bar_bottom = 0
+
+
+internal fun Int.dpToInt(context: Context): Int = round(
+    TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this.toFloat(),
+        context.resources.displayMetrics
+    )
+).toInt()
+
+
+// used to get name from id
+val View.name: String
+    get() =
+        if (this.id == -0x1) "no id"
+        else resources.getResourceEntryName(this.id)
+
+
 /*
 
     <!--E6F5F5F5/////E6000000-->
@@ -377,10 +300,91 @@ lateinit var fs : MotionLayout
  */
 
 
-internal fun Int.dpToInt(context: Context): Int = round(
-    TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        this.toFloat(),
-        context.resources.displayMetrics
-    )
-).toInt()
+/*
+
+Mass.setOnClickListener {
+Mass.setOnTouchListener { v, event ->
+            val imageView = Mass.getChildAt(0) as ImageView
+            (Temperature.getChildAt(0) as ImageView).setImageDrawable(imageView.drawable)
+
+            false
+        }
+
+            var rect = Rect()
+            Mass.getGlobalVisibleRect(rect)
+            //Log.e(
+                //   "topleft  topright",
+                "${Area.width} ${Area.height} ${Area.top}  ${Area.y}  ${Area.x}  ${Area.bottom}   "
+            //)
+            Log.e("well","${rect.width()}  ${rect.height()}  ${rect.left}  ${rect.right}  ${rect.top}  ${rect.bottom} ")
+            val lo = IntArray(2)
+            Mass.getLocationOnScreen(lo)
+            Log.e("area", "${lo[0]} , ${lo[1]} , ${Mass.width}, ${Mass.height}")
+        }
+            mb?.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    v.background.setColorFilter(-0x1f0b8adf, PorterDuff.Mode.SRC_ATOP)
+                    v.invalidate()
+                }
+                MotionEvent.ACTION_UP -> {
+                    v.background.clearColorFilter()
+                    v.invalidate()
+                }
+            }
+            false
+        }
+
+
+
+        Temperature.setOnClickListener {
+            val icon = this.resources.getIdentifier("ic_lacee","drawable",this.packageName)
+            Log.e("adad","$icon")
+            val drawable = this.resources.getDrawable(icon,null)
+            drawable.setBounds(0,0,50,50)
+            tesid.setImageDrawable(drawable)
+        }
+
+
+        Area.setOnClickListener {
+            var rect = Rect()
+            //Area.getGlobalVisibleRect(rect)
+            Log.e("topleft  topright","${Area.width} ${Area.height} ${Area.top}  ${Area.y}  ${Area.x}  ${Area.bottom}   ")
+            //Log.e("well","${rect.width()}  ${rect.height()}  ${rect.left}  ${rect.right}  ${rect.top}  ${rect.bottom} ")
+            val lo = IntArray(2)
+            Area.getLocationOnScreen(lo)
+            Log.e("area","${lo[0]} , ${lo[1]} , ${Area.width }, ${Area.height}")
+            //Log.e("screen","${displayMetrics.widthPixels}  , ${displayMetrics.heightPixels}")
+
+            //pw.isTouchable = true
+            pw.setTouchInterceptor { v, event ->
+                Log.e("touch","$v  $event")
+                val icon = this.resources.getIdentifier("ic_lacee","drawable",this.packageName)
+                Log.e("adad","$icon")
+                val drawable = this.resources.getDrawable(icon,null)
+                drawable.setBounds(0,0,50,50)
+                tesid.setImageDrawable(drawable)
+                v.findViewById<View>(R.id.info).getGlobalVisibleRect(rect)
+                val displayMetrics = DisplayMetrics()
+
+                windowManager.defaultDisplay.getMetrics(displayMetrics)
+                Log.e("screen","${displayMetrics.widthPixels}  , ${displayMetrics.heightPixels}")
+                val plusTenPercent = round((2.toDouble()/100) * displayMetrics.widthPixels).toInt()
+                Log.e("percent","$plusTenPercent")
+                val lo = IntArray(2)
+                v.getLocationOnScreen(lo)
+
+                Log.e("quickaction  x  y  width   height","${lo[0]} , ${lo[1]} , ${v.width }, ${v.height}")
+                Mass.getLocationOnScreen(lo)
+                Log.e("mass","${lo[0]} , ${lo[1]} , ${Mass.width }, ${Mass.height}")
+                Area.getLocationOnScreen(lo)
+                Log.e("area","${lo[0]} , ${lo[1]} , ${Area.width }, ${Area.height}")
+                Temperature.getLocationOnScreen(lo)
+                Log.e("temp","${lo[0]} , ${lo[1]} , ${Temperature.width }, ${Temperature.height}")
+                false
+            }
+        }
+
+        /**********************************************************************************************/
+
+ */
