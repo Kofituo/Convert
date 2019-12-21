@@ -45,7 +45,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         // used to convert dp to pixels
         context.resources.getDimensionPixelSize(R.dimen.quick_action_height)
 
-    private var animationSet = false
     private var xOffset: Int = 0
 
     private var whichSide = 0
@@ -233,9 +232,10 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         val appBarOffset = app_bar_bottom + statusBarHeight + 10
         yPosition = if (anchorY - quickActionHeight <= appBarOffset) {
             settingConstraint(quickAction)
-
+            // its up
             anchorY + anchorWidth
         } else {
+            //its down
             anchorY - quickActionHeight
         }
         determineArrowPosition()
@@ -251,21 +251,23 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         //calculating margin start
         val arrowWidth = arrow.measuredWidth
 
-
         when (whichSide) {
             0 -> {
                 arrowViewParameters.marginStart = anchorMidWidth - (arrowWidth / 2)
-                if (!animationSet)this.animationStyle = R.style.Left
+                animationStyle =
+                    if (yPosition == anchorY + anchorWidth) R.style.DownLeft else R.style.UpLeft
             }
             1 -> {
                 val diff = quickActionWidth - arrowWidth
                 arrowViewParameters.marginStart = diff / 2
-                if (!animationSet)this.animationStyle = R.style.Center
+                animationStyle =
+                    if (yPosition == anchorY + anchorWidth) R.style.DownCenter else R.style.UpCenter
             }
             2 -> {
                 val diff = quickActionWidth + arrowWidth / 2
                 arrowViewParameters.marginStart = diff / 2
-                if (!animationSet)this.animationStyle = R.style.Right
+                animationStyle =
+                    if (yPosition == anchorY + anchorWidth) R.style.DownRight else R.style.UpRight
             }
         }
     }
@@ -280,7 +282,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
     }
     fun show() {
         mWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, xPosition, yPosition)
-        animationSet = false
     }
 
     override fun setContentView(contentView: View) {
@@ -323,7 +324,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
     }
 
     override fun setAnimationStyle(animationStyle: Int) {
-        animationSet = true
         mWindow.animationStyle = animationStyle
     }
 

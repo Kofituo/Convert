@@ -4,8 +4,8 @@
         android:duration="@android:integer/config_shortAnimTime"
         android:fromXScale="1.0"
         android:fromYScale="1.0"
-        android:pivotX="50%"
-        android:pivotY="95%"
+        android:pivotX="80%"
+        android:pivotY="5%"
         android:toXScale="0.3"
         android:toYScale="0.3" />
     <alpha
