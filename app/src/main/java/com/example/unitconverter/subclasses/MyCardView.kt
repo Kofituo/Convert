@@ -2,6 +2,7 @@ package com.example.unitconverter.subclasses
 
 import android.animation.AnimatorInflater
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.util.AttributeSet
 import android.util.Log
@@ -32,7 +33,9 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
             .apply {
                 setTarget(this@MyCardView)
             }
+
         when (event.actionMasked) {
+
             MotionEvent.ACTION_DOWN -> {
                 // Apply animation
                 Log.e("X","${this.y}")
@@ -77,10 +80,15 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
                     show()
                 }
             }
+
             true
         }
         setOnClickListener {
             Toast.makeText(context, this.name,Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, ConvertActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            this.context.startActivity(intent)
+            Log.e("called", "on3")
         }
 
     }

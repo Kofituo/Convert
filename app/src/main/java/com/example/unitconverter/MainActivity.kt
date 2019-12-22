@@ -12,14 +12,13 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MotionEvent
+import android.view.VelocityTracker
 import android.view.View
-import android.view.View.Y
+import android.view.View.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.unitconverter.subclasses.*
 import kotlinx.android.synthetic.main.front_page_activity.*
-import kotlinx.android.synthetic.main.scroll.*
 import kotlin.math.round
 
 
@@ -65,19 +64,18 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = Color.parseColor("#4DD0E1")
 
         val rect = Rect()
-
-        window.decorView.post {
-            window.decorView.getWindowVisibleDisplayFrame(rect)
-            statusBarHeight = rect.top
+        window?.decorView?.apply {
+            post {
+                getWindowVisibleDisplayFrame(rect)
+                statusBarHeight = rect.top
+                dimBars()
+            }
         }
+        //window?.decorView?.
+
 
         //app_bar.overflowIcon?.setColorFilter(Color.parseColor("#E6F5F5F5"),PorterDuff.Mode.SRC_ATOP)
         /***********************************************************************************************/
-
-        if (Build.VERSION.SDK_INT > 22) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-
 
         if (motion != null) {
             handler = object : Handler(Looper.getMainLooper()) {
@@ -105,11 +103,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         //app_bar.viewTreeObserver.removeOnGlobalLayoutListener()
     }
-
-
 
 
     fun test(v: View) {
@@ -132,12 +127,63 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun showBars() {
+
+        window.decorView.systemUiVisibility = //SYSTEM_UI_FLAG_LAYOUT_STABLE or
+
+            SYSTEM_UI_FLAG_VISIBLE or
+                    SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+    }
+
+    fun dimBars() {
+        window?.decorView?.systemUiVisibility =
+            SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    SYSTEM_UI_FLAG_IMMERSIVE or
+                    SYSTEM_UI_FLAG_HIDE_NAVIGATION
+    }
+
+    private var mVelocityTracker: VelocityTracker? = null
+
+    private var callAgain = 2
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         //Log.e("animate","")
 
-        if (ev.actionMasked == MotionEvent.ACTION_DOWN) bugDetected = false
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                bugDetected = false
+                mVelocityTracker?.clear()
+                mVelocityTracker = mVelocityTracker ?: VelocityTracker.obtain()
+                mVelocityTracker?.addMovement(ev)
+            }
+            MotionEvent.ACTION_MOVE -> {
 
-        if (bugDetected  && ev.actionMasked != MotionEvent.ACTION_UP ) {
+                mVelocityTracker?.apply {
+
+                    val pointerId = ev.getPointerId(ev.actionIndex)
+                    addMovement(ev)
+                    computeCurrentVelocity(1000)
+                    val getYVelocity = getYVelocity(pointerId)
+                    Log.e("well", "Y   $getYVelocity")
+                    if (motion?.progress != 0F)
+                        if (getYVelocity < 0 && callAgain != 0) {
+                            dimBars()
+                            Log.e("1", "1")
+                            callAgain = 0
+                        } else if (getYVelocity > 0 && callAgain != 1) {
+                            showBars()
+                            Log.e("2", "2")
+                            callAgain = 1
+                        }
+                }
+            }
+            MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
+                mVelocityTracker?.recycle()
+                mVelocityTracker = null
+                callAgain = 2
+            }
+        }
+
+        if (bugDetected && ev.actionMasked != MotionEvent.ACTION_UP) {
 
             return true
         } else {
@@ -147,6 +193,7 @@ class MainActivity : AppCompatActivity() {
             bugDetected = true
             handler.obtainMessage(1).sendToTarget()
         }
+
         endAnimation()
         return super.dispatchTouchEvent(ev)
     }
@@ -159,17 +206,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         app_bar_bottom = app_bar.bottom - app_bar.top
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         if (pw is MyPopupWindow)
-        pw.dismiss()
+            pw.dismiss()
     }
 }
+
 fun endAnimation(): Boolean {
 
-    if ((animateStart != null && animateStart!!.isRunning) ) {
+    if ((animateStart != null && animateStart!!.isRunning)) {
         ////////////////////////////////////
         animateStart?.end()
         ///////////////////////////////////
@@ -178,15 +227,13 @@ fun endAnimation(): Boolean {
             duration = 200
             start()
         }
-        if (pw .isShowing)pw.dismiss()
+        if (pw.isShowing) pw.dismiss()
         return true
     }
     return false
 }
 
-
 var app_bar_bottom = 0
-
 
 internal fun Int.dpToInt(context: Context): Int = round(
     TypedValue.applyDimension(

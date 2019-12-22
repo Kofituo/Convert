@@ -38,7 +38,7 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-
+        //Log.e("fli","ng")
         if (velocityY <= -2600) {
             mScroll = 0
         }
