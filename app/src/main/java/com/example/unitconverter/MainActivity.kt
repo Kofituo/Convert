@@ -104,7 +104,6 @@ class MainActivity : AppCompatActivity() {
         //app_bar.viewTreeObserver.removeOnGlobalLayoutListener()
     }
 
-
     fun test(v: View) {
         Toast.makeText(this, "well", Toast.LENGTH_SHORT).show()
     }
