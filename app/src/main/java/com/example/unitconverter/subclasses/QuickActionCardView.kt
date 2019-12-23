@@ -1,11 +1,17 @@
 package com.example.unitconverter.subclasses
 
 import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.example.unitconverter.R
 import com.google.android.material.card.MaterialCardView
 
+@RequiresApi(Build.VERSION_CODES.Q)
 class QuickActionCardView(context: Context, attributeSet: AttributeSet) : MaterialCardView(context,attributeSet) {
     init {
         setOnClickListener {
@@ -23,6 +29,25 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) : Materi
                     Toast.makeText(context,"Info clicked",Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        setOnLongClickListener {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            when {
+                Build.VERSION.SDK_INT < 26 -> vibrator.vibrate(100)
+                Build.VERSION.SDK_INT < 29 -> {
+                    Log.e("ye", "yess")
+                    val vibrationEffect =
+                        VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
+                    vibrator.vibrate(vibrationEffect)
+                }
+                else -> {
+                    val vibrationEffect =
+                        VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                    vibrator.vibrate(vibrationEffect)
+                }
+            }
+            performClick()
         }
     }
 }

@@ -8,11 +8,9 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.*
-import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MotionEvent
-import android.view.VelocityTracker
 import android.view.View
 import android.view.View.*
 import android.widget.Toast
@@ -68,13 +66,13 @@ class MainActivity : AppCompatActivity() {
             post {
                 getWindowVisibleDisplayFrame(rect)
                 statusBarHeight = rect.top
-                dimBars()
+
+                if (Build.VERSION.SDK_INT > 22) systemUiVisibility =
+                    systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
+
         }
-        //window?.decorView?.
 
-
-        //app_bar.overflowIcon?.setColorFilter(Color.parseColor("#E6F5F5F5"),PorterDuff.Mode.SRC_ATOP)
         /***********************************************************************************************/
 
         if (motion != null) {
@@ -127,64 +125,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // create full screen mode
     fun showBars() {
-
         window.decorView.systemUiVisibility = //SYSTEM_UI_FLAG_LAYOUT_STABLE or
-
             SYSTEM_UI_FLAG_VISIBLE or
                     SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
     }
 
     fun dimBars() {
-        window?.decorView?.systemUiVisibility =
+        window?.decorView?.systemUiVisibility = //SYSTEM_UI_FLAG_LAYOUT_STABLE or
             SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                     SYSTEM_UI_FLAG_IMMERSIVE or
                     SYSTEM_UI_FLAG_HIDE_NAVIGATION
     }
 
+    /**
     private var mVelocityTracker: VelocityTracker? = null
 
     private var callAgain = 2
+     */
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         //Log.e("animate","")
 
-        when (ev.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                bugDetected = false
-                mVelocityTracker?.clear()
-                mVelocityTracker = mVelocityTracker ?: VelocityTracker.obtain()
-                mVelocityTracker?.addMovement(ev)
-            }
-            MotionEvent.ACTION_MOVE -> {
-
-                mVelocityTracker?.apply {
-
-                    val pointerId = ev.getPointerId(ev.actionIndex)
-                    addMovement(ev)
-                    computeCurrentVelocity(1000)
-                    val getYVelocity = getYVelocity(pointerId)
-                    Log.e("well", "Y   $getYVelocity")
-                    if (motion?.progress != 0F)
-                        if (getYVelocity < 0 && callAgain != 0) {
-                            dimBars()
-                            Log.e("1", "1")
-                            callAgain = 0
-                        } else if (getYVelocity > 0 && callAgain != 1) {
-                            showBars()
-                            Log.e("2", "2")
-                            callAgain = 1
-                        }
-                }
-            }
-            MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
-                mVelocityTracker?.recycle()
-                mVelocityTracker = null
-                callAgain = 2
-            }
-        }
+        if (ev.actionMasked == MotionEvent.ACTION_DOWN) bugDetected = false
 
         if (bugDetected && ev.actionMasked != MotionEvent.ACTION_UP) {
-
             return true
         } else {
             bugDetected = false
@@ -217,7 +183,6 @@ class MainActivity : AppCompatActivity() {
 }
 
 fun endAnimation(): Boolean {
-
     if ((animateStart != null && animateStart!!.isRunning)) {
         ////////////////////////////////////
         animateStart?.end()
