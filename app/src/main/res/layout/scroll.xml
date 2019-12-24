@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.unitconverter.subclasses.GridConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/grid"
     android:layout_width="match_parent"
@@ -448,7 +448,6 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintBottom_toTopOf="@id/capacitance"
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintTop_toBottomOf="@id/time"
         app:layout_constraintWidth_percent="0.3">
@@ -750,8 +749,9 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintStart_toEndOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/angularAcceleration"
+        app:layout_constraintEnd_toStartOf="@id/LastB"
+        app:layout_constraintStart_toEndOf="@id/angularAcceleration"
+        app:layout_constraintTop_toBottomOf="@id/heatCapacity"
         app:layout_constraintWidth_percent="0.3">
 
         <ImageView
@@ -771,7 +771,7 @@
             android:fontFamily="@font/roboto_slab"
             android:maxWidth="100dp"
             android:maxHeight="60dp"
-            android:text="@string/volume"
+            android:text="last"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -787,8 +787,8 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintStart_toEndOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/Last"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintTop_toBottomOf="@id/Angular_Velocity"
         app:layout_constraintWidth_percent="0.3">
 
         <ImageView
@@ -808,27 +808,10 @@
             android:fontFamily="@font/roboto_slab"
             android:maxWidth="100dp"
             android:maxHeight="60dp"
-            android:text="@string/volume"
+            android:text="lastb"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!--
-
-
-    
-
-
-
-
-
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-    -->
+</com.example.unitconverter.subclasses.GridConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.unitconverter.subclasses
 
 import android.content.Context
+import android.os.Handler
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 var bugDetected =false
+
 class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedScrollView (context,attributeSet) ,
             GestureDetector.OnGestureListener , GestureDetector.OnDoubleTapListener{
 
@@ -38,7 +40,6 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        //Log.e("fli","ng")
         if (velocityY <= -2600) {
             mScroll = 0
         }
@@ -86,16 +87,19 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
                         delay(310)
                         val first = mProgress
                         delay(50)
-                        if (abs(mProgress - first) <= 0.04) {
+
+                        if (abs(mProgress - first) <= 0.06) {
                             bugDetected = true
-                            com.example.unitconverter.handler.obtainMessage(1).sendToTarget()
+                            handler.obtainMessage(1).sendToTarget()
                         }
                     }
                 }
             }
             return super.onTouchEvent(ev)
         }
+
         requestDisallowInterceptTouchEvent(true)
+
         return super.onTouchEvent(ev)
     }
 
@@ -105,7 +109,13 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
     }
 
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
+
         scrollChanged = true
+        if (t == 0) handler.obtainMessage(2).sendToTarget()
         super.onScrollChanged(l, t, oldl, oldt)
+    }
+
+    override fun getHandler(): Handler {
+        return com.example.unitconverter.handler
     }
 }

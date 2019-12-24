@@ -43,7 +43,10 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
+            android:layout_gravity="center_vertical"
+            android:maxLines="3"
+            android:paddingStart="20dp"
+            android:paddingEnd="45dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -61,15 +64,63 @@
         app:boxStrokeColor="@android:color/white"
         app:boxStrokeErrorColor="@color/design_default_color_primary_dark"
         app:hintTextColor="@color/design_default_color_primary_dark"
-        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/firstBox"
+
         app:layout_constraintWidth_percent="0.8">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/secondEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:paddingStart="20dp"
+            android:paddingEnd="45dp" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/topTextView"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:maxWidth="100dp"
+        android:text="mole"
+        app:layout_constraintBottom_toBottomOf="@+id/firstBox"
+        app:layout_constraintEnd_toEndOf="@+id/firstBox"
+        app:layout_constraintTop_toTopOf="@+id/firstBox"
+        app:layout_constraintVertical_bias="0.52" />
+
+    <TextView
+        android:id="@+id/bottomTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="17dp"
+        android:gravity="center"
+        android:maxWidth="100dp"
+        android:text="lbs"
+        app:layout_constraintBottom_toBottomOf="@+id/secondBox"
+        app:layout_constraintEnd_toEndOf="@+id/secondBox"
+        app:layout_constraintTop_toTopOf="@+id/secondBox"
+        app:layout_constraintVertical_bias="0.52" />
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="40dp"
+        android:layout_height="0dp"
+        android:insetLeft="2dp"
+        android:insetTop="5dp"
+        android:insetBottom="5dp"
+        android:minWidth="20dp"
+        android:minHeight="20dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        app:icon="@drawable/ic_arrow_drop_down_black_24dp"
+        app:iconTint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/firstBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/firstBox"
+        app:layout_constraintTop_toBottomOf="@id/convert_app_bar" />
+
 </com.example.unitconverter.subclasses.ConvertMotionLayout>

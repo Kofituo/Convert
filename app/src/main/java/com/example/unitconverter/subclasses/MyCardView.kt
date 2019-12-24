@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.PopupWindow
@@ -38,7 +37,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
 
             MotionEvent.ACTION_DOWN -> {
                 // Apply animation
-                Log.e("X","${this.y}")
+                //Log.e("X","${this.y}")
                 AnimatorInflater.loadAnimator(context, R.animator.animation1_start)
                     .apply {
                         setTarget(this@MyCardView)
@@ -46,7 +45,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
                     }
                 pw = MyPopupWindow(context, this, R.layout.quick_actions)
                 (pw as MyPopupWindow).determinePosition()
-                Log.e("Y","${this.y} ${this.x}  ${this.top}  ${this.bottom}")
+                //Log.e("Y","${this.y} ${this.x}  ${this.top}  ${this.bottom}")
                 longPress = false
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
@@ -88,7 +87,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
             val intent = Intent(context, ConvertActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             this.context.startActivity(intent)
-            Log.e("called", "on3")
+            //Log.e("called", "on3")
         }
 
     }

@@ -9,7 +9,7 @@
         motion:motionInterpolator="linear">
         <OnSwipe
             motion:dragDirection="dragUp"
-            motion:maxAcceleration="6"
+            motion:maxAcceleration="3"
             motion:touchAnchorId="@id/scrollable"
             motion:touchAnchorSide="top" />
 

@@ -17,6 +17,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unitconverter.subclasses.*
 import kotlinx.android.synthetic.main.front_page_activity.*
+import kotlinx.android.synthetic.main.scroll.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.round
 
 
@@ -60,7 +64,6 @@ class MainActivity : AppCompatActivity() {
         myConfiguration(this.resources.configuration.orientation)
 
         window.statusBarColor = Color.parseColor("#4DD0E1")
-
         val rect = Rect()
         window?.decorView?.apply {
             post {
@@ -70,9 +73,7 @@ class MainActivity : AppCompatActivity() {
                 if (Build.VERSION.SDK_INT > 22) systemUiVisibility =
                     systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
-
         }
-
         /***********************************************************************************************/
 
         if (motion != null) {
@@ -81,18 +82,24 @@ class MainActivity : AppCompatActivity() {
                     when (msg.what) {
                         1 -> {
                             bugDetected =
-
                                 if (motion?.progress == 1F || motion?.progress == 0f) {
                                     false
                                 } else {
-
                                     scrollable.dispatchTouchEvent(motionEventDown)
                                     scrollable.dispatchTouchEvent(motionEventMove)
                                     scrollable.dispatchTouchEvent(motionEventMove)
                                     scrollable.dispatchTouchEvent(motionEventUp)
-
                                     true
                                 }
+                            return
+                        }
+                        2 -> {
+                            GlobalScope.launch {
+                                delay(318)
+                                if (motion?.progress != 0F) {
+                                    handler.obtainMessage(1).sendToTarget()
+                                }
+                            }
                             return
                         }
                     }
@@ -101,6 +108,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        Area.setOnClickListener {
+
+        }
         //app_bar.viewTreeObserver.removeOnGlobalLayoutListener()
     }
 

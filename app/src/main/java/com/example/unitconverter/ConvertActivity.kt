@@ -3,7 +3,6 @@ package com.example.unitconverter
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +16,6 @@ class ConvertActivity : AppCompatActivity() {
         setSupportActionBar(convert_app_bar)
         window.statusBarColor = Color.GRAY
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        Log.e("well", "$supportActionBar")
         secondEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
     }
 
