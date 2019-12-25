@@ -24,7 +24,8 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
 
     init {
         setOnTouchListener { _, _ ->
-            sort()
+            viewArray.shuffle()
+            Sort(3)
             false
         }
     }
@@ -37,7 +38,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             if (child.id == R.id.rightGuide) R.id.rightGuide else guideLine.right,
             if (child.id == R.id.topGuide) R.id.topGuide else guideLine.top
         )
-        Log.e("view", child.name)
+
         if (child !is Guideline) viewArray.add(child)
         super.addView(child, params)
     }
@@ -56,13 +57,8 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
         }
     }
 
-    fun sort() {
-        viewArray.shuffle()
 
-        aSort(5)
-    }
-
-    fun aSort(number: Int) {
+    fun Sort(number: Int) {
 
         val constraintSet = ConstraintSet()
         constraintSet.apply {
