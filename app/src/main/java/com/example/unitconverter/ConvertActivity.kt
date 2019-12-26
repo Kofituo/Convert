@@ -3,8 +3,11 @@ package com.example.unitconverter
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
+import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_convert.*
 
@@ -30,4 +33,14 @@ class ConvertActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         return true
     }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        Log.e("created", "created")
+    }
+
 }

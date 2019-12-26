@@ -3,6 +3,7 @@ package com.example.unitconverter.subclasses
 import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
@@ -40,9 +41,10 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        if (velocityY <= -2600) {
-            mScroll = 0
-        }
+        Log.e("velocity", "$velocityY")
+
+        if (velocityY <= -2500) mScroll = 0
+
         return true
     }
 
@@ -70,36 +72,40 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
         return true
     }
 
-
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
         detectorCompat.onTouchEvent(ev)
 
         performClick()
+
+
         if (scrollChanged || !canScrollVertically(1)) {
             scrollChanged = false
-            return super.onTouchEvent(ev)
-        }
-        if (mScroll == 0) {
+            //return super.onTouchEvent(ev)
+        } else if (mScroll == 0) {
             mScroll = -1
-            when (ev?.actionMasked) {
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    GlobalScope.launch {
-                        delay(310)
-                        val first = mProgress
-                        delay(50)
+            Log.e("side", "way")
 
-                        if (abs(mProgress - first) <= 0.06) {
-                            bugDetected = true
-                            handler.obtainMessage(1).sendToTarget()
-                        }
-                    }
+            GlobalScope.launch {
+                delay(220)
+                val first = mProgress
+                delay(40)
+
+                Log.e("Postabs", "${abs(mProgress - first)}")
+                if (abs(mProgress - first) <= 0.065) {
+                    Log.e("abs", "${abs(mProgress - first)}   bug  $bugDetected")
+                    bugDetected = true
+                    handler.obtainMessage(1).sendToTarget()
                 }
             }
-            return super.onTouchEvent(ev)
+            //return super.onTouchEvent(ev)
+        } else if (ev?.actionMasked == MotionEvent.ACTION_UP) {
+            requestDisallowInterceptTouchEvent(
+                true
+            )
         }
 
-        requestDisallowInterceptTouchEvent(true)
-
+        //
+        //Log.e("6","called 6")
         return super.onTouchEvent(ev)
     }
 
@@ -111,9 +117,14 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
 
         scrollChanged = true
-        if (t == 0) handler.obtainMessage(2).sendToTarget()
+        if (t == 0) {
+
+            handler.obtainMessage(2).sendToTarget()
+        }
+        //Log.e("scroll","current  $t   ")
         super.onScrollChanged(l, t, oldl, oldt)
     }
+
 
     override fun getHandler(): Handler {
         return com.example.unitconverter.handler

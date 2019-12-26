@@ -83,7 +83,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
             true
         }
         setOnClickListener {
-            Toast.makeText(context, this.name,Toast.LENGTH_SHORT).show()
+            Toast.makeText(app_context, this.name, Toast.LENGTH_SHORT).show()
             val intent = Intent(context, ConvertActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             this.context.startActivity(intent)
@@ -91,6 +91,4 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
         }
 
     }
-
-
 }

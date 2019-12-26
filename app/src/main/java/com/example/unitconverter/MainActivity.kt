@@ -3,15 +3,15 @@ package com.example.unitconverter
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.app.Dialog
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.*
+import android.util.Log
 import android.util.TypedValue
-import android.view.Menu
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.view.View.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -33,14 +33,13 @@ var orient = 0
 var mMotion = 0
 
 lateinit var handler: Handler
+lateinit var app_context: Context
 
 var statusBarHeight = 0
 
 class MainActivity : AppCompatActivity() {
-
-
     private val downTime = SystemClock.uptimeMillis()
-    private val eventTime = SystemClock.uptimeMillis() + 50
+    private val eventTime = SystemClock.uptimeMillis() + 10
     private val xPoint = 0f
     private val yPoint = 0f
     private val metaState = 0
@@ -64,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         myConfiguration(this.resources.configuration.orientation)
 
         window.statusBarColor = Color.parseColor("#4DD0E1")
+        app_context = applicationContext
         val rect = Rect()
         window?.decorView?.apply {
             post {
@@ -76,6 +76,8 @@ class MainActivity : AppCompatActivity() {
         }
         /***********************************************************************************************/
 
+        Toast.makeText(applicationContext, "hi bro", Toast.LENGTH_LONG).show()
+
         if (motion != null) {
             handler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
@@ -83,8 +85,10 @@ class MainActivity : AppCompatActivity() {
                         1 -> {
                             bugDetected =
                                 if (motion?.progress == 1F || motion?.progress == 0f) {
+                                    Log.e("called", "if")
                                     false
                                 } else {
+                                    Log.e("2", "called 2")
                                     scrollable.dispatchTouchEvent(motionEventDown)
                                     scrollable.dispatchTouchEvent(motionEventMove)
                                     scrollable.dispatchTouchEvent(motionEventMove)
@@ -98,6 +102,7 @@ class MainActivity : AppCompatActivity() {
                                 delay(318)
                                 if (motion?.progress != 0F) {
                                     handler.obtainMessage(1).sendToTarget()
+                                    Log.e("4", "called 4")
                                 }
                             }
                             return
@@ -107,9 +112,22 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
         Area.setOnClickListener {
-
+            val bsf = BottomSheetFragment()
+            bsf.show(supportFragmentManager, "hi")
+        }
+        Temperature.setOnClickListener {
+            val dial = Dialog(this, R.style.trial0)
+            val view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet, null)
+            dial.setContentView(view)
+            val params = view.layoutParams as ViewGroup.MarginLayoutParams
+            params.width = resources.displayMetrics.widthPixels - 16.dpToInt(this)
+            params.bottomMargin = 15.dpToInt(this)
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            view.layoutParams = params
+            dial.setCanceledOnTouchOutside(true)
+            dial.window?.setGravity(Gravity.BOTTOM)
+            dial.show()
         }
         //app_bar.viewTreeObserver.removeOnGlobalLayoutListener()
     }
@@ -126,7 +144,6 @@ class MainActivity : AppCompatActivity() {
                     motion?.progress = 1f
                 } else mMotion = 1
             }
-
             else -> {
                 orient = Configuration.ORIENTATION_LANDSCAPE
                 mMotion = 1
@@ -159,11 +176,7 @@ class MainActivity : AppCompatActivity() {
 
         if (ev.actionMasked == MotionEvent.ACTION_DOWN) bugDetected = false
 
-        if (bugDetected && ev.actionMasked != MotionEvent.ACTION_UP) {
-            return true
-        } else {
-            bugDetected = false
-        }
+        if (bugDetected) return true
         if (ev.actionMasked == MotionEvent.ACTION_CANCEL) {
             bugDetected = true
             handler.obtainMessage(1).sendToTarget()
@@ -176,8 +189,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.front_menu, menu)
         return true
-
     }
+
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         app_bar_bottom = app_bar.bottom - app_bar.top
@@ -205,6 +218,7 @@ fun endAnimation(): Boolean {
         return true
     }
     return false
+
 }
 
 var app_bar_bottom = 0
@@ -407,5 +421,13 @@ Mass.setOnTouchListener { v, event ->
         }
 
         /**********************************************************************************************/
-
+ 2477.399
+2019-12-25 15:08:01.250 2201-2201/com.example.unitconverter E/5: called 5
+2019-12-25 15:08:01.408 2201-2201/com.example.unitconverter E/1: called 1
+2019-12-25 15:08:01.729 2201-2576/com.example.unitconverter E/4: called 4
+2019-12-25 15:08:01.744 2201-2201/com.example.unitconverter E/2: called 2
+2019-12-25 15:08:01.745 2201-2201/com.example.unitconverter E/5: called 5
+2019-12-25 15:08:01.745 2201-2201/com.example.unitconverter E/side: way
+2019-12-25 15:08:01.745 2201-2201/com.example.unitconverter E/6: called 6
+2019-12-25 15:08:01.745 2201-2201/com.example.unitconverter E/6: called 6
  */

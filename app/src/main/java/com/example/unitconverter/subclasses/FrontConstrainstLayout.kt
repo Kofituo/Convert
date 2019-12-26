@@ -2,7 +2,6 @@ package com.example.unitconverter.subclasses
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,9 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
 
     init {
         setOnTouchListener { _, _ ->
-            viewArray.shuffle()
+            viewArray.sortBy {
+                it.name
+            }
             Sort(3)
             false
         }

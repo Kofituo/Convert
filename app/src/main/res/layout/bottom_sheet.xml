@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/all_round"
-    android:theme="@style/Theme.MaterialComponents.DayNight">
+    android:theme="@style/but">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.06" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/topGuide"
@@ -20,110 +19,181 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.05" />
+
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.93"
-        android:id="@+id/rightGuide"/>
+        app:layout_constraintGuide_percent="0.94" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/sortText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:fontFamily="serif"
+        android:text="@string/sort_by"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#000000"
-        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/firstGroup"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toTopOf="@id/topGuide"
-        tools:text="@string/sort_by" />
+        app:layout_constraintTop_toTopOf="@id/topGuide" />
 
     <RadioGroup
-        android:layout_width="wrap_content"
         android:id="@+id/firstGroup"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:checkedButton="@id/titleButton"
+        app:layout_constraintEnd_toStartOf="@+id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/sortText">
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/titleButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/title" />
+            android:layout_marginTop="8dp"
+            android:fontFamily="serif"
+            android:text="@string/title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textSize="16sp" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/recent"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/recent" />
+            android:layout_marginTop="5dp"
+            android:fontFamily="serif"
+            android:text="@string/recent"
+
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textSize="16sp" />
 
     </RadioGroup>
+
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/order"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/order"
-        app:layout_constraintEnd_toStartOf="@id/viewDivider1"
         android:text="@string/order"
-        app:layout_constraintTop_toBottomOf="@id/firstGroup"
-        app:layout_constraintHorizontal_weight="0.2"
+        android:textSize="17sp"
         app:layout_constraintBottom_toTopOf="@id/secondGroup"
-        app:layout_constraintStart_toStartOf="@id/leftGuide"/>
+        app:layout_constraintEnd_toStartOf="@id/viewDivider1"
+        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/firstGroup" />
 
     <View
-        android:layout_width="0dp"
         android:id="@+id/viewDivider1"
+        android:layout_width="0dp"
         android:layout_height="1dp"
-        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
         android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@id/secondGroup"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/order"
         app:layout_constraintTop_toBottomOf="@id/firstGroup"
-        app:layout_constraintBottom_toTopOf="@id/secondGroup"
-        app:layout_constraintEnd_toEndOf="@id/rightGuide"/>
+        app:layout_constraintVertical_bias="0.6" />
 
     <RadioGroup
         android:id="@+id/secondGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:checkedButton="@id/ascending"
+        app:layout_constraintEnd_toStartOf="@+id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/order">
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/ascending"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ascending" />
+            android:layout_marginTop="8dp"
+            android:fontFamily="serif"
+            android:text="@string/ascending"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textSize="16sp" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/descending"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/descending" />
+            android:layout_marginTop="5dp"
+            android:fontFamily="serif"
+            android:text="@string/descending"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textSize="16sp" />
 
     </RadioGroup>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/default_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:id="@+id/default_button"
+        android:layout_marginTop="5dp"
         android:checked="false"
+        android:fontFamily="serif"
+        android:padding="5dp"
         android:text="@string/use_default"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/done"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/viewDivider2" />
 
     <View
-        android:layout_width="0dp"
         android:id="@+id/viewDivider2"
+        android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_margin="2dp"
+        android:layout_marginTop="5dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintStart_toEndOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/secondGroup"
         app:layout_constraintBottom_toTopOf="@id/default_button"
-        app:layout_constraintEnd_toEndOf="@id/rightGuide"/>
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/secondGroup" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/done"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:text="@string/done"
+        app:cornerRadius="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/viewDivider3"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/default_button" />
+
+    <View
+        android:id="@+id/viewDivider3"
+        android:layout_width="1dp"
+        android:layout_height="25dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cancel_button"
+        app:layout_constraintStart_toEndOf="@id/done"
+        app:layout_constraintTop_toBottomOf="@+id/default_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancel_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:text="@string/cancel"
+        app:cornerRadius="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/viewDivider3"
+        app:layout_constraintTop_toBottomOf="@id/default_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

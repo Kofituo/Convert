@@ -7,6 +7,8 @@
     <string name="area">Area</string>
     <string name="sort">Sort</string>
     <string name="sort_by">Sort By</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
     <string name="prefixes">Prefixes</string>
     <string name="angle">Angle</string>
     <string name="title">Title</string>
