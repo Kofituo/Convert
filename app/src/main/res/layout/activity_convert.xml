@@ -123,14 +123,5 @@
         app:layout_constraintStart_toEndOf="@id/firstBox"
         app:layout_constraintTop_toBottomOf="@id/convert_app_bar" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="40dp"
-        android:editable="true"
-        android:text="koofi od sdfd \n \n weerewdr eweweew"
-        android:textIsSelectable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

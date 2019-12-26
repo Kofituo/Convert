@@ -9,7 +9,6 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.*
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.View.*
@@ -85,10 +84,8 @@ class MainActivity : AppCompatActivity() {
                         1 -> {
                             bugDetected =
                                 if (motion?.progress == 1F || motion?.progress == 0f) {
-                                    Log.e("called", "if")
                                     false
                                 } else {
-                                    Log.e("2", "called 2")
                                     scrollable.dispatchTouchEvent(motionEventDown)
                                     scrollable.dispatchTouchEvent(motionEventMove)
                                     scrollable.dispatchTouchEvent(motionEventMove)
@@ -102,7 +99,6 @@ class MainActivity : AppCompatActivity() {
                                 delay(318)
                                 if (motion?.progress != 0F) {
                                     handler.obtainMessage(1).sendToTarget()
-                                    Log.e("4", "called 4")
                                 }
                             }
                             return

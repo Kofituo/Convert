@@ -3,7 +3,6 @@ package com.example.unitconverter.subclasses
 import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
@@ -41,10 +40,8 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        Log.e("velocity", "$velocityY")
 
         if (velocityY <= -2500) mScroll = 0
-
         return true
     }
 
@@ -80,32 +77,25 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
 
         if (scrollChanged || !canScrollVertically(1)) {
             scrollChanged = false
-            //return super.onTouchEvent(ev)
         } else if (mScroll == 0) {
             mScroll = -1
-            Log.e("side", "way")
-
             GlobalScope.launch {
                 delay(220)
                 val first = mProgress
                 delay(40)
+                if (abs(mProgress - first) <= 0.065 && !bugDetected) {
 
-                Log.e("Postabs", "${abs(mProgress - first)}")
-                if (abs(mProgress - first) <= 0.065) {
-                    Log.e("abs", "${abs(mProgress - first)}   bug  $bugDetected")
                     bugDetected = true
                     handler.obtainMessage(1).sendToTarget()
                 }
             }
-            //return super.onTouchEvent(ev)
+
         } else if (ev?.actionMasked == MotionEvent.ACTION_UP) {
             requestDisallowInterceptTouchEvent(
                 true
             )
         }
 
-        //
-        //Log.e("6","called 6")
         return super.onTouchEvent(ev)
     }
 
@@ -117,11 +107,7 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
 
         scrollChanged = true
-        if (t == 0) {
-
-            handler.obtainMessage(2).sendToTarget()
-        }
-        //Log.e("scroll","current  $t   ")
+        if (t == 0) handler.obtainMessage(2).sendToTarget()
         super.onScrollChanged(l, t, oldl, oldt)
     }
 
