@@ -43,12 +43,12 @@
         <item name="android:windowExitAnimation">@anim/shrink_from_bottom</item>
     </style>
 
-    <style name="trial0" parent="Theme.MaterialComponents.DayNight.Dialog">
+    <style name="sortDialogStyle" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="but" parent="Theme.MaterialComponents.DayNight">
+    <style name="sortStyle" parent="Theme.MaterialComponents.DayNight">
         <item name="colorPrimary">#03dac6</item>
     </style>
 </resources>

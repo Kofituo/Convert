@@ -21,15 +21,6 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
 
     var viewArray: MutableList<View> = mutableListOf()
 
-    init {
-        setOnTouchListener { _, _ ->
-            viewArray.sortBy {
-                it.name
-            }
-            Sort(3)
-            false
-        }
-    }
 
     override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
         child as View
@@ -59,8 +50,10 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
     }
 
 
-    fun Sort(number: Int) {
-
+    fun sort(number: Int) {
+        viewArray.sortBy {
+            it.name
+        }
         val constraintSet = ConstraintSet()
         constraintSet.apply {
             clone(this@GridConstraintLayout)

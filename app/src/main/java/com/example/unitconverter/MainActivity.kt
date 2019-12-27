@@ -3,20 +3,21 @@ package com.example.unitconverter
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
-import android.app.Dialog
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.*
 import android.util.TypedValue
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
 import android.view.View.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unitconverter.subclasses.*
 import kotlinx.android.synthetic.main.front_page_activity.*
-import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, "hi bro", Toast.LENGTH_LONG).show()
 
         if (motion != null) {
+
             handler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
                     when (msg.what) {
@@ -108,23 +110,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        Area.setOnClickListener {
-            val bsf = BottomSheetFragment()
-            bsf.show(supportFragmentManager, "hi")
-        }
-        Temperature.setOnClickListener {
-            val dial = Dialog(this, R.style.trial0)
-            val view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet, null)
-            dial.setContentView(view)
-            val params = view.layoutParams as ViewGroup.MarginLayoutParams
-            params.width = resources.displayMetrics.widthPixels - 16.dpToInt(this)
-            params.bottomMargin = 15.dpToInt(this)
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            view.layoutParams = params
-            dial.setCanceledOnTouchOutside(true)
-            dial.window?.setGravity(Gravity.BOTTOM)
-            dial.show()
-        }
+
+
         //app_bar.viewTreeObserver.removeOnGlobalLayoutListener()
     }
 
@@ -185,6 +172,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.front_menu, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.sort -> {
+                val bottomSheetFragment = BottomSheetFragment()
+                bottomSheetFragment.show(supportFragmentManager, "dialog")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
     }
 
 
