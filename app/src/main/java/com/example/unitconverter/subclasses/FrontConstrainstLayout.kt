@@ -2,15 +2,16 @@ package com.example.unitconverter.subclasses
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.constraintlayout.widget.Guideline
 import com.example.unitconverter.R
-import kotlin.math.round
+import com.example.unitconverter.dpToInt
+import com.google.android.material.card.MaterialCardView
 
+var viewArray: ArrayList<View> = arrayListOf()
 
 class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null) :
     ConstraintLayout(context, attributeSet) {
@@ -18,9 +19,6 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
     data class GuideLines(val left: Int, val right: Int, val top: Int)
 
     private var guideLine: GuideLines = GuideLines(-1, -1, -1)
-
-    var viewArray: MutableList<View> = mutableListOf()
-
 
     override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
         child as View
@@ -30,8 +28,8 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             if (child.id == R.id.rightGuide) R.id.rightGuide else guideLine.right,
             if (child.id == R.id.topGuide) R.id.topGuide else guideLine.top
         )
-
         if (child !is Guideline) viewArray.add(child)
+
         super.addView(child, params)
     }
 
@@ -50,37 +48,36 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
     }
 
 
-    fun sort(number: Int) {
-        viewArray.sortBy {
-            it.name
-        }
+    fun sort(number: Int, viewIdArray: ArrayList<Int>) {
+
         val constraintSet = ConstraintSet()
         constraintSet.apply {
             clone(this@GridConstraintLayout)
-            for (i in 0 until viewArray.size) {
+            for (i in 0 until viewIdArray.size) {
                 val modulo = i % number
                 val topViewIndex = i - number
-                val topView = if (topViewIndex >= 0) viewArray[topViewIndex].id else guideLine.top
-                val mainView = viewArray[i]
+                val topView = if (topViewIndex >= 0) viewIdArray[topViewIndex] else guideLine.top
+                val mainView = viewIdArray[i]
+
                 when (modulo) {
                     0 -> {
                         //it means its at the left
                         constraintSetting(
                             this,
                             guideLine.left,
-                            mainView.id,
-                            viewArray[i + 1].id,
+                            mainView,
+                            viewIdArray[i + 1],
                             topView
                         )
-                        setHorizontalChainStyle(mainView.id, ConstraintSet.CHAIN_SPREAD_INSIDE)
+                        setHorizontalChainStyle(mainView, ConstraintSet.CHAIN_SPREAD_INSIDE)
 
                     }
                     number - 1 -> {
                         //means its the thr right
                         constraintSetting(
                             this,
-                            viewArray[i - 1].id,
-                            mainView.id,
+                            viewIdArray[i - 1],
+                            mainView,
                             guideLine.right,
                             topView
                         )
@@ -89,9 +86,9 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                         //means its in the middle
                         constraintSetting(
                             this,
-                            viewArray[i - 1].id,
-                            mainView.id,
-                            viewArray[i + 1].id,
+                            viewIdArray[i - 1],
+                            mainView,
+                            viewIdArray[i + 1],
                             topView
                         )
                     }
@@ -100,12 +97,13 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             applyTo(this@GridConstraintLayout)
         }
 
-        for (i in 0 until viewArray.size) {
 
-            val params = viewArray[i].layoutParams as MarginLayoutParams
-            params.topMargin = if (i < number) 0 else 15.dpToInt(context)
-            viewArray[i].requestLayout()
+        for (i in viewIdArray.indices) {
 
+            val view = findViewById<MaterialCardView>(viewIdArray[i])
+            val params = view.layoutParams as MarginLayoutParams
+            params.topMargin = if (i < number) 0 else 15.dpToInt()
+            view.requestLayout()
         }
     }
 
@@ -121,20 +119,6 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
     private fun ConstraintSet.constrainStartToEnd(firstView: Int, secondView: Int) {
         this.connect(firstView, ConstraintSet.START, secondView, ConstraintSet.END, 0)
     }
+
+    private fun Int.dpToInt(): Int = dpToInt(context)
 }
-
-
-internal fun Int.dpToInt(context: Context): Int = round(
-    TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        this.toFloat(),
-        context.resources.displayMetrics
-    )
-).toInt()
-
-// used to get name from id
-val View.name: String
-    get() =
-        if (this.id == -0x1) "no id"
-        else resources.getResourceEntryName(this.id)
-

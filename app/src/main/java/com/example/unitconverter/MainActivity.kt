@@ -4,10 +4,12 @@ package com.example.unitconverter
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.*
+import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -25,19 +27,16 @@ import kotlin.math.round
 
 
 var animateStart: Animator? = null
-
 var animateFinal: Animator? = null
-
 var orient = 0
-
 var mMotion = 0
-
 lateinit var handler: Handler
 lateinit var app_context: Context
-
 var statusBarHeight = 0
 
+//change manifest setting to backup allow true
 class MainActivity : AppCompatActivity() {
+
     private val downTime = SystemClock.uptimeMillis()
     private val eventTime = SystemClock.uptimeMillis() + 10
     private val xPoint = 0f
@@ -51,17 +50,13 @@ class MainActivity : AppCompatActivity() {
     private val motionEventMove: MotionEvent =
         MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_MOVE, xPoint, yPoint, metaState)
 
+    private lateinit var viewIdArray: ArrayList<Int>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.front_page_activity)
-
         setSupportActionBar(app_bar)
-
         supportActionBar?.setDisplayShowTitleEnabled(false)
-
         myConfiguration(this.resources.configuration.orientation)
-
         window.statusBarColor = Color.parseColor("#4DD0E1")
         app_context = applicationContext
         val rect = Rect()
@@ -74,12 +69,8 @@ class MainActivity : AppCompatActivity() {
                     systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
-        /***********************************************************************************************/
-
-        Toast.makeText(applicationContext, "hi bro", Toast.LENGTH_LONG).show()
-
+        Toast.makeText(app_context, "hi bro", Toast.LENGTH_LONG).show()
         if (motion != null) {
-
             handler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
                     when (msg.what) {
@@ -112,7 +103,20 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        //app_bar.viewTreeObserver.removeOnGlobalLayoutListener()
+        val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            // gets the array if its there
+            viewIdArray = sharedPreferences.getIntegerArrayList("originalList", arrayListOf())
+            val check: ArrayList<Int> = arrayListOf()
+            for (i in viewArray) check.add(i.id)
+            // means the array is not there or has to be updated
+            if (viewIdArray != check) {
+                putIntegerArrayList("originalList", check)
+                apply()
+                Log.e("well", "well")
+            }
+            Log.e("calledShared", "$viewIdArray")
+        }
     }
 
     fun test(v: View) {
@@ -196,6 +200,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         if (pw is MyPopupWindow)
             pw.dismiss()
+        viewArray.clear()
     }
 }
 
@@ -217,6 +222,22 @@ fun endAnimation(): Boolean {
 }
 
 var app_bar_bottom = 0
+fun SharedPreferences.Editor.putIntegerArrayList(
+    key: String,
+    list: ArrayList<Int>
+): SharedPreferences.Editor {
+    putString(key, list.joinToString(","))
+    return this
+}
+
+fun SharedPreferences.getIntegerArrayList(
+    key: String,
+    default: ArrayList<Int>
+): ArrayList<Int> {
+    val value = getString(key, null)
+    if (value.isNullOrBlank()) return default
+    return ArrayList(value.split(",").map { it.toInt() })
+}
 
 internal fun Int.dpToInt(context: Context): Int = round(
     TypedValue.applyDimension(

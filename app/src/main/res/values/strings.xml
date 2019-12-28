@@ -13,6 +13,8 @@
     <string name="angle">Angle</string>
     <string name="title">Title</string>
     <string name="favourite">Favourites</string>
+
+    <string name="sound">Sound</string>
     <string name="settings">Settings</string>
     <string name="volume">Volume</string>
     <string name="recent">Recently Used</string>
@@ -42,6 +44,6 @@
     <string name="length">Length</string>
     <string name="resistance">Resistance</string>
     <string name="cooking">Cooking</string>
-    <string name="light">Luminous\nIntensity</string>
+    <string name="luminance">Luminance</string>
 
 </resources>

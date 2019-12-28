@@ -493,7 +493,7 @@
             android:layout_height="56dp"
             android:layout_gravity="center"
             android:layout_marginBottom="11dp"
-            android:contentDescription="@string/light"
+            android:contentDescription="@string/luminance"
             android:src="@drawable/ic_light_bulb" />
 
         <TextView
@@ -506,7 +506,7 @@
             android:lineSpacingMultiplier="0.88"
             android:maxWidth="100dp"
             android:maxHeight="60dp"
-            android:text="@string/light"
+            android:text="@string/luminance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -740,7 +740,7 @@
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/Last"
+        android:id="@+id/sound"
         android:layout_width="0dp"
         android:layout_height="117dp"
         android:layout_marginTop="15dp"
@@ -749,7 +749,7 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintEnd_toStartOf="@id/LastB"
+        app:layout_constraintEnd_toStartOf="@id/resistance"
         app:layout_constraintStart_toEndOf="@id/angularAcceleration"
         app:layout_constraintTop_toBottomOf="@id/heatCapacity"
         app:layout_constraintWidth_percent="0.3">
@@ -760,8 +760,8 @@
             android:layout_height="57dp"
             android:layout_gravity="center"
             android:layout_marginBottom="6dp"
-            android:contentDescription="@string/volume"
-            android:src="@drawable/ic_cylinder" />
+            android:contentDescription="@string/sound"
+            android:src="@drawable/ic_speaker" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -771,14 +771,14 @@
             android:fontFamily="@font/roboto_slab"
             android:maxWidth="100dp"
             android:maxHeight="60dp"
-            android:text="last"
+            android:text="@string/sound"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/LastB"
+        android:id="@+id/resistance"
         android:layout_width="0dp"
         android:layout_height="117dp"
         android:layout_marginTop="15dp"
@@ -797,8 +797,8 @@
             android:layout_height="57dp"
             android:layout_gravity="center"
             android:layout_marginBottom="6dp"
-            android:contentDescription="@string/volume"
-            android:src="@drawable/ic_cylinder" />
+            android:contentDescription="@string/resistance"
+            android:src="@drawable/ic_resistor" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -808,7 +808,7 @@
             android:fontFamily="@font/roboto_slab"
             android:maxWidth="100dp"
             android:maxHeight="60dp"
-            android:text="lastb"
+            android:text="@string/resistance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />

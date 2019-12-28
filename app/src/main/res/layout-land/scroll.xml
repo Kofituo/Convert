@@ -494,7 +494,7 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:layout_marginBottom="8dp"
-            android:contentDescription="@string/light"
+            android:contentDescription="@string/luminance"
             android:src="@drawable/ic_light_bulb" />
 
         <TextView
@@ -507,7 +507,7 @@
             android:lineSpacingMultiplier="0.88"
             android:maxWidth="100dp"
             android:maxHeight="60dp"
-            android:text="@string/light"
+            android:text="@string/luminance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />

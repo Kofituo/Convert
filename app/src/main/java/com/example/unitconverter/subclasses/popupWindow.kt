@@ -53,7 +53,7 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         setQuickActonView(resInt)
 
         setOnDismissListener {
-            if (!endAnimation()){
+            if (!endAnimation()) {
                 animateFinal?.start()
                 longPress = false
             }
@@ -61,11 +61,9 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
 
     }
 
+    override fun isShowing(): Boolean = mWindow.isShowing
 
-    override fun isShowing(): Boolean {
-        return mWindow.isShowing
-    }
-    private fun settingConstraint(constraintLayout: View ) {
+    private fun settingConstraint(constraintLayout: View) {
         constraintLayout as ConstraintLayout
         val constraintSet = ConstraintSet()
 
@@ -276,13 +274,11 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         val textView = quickAction.findViewById<TextView>(R.id.quick_action_textView)
         // creates new drawable from old one
         val drawableCopy = drawable.mutate().constantState?.newDrawable()?.mutate()
-        drawableCopy?.setBounds(0,0,30.dpToInt(),30.dpToInt())
-        textView.setCompoundDrawables(drawableCopy,null,null,null)
+        drawableCopy?.setBounds(0, 0, 30.dpToInt(), 30.dpToInt())
+        textView.setCompoundDrawables(drawableCopy, null, null, null)
+    }
 
-    }
-    fun show() {
-        mWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, xPosition, yPosition)
-    }
+    fun show() = mWindow.showAtLocation(anchor, Gravity.NO_GRAVITY, xPosition, yPosition)
 
     override fun setContentView(contentView: View) {
         //quickAction = contentView
@@ -290,7 +286,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
     }
 
     private fun preShow() {
-
         mWindow.apply {
             width = WindowManager.LayoutParams.WRAP_CONTENT
             height = quickActionHeight
@@ -302,47 +297,23 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         }
     }
 
-    override fun dismiss() {
-        mWindow.dismiss()
-    }
+    override fun dismiss() = mWindow.dismiss()
 
-    override fun setTouchInterceptor(l: View.OnTouchListener?) {
+    override fun setTouchInterceptor(l: View.OnTouchListener?) =
         mWindow.setTouchInterceptor(l)
-    }
 
     override fun setOutsideTouchable(touchable: Boolean) {
         mWindow.isOutsideTouchable = touchable
     }
 
-
-    override fun setOnDismissListener(onDismissListener: OnDismissListener?) {
+    override fun setOnDismissListener(onDismissListener: OnDismissListener?) =
         mWindow.setOnDismissListener(onDismissListener)
-    }
 
-    private fun Int.dpToInt(): Int {
-        return dpToInt(context)
-    }
+    private fun Int.dpToInt(): Int = dpToInt(context)
 
     override fun setAnimationStyle(animationStyle: Int) {
         mWindow.animationStyle = animationStyle
     }
 
-    override fun getAnimationStyle(): Int {
-        return mWindow.animationStyle
-    }
-
+    override fun getAnimationStyle(): Int = mWindow.animationStyle
 }
-
-/***
- *
- *
- *
- *
- * -- ---------- ----------
- * |  |         |         |
- * |  |         |         |
- * |  |         |         |
- * |  ----------          |
- * |                      |
- * -----------------------
- */
