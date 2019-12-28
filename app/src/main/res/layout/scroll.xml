@@ -46,22 +46,14 @@
         app:layout_constraintTop_toTopOf="@id/topGuide"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="@string/temperature"
-            android:src="@drawable/ic_temperature" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_temperature"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/temperature"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -82,23 +74,16 @@
         app:layout_constraintTop_toTopOf="@id/topGuide"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/area"
-            android:src="@drawable/ic_area" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_area"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/area"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -121,23 +106,16 @@
 
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/mass"
-            android:src="@drawable/ic_dumb_bell" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_dumb_bell"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/mass"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -157,24 +135,16 @@
         app:layout_constraintTop_toBottomOf="@id/Temperature"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:id="@+id/tesid"
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/volume"
-            android:src="@drawable/ic_cylinder" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_cylinder"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/volume"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -195,21 +165,16 @@
         app:layout_constraintTop_toBottomOf="@id/Area"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="66dp"
-            android:layout_height="66dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/length"
-            android:src="@drawable/ic_ruler" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_ruler"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/length"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -229,23 +194,16 @@
         app:layout_constraintTop_toBottomOf="@id/Mass"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/angle"
-            android:src="@drawable/ic_angle1" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_angle1"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/angle"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -265,23 +223,16 @@
         app:layout_constraintTop_toBottomOf="@id/Volume"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/angle"
-            android:src="@drawable/ic_blood_pressure1" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_blood_pressure1"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/pressure"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -302,23 +253,16 @@
         app:layout_constraintTop_toBottomOf="@id/Length"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/speed"
-            android:src="@drawable/ic_fast" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_fast"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/speed"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -338,24 +282,16 @@
         app:layout_constraintTop_toBottomOf="@id/Angle"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/time"
-            android:src="@drawable/ic_circular_clock" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_circular_clock"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-
-            android:maxHeight="60dp"
             android:text="@string/time"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -375,25 +311,17 @@
         app:layout_constraintTop_toBottomOf="@id/Pressure"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="65dp"
-            android:layout_height="71dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="11dp"
-            android:contentDescription="@string/temperature"
-            android:src="@drawable/ic_gas_station" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="5dp"
+            android:drawableTop="@drawable/ic_gas_station"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center"
-            android:lineSpacingMultiplier="0.88"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
+            android:lineSpacingMultiplier="0.86"
             android:text="@string/fuel_economy"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -409,30 +337,23 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintEnd_toStartOf="@id/Currency"
+        app:layout_constraintEnd_toStartOf="@id/concentration"
         app:layout_constraintStart_toEndOf="@id/fuelEconomy"
         app:layout_constraintTop_toBottomOf="@id/Speed"
         app:layout_constraintWidth_percent="0.3">
-
-        <ImageView
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:contentDescription="@string/data_storage"
-            android:src="@drawable/ic_hard_drive" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_hard_drive"
+            android:drawablePadding="1dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center"
             android:lineSpacingMultiplier="0.88"
-            android:maxWidth="100dp"
-            android:maxHeight="70dp"
             android:text="@string/data_storage"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -448,34 +369,29 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintEnd_toStartOf="@id/rightGuide"
-        app:layout_constraintTop_toBottomOf="@id/time"
-        app:layout_constraintWidth_percent="0.3">
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/luminance"
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="@string/currency"
-            android:src="@drawable/ic_exchange" />
+        app:layout_constraintWidth_percent="0.3">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_exchange"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/currency"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/light"
+        android:id="@+id/luminance"
         android:layout_width="0dp"
         android:layout_height="117dp"
         android:layout_marginTop="15dp"
@@ -488,25 +404,18 @@
         app:layout_constraintTop_toBottomOf="@id/fuelEconomy"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="11dp"
-            android:contentDescription="@string/luminance"
-            android:src="@drawable/ic_light_bulb" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_light_bulb"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center"
             android:lineSpacingMultiplier="0.88"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/luminance"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -523,26 +432,19 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintEnd_toStartOf="@id/capacitance"
-        app:layout_constraintStart_toEndOf="@id/light"
+        app:layout_constraintStart_toEndOf="@id/luminance"
         app:layout_constraintTop_toBottomOf="@id/dataStorage"
         app:layout_constraintWidth_percent="0.3">
-
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="65dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:contentDescription="@string/cooking"
-            android:src="@drawable/ic_cooking" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
+            android:drawableTop="@drawable/ic_cooking"
+            android:drawablePadding="9dp"
+            android:textAlignment="center"
             android:text="@string/cooking"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -560,7 +462,7 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
-        app:layout_constraintTop_toBottomOf="@id/Currency"
+        app:layout_constraintTop_toBottomOf="@id/concentration"
         app:layout_constraintWidth_percent="0.3">
 
         <ImageView
@@ -595,27 +497,19 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/light"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintTop_toBottomOf="@id/time"
         app:layout_constraintWidth_percent="0.3">
-
-        <ImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="11dp"
-            android:contentDescription="@string/concentration"
-            android:src="@drawable/ic_agitator" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_agitator"
+            android:drawablePadding="4dp"
             android:fontFamily="@font/roboto_slab"
             android:lineSpacingMultiplier="0.88"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/concentration"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -634,13 +528,13 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintEnd_toStartOf="@id/Angular_Velocity"
-        app:layout_constraintStart_toEndOf="@id/concentration"
+        app:layout_constraintStart_toEndOf="@id/Currency"
         app:layout_constraintTop_toBottomOf="@id/cooking"
         app:layout_constraintWidth_percent="0.3">
 
         <ImageView
-            android:layout_width="57dp"
-            android:layout_height="57dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_gravity="center"
             android:layout_marginBottom="11dp"
             android:contentDescription="@string/heatCapacity"
@@ -673,7 +567,7 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/concentration"
+        app:layout_constraintTop_toBottomOf="@id/Currency"
         app:layout_constraintWidth_percent="0.3">
 
         <ImageView
@@ -731,7 +625,6 @@
             android:layout_marginBottom="3dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center_horizontal"
-
             android:lineSpacingMultiplier="0.88"
             android:text="@string/angularVelocity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -755,9 +648,8 @@
         app:layout_constraintWidth_percent="0.3">
 
         <ImageView
-            android:id="@+id/LastID"
-            android:layout_width="57dp"
-            android:layout_height="57dp"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
             android:layout_gravity="center"
             android:layout_marginBottom="6dp"
             android:contentDescription="@string/sound"
@@ -792,9 +684,8 @@
         app:layout_constraintWidth_percent="0.3">
 
         <ImageView
-            android:id="@+id/LastIDB"
-            android:layout_width="57dp"
-            android:layout_height="57dp"
+            android:layout_width="63dp"
+            android:layout_height="63dp"
             android:layout_gravity="center"
             android:layout_marginBottom="6dp"
             android:contentDescription="@string/resistance"
@@ -814,4 +705,227 @@
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/radioactivity"
+        android:layout_width="0dp"
+        android:layout_height="117dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/resolution"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/angularAcceleration"
+        app:layout_constraintWidth_percent="0.3">
+
+        <ImageView
+            android:layout_width="59dp"
+            android:layout_height="59dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/radioactivity"
+            android:src="@drawable/ic_radiation" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/radioactivity"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/resolution"
+        android:layout_width="0dp"
+        android:layout_height="117dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/Illuminance"
+        app:layout_constraintStart_toEndOf="@id/radioactivity"
+        app:layout_constraintTop_toBottomOf="@id/sound"
+        app:layout_constraintWidth_percent="0.3">
+
+        <ImageView
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/resolution"
+            android:src="@drawable/ic_monitor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/resolution"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/Illuminance"
+        android:layout_width="0dp"
+        android:layout_height="117dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/resolution"
+        app:layout_constraintTop_toBottomOf="@id/resistance"
+        app:layout_constraintWidth_percent="0.3">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/illuminance"
+            android:src="@drawable/ic_light_bulb_illuminance" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/illuminance"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/inductance"
+        android:layout_width="0dp"
+        android:layout_height="117dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/flow"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/radioactivity"
+        app:layout_constraintWidth_percent="0.3">
+
+        <ImageView
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/inductance"
+            android:src="@drawable/ic_inductor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/inductance"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/flow"
+        android:layout_width="0dp"
+        android:layout_height="117dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/number_base"
+        app:layout_constraintStart_toEndOf="@id/inductance"
+        app:layout_constraintTop_toBottomOf="@id/resolution"
+        app:layout_constraintWidth_percent="0.3">
+
+        <ImageView
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/flow"
+            android:src="@drawable/ic_temperature" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/flow"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/number_base"
+        android:layout_width="0dp"
+        android:layout_height="117dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/flow"
+        app:layout_constraintTop_toBottomOf="@id/Illuminance"
+        app:layout_constraintWidth_percent="0.3">
+
+        <ImageView
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/number_base"
+            android:src="@drawable/ic_monitor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/number_base"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
 </com.example.unitconverter.subclasses.GridConstraintLayout>

@@ -6,8 +6,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.widget.ImageView
 import android.widget.PopupWindow
+import android.widget.TextView
 import android.widget.Toast
 import com.example.unitconverter.*
 import com.google.android.material.card.MaterialCardView
@@ -74,7 +74,8 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
                 longPress = true
 
                 (pw as MyPopupWindow).apply{
-                    val drawable = (this@MyCardView.getChildAt(0) as ImageView).drawable
+                    val textView = this@MyCardView.getChildAt(0) as TextView
+                    val drawable = textView.compoundDrawables[1]
                     setDrawable(drawable)
                     show()
                 }

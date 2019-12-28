@@ -447,7 +447,7 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintEnd_toStartOf="@id/light"
+        app:layout_constraintEnd_toStartOf="@id/luminance"
         app:layout_constraintStart_toEndOf="@id/dataStorage"
         app:layout_constraintTop_toBottomOf="@id/Mass"
         app:layout_constraintWidth_percent="0.17">
@@ -475,7 +475,7 @@
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/light"
+        android:id="@+id/luminance"
         android:layout_width="0dp"
         android:layout_height="122dp"
         android:layout_marginTop="16dp"
@@ -524,7 +524,7 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
-        app:layout_constraintStart_toEndOf="@id/light"
+        app:layout_constraintStart_toEndOf="@id/luminance"
         app:layout_constraintTop_toBottomOf="@id/Length"
         app:layout_constraintWidth_percent="0.17"
         tools:layout_editor_absoluteX="345dp"
@@ -681,7 +681,7 @@
         app:cardElevation="3dp"
         app:layout_constraintEnd_toStartOf="@id/Unknown7"
         app:layout_constraintStart_toEndOf="@id/angularAcceleration"
-        app:layout_constraintTop_toBottomOf="@id/light"
+        app:layout_constraintTop_toBottomOf="@id/luminance"
         app:layout_constraintWidth_percent="0.17">
 
         <ImageView

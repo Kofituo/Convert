@@ -102,21 +102,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             // gets the array if its there
             viewIdArray = sharedPreferences.getIntegerArrayList("originalList", arrayListOf())
+            // does this check in case the ids have been changed or new views added
             val check: ArrayList<Int> = arrayListOf()
             for (i in viewArray) check.add(i.id)
             // means the array is not there or has to be updated
             if (viewIdArray != check) {
                 putIntegerArrayList("originalList", check)
                 apply()
+                viewIdArray = check
+
                 Log.e("well", "well")
             }
             Log.e("calledShared", "$viewIdArray")
         }
+
+        //viewIdArray.shuffle()
+        //grid.sort(3,viewIdArray)
     }
 
     fun test(v: View) {
