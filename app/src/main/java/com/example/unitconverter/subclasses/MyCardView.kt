@@ -84,11 +84,14 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
             true
         }
         setOnClickListener {
+            recentlyUsed.apply {
+                remove(this@MyCardView.id)
+                add(0, this@MyCardView.id)
+            }
             Toast.makeText(app_context, this.name, Toast.LENGTH_SHORT).show()
             val intent = Intent(context, ConvertActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             this.context.startActivity(intent)
-            //Log.e("called", "on3")
         }
 
     }

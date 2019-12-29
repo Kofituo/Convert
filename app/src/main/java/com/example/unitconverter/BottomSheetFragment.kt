@@ -2,6 +2,7 @@ package com.example.unitconverter
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.Gravity
@@ -21,8 +22,9 @@ class BottomSheetFragment : DialogFragment() {
     private lateinit var cancelButton: MaterialButton
     private lateinit var useDefault: SwitchMaterial
     private var checked = false
-    lateinit var listener: tryininter
-    
+    lateinit var listener: SortDialogInterface
+
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dial = Dialog(context!!, R.style.sortDialogStyle)
         val screenWidth = resources.displayMetrics.widthPixels
@@ -45,6 +47,18 @@ class BottomSheetFragment : DialogFragment() {
             useDefault = findViewById(R.id.default_button)
         }
 
+        val sharedPreferences = activity?.getSharedPreferences(
+            "com.example.unit_converter.first_selection",
+            Context.MODE_PRIVATE
+        )
+
+
+        val firstSelection = sharedPreferences?.getInt("firstSelection", -1)
+        val secondSelection = sharedPreferences?.getInt("secondSelection", -1)
+        if (firstSelection != -1) {
+            firstGroup.check(firstSelection!!)
+            secondGroup.check(secondSelection!!)
+        }
         cancelButton.setOnClickListener {
             dismiss()
         }
@@ -58,22 +72,35 @@ class BottomSheetFragment : DialogFragment() {
                 if (!checked) firstGroup.checkedRadioButtonId else -1,
                 if (!checked) secondGroup.checkedRadioButtonId else -1
             )
+            dismiss()
         }
         dial.setCanceledOnTouchOutside(true)
         dial.window?.setGravity(if (isPortrait) Gravity.BOTTOM else Gravity.CENTER)
         return dial
     }
 
-
-    interface tryininter {
+    interface SortDialogInterface {
         fun selection(firstSelection: Int, secondSelection: Int) {
+        }
+    }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        val sharedPreferences = activity?.getSharedPreferences(
+            "com.example.unit_converter.first_selection",
+            Context.MODE_PRIVATE
+        ) ?: return
+
+        with(sharedPreferences.edit()) {
+            putInt("firstSelection", firstGroup.checkedRadioButtonId)
+            putInt("secondSelection", secondGroup.checkedRadioButtonId)
+            apply()
         }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listener = context as tryininter
+        listener = context as SortDialogInterface
     }
 
     private fun RadioGroup.setStates(state: Boolean) {

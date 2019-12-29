@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unitconverter.subclasses.*
 import kotlinx.android.synthetic.main.front_page_activity.*
+import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -33,9 +34,12 @@ var mMotion = 0
 lateinit var handler: Handler
 lateinit var app_context: Context
 var statusBarHeight = 0
+var viewIdMap: MutableMap<Int, View> = mutableMapOf()
+
+lateinit var recentlyUsed: ArrayList<Int>
 
 //change manifest setting to backup allow true
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface {
 
     private val downTime = SystemClock.uptimeMillis()
     private val eventTime = SystemClock.uptimeMillis() + 10
@@ -51,6 +55,9 @@ class MainActivity : AppCompatActivity() {
         MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_MOVE, xPoint, yPoint, metaState)
 
     private lateinit var viewIdArray: ArrayList<Int>
+    private val sharedArray: ArrayList<Int> = arrayListOf()
+    private var sortValue = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.front_page_activity)
@@ -60,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = Color.parseColor("#4DD0E1")
         app_context = applicationContext
         val rect = Rect()
+        Log.e("adsd", "$sharedArray")
         window?.decorView?.apply {
             post {
                 getWindowVisibleDisplayFrame(rect)
@@ -101,29 +109,84 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             // gets the array if its there
             viewIdArray = sharedPreferences.getIntegerArrayList("originalList", arrayListOf())
+            recentlyUsed = sharedPreferences.getIntegerArrayList("recentlyUsed", arrayListOf())
             // does this check in case the ids have been changed or new views added
             val check: ArrayList<Int> = arrayListOf()
             for (i in viewArray) check.add(i.id)
             // means the array is not there or has to be updated
             if (viewIdArray != check) {
                 putIntegerArrayList("originalList", check)
-                apply()
                 viewIdArray = check
-
-                Log.e("well", "well")
             }
-            Log.e("calledShared", "$viewIdArray")
-        }
+            if (recentlyUsed.isEmpty()) {
+                recentlyUsed = check
+                putIntegerArrayList("recentlyUsed", recentlyUsed)
+            }
 
-        //viewIdArray.shuffle()
-        //grid.sort(3,viewIdArray)
+            apply()
+        }
+        for (i in viewIdArray.indices) viewIdMap[viewIdArray[i]] = viewArray[i]
+        sortValue =
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 3 else 5
     }
 
+    override fun selection(firstSelection: Int, secondSelection: Int) {
+
+        if (firstSelection == -1) {
+            grid.sort(sortValue, viewIdArray)
+            return
+        }
+
+
+        if (secondSelection == R.id.descending) descending = true
+        if (firstSelection == R.id.titleButton) {
+            val newArray =
+                viewArray.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+            for (i in newArray) Log.e("for ", i.name)
+            if (descending) {
+                for (i in newArray.reversed()) sharedArray.add(i.id)
+            } else {
+                for (i in newArray) sharedArray.add(i.id)
+            }
+            Log.e("shared", "$sharedArray")
+            grid.sort(sortValue, sharedArray)
+            sharedArray.clear()
+            recentlyUsedBool = false
+        } else {
+            recentlyUsedBool = true
+            grid.sort(
+                sortValue,
+                if (descending) recentlyUsed else ArrayList(recentlyUsed.reversed())
+            )
+        }
+    }
+
+    private var descending = false
+
+    private var recentlyUsedBool = false
+
+    override fun onResume() {
+        super.onResume()
+        if (recentlyUsedBool) {
+            grid.sort(
+                sortValue,
+                if (descending) recentlyUsed else ArrayList(recentlyUsed.reversed())
+            )
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putIntegerArrayList("recentlyUsed", recentlyUsed)
+            apply()
+        }
+    }
     fun test(v: View) {
         Toast.makeText(this, "well", Toast.LENGTH_SHORT).show()
     }
@@ -142,6 +205,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     // create full screen mode
     fun showBars() {

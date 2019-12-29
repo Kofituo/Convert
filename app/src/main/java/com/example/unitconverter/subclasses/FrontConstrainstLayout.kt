@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.constraintlayout.widget.Guideline
 import com.example.unitconverter.R
 import com.example.unitconverter.dpToInt
-import com.google.android.material.card.MaterialCardView
+import com.example.unitconverter.viewIdMap
 
 var viewArray: ArrayList<View> = arrayListOf()
 
@@ -97,28 +97,22 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             applyTo(this@GridConstraintLayout)
         }
 
-
         for (i in viewIdArray.indices) {
-
-            val view = findViewById<MaterialCardView>(viewIdArray[i])
-            val params = view.layoutParams as MarginLayoutParams
+            val view = viewIdMap[viewIdArray[i]]
+            val params = view?.layoutParams as MarginLayoutParams
             params.topMargin = if (i < number) 0 else 15.dpToInt()
             view.requestLayout()
         }
     }
 
-    private fun ConstraintSet.constrainTopToBottom(firstView: Int, secondView: Int) {
+    private fun ConstraintSet.constrainTopToBottom(firstView: Int, secondView: Int) =
         this.connect(firstView, ConstraintSet.TOP, secondView, ConstraintSet.BOTTOM, 0)
 
-    }
-
-    private fun ConstraintSet.constrainEndToStart(firstView: Int, secondView: Int) {
+    private fun ConstraintSet.constrainEndToStart(firstView: Int, secondView: Int) =
         this.connect(firstView, ConstraintSet.END, secondView, ConstraintSet.START, 0)
-    }
 
-    private fun ConstraintSet.constrainStartToEnd(firstView: Int, secondView: Int) {
+    private fun ConstraintSet.constrainStartToEnd(firstView: Int, secondView: Int) =
         this.connect(firstView, ConstraintSet.START, secondView, ConstraintSet.END, 0)
-    }
 
     private fun Int.dpToInt(): Int = dpToInt(context)
 }
