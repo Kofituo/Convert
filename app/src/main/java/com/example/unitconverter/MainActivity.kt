@@ -165,18 +165,11 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         } else {
             recentlyUsedBool = true
             bufferArray =
-                when {
-                    recentlyUsed == viewIdArray -> {
-                        recentlyUsedBool = false
-                        ArrayList(recentlyUsed)
-                    }
-                    descending -> ArrayList(
-                        recentlyUsed
-                    )
-                    else -> ArrayList(
-                        recentlyUsed.reversed()
-                    )
-                }
+                if (recentlyUsed == viewIdArray || descending)
+                    ArrayList(recentlyUsed)
+                else ArrayList(
+                    recentlyUsed.reversed()
+                )
         }
         grid.sort(sortValue, bufferArray)
         sharedArray = ArrayList(bufferArray)
@@ -190,7 +183,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private var onCreateCalled = false
     override fun onResume() {
         super.onResume()
-
         if (recentlyUsedBool && (recentlyUsed != viewIdArray) && !onCreateCalled) {
             grid.sort(
                 sortValue, if (descending)
@@ -210,8 +202,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             putIntegerArrayList("recentlyUsed", recentlyUsed)
+            val arrayHasChanged = recentlyUsed != viewIdArray
             putIntegerArrayList(
-                "selectedOrder", if (recentlyUsedBool) {
+                "selectedOrder", if (arrayHasChanged && recentlyUsedBool) {
                     if (descending) recentlyUsed
                     else ArrayList(
                         recentlyUsed.reversed()
