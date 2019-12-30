@@ -441,11 +441,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="6dp"
-            android:fontFamily="@font/roboto_slab"
             android:drawableTop="@drawable/ic_cooking"
             android:drawablePadding="9dp"
-            android:textAlignment="center"
+            android:fontFamily="@font/roboto_slab"
             android:text="@string/cooking"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -465,22 +465,14 @@
         app:layout_constraintTop_toBottomOf="@id/concentration"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="@string/capacitance"
-            android:src="@drawable/ic_capacitor" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_capacitor"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/capacitance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -517,6 +509,7 @@
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
+
     <com.example.unitconverter.subclasses.MyCardView
         android:id="@+id/heatCapacity"
         android:layout_width="0dp"
@@ -532,24 +525,16 @@
         app:layout_constraintTop_toBottomOf="@id/cooking"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="11dp"
-            android:contentDescription="@string/heatCapacity"
-            android:src="@drawable/ic_flame" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_flame"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center_horizontal"
             android:lineSpacingMultiplier="0.88"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/heatCapacity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -572,19 +557,13 @@
         app:layout_constraintTop_toBottomOf="@id/capacitance"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="11dp"
-            android:contentDescription="@string/angularVelocity"
-            android:src="@drawable/ic_angular_velocity" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="4dp"
+            android:drawableTop="@drawable/ic_angular_velocity"
+            android:drawablePadding="1dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center_horizontal"
             android:lineSpacingMultiplier="0.88"
@@ -608,24 +587,15 @@
         app:layout_constraintTop_toBottomOf="@id/Currency"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="11dp"
-            android:contentDescription="@string/angularAcceleration"
-            android:src="@drawable/ic_angular_acceleration" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="4dp"
+            android:drawableTop="@drawable/ic_angular_acceleration"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center"
             android:lineSpacingMultiplier="0.88"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/angularAcceleration"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -647,22 +617,15 @@
         app:layout_constraintTop_toBottomOf="@id/heatCapacity"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/sound"
-            android:src="@drawable/ic_speaker" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_speaker"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
+            android:gravity="center"
             android:text="@string/sound"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -683,22 +646,14 @@
         app:layout_constraintTop_toBottomOf="@id/Angular_Velocity"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="63dp"
-            android:layout_height="63dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/resistance"
-            android:src="@drawable/ic_resistor" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_resistor"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/resistance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -721,22 +676,15 @@
         app:layout_constraintTop_toBottomOf="@id/angularAcceleration"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="59dp"
-            android:layout_height="59dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="@string/radioactivity"
-            android:src="@drawable/ic_radiation" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_radiation"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
+            android:gravity="center"
             android:text="@string/radioactivity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -758,22 +706,14 @@
         app:layout_constraintTop_toBottomOf="@id/sound"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/resolution"
-            android:src="@drawable/ic_monitor" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_monitor"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/resolution"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -795,22 +735,15 @@
         app:layout_constraintTop_toBottomOf="@id/resistance"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/illuminance"
-            android:src="@drawable/ic_light_bulb_illuminance" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_light_bulb_illuminance"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
+            android:gravity="center"
             android:text="@string/illuminance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -833,22 +766,14 @@
         app:layout_constraintTop_toBottomOf="@id/radioactivity"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/inductance"
-            android:src="@drawable/ic_inductor" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_inductor"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
             android:text="@string/inductance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -870,22 +795,15 @@
         app:layout_constraintTop_toBottomOf="@id/resolution"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/flow"
-            android:src="@drawable/ic_temperature" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_sea"
+            android:drawablePadding="4dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
+            android:gravity="center"
             android:text="@string/flow"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -907,25 +825,19 @@
         app:layout_constraintTop_toBottomOf="@id/Illuminance"
         app:layout_constraintWidth_percent="0.3">
 
-        <ImageView
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="@string/number_base"
-            android:src="@drawable/ic_monitor" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="6dp"
+            android:drawableTop="@drawable/ic_ten"
+            android:drawablePadding="8dp"
             android:fontFamily="@font/roboto_slab"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
+            android:gravity="center"
             android:text="@string/number_base"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
+
 </com.example.unitconverter.subclasses.GridConstraintLayout>

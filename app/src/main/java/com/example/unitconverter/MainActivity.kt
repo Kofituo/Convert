@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         }
                         2 -> {
                             GlobalScope.launch {
-                                delay(318)
+                                delay(290)
                                 if (motion?.progress != 0F) {
                                     handler.obtainMessage(1).sendToTarget()
                                 }
@@ -198,7 +198,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun onPause() {
         super.onPause()
-
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             putIntegerArrayList("recentlyUsed", recentlyUsed)

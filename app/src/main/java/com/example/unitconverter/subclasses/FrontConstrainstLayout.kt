@@ -2,12 +2,13 @@ package com.example.unitconverter.subclasses
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.constraintlayout.widget.Guideline
+import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import com.example.unitconverter.R
 import com.example.unitconverter.dpToInt
@@ -96,13 +97,17 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                     }
                 }
             }
-            TransitionManager.beginDelayedTransition(this@GridConstraintLayout)
 
+            val transition = ChangeBounds()
+            /* Looks cool but no
+            val transitionArray = arrayListOf<Interpolator>(AccelerateInterpolator(0.05f),AccelerateDecelerateInterpolator())
+            transitionArray.shuffle()*/
+            transition.interpolator = AccelerateInterpolator(0.05f)
+            TransitionManager.beginDelayedTransition(this@GridConstraintLayout, transition)
             applyTo(this@GridConstraintLayout)
         }
         for (i in viewIdArray.indices) {
             val view = viewIdMap[viewIdArray[i]]
-            Log.e("view", "$view")
             val params = view?.layoutParams as MarginLayoutParams
             params.topMargin = if (i < number) 0 else 15.dpToInt()
             view.requestLayout()
