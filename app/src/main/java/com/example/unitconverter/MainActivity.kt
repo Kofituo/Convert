@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             // creating the map
             for (i in viewIdArray.indices) viewIdMap[viewIdArray[i]] = viewArray[i]
             if (sharedArray.isNotEmpty()) {
-                Log.e("as", "$sharedArray")
+
                 grid.sort(sortValue, sharedArray)
             }
             apply()

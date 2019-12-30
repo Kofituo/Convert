@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.constraintlayout.widget.Guideline
+import androidx.transition.TransitionManager
 import com.example.unitconverter.R
 import com.example.unitconverter.dpToInt
 import com.example.unitconverter.viewIdMap
@@ -95,6 +96,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                     }
                 }
             }
+            TransitionManager.beginDelayedTransition(this@GridConstraintLayout)
             applyTo(this@GridConstraintLayout)
         }
         for (i in viewIdArray.indices) {

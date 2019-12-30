@@ -74,7 +74,6 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
 
         performClick()
 
-
         if (scrollChanged || !canScrollVertically(1)) {
             scrollChanged = false
         } else if (mScroll == 0) {
