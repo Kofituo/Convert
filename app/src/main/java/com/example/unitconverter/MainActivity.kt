@@ -133,6 +133,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             // creating the map
             for (i in viewIdArray.indices) viewIdMap[viewIdArray[i]] = viewArray[i]
             if (sharedArray.isNotEmpty()) {
+                Log.e("as", "$sharedArray")
                 grid.sort(sortValue, sharedArray)
             }
             apply()
@@ -155,12 +156,18 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         if (firstSelection == R.id.titleButton) {
             val newArray =
                 viewArray.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+            for (i in
             if (descending)
+                newArray.reversed()
+            else newArray
+            ) bufferArray.add(i.id)
+
+            /*if (descending)
                 for (i in newArray.reversed())
                     bufferArray.add(i.id)
             else
                 for (i in newArray)
-                    bufferArray.add(i.id)
+                    bufferArray.add(i.id)*/
         } else {
             recentlyUsedBool = true
             bufferArray =
@@ -198,7 +205,14 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             putIntegerArrayList("recentlyUsed", recentlyUsed)
-            putIntegerArrayList("selectedOrder", sharedArray)
+            putIntegerArrayList(
+                "selectedOrder", if (recentlyUsedBool) {
+                    if (descending) recentlyUsed
+                    else ArrayList(
+                        recentlyUsed.reversed()
+                    )
+                } else sharedArray
+            )
             putBoolean("descending", descending)
             putBoolean("recentlyUsedBoolean", recentlyUsedBool)
             apply()
