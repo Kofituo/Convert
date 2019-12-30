@@ -67,7 +67,6 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
         }
         return super.onTouchEvent(event)
     }
-
     init {
         setOnLongClickListener {
             if (orient == Configuration.ORIENTATION_PORTRAIT) {

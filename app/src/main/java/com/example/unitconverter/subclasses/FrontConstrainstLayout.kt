@@ -2,6 +2,7 @@ package com.example.unitconverter.subclasses
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -96,9 +97,9 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             }
             applyTo(this@GridConstraintLayout)
         }
-
         for (i in viewIdArray.indices) {
             val view = viewIdMap[viewIdArray[i]]
+            Log.e("calling", "$view")
             val params = view?.layoutParams as MarginLayoutParams
             params.topMargin = if (i < number) 0 else 15.dpToInt()
             view.requestLayout()

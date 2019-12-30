@@ -171,7 +171,7 @@
     <View
         android:id="@+id/viewDivider3"
         android:layout_width="1dp"
-        android:layout_height="25dp"
+        android:layout_height="20dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/cancel_button"

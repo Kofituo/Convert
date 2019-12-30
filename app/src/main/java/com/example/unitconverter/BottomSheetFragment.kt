@@ -1,5 +1,6 @@
 package com.example.unitconverter
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -22,11 +23,13 @@ class BottomSheetFragment : DialogFragment() {
     private lateinit var cancelButton: MaterialButton
     private lateinit var useDefault: SwitchMaterial
     private var checked = false
-    lateinit var listener: SortDialogInterface
+    private lateinit var listener: SortDialogInterface
 
 
+    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dial = Dialog(context!!, R.style.sortDialogStyle)
+
         val screenWidth = resources.displayMetrics.widthPixels
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet, null)
@@ -48,24 +51,36 @@ class BottomSheetFragment : DialogFragment() {
         }
 
         val sharedPreferences = activity?.getSharedPreferences(
-            "com.example.unit_converter.first_selection",
+            "com.example.unit_converter.sortingSelection",
             Context.MODE_PRIVATE
         )
-
-
         val firstSelection = sharedPreferences?.getInt("firstSelection", -1)
         val secondSelection = sharedPreferences?.getInt("secondSelection", -1)
+
         if (firstSelection != -1) {
             firstGroup.check(firstSelection!!)
             secondGroup.check(secondSelection!!)
         }
-        cancelButton.setOnClickListener {
-            dismiss()
-        }
+
         useDefault.setOnCheckedChangeListener { _, isChecked ->
             firstGroup.setStates(state = !isChecked)
             secondGroup.setStates(state = !isChecked)
             checked = isChecked
+        }
+        val useDefaultBoolean = sharedPreferences.getBoolean("useDefault", false)
+        if (useDefaultBoolean) useDefault.isChecked = true
+        // get original values
+        val originalFirstSelection = firstGroup.checkedRadioButtonId
+
+        val originalSecondSelection = secondGroup.checkedRadioButtonId
+        val switchValue = useDefault.isChecked
+
+        cancelButton.setOnClickListener {
+
+            firstGroup.check(originalFirstSelection)
+            secondGroup.check(originalSecondSelection)
+            useDefault.isChecked = switchValue
+            dismiss()
         }
         doneButton.setOnClickListener {
             listener.selection(
@@ -76,6 +91,7 @@ class BottomSheetFragment : DialogFragment() {
         }
         dial.setCanceledOnTouchOutside(true)
         dial.window?.setGravity(if (isPortrait) Gravity.BOTTOM else Gravity.CENTER)
+
         return dial
     }
 
@@ -87,13 +103,14 @@ class BottomSheetFragment : DialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         val sharedPreferences = activity?.getSharedPreferences(
-            "com.example.unit_converter.first_selection",
+            "com.example.unit_converter.sortingSelection",
             Context.MODE_PRIVATE
         ) ?: return
 
         with(sharedPreferences.edit()) {
             putInt("firstSelection", firstGroup.checkedRadioButtonId)
             putInt("secondSelection", secondGroup.checkedRadioButtonId)
+            putBoolean("useDefault", useDefault.isChecked)
             apply()
         }
     }
