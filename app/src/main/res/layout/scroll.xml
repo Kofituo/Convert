@@ -360,7 +360,7 @@
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/Currency"
+        android:id="@+id/concentration"
         android:layout_width="0dp"
         android:layout_height="117dp"
         android:layout_marginTop="15dp"
@@ -369,10 +369,8 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/luminance"
-
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintTop_toBottomOf="@id/time"
         app:layout_constraintWidth_percent="0.3">
 
         <TextView
@@ -380,15 +378,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="6dp"
-            android:drawableTop="@drawable/ic_exchange"
-            android:drawablePadding="10dp"
+            android:drawableTop="@drawable/ic_agitator"
+            android:drawablePadding="4dp"
             android:fontFamily="@font/roboto_slab"
-            android:text="@string/currency"
+            android:lineSpacingMultiplier="0.88"
+            android:text="@string/concentration"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
     </com.example.unitconverter.subclasses.MyCardView>
+
 
     <com.example.unitconverter.subclasses.MyCardView
         android:id="@+id/luminance"
@@ -488,7 +488,7 @@
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/concentration"
+        android:id="@+id/Currency"
         android:layout_width="0dp"
         android:layout_height="117dp"
         android:layout_marginTop="15dp"
@@ -497,8 +497,10 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintEnd_toStartOf="@id/rightGuide"
-        app:layout_constraintTop_toBottomOf="@id/time"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/luminance"
+
         app:layout_constraintWidth_percent="0.3">
 
         <TextView
@@ -506,17 +508,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="6dp"
-            android:drawableTop="@drawable/ic_agitator"
-            android:drawablePadding="4dp"
+            android:drawableTop="@drawable/ic_exchange"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:lineSpacingMultiplier="0.88"
-            android:text="@string/concentration"
+            android:text="@string/currency"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
-
     <com.example.unitconverter.subclasses.MyCardView
         android:id="@+id/heatCapacity"
         android:layout_width="0dp"
@@ -557,44 +557,6 @@
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/angularAcceleration"
-        android:layout_width="0dp"
-        android:layout_height="117dp"
-        android:layout_marginTop="15dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
-        app:cardCornerRadius="22dp"
-        app:cardElevation="3dp"
-        app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/Currency"
-        app:layout_constraintWidth_percent="0.3">
-
-        <ImageView
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="11dp"
-            android:contentDescription="@string/angularAcceleration"
-            android:src="@drawable/ic_angular_acceleration" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="3dp"
-            android:fontFamily="@font/roboto_slab"
-            android:gravity="center"
-            android:lineSpacingMultiplier="0.88"
-            android:maxWidth="100dp"
-            android:maxHeight="60dp"
-            android:text="@string/angularAcceleration"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
-            android:textSize="14sp" />
-    </com.example.unitconverter.subclasses.MyCardView>
-
-    <com.example.unitconverter.subclasses.MyCardView
         android:id="@+id/Angular_Velocity"
         android:layout_width="0dp"
         android:layout_height="117dp"
@@ -627,6 +589,44 @@
             android:gravity="center_horizontal"
             android:lineSpacingMultiplier="0.88"
             android:text="@string/angularVelocity"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#EB2B2313"
+            android:textSize="14sp" />
+    </com.example.unitconverter.subclasses.MyCardView>
+
+    <com.example.unitconverter.subclasses.MyCardView
+        android:id="@+id/angularAcceleration"
+        android:layout_width="0dp"
+        android:layout_height="117dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#FFFDE7"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/Currency"
+        app:layout_constraintWidth_percent="0.3">
+
+        <ImageView
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="11dp"
+            android:contentDescription="@string/angularAcceleration"
+            android:src="@drawable/ic_angular_acceleration" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center"
+            android:lineSpacingMultiplier="0.88"
+            android:maxWidth="100dp"
+            android:maxHeight="60dp"
+            android:text="@string/angularAcceleration"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />

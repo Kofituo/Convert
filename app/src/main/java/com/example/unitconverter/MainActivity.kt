@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private lateinit var viewIdArray: ArrayList<Int>
     private var sortValue = -1
     private var sharedArray = arrayListOf<Int>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.front_page_activity)
@@ -113,7 +114,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             // gets the array if its there
-            viewIdArray = sharedPreferences.getIntegerArrayList("originalList", arrayListOf())
+
+            viewIdArray = sharedPreferences.getIntegerArrayList("originalLis", arrayListOf())
             recentlyUsed = sharedPreferences.getIntegerArrayList("recentlyUsed", arrayListOf())
             sharedArray = sharedPreferences.getIntegerArrayList("selectedOrder", arrayListOf())
             descending = sharedPreferences.getBoolean("descending", false)
@@ -123,7 +125,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             for (i in viewArray) check.add(i.id)
             // means the array is not there or has to be updated
             if (viewIdArray != check) {
-                putIntegerArrayList("originalList", check)
+                putIntegerArrayList("originalLis", check)
                 viewIdArray = check
             }
             if (recentlyUsed.isEmpty()) {
@@ -133,7 +135,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             // creating the map
             for (i in viewIdArray.indices) viewIdMap[viewIdArray[i]] = viewArray[i]
             if (sharedArray.isNotEmpty()) {
-
                 grid.sort(sortValue, sharedArray)
             }
             apply()
@@ -148,7 +149,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         if (firstSelection == -1) {
             // use default
             grid.sort(sortValue, viewIdArray)
-
             sharedArray = ArrayList(viewIdArray)
             return
         }
@@ -162,18 +162,21 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             else newArray
             ) bufferArray.add(i.id)
 
-            /*if (descending)
-                for (i in newArray.reversed())
-                    bufferArray.add(i.id)
-            else
-                for (i in newArray)
-                    bufferArray.add(i.id)*/
         } else {
             recentlyUsedBool = true
             bufferArray =
-                if (recentlyUsed == viewIdArray || descending) ArrayList(recentlyUsed) else ArrayList(
-                    recentlyUsed.reversed()
-                )
+                when {
+                    recentlyUsed == viewIdArray -> {
+                        recentlyUsedBool = false
+                        ArrayList(recentlyUsed)
+                    }
+                    descending -> ArrayList(
+                        recentlyUsed
+                    )
+                    else -> ArrayList(
+                        recentlyUsed.reversed()
+                    )
+                }
         }
         grid.sort(sortValue, bufferArray)
         sharedArray = ArrayList(bufferArray)
@@ -188,12 +191,14 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     override fun onResume() {
         super.onResume()
 
-        if (recentlyUsedBool && recentlyUsed != viewIdArray && !onCreateCalled) {
-
+        if (recentlyUsedBool && (recentlyUsed != viewIdArray) && !onCreateCalled) {
             grid.sort(
-                sortValue, if (descending) recentlyUsed else (ArrayList(
-                    recentlyUsed.reversed()
-                ))
+                sortValue, if (descending)
+                    recentlyUsed
+                else
+                    (ArrayList(
+                        recentlyUsed.reversed()
+                    ))
             )
         }
         onCreateCalled = false

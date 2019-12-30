@@ -97,11 +97,12 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                 }
             }
             TransitionManager.beginDelayedTransition(this@GridConstraintLayout)
+
             applyTo(this@GridConstraintLayout)
         }
         for (i in viewIdArray.indices) {
             val view = viewIdMap[viewIdArray[i]]
-            Log.e("calling", "$view")
+            Log.e("view", "$view")
             val params = view?.layoutParams as MarginLayoutParams
             params.topMargin = if (i < number) 0 else 15.dpToInt()
             view.requestLayout()
