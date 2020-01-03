@@ -26,9 +26,6 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
     override fun onTouchEvent(event: MotionEvent): Boolean {
         card = this@MyCardView
 
-
-       // Log.e("card", "$card")
-
         animateFinal = AnimatorInflater.loadAnimator(context, R.animator.animation1_end)
             .apply {
                 setTarget(this@MyCardView)
@@ -88,13 +85,17 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
                 remove(this@MyCardView.id)
                 add(0, this@MyCardView.id)
             }
-            val intent = Intent(context, ConvertActivity::class.java).apply {
-                val textViewText = (this@MyCardView.getChildAt(0) as TextView).text
-                putExtra(MESSAGE, textViewText)
-            }
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            context.startActivity(intent)
+            startActivity()
         }
 
+    }
+
+    fun startActivity() {
+        val intent = Intent(context, ConvertActivity::class.java).apply {
+            val textViewText = (this@MyCardView.getChildAt(0) as TextView).text
+            putExtra(MESSAGE, textViewText)
+        }
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        context.startActivity(intent)
     }
 }

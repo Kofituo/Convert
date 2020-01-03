@@ -48,9 +48,13 @@ class ConvertActivity : AppCompatActivity() {
                 )
             }
         }
-        val intentMessage = intent.getStringExtra(MESSAGE)
-        settingText(intentMessage)
-        //settingColours()
+        // for setting the text
+        intent.getStringExtra(MESSAGE)?.also {
+            convert_header?.text = it
+            app_bar_text.text = it
+        }
+
+        settingColours()
 
     }
 
@@ -83,7 +87,9 @@ class ConvertActivity : AppCompatActivity() {
             "#FFE0B2", "#7E57C2", "#9575CD",
             "#C5CAE9", "#BA68C8", "#F44336",
             "#a0793d", "#2196F3", "#c8a165",
-            "#DCB579", "#ffa54f"
+            "#DCB579", "#ffa54f", "#cd8500",
+            "#b2beb5", "#b2beb5", "#77DD9911",
+            "#77DD99", "#7d9182"
         )
         //randomly get colour
         val randomColor = Color.parseColor(colourArray.random())
@@ -112,13 +118,6 @@ class ConvertActivity : AppCompatActivity() {
                 iconTint = colorStateList
                 rippleColor = colorStateList
             }
-        }
-    }
-
-    private fun settingText(message: String?) {
-        message?.also {
-            convert_header.text = it
-            app_bar_text.text = it
         }
     }
 

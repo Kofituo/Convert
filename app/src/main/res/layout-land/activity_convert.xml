@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/convert_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DD9911"
+    android:background="#7d9182"
     android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
-    app:motionProgress="1"
-    app:layoutDescription="@xml/convert_scene"
     tools:context=".ConvertActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -24,32 +22,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/convert_header"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:lineSpacingMultiplier="0.88"
-        android:text="@string/angularVelocity"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="#030303"
-        android:textSize="37sp" />
 
     <TextView
         android:id="@+id/app_bar_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:alpha="0"
+        android:layout_marginStart="55dp"
         android:splitMotionEvents="false"
         android:text="@string/mass"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#030303"
         android:textSize="21sp"
+        app:layout_constraintBottom_toBottomOf="@id/convert_app_bar"
         app:layout_constraintStart_toStartOf="@+id/convert_app_bar"
-        tools:layout_editor_absoluteY="219dp" />
+        app:layout_constraintTop_toTopOf="@id/convert_app_bar" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/convert_app_barGuideline"
@@ -207,4 +194,4 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.example.unitconverter.subclasses.ConvertScrollView>
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

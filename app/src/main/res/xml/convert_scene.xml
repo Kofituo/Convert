@@ -41,7 +41,7 @@
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintWidth_percent="0.65" />
+            motion:layout_constraintWidth_percent="0.7" />
 
         <Constraint
             android:id="@id/convert_app_bar"
@@ -93,7 +93,7 @@
             android:id="@id/app_bar_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="55sp"
+            android:layout_marginStart="55dp"
             android:alpha="1"
             motion:layout_constraintBottom_toBottomOf="@id/convert_app_bar"
             motion:layout_constraintStart_toStartOf="@id/convert_app_bar"
