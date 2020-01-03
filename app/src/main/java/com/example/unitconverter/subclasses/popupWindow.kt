@@ -58,7 +58,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
                 longPress = false
             }
         }
-
     }
 
     override fun isShowing(): Boolean = mWindow.isShowing
@@ -155,7 +154,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
 
         quickAction.layoutParams =
             ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-
         //setting the content view of the popup
         contentView = quickAction
     }

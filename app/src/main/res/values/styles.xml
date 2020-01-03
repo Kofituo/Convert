@@ -51,4 +51,8 @@
     <style name="sortStyle" parent="Theme.MaterialComponents.DayNight">
         <item name="colorPrimary">#03dac6</item>
     </style>
+
+    <style name="convertPage" parent="Theme.MaterialComponents.DayNight">
+
+    </style>
 </resources>

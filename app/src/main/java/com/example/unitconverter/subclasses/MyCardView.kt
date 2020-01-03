@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.PopupWindow
 import android.widget.TextView
-import android.widget.Toast
 import com.example.unitconverter.*
 import com.google.android.material.card.MaterialCardView
 
@@ -19,6 +18,8 @@ var cardY : Float = 1f
 
 var pw =PopupWindow()
 var longPress: Boolean = false
+
+const val MESSAGE = "com.kofi.unitconverter.MESSAGE"
 
 class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardView(context,attributeSet) {
 
@@ -87,10 +88,12 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
                 remove(this@MyCardView.id)
                 add(0, this@MyCardView.id)
             }
-            Toast.makeText(app_context, this.name, Toast.LENGTH_SHORT).show()
-            val intent = Intent(context, ConvertActivity::class.java)
+            val intent = Intent(context, ConvertActivity::class.java).apply {
+                val textViewText = (this@MyCardView.getChildAt(0) as TextView).text
+                putExtra(MESSAGE, textViewText)
+            }
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            this.context.startActivity(intent)
+            context.startActivity(intent)
         }
 
     }

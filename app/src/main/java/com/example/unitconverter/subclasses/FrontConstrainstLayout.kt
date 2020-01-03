@@ -24,6 +24,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
     private var guideLine: GuideLines = GuideLines(-1, -1, -1)
 
     override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
+
         child as View
 
         guideLine = GuideLines(
@@ -61,7 +62,6 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                 val topViewIndex = i - number
                 val topView = if (topViewIndex >= 0) viewIdArray[topViewIndex] else guideLine.top
                 val mainView = viewIdArray[i]
-
                 when (modulo) {
                     0 -> {
                         //it means its at the left
@@ -98,19 +98,23 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                 }
             }
 
-            val transition = ChangeBounds()
             /* Looks cool but no
             val transitionArray = arrayListOf<Interpolator>(AccelerateInterpolator(0.05f),AccelerateDecelerateInterpolator())
             transitionArray.shuffle()*/
-            transition.interpolator = AccelerateInterpolator(0.05f)
-            TransitionManager.beginDelayedTransition(this@GridConstraintLayout, transition)
+
+            TransitionManager
+                .beginDelayedTransition(this@GridConstraintLayout, ChangeBounds()
+                    .apply {
+                        interpolator = AccelerateInterpolator(0.057f)
+                    })
             applyTo(this@GridConstraintLayout)
         }
         for (i in viewIdArray.indices) {
-            val view = viewIdMap[viewIdArray[i]]
-            val params = view?.layoutParams as MarginLayoutParams
-            params.topMargin = if (i < number) 0 else 15.dpToInt()
-            view.requestLayout()
+            viewIdMap[viewIdArray[i]]?.apply {
+                val params = layoutParams as MarginLayoutParams
+                params.topMargin = if (i < number) 0 else 15.dpToInt()
+                requestLayout()
+            }
         }
     }
 

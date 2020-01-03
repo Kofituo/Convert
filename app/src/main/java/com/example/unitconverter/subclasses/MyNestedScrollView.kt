@@ -15,7 +15,7 @@ import kotlin.math.abs
 var bugDetected =false
 
 class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedScrollView (context,attributeSet) ,
-            GestureDetector.OnGestureListener , GestureDetector.OnDoubleTapListener{
+    GestureDetector.OnGestureListener {
 
     private var mScroll : Int = -1
 
@@ -23,16 +23,13 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
 
     private var detectorCompat = GestureDetectorCompat(context,this)
 
-    override fun onShowPress(e: MotionEvent?) {
-    }
+    override fun onShowPress(e: MotionEvent?) = Unit
 
     override fun onSingleTapUp(e: MotionEvent?): Boolean {
         return true
     }
 
-    override fun onDown(e: MotionEvent?): Boolean {
-        return true
-    }
+    override fun onDown(e: MotionEvent?): Boolean = true
 
     override fun onFling(
         e1: MotionEvent?,
@@ -55,18 +52,6 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
     }
 
     override fun onLongPress(e: MotionEvent?) {
-    }
-
-    override fun onDoubleTap(e: MotionEvent?): Boolean {
-        return true
-    }
-
-    override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
-        return true
-    }
-
-    override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-        return true
     }
 
     override fun onTouchEvent(ev: MotionEvent?): Boolean {

@@ -13,6 +13,8 @@ import com.google.android.material.card.MaterialCardView
 
 @RequiresApi(Build.VERSION_CODES.Q)
 class QuickActionCardView(context: Context, attributeSet: AttributeSet) : MaterialCardView(context,attributeSet) {
+
+
     init {
         setOnClickListener {
             when (this.id) {
@@ -29,6 +31,7 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) : Materi
                     Toast.makeText(context,"Info clicked",Toast.LENGTH_SHORT).show()
                 }
             }
+            pw.dismiss()
         }
 
         setOnLongClickListener {

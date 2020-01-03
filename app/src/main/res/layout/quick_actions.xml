@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/quick_actions"
     android:layout_width="wrap_content"
     android:layout_height="150dp"
@@ -11,11 +12,11 @@
         android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="1dp"
         android:layout_marginTop="6dp"
         android:background="@drawable/ic_arrow_drop_down_black_24dp"
         android:contentDescription="@string/arrow"
-        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="1dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/firstCont" />
 
     <com.example.unitconverter.subclasses.QuickActionCardView
@@ -31,18 +32,19 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
+            android:id="@+id/quick_action_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:id="@+id/quick_action_textView"
-            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
             android:drawableStart="@drawable/ic_lacee"
             android:drawablePadding="15dp"
             android:fontFamily="serif"
             android:text="@string/convert"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="#CC020202"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="RtlHardcoded" />
 
     </com.example.unitconverter.subclasses.QuickActionCardView>
 

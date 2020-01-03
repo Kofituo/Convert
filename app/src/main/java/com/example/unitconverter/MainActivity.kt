@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         myConfiguration(this.resources.configuration.orientation)
         window.statusBarColor = Color.parseColor("#4DD0E1")
         app_context = applicationContext
-        Log.e("id", "${Area.id}")
+        Log.e("id", "${dataStorage.id}")
         val rect = Rect()
 
         window?.decorView?.apply {
@@ -82,8 +82,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 override fun handleMessage(msg: Message) {
                     when (msg.what) {
                         1 -> {
+                            val motion = motion
                             bugDetected =
-                                if (motion?.progress == 1F || motion?.progress == 0f) {
+                                if ((motion?.progress) == 1F || motion.progress == 0f) {
                                     false
                                 } else {
                                     scrollable.dispatchTouchEvent(motionEventDown)
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         }
                         2 -> {
                             GlobalScope.launch {
-                                delay(290)
+                                delay(318)
                                 if (motion?.progress != 0F) {
                                     handler.obtainMessage(1).sendToTarget()
                                 }
@@ -109,36 +110,40 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
         }
         sortValue =
-            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 3 else 5
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+                3
+            else
+                5
 
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             // gets the array if its there
-
             viewIdArray = sharedPreferences.getIntegerArrayList("originalLis", arrayListOf())
             recentlyUsed = sharedPreferences.getIntegerArrayList("recentlyUsed", arrayListOf())
             sharedArray = sharedPreferences.getIntegerArrayList("selectedOrder", arrayListOf())
             descending = sharedPreferences.getBoolean("descending", false)
             recentlyUsedBool = sharedPreferences.getBoolean("recentlyUsedBoolean", false)
             // does this check in case the ids have been changed or new views added
-            val check: ArrayList<Int> = arrayListOf()
-            for (i in viewArray) check.add(i.id)
+            //val check: ArrayList<Int> = arrayListOf() not necessaray
+            //for (i in viewArray) check.add(i.id)
             // means the array is not there or has to be updated
-            if (viewIdArray != check) {
-                putIntegerArrayList("originalLis", check)
-                viewIdArray = check
+            if (viewIdArray.isEmpty()) {
+                for (i in viewArray) viewIdArray.add(i.id)
+                putIntegerArrayList("originalLis", viewIdArray)
             }
             if (recentlyUsed.isEmpty()) {
-                recentlyUsed.addAll(check)
+                recentlyUsed.addAll(viewIdArray)
                 putIntegerArrayList("recentlyUsed", recentlyUsed)
             }
             // creating the map
             for (i in viewIdArray.indices) viewIdMap[viewIdArray[i]] = viewArray[i]
             if (sharedArray.isNotEmpty()) {
                 grid.sort(sortValue, sharedArray)
+                Log.e("hisd", "$sharedArray  ${sharedArray.size}  ")
             }
             apply()
         }
+
         onCreateCalled = true
     }
 
@@ -353,7 +358,8 @@ val View.name: String
         else resources.getResourceEntryName(this.id)
 
 /*
-
+android:width="75dp"
+    android:height="90dp"
     <!--E6F5F5F5/////E6000000-->
 
 
