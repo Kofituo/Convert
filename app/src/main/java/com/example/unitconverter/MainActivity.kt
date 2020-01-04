@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
-        Toast.makeText(app_context, "hi bro", Toast.LENGTH_LONG).show()
+        Toast.makeText(app_context, "hi bro  $mMotion", Toast.LENGTH_LONG).show()
         if (motion != null) {
             handler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
@@ -143,7 +143,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
             apply()
         }
-
         onCreateCalled = true
     }
 
@@ -303,7 +302,12 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         super.onDestroy()
         if (pw is MyPopupWindow) pw.dismiss()
         viewArray.clear()
-        Toast.makeText(app_context, "destroyed", Toast.LENGTH_LONG).show()
+
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Toast.makeText(app_context, "restart", Toast.LENGTH_LONG).show()
     }
 }
 

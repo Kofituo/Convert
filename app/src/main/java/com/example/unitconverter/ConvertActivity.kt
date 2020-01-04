@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.transition.TransitionManager
@@ -53,6 +52,7 @@ class ConvertActivity : AppCompatActivity() {
                 )
             }
         }
+
         // for setting the text
         intent.getStringExtra(MESSAGE)?.also {
             convert_header?.text = it
@@ -75,9 +75,6 @@ class ConvertActivity : AppCompatActivity() {
         }
     }
 
-    fun test1(view: View) {
-        Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show()
-    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.convert_menu, menu)
         return true
@@ -180,14 +177,4 @@ class ConvertActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun createPop() {
-
-    }
-
-    /*private fun isRtl (locale: Locale) : Boolean {
-        val a = Character.getDirectionality(locale.displayName.toCharArray()[0])
-        return a == Character.DIRECTIONALITY_RIGHT_TO_LEFT || a == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
-        030303
-    }*/
 }

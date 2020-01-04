@@ -7,8 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/rounded_front"
     android:paddingTop="5dp"
-    android:splitMotionEvents="false"
-    android:theme="@style/Theme.MaterialComponents.DayNight">
+    android:splitMotionEvents="false">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuide"
@@ -51,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_margin="6dp"
+            android:maxWidth="180dp"
             android:drawableTop="@drawable/ic_temperature"
             android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
@@ -99,11 +99,9 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:flow_horizontalBias="1"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/Area"
         app:layout_constraintTop_toTopOf="@id/topGuide"
-
         app:layout_constraintWidth_percent="0.3">
 
         <TextView
