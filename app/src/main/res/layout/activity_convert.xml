@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     android:background="#DD9911"
     android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
-    app:motionProgress="1"
     app:layoutDescription="@xml/convert_scene"
+    app:motionProgress="1"
     tools:context=".ConvertActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -22,7 +22,8 @@
         app:layout_constraintBottom_toTopOf="@id/convertScroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight" />
 
     <TextView
         android:id="@+id/convert_header"
@@ -69,6 +70,7 @@
         app:layout_constraintTop_toBottomOf="@id/convert_app_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/convert_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -96,7 +98,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/topGuide"
                 app:layout_constraintWidth_percent="0.85">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/firstEditText"
                     android:layout_width="match_parent"
@@ -104,9 +105,7 @@
                     android:inputType="numberDecimal"
                     android:paddingStart="20dp"
                     android:paddingEnd="50dp" />
-
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/secondBox"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -182,7 +181,6 @@
                 app:layout_constraintStart_toEndOf="@id/firstBox"
                 app:layout_constraintTop_toTopOf="@id/topGuide"
                 app:strokeWidth="2dp" />
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bottom_button"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -191,6 +189,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
                 android:insetLeft="2dp"
+                android:onClick="test1"
                 android:insetRight="0dp"
                 android:paddingLeft="-7dp"
                 android:paddingTop="0dp"
@@ -198,7 +197,6 @@
                 android:paddingBottom="0dp"
                 app:cornerRadius="12dp"
                 app:icon="@drawable/arrow_down"
-
                 app:layout_constraintBottom_toBottomOf="@+id/secondBox"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/secondBox"

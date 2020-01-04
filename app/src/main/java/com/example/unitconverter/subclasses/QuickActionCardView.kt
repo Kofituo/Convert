@@ -9,7 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.unitconverter.R
-import com.example.unitconverter.animateStart
+import com.example.unitconverter.animateFinal
 import com.example.unitconverter.app_context
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.GlobalScope
@@ -21,13 +21,18 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) : Materi
 
     init {
         setOnClickListener {
+            pw.dismiss()
             when (this.id) {
                 R.id.firstCont -> {
-                    Toast.makeText(app_context, "Convert clicked", Toast.LENGTH_SHORT).show()
-                    pw.dismiss()
+                    //Toast.makeText(app_context, "Convert clicked", Toast.LENGTH_SHORT).show()
                     GlobalScope.launch {
-                        Log.e("running", "${animateStart!!.isRunning}")
-                        (card as MyCardView).startActivity()
+                        animateFinal?.apply {
+                            while (isRunning) continue
+                        }
+                        (card as MyCardView).apply {
+                            startActivity()
+                            updateArray()
+                        }
                     }
                 }
                 R.id.selectItems -> {

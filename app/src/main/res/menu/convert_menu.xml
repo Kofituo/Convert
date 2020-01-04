@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/search_button"
+        android:icon="@drawable/ic_magnifying_glass"
+        app:showAsAction="ifRoom"
+        tools:ignore="MenuTitle" />
+    <item
+        android:id="@+id/swap"
+        android:icon="@drawable/ic_swap_vert_black_24dp"
+        app:showAsAction="ifRoom"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/empty"
+        android:icon="@drawable/ic_more_vert_black_24dp"
+        android:orderInCategory="101"
+        android:title="@string/angularVelocity"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/favourite"
+                android:title="@string/favourite"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/prefixes"
+                android:title="@string/prefixes"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/settings"
+                android:title="@string/settings"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+</menu>

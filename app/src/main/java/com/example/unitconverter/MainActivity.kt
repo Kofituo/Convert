@@ -301,27 +301,26 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun onDestroy() {
         super.onDestroy()
-        if (pw is MyPopupWindow)
-            pw.dismiss()
+        if (pw is MyPopupWindow) pw.dismiss()
         viewArray.clear()
+        Toast.makeText(app_context, "destroyed", Toast.LENGTH_LONG).show()
     }
 }
 
 fun endAnimation(): Boolean {
-    if ((animateStart != null && animateStart!!.isRunning)) {
-        ////////////////////////////////////
-        animateStart?.end()
-        ///////////////////////////////////
-        ObjectAnimator.ofFloat(card, Y, cardY).start()
-        animateFinal!!.apply {
-            duration = 200
-            start()
+    animateStart?.apply {
+        if (isRunning) {
+            end()
+            ObjectAnimator.ofFloat(card, Y, cardY).start()
+            animateFinal?.apply {
+                duration = 200
+                start()
+            }
+            if (pw.isShowing) pw.dismiss()
+            return true
         }
-        if (pw.isShowing) pw.dismiss()
-        return true
     }
     return false
-
 }
 
 var app_bar_bottom = 0

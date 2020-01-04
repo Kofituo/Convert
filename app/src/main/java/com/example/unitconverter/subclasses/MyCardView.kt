@@ -81,21 +81,24 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
             true
         }
         setOnClickListener {
-            recentlyUsed.apply {
-                remove(this@MyCardView.id)
-                add(0, this@MyCardView.id)
-            }
+            updateArray()
             startActivity()
         }
 
     }
 
+    fun updateArray() {
+        recentlyUsed.apply {
+            remove(this@MyCardView.id)
+            add(0, this@MyCardView.id)
+        }
+    }
     fun startActivity() {
-        val intent = Intent(context, ConvertActivity::class.java).apply {
+        Intent(context, ConvertActivity::class.java).apply {
             val textViewText = (this@MyCardView.getChildAt(0) as TextView).text
             putExtra(MESSAGE, textViewText)
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            context.startActivity(this)
         }
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        context.startActivity(intent)
     }
 }

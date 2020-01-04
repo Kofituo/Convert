@@ -17,6 +17,7 @@
         android:icon="@drawable/ic_sort_black_24dp"
         android:title="@string/sort"
         app:showAsAction="never" />
+
     <item android:title="@string/prefixes"
         app:showAsAction="never"
         android:id="@+id/prefixes"/>

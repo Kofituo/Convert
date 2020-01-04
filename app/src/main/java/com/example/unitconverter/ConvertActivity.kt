@@ -10,12 +10,17 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.transition.TransitionManager
 import com.example.unitconverter.subclasses.MESSAGE
 import kotlinx.android.synthetic.main.activity_convert.*
 import java.util.*
 
 class ConvertActivity : AppCompatActivity() {
+
+    private var swap = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,21 +58,77 @@ class ConvertActivity : AppCompatActivity() {
             convert_header?.text = it
             app_bar_text.text = it
         }
-
         settingColours()
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-            return true
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            R.id.swap -> {
+                swap()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
+    fun test1(view: View) {
+        Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show()
+    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.convert_menu, menu)
         return true
+    }
+
+    private fun swap() {
+        val constraintSet = ConstraintSet()
+        val firstBox = if (swap) R.id.secondBox else R.id.firstBox
+        val secondBox = if (swap) R.id.firstBox else R.id.secondBox
+        val topButton = if (swap) R.id.bottom_button else R.id.top_button
+        val bottomButton = if (swap) R.id.top_button else R.id.bottom_button
+
+        constraintSet.apply {
+            clone(convert_inner)
+            // for the first box
+            //clear(R.id.firstBox,ConstraintSet.TOP)
+            connect(
+                firstBox,
+                ConstraintSet.TOP,
+                secondBox,
+                ConstraintSet.BOTTOM,
+                40.dpToInt(this@ConvertActivity)
+            )
+            connect(
+                firstBox,
+                ConstraintSet.BOTTOM,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.BOTTOM,
+                0
+            )
+
+            // for the second box
+            //clear(R.id.secondBox,ConstraintSet.TOP)
+            clear(secondBox, ConstraintSet.BOTTOM)
+            connect(secondBox, ConstraintSet.TOP, R.id.topGuide, ConstraintSet.TOP, 0)
+
+            // for the top button
+            connect(topButton, ConstraintSet.TOP, firstBox, ConstraintSet.TOP)
+            connect(topButton, ConstraintSet.BOTTOM, firstBox, ConstraintSet.BOTTOM)
+            connect(topButton, ConstraintSet.START, firstBox, ConstraintSet.END)
+
+            //for the down button
+            connect(bottomButton, ConstraintSet.TOP, R.id.topGuide, ConstraintSet.TOP)
+            connect(bottomButton, ConstraintSet.BOTTOM, secondBox, ConstraintSet.BOTTOM)
+            connect(bottomButton, ConstraintSet.START, secondBox, ConstraintSet.END)
+
+            TransitionManager.beginDelayedTransition(convert_inner)
+            applyTo(convert_inner)
+        }
+
+        swap = !swap
     }
 
     private fun settingColours() {
@@ -111,7 +172,6 @@ class ConvertActivity : AppCompatActivity() {
             val colorStateList = ColorStateList.valueOf(it)
             top_button.apply {
                 iconTint = colorStateList
-
                 rippleColor = colorStateList
             }
             bottom_button.apply {
@@ -121,9 +181,13 @@ class ConvertActivity : AppCompatActivity() {
         }
     }
 
+    private fun createPop() {
+
+    }
 
     /*private fun isRtl (locale: Locale) : Boolean {
         val a = Character.getDirectionality(locale.displayName.toCharArray()[0])
         return a == Character.DIRECTIONALITY_RIGHT_TO_LEFT || a == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC
+        030303
     }*/
 }

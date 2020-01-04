@@ -57,6 +57,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:id="@+id/convert_inner"
             android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.Guideline
