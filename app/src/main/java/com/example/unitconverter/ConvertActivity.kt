@@ -12,7 +12,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.lifecycle.ViewModelProviders
 import androidx.transition.TransitionManager
+import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.MESSAGE
 import kotlinx.android.synthetic.main.activity_convert.*
 import java.util.*
@@ -20,6 +22,7 @@ import java.util.*
 class ConvertActivity : AppCompatActivity() {
 
     private var swap = false
+    private var randomColor = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,13 +55,21 @@ class ConvertActivity : AppCompatActivity() {
                 )
             }
         }
-
         // for setting the text
         intent.getStringExtra(MESSAGE)?.also {
             convert_header?.text = it
             app_bar_text.text = it
         }
-        settingColours()
+
+        ViewModelProviders.of(this)[ConvertViewModel::class.java] // for the view model
+            .apply {
+                settingColours(randomInt)
+                randomInt = randomColor
+            }
+
+        top_button.setOnClickListener {
+            ConvertDialog().show(supportFragmentManager, "dialog")
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -128,7 +139,7 @@ class ConvertActivity : AppCompatActivity() {
         swap = !swap
     }
 
-    private fun settingColours() {
+    private fun settingColours(colorInt: Int = 0) {
         val colourArray = listOf(
             "#29B6F6", "#FFD54F", "#DCE775",
             "#D4E157", "#E1BEE7", "#E57373",
@@ -150,7 +161,7 @@ class ConvertActivity : AppCompatActivity() {
             "#77DD99", "#7d9182"
         )
         //randomly get colour
-        val randomColor = Color.parseColor(colourArray.random())
+        randomColor = if (colorInt == 0) Color.parseColor(colourArray.random()) else colorInt
         window?.apply {
             statusBarColor = randomColor
             decorView.apply {

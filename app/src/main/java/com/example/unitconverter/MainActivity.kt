@@ -185,6 +185,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private var recentlyUsedBool = false
 
     private var onCreateCalled = false
+
     override fun onResume() {
         super.onResume()
         if (recentlyUsedBool && (recentlyUsed != viewIdArray) && !onCreateCalled) {
@@ -283,8 +284,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.sort -> {
-                val bottomSheetFragment = BottomSheetFragment()
-                bottomSheetFragment.show(supportFragmentManager, "dialog")
+                BottomSheetFragment().apply {
+                    show(supportFragmentManager, "dialog")
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

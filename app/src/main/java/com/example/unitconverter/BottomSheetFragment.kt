@@ -25,7 +25,6 @@ class BottomSheetFragment : DialogFragment() {
     private var checked = false
     private lateinit var listener: SortDialogInterface
 
-
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dial = Dialog(context!!, R.style.sortDialogStyle)
@@ -40,7 +39,6 @@ class BottomSheetFragment : DialogFragment() {
             bottomMargin = if (isPortrait) 15.dpToInt() else 2.dpToInt()
             height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
-
         view.apply {
             layoutParams = params
             firstGroup = findViewById(R.id.firstGroup)
