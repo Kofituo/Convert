@@ -23,7 +23,7 @@ class ConvertActivity : AppCompatActivity() {
 
     private var swap = false
     private var randomColor = -1
-
+    private var viewId = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_convert)
@@ -34,33 +34,20 @@ class ConvertActivity : AppCompatActivity() {
         }
         secondEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
         firstEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
-
         val isRTL =
             TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
         if (!isRTL) {
-            bottom_button.apply {
-                setPadding(
-                    (-3).dpToInt(this@ConvertActivity),
-                    paddingTop,
-                    paddingRight,
-                    paddingBottom
-                )
-            }
-            top_button.apply {
-                setPadding(
-                    (-3).dpToInt(this@ConvertActivity),
-                    paddingTop,
-                    paddingRight,
-                    paddingBottom
-                )
-            }
+            bottom_button.setTopPadding(-3) //converts it to dp
+            top_button.setTopPadding(-3)
         }
         // for setting the text
-        intent.getStringExtra(MESSAGE)?.also {
-            convert_header?.text = it
-            app_bar_text.text = it
+        intent.apply {
+            getStringExtra(MESSAGE)?.also {
+                convert_header?.text = it
+                app_bar_text.text = it
+            }
+            viewId = getIntExtra(MESSAGE, -1)
         }
-
         ViewModelProviders.of(this)[ConvertViewModel::class.java] // for the view model
             .apply {
                 settingColours(randomInt)
@@ -69,6 +56,21 @@ class ConvertActivity : AppCompatActivity() {
 
         top_button.setOnClickListener {
             ConvertDialog().show(supportFragmentManager, "dialog")
+        }
+        bottom_button.setOnClickListener {
+            ConvertDialog().apply {
+                myDataset = arrayOf("adwoa", "joana", "akuu", "akua")
+                show(supportFragmentManager, "dialog")
+            }
+        }
+    }
+
+
+    private fun whichView(viewId: Int) {
+        when (viewId) {
+            R.id.Area -> {
+
+            }
         }
     }
 
@@ -186,6 +188,17 @@ class ConvertActivity : AppCompatActivity() {
                 iconTint = colorStateList
                 rippleColor = colorStateList
             }
+        }
+    }
+
+    private fun View.setTopPadding(padding: Int) {
+        this.apply {
+            setPadding(
+                padding.dpToInt(this@ConvertActivity),
+                paddingTop,
+                paddingRight,
+                paddingBottom
+            )
         }
     }
 }

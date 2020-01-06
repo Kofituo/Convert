@@ -5,6 +5,7 @@
     android:id="@+id/convert_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
     android:background="#DD9911"
     app:layoutDescription="@xml/convert_scene"
     app:motionProgress="1"

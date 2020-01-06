@@ -97,6 +97,6 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
 
 
     override fun getHandler(): Handler {
-        return com.example.unitconverter.handler
+        return com.example.unitconverter.motionHandler
     }
 }

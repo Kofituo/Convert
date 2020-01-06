@@ -17,7 +17,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.02" />
+        app:layout_constraintGuide_percent="0.01" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/rightGuide"
@@ -91,7 +91,8 @@
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scrollbars="vertical"
+        android:layout_marginTop="10dp"
+        android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/viewDivider2"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintHeight_percent="0.72"

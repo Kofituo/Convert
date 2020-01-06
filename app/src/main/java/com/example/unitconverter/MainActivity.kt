@@ -18,6 +18,7 @@ import android.view.View
 import android.view.View.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.example.unitconverter.subclasses.*
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
@@ -26,11 +27,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.round
 
+
 var animateStart: Animator? = null
 var animateFinal: Animator? = null
 var orient = 0
-var mMotion = 0
-lateinit var handler: Handler
+lateinit var motionHandler: Handler
 lateinit var app_context: Context
 var statusBarHeight = 0
 var viewIdMap: MutableMap<Int, View> = mutableMapOf()
@@ -76,15 +77,14 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
-        Toast.makeText(app_context, "hi bro  $mMotion", Toast.LENGTH_LONG).show()
-        if (motion != null) {
-            handler = object : Handler(Looper.getMainLooper()) {
+        Toast.makeText(app_context, "hi bro ", Toast.LENGTH_LONG).show()
+        motion?.apply {
+            motionHandler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
                     when (msg.what) {
                         1 -> {
-                            val motion = motion
                             bugDetected =
-                                if ((motion?.progress) == 1F || motion.progress == 0f) {
+                                if (progress == 1F || progress == 0f) {
                                     false
                                 } else {
                                     scrollable.dispatchTouchEvent(motionEventDown)
@@ -98,8 +98,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         2 -> {
                             GlobalScope.launch {
                                 delay(318)
-                                if (motion?.progress != 0F) {
-                                    handler.obtainMessage(1).sendToTarget()
+                                if (progress != 0F) {
+                                    motionHandler.obtainMessage(1).sendToTarget()
                                 }
                             }
                             return
@@ -107,6 +107,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     }
                     return super.handleMessage(msg)
                 }
+            }
+            ViewModelProviders.of(this@MainActivity)[ConvertViewModel::class.java].apply {
+                progress = motionProgress
+                motionProgress = 1f
             }
         }
         sortValue =
@@ -226,17 +230,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 
     private fun myConfiguration(orientation: Int) {
-        return when (orientation) {
-            Configuration.ORIENTATION_PORTRAIT -> {
-                orient = Configuration.ORIENTATION_PORTRAIT
-                if (mMotion == 1) {
-                    motion?.progress = 1f
-                } else mMotion = 1
-            }
-            else -> {
-                orient = Configuration.ORIENTATION_LANDSCAPE
-                mMotion = 1
-            }
+        orient = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Configuration.ORIENTATION_PORTRAIT
+        } else {
+            Configuration.ORIENTATION_LANDSCAPE
         }
     }
 
@@ -269,7 +266,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         if (bugDetected) return true
         if (ev.actionMasked == MotionEvent.ACTION_CANCEL) {
             bugDetected = true
-            handler.obtainMessage(1).sendToTarget()
+            motionHandler.obtainMessage(1).sendToTarget()
         }
 
         endAnimation()

@@ -97,6 +97,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
         Intent(context, ConvertActivity::class.java).apply {
             val textViewText = (this@MyCardView.getChildAt(0) as TextView).text
             putExtra(MESSAGE, textViewText)
+            putExtra(MESSAGE, this@MyCardView.id)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             context.startActivity(this)
         }
