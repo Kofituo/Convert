@@ -17,7 +17,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.01" />
+        app:layout_constraintGuide_percent="0.02" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/rightGuide"
@@ -44,23 +44,13 @@
         android:id="@+id/viewDivider1"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="7dp"
         android:background="#33AAAAAA"
         app:layout_constraintBottom_toTopOf="@id/search_bar"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/select_unit" />
 
-    <!--<ImageView
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="15dp"
-        android:alpha="0.67"
-        android:src="@drawable/ic_magnifying_glass"
-        app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/viewDivider1" />
-
-    <-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_bar"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -72,7 +62,6 @@
         app:boxCornerRadiusBottomStart="10dp"
         app:boxCornerRadiusTopEnd="10dp"
         app:boxCornerRadiusTopStart="10dp"
-        app:boxStrokeColor="@android:color/black"
         app:hintTextColor="@android:color/black"
         app:layout_constraintBottom_toTopOf="@id/recycler_view"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
@@ -82,20 +71,21 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textFilter"
+            android:maxLines="1"
             android:paddingStart="20dp"
-            android:paddingEnd="10dp" />
+            android:paddingEnd="50dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
         android:scrollbars="none"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toTopOf="@id/viewDivider2"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
-        app:layout_constraintHeight_percent="0.72"
+        app:layout_constraintHeight_percent="0.6"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/search_bar" />
 
@@ -103,9 +93,10 @@
         android:id="@+id/viewDivider2"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintBottom_toTopOf="@id/cancel_button"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/recycler_view" />
 

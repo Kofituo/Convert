@@ -13,10 +13,13 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.example.unitconverter.subclasses.ConvertViewModel
-import com.example.unitconverter.subclasses.MESSAGE
+import com.example.unitconverter.subclasses.TextMessage
+import com.example.unitconverter.subclasses.ViewIdMessage
 import kotlinx.android.synthetic.main.activity_convert.*
+import kotlinx.android.synthetic.main.items_list.*
 import java.util.*
 
 class ConvertActivity : AppCompatActivity() {
@@ -42,11 +45,11 @@ class ConvertActivity : AppCompatActivity() {
         }
         // for setting the text
         intent.apply {
-            getStringExtra(MESSAGE)?.also {
+            getStringExtra(TextMessage)?.also {
                 convert_header?.text = it
                 app_bar_text.text = it
             }
-            viewId = getIntExtra(MESSAGE, -1)
+            viewId = getIntExtra(ViewIdMessage, -1)
         }
         ViewModelProviders.of(this)[ConvertViewModel::class.java] // for the view model
             .apply {
@@ -56,6 +59,8 @@ class ConvertActivity : AppCompatActivity() {
 
         top_button.setOnClickListener {
             ConvertDialog().show(supportFragmentManager, "dialog")
+
+
         }
         bottom_button.setOnClickListener {
             ConvertDialog().apply {

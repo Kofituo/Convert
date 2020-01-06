@@ -11,11 +11,11 @@ import com.example.unitconverter.*
 import com.google.android.material.card.MaterialCardView
 
 
-var card : MaterialCardView? = null
+var card : MyCardView? = null
 var cardY : Float = 1f
 var longPress: Boolean = false
-const val MESSAGE = "com.kofi.unitconverter.MESSAGE"
-
+const val TextMessage = "com.kofi.unitconverter.TextMessage"
+const val ViewIdMessage = "com.kofi.unitconverter.ViewIdMessage"
 class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardView(context,attributeSet) {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -52,7 +52,6 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
                             start()
                             //longPress = false
                         }
-
                 } else {
                     animateFinal?.start()
                 }
@@ -91,8 +90,8 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
     fun startActivity() {
         Intent(context, ConvertActivity::class.java).apply {
             val textViewText = (this@MyCardView.getChildAt(0) as TextView).text
-            putExtra(MESSAGE, textViewText)
-            putExtra(MESSAGE, this@MyCardView.id)
+            putExtra(TextMessage, textViewText)
+            putExtra(ViewIdMessage, this@MyCardView.id)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             context.startActivity(this)
         }

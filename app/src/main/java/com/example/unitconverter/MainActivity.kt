@@ -11,10 +11,7 @@ import android.graphics.Rect
 import android.os.*
 import android.util.Log
 import android.util.TypedValue
-import android.view.Menu
-import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.view.View.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -76,6 +73,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
                 if (Build.VERSION.SDK_INT > 22) systemUiVisibility =
                     systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
             }
         }
         Toast.makeText(app_context, "hi bro ", Toast.LENGTH_LONG).show()
@@ -290,7 +288,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         app_bar_bottom = app_bar.bottom - app_bar.top
-
     }
 
     override fun onDestroy() {

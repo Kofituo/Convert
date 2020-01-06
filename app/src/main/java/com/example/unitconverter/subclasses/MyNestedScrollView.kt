@@ -3,6 +3,7 @@ package com.example.unitconverter.subclasses
 import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
@@ -37,7 +38,7 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-
+        Log.e("vel","$velocityY")
         if (velocityY <= -2500) mScroll = 0
         return true
     }

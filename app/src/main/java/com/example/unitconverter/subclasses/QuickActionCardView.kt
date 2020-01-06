@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import com.example.unitconverter.R
 import com.example.unitconverter.animateFinal
 import com.example.unitconverter.app_context
+import com.example.unitconverter.popupWindow
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -29,7 +30,7 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) : Materi
                         animateFinal?.apply {
                             while (isRunning) continue
                         }
-                        (card as MyCardView).apply {
+                        card?.apply {
                             startActivity()
                             updateArray()
                         }

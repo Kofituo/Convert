@@ -164,7 +164,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         val windowManager: WindowManager =
             context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         //getting screen width
@@ -225,7 +224,7 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
 
         // make sure the popup doesnt cross the app bar
 
-        val appBarOffset = app_bar_bottom + statusBarHeight + 10
+        val appBarOffset = app_bar_bottom + statusBarHeight + 2.dpToInt()
         yPosition = if (anchorY - quickActionHeight <= appBarOffset) {
             settingConstraint(quickAction)
             // its up

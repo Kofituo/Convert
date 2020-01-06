@@ -8,7 +8,7 @@
         android:title="@string/settings" />
     <item
         android:id="@+id/swap"
-        android:icon="@drawable/ic_swap_vert_black_24dp"
+        android:icon="@drawable/ic_switch_vertical_orientation_arrows"
         app:showAsAction="ifRoom"
         android:title="@string/swap" />
     <item

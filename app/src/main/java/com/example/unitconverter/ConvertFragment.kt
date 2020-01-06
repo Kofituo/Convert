@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +34,7 @@ class ConvertDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val screenWidth = resources.displayMetrics.widthPixels
+        val screenHeight = resources.displayMetrics.heightPixels
         val dialog = Dialog(context!!, R.style.sortDialogStyle)
         val view = LayoutInflater.from(context).inflate(R.layout.items_list, null)
         dialog.setContentView(view)
@@ -40,6 +44,9 @@ class ConvertDialog : DialogFragment() {
             val params = layoutParams
             params.width =
                 if (isPortrait) (screenWidth / 7) * 6 else round(screenWidth / 1.6).toInt()
+
+            params.height =
+                if (isPortrait) round(screenHeight * 0.9).toInt() else ViewGroup.LayoutParams.WRAP_CONTENT
             layoutParams = params
             recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
                 setHasFixedSize(true)
@@ -56,7 +63,7 @@ class ConvertDialog : DialogFragment() {
         }?.apply {
             setDialogColors(randomInt)
         }
-
+        Log.e("sdad","${screenHeight * 0.8}")
         return dialog
     }
 
@@ -67,7 +74,10 @@ class ConvertDialog : DialogFragment() {
                 rippleColor = it
                 setTextColor(it)
             }
-            setOnClickListener { dismiss() }
+            setOnClickListener {
+                Log.e("ad","${recyclerView.height}")
+                dismiss()
+            }
         }
     }
 }
