@@ -21,7 +21,7 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) : Materi
 
     init {
         setOnClickListener {
-            pw.dismiss()
+            popupWindow.dismiss()
             when (this.id) {
                 R.id.firstCont -> {
                     //Toast.makeText(app_context, "Convert clicked", Toast.LENGTH_SHORT).show()

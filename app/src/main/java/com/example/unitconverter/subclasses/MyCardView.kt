@@ -6,19 +6,14 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.widget.PopupWindow
 import android.widget.TextView
 import com.example.unitconverter.*
 import com.google.android.material.card.MaterialCardView
 
 
 var card : MaterialCardView? = null
-
 var cardY : Float = 1f
-
-var pw =PopupWindow()
 var longPress: Boolean = false
-
 const val MESSAGE = "com.kofi.unitconverter.MESSAGE"
 
 class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardView(context,attributeSet) {
@@ -41,8 +36,8 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
                         setTarget(this@MyCardView)
                         start()
                     }
-                pw = MyPopupWindow(context, this, R.layout.quick_actions)
-                (pw as MyPopupWindow).determinePosition()
+                popupWindow = MyPopupWindow(context, this, R.layout.quick_actions)
+                popupWindow.determinePosition()
                 //Log.e("Y","${this.y} ${this.x}  ${this.top}  ${this.bottom}")
                 longPress = false
             }
@@ -70,7 +65,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
             if (orient == Configuration.ORIENTATION_PORTRAIT) {
                 longPress = true
 
-                (pw as MyPopupWindow).apply{
+                popupWindow.apply {
                     val textView = this@MyCardView.getChildAt(0) as TextView
                     val drawable = textView.compoundDrawables[1]
                     setDrawable(drawable)

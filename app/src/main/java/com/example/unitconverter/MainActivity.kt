@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.round
 
 
+lateinit var popupWindow: MyPopupWindow
 var animateStart: Animator? = null
 var animateFinal: Animator? = null
 var orient = 0
@@ -114,10 +115,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
         }
         sortValue =
-            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
-                3
-            else
-                5
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 3 else 5
 
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
@@ -165,8 +163,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             val newArray =
                 viewArray.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
             for (i in
-            if (descending)
-                newArray.reversed()
+            if (descending) newArray.reversed()
             else newArray
             ) bufferArray.add(i.id)
 
@@ -259,7 +256,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
      */
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        //Log.e("animate","")
 
         if (ev.actionMasked == MotionEvent.ACTION_DOWN) bugDetected = false
 
@@ -299,7 +295,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun onDestroy() {
         super.onDestroy()
-        if (pw is MyPopupWindow) pw.dismiss()
+        if (::popupWindow.isInitialized) popupWindow.dismiss()
         viewArray.clear()
 
     }
@@ -319,7 +315,7 @@ fun endAnimation(): Boolean {
                 duration = 200
                 start()
             }
-            if (pw.isShowing) pw.dismiss()
+            if (popupWindow.isShowing) popupWindow.dismiss()
             return true
         }
     }
@@ -358,197 +354,3 @@ val View.name: String
     get() =
         if (this.id == -0x1) "no id"
         else resources.getResourceEntryName(this.id)
-
-/*
-android:width="75dp"
-    android:height="90dp"
-    <!--E6F5F5F5/////E6000000-->
-
-
-override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.front_menu,menu)
-        return true
-    }
-lateinit var fs : MotionLayout
-
-/*
-        val a = listOf(
-            "#FCE4EC",
-            "#FFF3E5F5",
-            "#E3F2FD",
-            "#FFF3E0",
-            "#FFF8E1",
-            "#FFFDE7",
-            "#FFCDD2",
-            "#E0F7FA",
-            "#F8BBD0",
-            "#E1F5FE",
-            "#FBE9E7",
-            "#C5CAE9",
-            "#BBDEFB",
-            "#B3E5FC",
-            "#B2EBF2",
-            "#E8F5E9",
-            "#DCEDC8",
-            "#E1BEE7",
-            "#D1C4E9",
-            "#F0F4C3",
-            "#FFECB3",
-            "#B2DFDB",
-            "#C8E6C9",
-            "#F1F8E9",
-            "#FFF9C4",
-            "#FFE0B2",
-            "#FFCCBC",
-            "#E57373",
-            "#F06292",
-            "#BA68C8",
-            "#9575CD",
-            **************************************************cccab5*************************
- */
-            "#F9FBE7",
-            "#E0F2F1",
-            "#FF8A65",
-            "#EDE7F6",
-            "#7986CB",
-            "#64B5F6",
-            "#4FC3F7",
-            "#4DD0E1",
-            "#FFFFEBEE",
-            "#E8EAF6",
-            "#FFB74D",
-            "#FFD54F",
-            "#FFF176",
-            "#DCE775",
-            "#AED581",
-            "#FFEE58",
-            "#D4E157",
-            "#9CCC65",
-            "#81C784",
-            "#4DB6AC",
-            "#EF5350",
-            "#EC407A",
-            "#AB47BC",
-            "#7E57C2",
-            "#5C6BC0",
-            "#42A5F5",
-            "#29B6F6",
-            "#26C6DA",
-            "#66BB6A",
-            "#26A69A",
-            "#FF7043",
-            "#FFA726",
-            "#FFCA28",
-            "#FFFFFF"
-        )
-
-        if (_colour == a.size) {
-            _colour = 0
-            Toast.makeText(this, "STARTING OVER", Toast.LENGTH_LONG).show()
-        }
-
-        window.statusBarColor = Color.parseColor(a[_colour])
-        if (motion == null) app_bar.setBackgroundColor(Color.parseColor(a[_colour]))
-        else motion.setBackgroundColor(Color.parseColor(a[_colour]))
-
-        _colour += 1
-
- */
-
-
-/*
-
-Mass.setOnClickListener {
-Mass.setOnTouchListener { v, event ->
-            val imageView = Mass.getChildAt(0) as ImageView
-            (Temperature.getChildAt(0) as ImageView).setImageDrawable(imageView.drawable)
-
-            false
-        }
-
-            var rect = Rect()
-            Mass.getGlobalVisibleRect(rect)
-            //Log.e(
-                //   "topleft  topright",
-                "${Area.width} ${Area.height} ${Area.top}  ${Area.y}  ${Area.x}  ${Area.bottom}   "
-            //)
-            Log.e("well","${rect.width()}  ${rect.height()}  ${rect.left}  ${rect.right}  ${rect.top}  ${rect.bottom} ")
-            val lo = IntArray(2)
-            Mass.getLocationOnScreen(lo)
-            Log.e("area", "${lo[0]} , ${lo[1]} , ${Mass.width}, ${Mass.height}")
-        }
-            mb?.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    v.background.setColorFilter(-0x1f0b8adf, PorterDuff.Mode.SRC_ATOP)
-                    v.invalidate()
-                }
-                MotionEvent.ACTION_UP -> {
-                    v.background.clearColorFilter()
-                    v.invalidate()
-                }
-            }
-            false
-        }
-
-
-
-        Temperature.setOnClickListener {
-            val icon = this.resources.getIdentifier("ic_lacee","drawable",this.packageName)
-            Log.e("adad","$icon")
-            val drawable = this.resources.getDrawable(icon,null)
-            drawable.setBounds(0,0,50,50)
-            tesid.setImageDrawable(drawable)
-        }
-
-
-        Area.setOnClickListener {
-            var rect = Rect()
-            //Area.getGlobalVisibleRect(rect)
-            Log.e("topleft  topright","${Area.width} ${Area.height} ${Area.top}  ${Area.y}  ${Area.x}  ${Area.bottom}   ")
-            //Log.e("well","${rect.width()}  ${rect.height()}  ${rect.left}  ${rect.right}  ${rect.top}  ${rect.bottom} ")
-            val lo = IntArray(2)
-            Area.getLocationOnScreen(lo)
-            Log.e("area","${lo[0]} , ${lo[1]} , ${Area.width }, ${Area.height}")
-            //Log.e("screen","${displayMetrics.widthPixels}  , ${displayMetrics.heightPixels}")
-
-            //pw.isTouchable = true
-            pw.setTouchInterceptor { v, event ->
-                Log.e("touch","$v  $event")
-                val icon = this.resources.getIdentifier("ic_lacee","drawable",this.packageName)
-                Log.e("adad","$icon")
-                val drawable = this.resources.getDrawable(icon,null)
-                drawable.setBounds(0,0,50,50)
-                tesid.setImageDrawable(drawable)
-                v.findViewById<View>(R.id.info).getGlobalVisibleRect(rect)
-                val displayMetrics = DisplayMetrics()
-
-                windowManager.defaultDisplay.getMetrics(displayMetrics)
-                Log.e("screen","${displayMetrics.widthPixels}  , ${displayMetrics.heightPixels}")
-                val plusTenPercent = round((2.toDouble()/100) * displayMetrics.widthPixels).toInt()
-                Log.e("percent","$plusTenPercent")
-                val lo = IntArray(2)
-                v.getLocationOnScreen(lo)
-
-                Log.e("quickaction  x  y  width   height","${lo[0]} , ${lo[1]} , ${v.width }, ${v.height}")
-                Mass.getLocationOnScreen(lo)
-                Log.e("mass","${lo[0]} , ${lo[1]} , ${Mass.width }, ${Mass.height}")
-                Area.getLocationOnScreen(lo)
-                Log.e("area","${lo[0]} , ${lo[1]} , ${Area.width }, ${Area.height}")
-                Temperature.getLocationOnScreen(lo)
-                Log.e("temp","${lo[0]} , ${lo[1]} , ${Temperature.width }, ${Temperature.height}")
-                false
-            }
-        }
-
-        /**********************************************************************************************/
- 2477.399
-2019-12-25 15:08:01.250 2201-2201/com.example.unitconverter E/5: called 5
-2019-12-25 15:08:01.408 2201-2201/com.example.unitconverter E/1: called 1
-2019-12-25 15:08:01.729 2201-2576/com.example.unitconverter E/4: called 4
-2019-12-25 15:08:01.744 2201-2201/com.example.unitconverter E/2: called 2
-2019-12-25 15:08:01.745 2201-2201/com.example.unitconverter E/5: called 5
-2019-12-25 15:08:01.745 2201-2201/com.example.unitconverter E/side: way
-2019-12-25 15:08:01.745 2201-2201/com.example.unitconverter E/6: called 6
-2019-12-25 15:08:01.745 2201-2201/com.example.unitconverter E/6: called 6
- */
