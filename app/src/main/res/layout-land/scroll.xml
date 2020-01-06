@@ -7,22 +7,21 @@
     android:splitMotionEvents="false"
     android:layout_height="wrap_content"
     android:background="@drawable/rounded_front"
-    android:paddingTop="7dp"
-    android:theme="@style/Theme.MaterialComponents.DayNight">
+    android:paddingTop="7dp">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.03" />
+        app:layout_constraintGuide_percent="0.02" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/rightGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.97" />
+        app:layout_constraintGuide_percent="0.98" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/topGuide"

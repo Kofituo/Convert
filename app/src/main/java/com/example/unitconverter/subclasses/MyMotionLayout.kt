@@ -25,6 +25,5 @@ class MyMotionLayout(context: Context, attributeSet: AttributeSet? = null) :
 
             }
         })
-
     }
 }

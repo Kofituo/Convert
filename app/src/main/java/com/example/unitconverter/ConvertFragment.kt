@@ -4,9 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
@@ -63,7 +61,7 @@ class ConvertDialog : DialogFragment() {
         }?.apply {
             setDialogColors(randomInt)
         }
-        Log.e("sdad","${screenHeight * 0.8}")
+
         return dialog
     }
 
@@ -75,7 +73,6 @@ class ConvertDialog : DialogFragment() {
                 setTextColor(it)
             }
             setOnClickListener {
-                Log.e("ad","${recyclerView.height}")
                 dismiss()
             }
         }

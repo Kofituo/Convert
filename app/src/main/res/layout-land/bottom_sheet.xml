@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/all_round"
+
     android:theme="@style/sortStyle">
 
     <androidx.constraintlayout.widget.Guideline
@@ -18,7 +19,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.03" />
+        app:layout_constraintGuide_percent="0.035" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/rightGuide"
@@ -31,7 +32,6 @@
         android:id="@+id/sortText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:fontFamily="serif"
         android:text="@string/sort_by"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -57,17 +57,16 @@
             android:fontFamily="serif"
             android:text="@string/title"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/recent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:fontFamily="serif"
             android:text="@string/recent"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
     </RadioGroup>
 
@@ -77,7 +76,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
         android:gravity="top"
-        android:maxLines="1"
         android:text="@string/order"
         android:textSize="17sp"
         app:layout_constraintBottom_toTopOf="@id/secondGroup"
@@ -91,7 +89,7 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@id/secondGroup"
+        app:layout_constraintBottom_toBottomOf="@id/order"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/order"
@@ -106,7 +104,7 @@
         app:layout_constraintBottom_toTopOf="@id/viewDivider2"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/order">
+        app:layout_constraintTop_toBottomOf="@id/viewDivider1">
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/ascending"
@@ -115,7 +113,7 @@
             android:fontFamily="serif"
             android:text="@string/ascending"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/descending"
@@ -125,7 +123,7 @@
             android:fontFamily="serif"
             android:text="@string/descending"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
     </RadioGroup>
 
@@ -138,7 +136,7 @@
         android:padding="5dp"
         android:text="@string/use_default"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textSize="16sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@id/done"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
@@ -174,9 +172,9 @@
         android:layout_height="20dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/cancel_button"
+        app:layout_constraintEnd_toStartOf="@id/done"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/done"
+        app:layout_constraintStart_toEndOf="@id/cancel_button"
         app:layout_constraintTop_toBottomOf="@id/default_button" />
 
     <com.google.android.material.button.MaterialButton
@@ -192,6 +190,7 @@
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/viewDivider3"
         app:layout_constraintTop_toBottomOf="@id/default_button" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

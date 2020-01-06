@@ -11,7 +11,10 @@ import android.graphics.Rect
 import android.os.*
 import android.util.Log
 import android.util.TypedValue
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
 import android.view.View.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity

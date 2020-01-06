@@ -20,7 +20,6 @@
         android:id="@+id/prefixes"
         android:title="@string/prefixes"
         app:showAsAction="never" />
-
     <item
         android:id="@+id/settings"
         android:title="@string/settings"
