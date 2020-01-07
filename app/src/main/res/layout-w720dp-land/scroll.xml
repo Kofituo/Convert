@@ -14,21 +14,21 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.01" />
+        app:layout_constraintGuide_percent="0.02" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/rightGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.99" />
+        app:layout_constraintGuide_percent="0.98" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/topGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.01" />
+        app:layout_constraintGuide_percent="0.02" />
 
     <com.example.unitconverter.subclasses.MyCardView
         android:id="@+id/Temperature"
@@ -44,21 +44,21 @@
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toTopOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_temperature"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/temperature"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -74,22 +74,23 @@
         app:layout_constraintEnd_toStartOf="@id/Mass"
         app:layout_constraintStart_toEndOf="@id/Temperature"
         app:layout_constraintTop_toTopOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:layout_marginStart="-2dp"
             android:drawableTop="@drawable/ic_area"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:gravity="bottom"
+            android:gravity="center"
             android:text="@string/area"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
 
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -106,21 +107,21 @@
         app:layout_constraintEnd_toStartOf="@id/Volume"
         app:layout_constraintStart_toEndOf="@id/Area"
         app:layout_constraintTop_toTopOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_dumb_bell"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/mass"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -136,21 +137,21 @@
         app:layout_constraintEnd_toStartOf="@id/Length"
         app:layout_constraintStart_toEndOf="@id/Mass"
         app:layout_constraintTop_toTopOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_cylinder"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/volume"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -166,21 +167,21 @@
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/Volume"
         app:layout_constraintTop_toBottomOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_ruler"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/length"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -198,21 +199,21 @@
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/Temperature"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_angle1"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/angle"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -229,21 +230,21 @@
         app:layout_constraintEnd_toStartOf="@id/Speed"
         app:layout_constraintStart_toEndOf="@id/Angle"
         app:layout_constraintTop_toBottomOf="@id/Area"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_blood_pressure1"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/pressure"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -260,21 +261,21 @@
         app:layout_constraintEnd_toStartOf="@id/time"
         app:layout_constraintStart_toEndOf="@id/Pressure"
         app:layout_constraintTop_toBottomOf="@id/Mass"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_fast"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/speed"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -291,21 +292,21 @@
         app:layout_constraintEnd_toStartOf="@id/fuelEconomy"
         app:layout_constraintStart_toEndOf="@id/Speed"
         app:layout_constraintTop_toBottomOf="@id/Volume"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_circular_clock"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/time"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -322,12 +323,12 @@
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/time"
         app:layout_constraintTop_toBottomOf="@id/Length"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_gas_station"
             android:drawablePadding="8dp"
@@ -338,7 +339,7 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -350,18 +351,18 @@
         android:focusable="true"
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
-        app:layout_constraintDimensionRatio="1:1"
         app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/concentration"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/Angle"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_hard_drive"
             android:drawablePadding="8dp"
@@ -372,7 +373,7 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -389,15 +390,15 @@
         app:layout_constraintEnd_toStartOf="@id/luminance"
         app:layout_constraintStart_toEndOf="@id/dataStorage"
         app:layout_constraintTop_toBottomOf="@id/Pressure"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_agitator"
-            android:drawablePadding="2dp"
+            android:drawablePadding="4dp"
             android:fontFamily="@font/roboto_slab"
             android:lineSpacingMultiplier="0.88"
             android:text="@string/concentration"
@@ -421,15 +422,15 @@
         app:layout_constraintEnd_toStartOf="@id/cooking"
         app:layout_constraintStart_toEndOf="@id/concentration"
         app:layout_constraintTop_toBottomOf="@id/Speed"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_light_bulb"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center|bottom"
             android:lineSpacingMultiplier="0.88"
@@ -437,7 +438,7 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -454,12 +455,12 @@
         app:layout_constraintEnd_toStartOf="@id/capacitance"
         app:layout_constraintStart_toEndOf="@id/luminance"
         app:layout_constraintTop_toBottomOf="@id/time"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_cooking"
             android:drawablePadding="9dp"
@@ -468,7 +469,7 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -485,20 +486,20 @@
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/cooking"
         app:layout_constraintTop_toBottomOf="@id/fuelEconomy"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_capacitor"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/capacitance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -516,21 +517,21 @@
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/dataStorage"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_exchange"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/currency"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -547,22 +548,22 @@
         app:layout_constraintEnd_toStartOf="@id/Angular_Velocity"
         app:layout_constraintStart_toEndOf="@id/Currency"
         app:layout_constraintTop_toBottomOf="@id/concentration"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_flame"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center_horizontal"
             android:lineSpacingMultiplier="0.88"
             android:text="@string/heatCapacity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -581,12 +582,12 @@
         app:layout_constraintEnd_toStartOf="@id/angularAcceleration"
         app:layout_constraintStart_toEndOf="@id/heatCapacity"
         app:layout_constraintTop_toBottomOf="@id/luminance"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_angular_velocity"
             android:drawablePadding="1dp"
@@ -596,7 +597,7 @@
             android:text="@string/angularVelocity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -610,15 +611,15 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@id/sound"
         app:layout_constraintStart_toEndOf="@id/Angular_Velocity"
         app:layout_constraintTop_toBottomOf="@id/cooking"
-        app:layout_constraintEnd_toStartOf="@id/sound"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="4dp"
             android:drawableTop="@drawable/ic_angular_acceleration"
             android:fontFamily="@font/roboto_slab"
@@ -627,7 +628,7 @@
             android:text="@string/angularAcceleration"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -644,21 +645,21 @@
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/angularAcceleration"
         app:layout_constraintTop_toBottomOf="@id/capacitance"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_speaker"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center|bottom"
             android:text="@string/sound"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -666,7 +667,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
         android:clickable="true"
         android:focusable="true"
         app:cardBackgroundColor="#FFFDE7"
@@ -674,22 +674,23 @@
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/radioactivity"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/Currency"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_resistor"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/resistance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -706,21 +707,21 @@
         app:layout_constraintEnd_toStartOf="@id/resolution"
         app:layout_constraintStart_toEndOf="@id/resistance"
         app:layout_constraintTop_toBottomOf="@id/heatCapacity"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_radiation"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center|bottom"
             android:text="@string/radioactivity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -737,20 +738,20 @@
         app:layout_constraintEnd_toStartOf="@id/Illuminance"
         app:layout_constraintStart_toEndOf="@id/radioactivity"
         app:layout_constraintTop_toBottomOf="@id/Angular_Velocity"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_monitor"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/resolution"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -767,21 +768,21 @@
         app:layout_constraintEnd_toStartOf="@id/inductance"
         app:layout_constraintStart_toEndOf="@id/resolution"
         app:layout_constraintTop_toBottomOf="@id/angularAcceleration"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_light_bulb_illuminance"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center|bottom"
             android:text="@string/illuminance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -798,20 +799,20 @@
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/Illuminance"
         app:layout_constraintTop_toBottomOf="@id/sound"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_inductor"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/inductance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -828,12 +829,12 @@
         app:layout_constraintEnd_toStartOf="@id/number_base"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/resistance"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_sea"
             android:drawablePadding="4dp"
@@ -842,7 +843,7 @@
             android:text="@string/flow"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -858,21 +859,21 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@id/flow"
         app:layout_constraintTop_toBottomOf="@id/radioactivity"
-        app:layout_constraintWidth_percent="0.185">
+        app:layout_constraintWidth_percent="0.17">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_ten"
-            android:drawablePadding="6dp"
+            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center|bottom"
             android:text="@string/number_base"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
 </com.example.unitconverter.subclasses.GridConstraintLayout>

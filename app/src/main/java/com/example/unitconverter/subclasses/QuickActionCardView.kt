@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.unitconverter.R
 import com.example.unitconverter.animateFinal
-import com.example.unitconverter.app_context
 import com.example.unitconverter.popupWindow
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.GlobalScope
@@ -37,13 +36,13 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) : Materi
                     }
                 }
                 R.id.selectItems -> {
-                    Toast.makeText(app_context, "Select clicked", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Select clicked", Toast.LENGTH_SHORT).show()
                 }
                 R.id.favourite -> {
-                    Toast.makeText(app_context, "Favourites clicked", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Favourites clicked", Toast.LENGTH_SHORT).show()
                 }
                 R.id.info -> {
-                    Toast.makeText(app_context, "Info clicked", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Info clicked", Toast.LENGTH_SHORT).show()
                 }
             }
             ///pw.dismiss()

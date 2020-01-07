@@ -28,7 +28,6 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
     private var scrollChanged = false
 
     private val displayMetrics: DisplayMetrics = resources.displayMetrics
-
     private val h = displayMetrics.heightPixels.toDouble() / displayMetrics.ydpi.toDouble()
     private val u = displayMetrics.widthPixels.toDouble() / displayMetrics.xdpi.toDouble()
     private val screenSize = (round(sqrt((h.pow(2)) + (u.pow(2))) * 10) / 10)
@@ -74,7 +73,6 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-
         detectorCompat.onTouchEvent(ev)
 
         return super.dispatchTouchEvent(ev)

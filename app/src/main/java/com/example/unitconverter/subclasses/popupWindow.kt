@@ -198,9 +198,12 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
          * x end of the view to start of quick action = xOffset
          */
 
-        xPosition = if (anchorX + quickActionWidth <= screenWidth) {
-            xOffset = (quickActionWidth - anchorWidth) / 2
+        // first it was if (anchorX + quickActionWidth <= screenWidth)
+        xOffset = (quickActionWidth - anchorWidth) / 2
 
+        val testPosition = anchorX + quickActionWidth - xOffset
+
+        xPosition = if (testPosition <= screenWidth) {
             // if the difference is less than 0 then it means there's no space
             val xDifference = anchorX - xOffset
 
@@ -213,7 +216,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
                 //its in the middle
                 whichSide = 1
                 xDifference
-
             }
         } else {
             //its at the right side
@@ -221,8 +223,7 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
             val anchorRightX = anchorX + anchorWidth
             anchorRightX - quickActionWidth
         }
-
-        // make sure the popup doesnt cross the app bar
+        // make sure the popup doesn't cross the app bar
 
         val appBarOffset = app_bar_bottom + statusBarHeight + 2.dpToInt()
         yPosition = if (anchorY - quickActionHeight <= appBarOffset) {

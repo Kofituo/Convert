@@ -44,7 +44,7 @@ class ConvertDialog : DialogFragment() {
                 if (isPortrait) (screenWidth / 7) * 6 else round(screenWidth / 1.6).toInt()
 
             params.height =
-                if (isPortrait) round(screenHeight * 0.9).toInt() else ViewGroup.LayoutParams.WRAP_CONTENT
+                if (isPortrait) round(screenHeight * 0.92).toInt() else ViewGroup.LayoutParams.WRAP_CONTENT
             layoutParams = params
             recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
                 setHasFixedSize(true)

@@ -33,7 +33,6 @@ var animateStart: Animator? = null
 var animateFinal: Animator? = null
 var orient = 0
 lateinit var motionHandler: Handler
-lateinit var app_context: Context
 var statusBarHeight = 0
 var viewIdMap: MutableMap<Int, View> = mutableMapOf()
 lateinit var recentlyUsed: ArrayList<Int>
@@ -65,7 +64,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         supportActionBar?.setDisplayShowTitleEnabled(false)
         myConfiguration(this.resources.configuration.orientation)
         window.statusBarColor = Color.parseColor("#4DD0E1")
-        app_context = applicationContext
+
         Log.e("id", "${dataStorage.id}")
         val rect = Rect()
 
@@ -76,10 +75,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
                 if (Build.VERSION.SDK_INT > 22) systemUiVisibility =
                     systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-
             }
         }
-        Toast.makeText(app_context, "hi bro ", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "hi bro ", Toast.LENGTH_LONG).show()
+        val viewModel = ViewModelProviders.of(this@MainActivity)[ConvertViewModel::class.java]
         motion?.apply {
             motionHandler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
@@ -110,11 +109,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     return super.handleMessage(msg)
                 }
             }
-            ViewModelProviders.of(this@MainActivity)[ConvertViewModel::class.java].apply {
-                progress = motionProgress
-                motionProgress = 1f
-            }
+            progress = viewModel.motionProgress
         }
+        viewModel.motionProgress = 1f
         sortValue =
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 3 else 5
 
@@ -228,13 +225,12 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 
     private fun myConfiguration(orientation: Int) {
-        orient = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Configuration.ORIENTATION_PORTRAIT
-        } else {
-            Configuration.ORIENTATION_LANDSCAPE
-        }
-    }
 
+        orient =
+            if (orientation == Configuration.ORIENTATION_PORTRAIT)
+                Configuration.ORIENTATION_PORTRAIT
+            else Configuration.ORIENTATION_LANDSCAPE
+    }
 
     // create full screen mode
     fun showBars() {
@@ -302,7 +298,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun onRestart() {
         super.onRestart()
-        Toast.makeText(app_context, "restart", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "restart", Toast.LENGTH_LONG).show()
     }
 }
 
