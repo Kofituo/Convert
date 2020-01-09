@@ -9,14 +9,18 @@ import android.view.MotionEvent
 import android.widget.TextView
 import com.example.unitconverter.*
 import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
-var card : MyCardView? = null
-var cardY : Float = 1f
+var card: MyCardView? = null
+var cardY: Float = 1f
 var longPress: Boolean = false
 const val TextMessage = "com.kofi.unitconverter.TextMessage"
 const val ViewIdMessage = "com.kofi.unitconverter.ViewIdMessage"
-class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardView(context,attributeSet) {
+
+class MyCardView(context: Context, attributeSet: AttributeSet) :
+    MaterialCardView(context, attributeSet) {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         card = this@MyCardView
@@ -59,6 +63,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
         }
         return super.onTouchEvent(event)
     }
+
     init {
         setOnLongClickListener {
             if (orient == Configuration.ORIENTATION_PORTRAIT) {
@@ -75,10 +80,11 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
             true
         }
         setOnClickListener {
-            updateArray()
-            startActivity()
+            GlobalScope.launch {
+                updateArray()
+                startActivity()
+            }
         }
-
     }
 
     fun updateArray() {
@@ -87,6 +93,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
             add(0, this@MyCardView.id)
         }
     }
+
     fun startActivity() {
         Intent(context, ConvertActivity::class.java).apply {
             val textViewText = (this@MyCardView.getChildAt(0) as TextView).text
@@ -96,4 +103,5 @@ class MyCardView(context: Context, attributeSet: AttributeSet) : MaterialCardVie
             context.startActivity(this)
         }
     }
+
 }

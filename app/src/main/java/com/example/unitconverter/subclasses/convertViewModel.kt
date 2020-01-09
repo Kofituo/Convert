@@ -6,4 +6,5 @@ class ConvertViewModel : ViewModel() {
     var randomInt = 0
     var motionProgress = 0f
     var dataSet = mutableListOf<RecyclerDataClass>()
+    var topPosition = -1
 }

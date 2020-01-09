@@ -12,7 +12,7 @@ import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import com.example.unitconverter.R
 import com.example.unitconverter.dpToInt
-import com.example.unitconverter.viewIdMap
+import com.example.unitconverter.viewSparseArray
 
 var viewArray: ArrayList<View> = arrayListOf()
 
@@ -110,7 +110,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             applyTo(this@GridConstraintLayout)
         }
         for (i in viewIdArray.indices) {
-            viewIdMap[viewIdArray[i]]?.apply {
+            viewSparseArray[viewIdArray[i]]?.apply {
                 val params = layoutParams as MarginLayoutParams
                 params.topMargin = if (i < number) 0 else 15.dpToInt()
                 requestLayout()

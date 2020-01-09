@@ -14,6 +14,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlin.math.round
 
+const val pkgName = "com.example.unit_converter"
 class BottomSheetFragment : DialogFragment() {
 
     private lateinit var firstGroup: RadioGroup
@@ -89,7 +90,6 @@ class BottomSheetFragment : DialogFragment() {
         }
         dial.setCanceledOnTouchOutside(true)
         dial.window?.setGravity(if (isPortrait) Gravity.BOTTOM else Gravity.CENTER)
-
         return dial
     }
 
@@ -100,7 +100,7 @@ class BottomSheetFragment : DialogFragment() {
 
     private fun saveData() {
         val sharedPreferences = activity?.getSharedPreferences(
-            "com.example.unit_converter.sortingSelection",
+            "$pkgName.sortingSelection",
             Context.MODE_PRIVATE
         ) ?: return
 

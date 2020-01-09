@@ -1,7 +1,6 @@
 package com.example.unitconverter.subclasses
 
 import android.content.res.ColorStateList
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +14,13 @@ data class RecyclerDataClass(val quantity: String, val correspondingUnit: String
 class MyAdapter(private val dataSet: MutableList<RecyclerDataClass>, private val colorInt: Int) :
 
     RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
-
     // view holder class
-    private var lastPosition: Int = -1
+    var lastPosition: Int = -1
+    private lateinit var listener: OnRadioButtonsClickListener
 
     inner class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         var radioButton: MaterialRadioButton
         var radioTextView: TextView
-
         init {
 
             view.apply {
@@ -31,10 +29,9 @@ class MyAdapter(private val dataSet: MutableList<RecyclerDataClass>, private val
             }
             radioButton.setOnClickListener {
                 lastPosition = adapterPosition
-                Log.e("ada", "$layoutPosition  $lastPosition  $adapterPosition")
                 notifyItemRangeChanged(0, itemCount)
+                listener.radioButtonClicked(adapterPosition, radioButton.text, radioTextView.text)
             }
-
         }
     }
 
@@ -46,7 +43,6 @@ class MyAdapter(private val dataSet: MutableList<RecyclerDataClass>, private val
                 parent,
                 false
             )
-
         view.findViewById<MaterialRadioButton>(R.id.radioButtons).buttonTintList =
             ColorStateList.valueOf(colorInt)
         return MyViewHolder(view)
@@ -61,6 +57,16 @@ class MyAdapter(private val dataSet: MutableList<RecyclerDataClass>, private val
             text = dataSet[position].quantity
             isChecked = lastPosition == position
         }
+
         holder.radioTextView.text = dataSet[position].correspondingUnit
+    }
+
+    interface OnRadioButtonsClickListener {
+        fun radioButtonClicked(position: Int, text: CharSequence, unit: CharSequence) {
+        }
+    }
+
+    fun setOnRadioButtonsClickListener(listener: OnRadioButtonsClickListener) {
+        this.listener = listener
     }
 }

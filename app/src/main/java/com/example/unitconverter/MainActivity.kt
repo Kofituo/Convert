@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.os.*
 import android.util.Log
+import android.util.SparseArray
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -35,7 +36,7 @@ var animateFinal: Animator? = null
 var orient = 0
 lateinit var motionHandler: Handler
 var statusBarHeight = 0
-var viewIdMap: MutableMap<Int, View> = mutableMapOf()
+var viewSparseArray: SparseArray<View> = SparseArray()
 lateinit var recentlyUsed: ArrayList<Int>
 
 //change manifest setting to backup allow true
@@ -140,7 +141,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 putIntegerArrayList("recentlyUsed", recentlyUsed)
             }
             // creating the map
-            for (i in viewIdArray.indices) viewIdMap[viewIdArray[i]] = viewArray[i]
+            // not so good
+            //for (i in viewIdArray.indices) viewSparseArray[viewIdArray[i]] = viewArray[i]
+            for (i in viewIdArray.indices) viewSparseArray.append(viewIdArray[i], viewArray[i])
             if (sharedArray.isNotEmpty()) {
                 grid.sort(sortValue, sharedArray)
                 Log.e("hisd", "$sharedArray  ${sharedArray.size}  ")
@@ -148,6 +151,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             apply()
         }
         onCreateCalled = true
+
     }
 
 
@@ -306,7 +310,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         super.onDestroy()
         if (::popupWindow.isInitialized) popupWindow.dismiss()
         viewArray.clear()
-
     }
 
     override fun onRestart() {
