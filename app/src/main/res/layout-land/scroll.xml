@@ -80,10 +80,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_margin="10dp"
             android:layout_marginStart="-2dp"
             android:drawableTop="@drawable/ic_area"
             android:fontFamily="@font/roboto_slab"
+            android:layout_marginBottom="10dp"
             android:gravity="bottom"
             android:text="@string/area"
             android:textAlignment="center"
@@ -350,8 +350,8 @@
         android:focusable="true"
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
-        app:layout_constraintDimensionRatio="1:1"
         app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/concentration"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
@@ -610,9 +610,9 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@id/sound"
         app:layout_constraintStart_toEndOf="@id/Angular_Velocity"
         app:layout_constraintTop_toBottomOf="@id/cooking"
-        app:layout_constraintEnd_toStartOf="@id/sound"
         app:layout_constraintWidth_percent="0.185">
 
         <TextView
@@ -666,7 +666,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
         android:clickable="true"
         android:focusable="true"
         app:cardBackgroundColor="#FFFDE7"
@@ -674,6 +673,7 @@
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/radioactivity"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/Currency"
         app:layout_constraintWidth_percent="0.185">

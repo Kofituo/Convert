@@ -71,16 +71,17 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
+            android:inputType="text"
             android:paddingStart="20dp"
-            android:paddingEnd="50dp" />
+            android:paddingEnd="20dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
-        android:layout_marginTop="1dp"
         android:layout_height="0dp"
+        android:layout_marginTop="1dp"
+        android:background="@android:color/white"
         android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/viewDivider2"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
@@ -94,8 +95,8 @@
         android:layout_height="1dp"
         android:layout_marginTop="1dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintBottom_toTopOf="@id/cancel_button"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/recycler_view" />
 

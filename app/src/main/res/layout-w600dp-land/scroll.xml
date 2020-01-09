@@ -14,21 +14,21 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.02" />
+        app:layout_constraintGuide_percent="0.013" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/rightGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.98" />
+        app:layout_constraintGuide_percent="0.987" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/topGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.02" />
+        app:layout_constraintGuide_percent="0.012" />
 
     <com.example.unitconverter.subclasses.MyCardView
         android:id="@+id/Temperature"
@@ -39,12 +39,12 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/Area"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toTopOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -70,20 +70,20 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/Mass"
         app:layout_constraintStart_toEndOf="@id/Temperature"
         app:layout_constraintTop_toTopOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="10dp"
+            android:layout_marginBottom="-2dp"
             android:layout_marginStart="-2dp"
             android:drawableTop="@drawable/ic_area"
-            android:drawablePadding="10dp"
+            android:drawablePadding="7dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center"
             android:text="@string/area"
@@ -103,11 +103,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/Volume"
         app:layout_constraintStart_toEndOf="@id/Area"
         app:layout_constraintTop_toTopOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -133,11 +133,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/Length"
         app:layout_constraintStart_toEndOf="@id/Mass"
         app:layout_constraintTop_toTopOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -163,11 +163,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/Volume"
         app:layout_constraintTop_toBottomOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -194,12 +194,12 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/Pressure"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/Temperature"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -209,7 +209,7 @@
             android:drawableTop="@drawable/ic_angle1"
             android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:text="@string/angle"
+            android:text="@string/temperature"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -226,11 +226,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/Speed"
         app:layout_constraintStart_toEndOf="@id/Angle"
         app:layout_constraintTop_toBottomOf="@id/Area"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -257,11 +257,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/time"
         app:layout_constraintStart_toEndOf="@id/Pressure"
         app:layout_constraintTop_toBottomOf="@id/Mass"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -288,11 +288,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/fuelEconomy"
         app:layout_constraintStart_toEndOf="@id/Speed"
         app:layout_constraintTop_toBottomOf="@id/Volume"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -319,11 +319,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/time"
         app:layout_constraintTop_toBottomOf="@id/Length"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -352,12 +352,12 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/concentration"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/Angle"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -386,11 +386,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/luminance"
         app:layout_constraintStart_toEndOf="@id/dataStorage"
         app:layout_constraintTop_toBottomOf="@id/Pressure"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -418,11 +418,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/cooking"
         app:layout_constraintStart_toEndOf="@id/concentration"
         app:layout_constraintTop_toBottomOf="@id/Speed"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -451,11 +451,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/capacitance"
         app:layout_constraintStart_toEndOf="@id/luminance"
         app:layout_constraintTop_toBottomOf="@id/time"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -482,11 +482,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/cooking"
         app:layout_constraintTop_toBottomOf="@id/fuelEconomy"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -512,12 +512,12 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/heatCapacity"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/dataStorage"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -544,11 +544,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/Angular_Velocity"
         app:layout_constraintStart_toEndOf="@id/Currency"
         app:layout_constraintTop_toBottomOf="@id/concentration"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -578,11 +578,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/angularAcceleration"
         app:layout_constraintStart_toEndOf="@id/heatCapacity"
         app:layout_constraintTop_toBottomOf="@id/luminance"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -610,11 +610,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/sound"
         app:layout_constraintStart_toEndOf="@id/Angular_Velocity"
         app:layout_constraintTop_toBottomOf="@id/cooking"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -641,11 +641,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/angularAcceleration"
         app:layout_constraintTop_toBottomOf="@id/capacitance"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -672,12 +672,12 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/radioactivity"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/Currency"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -703,11 +703,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/resolution"
         app:layout_constraintStart_toEndOf="@id/resistance"
         app:layout_constraintTop_toBottomOf="@id/heatCapacity"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -734,11 +734,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/Illuminance"
         app:layout_constraintStart_toEndOf="@id/radioactivity"
         app:layout_constraintTop_toBottomOf="@id/Angular_Velocity"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -764,11 +764,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/inductance"
         app:layout_constraintStart_toEndOf="@id/resolution"
         app:layout_constraintTop_toBottomOf="@id/angularAcceleration"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -795,11 +795,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
         app:layout_constraintStart_toEndOf="@id/Illuminance"
         app:layout_constraintTop_toBottomOf="@id/sound"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -825,11 +825,11 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/number_base"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/resistance"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"
@@ -856,10 +856,10 @@
         app:cardBackgroundColor="#FFFDE7"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintStart_toEndOf="@id/flow"
         app:layout_constraintTop_toBottomOf="@id/radioactivity"
-        app:layout_constraintWidth_percent="0.17">
+        app:layout_constraintWidth_percent="0.18">
 
         <TextView
             android:layout_width="wrap_content"

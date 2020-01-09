@@ -4,6 +4,7 @@ package com.example.unitconverter
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
@@ -65,7 +66,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         myConfiguration(this.resources.configuration.orientation)
         window.statusBarColor = Color.parseColor("#4DD0E1")
 
-        Log.e("id", "${dataStorage.id}")
+        Log.e(
+            "id",
+            "${dataStorage.id} ${resources.displayMetrics.widthPixels}  ${resources.displayMetrics.density}"
+        )
         val rect = Rect()
 
         window?.decorView?.apply {
@@ -276,6 +280,15 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             R.id.sort -> {
                 BottomSheetFragment().apply {
                     show(supportFragmentManager, "dialog")
+                }
+                true
+            }
+            R.id.prefixes -> {
+                Intent(this, ConvertActivity::class.java).apply {
+                    putExtra(TextMessage, "Prefix")
+                    putExtra(ViewIdMessage, R.id.prefixes)
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    startActivity(this)
                 }
                 true
             }

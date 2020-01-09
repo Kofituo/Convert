@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.MyAdapter
+import com.example.unitconverter.subclasses.RecyclerDataClass
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputLayout
 import kotlin.math.round
@@ -25,42 +26,43 @@ class ConvertDialog : DialogFragment() {
     lateinit var recyclerView: RecyclerView
     lateinit var viewManager: RecyclerView.LayoutManager
     lateinit var viewAdapter: RecyclerView.Adapter<*>
-    var myDataset = arrayOf("kofi", "akua", "abena", "akua")
+    lateinit var myDataset: MutableList<RecyclerDataClass>
+
+    lateinit var viewModel: ConvertViewModel
 
     @SuppressLint("InflateParams")
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val screenWidth = resources.displayMetrics.widthPixels
         val screenHeight = resources.displayMetrics.heightPixels
         val dialog = Dialog(context!!, R.style.sortDialogStyle)
         val view = LayoutInflater.from(context).inflate(R.layout.items_list, null)
+
         dialog.setContentView(view)
         view.apply {
             cancelButton = findViewById(R.id.cancel_button)
             searchBar = findViewById(R.id.search_bar)
             val params = layoutParams
             params.width =
-                if (isPortrait) (screenWidth / 7) * 6 else round(screenWidth / 1.6).toInt()
+                if (isPortrait) (screenWidth / 8) * 7 else round(screenWidth / 1.6).toInt()
 
             params.height =
                 if (isPortrait) round(screenHeight * 0.92).toInt() else ViewGroup.LayoutParams.WRAP_CONTENT
             layoutParams = params
+
+            activity?.run {
+                viewModel = ViewModelProviders.of(this)[ConvertViewModel::class.java]
+            }
             recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
                 setHasFixedSize(true)
                 viewManager = LinearLayoutManager(context)
                 layoutManager = viewManager
-                viewAdapter = MyAdapter(myDataset)
-
+                viewAdapter = MyAdapter(viewModel.dataSet, viewModel.randomInt)
                 adapter = viewAdapter
             }
         }
 
-        activity?.run {
-            ViewModelProviders.of(this)[ConvertViewModel::class.java]
-        }?.apply {
-            setDialogColors(randomInt)
-        }
+        setDialogColors(viewModel.randomInt)
 
         return dialog
     }
@@ -77,4 +79,5 @@ class ConvertDialog : DialogFragment() {
             }
         }
     }
+
 }

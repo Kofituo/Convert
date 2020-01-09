@@ -3,7 +3,6 @@ package com.example.unitconverter
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.Gravity
@@ -85,6 +84,7 @@ class BottomSheetFragment : DialogFragment() {
                 if (!checked) firstGroup.checkedRadioButtonId else -1,
                 if (!checked) secondGroup.checkedRadioButtonId else -1
             )
+            saveData()
             dismiss()
         }
         dial.setCanceledOnTouchOutside(true)
@@ -98,8 +98,7 @@ class BottomSheetFragment : DialogFragment() {
         }
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
+    private fun saveData() {
         val sharedPreferences = activity?.getSharedPreferences(
             "com.example.unit_converter.sortingSelection",
             Context.MODE_PRIVATE
