@@ -28,7 +28,7 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/select_unit"
-        android:layout_width="108dp"
+        android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:fontFamily="serif"
         android:padding="5dp"

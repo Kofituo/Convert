@@ -1,13 +1,16 @@
 package com.example.unitconverter.subclasses
 
 import android.content.res.ColorStateList
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.R
+import com.example.unitconverter.dpToInt
 import com.google.android.material.radiobutton.MaterialRadioButton
+import java.util.*
 
 data class RecyclerDataClass(val quantity: String, val correspondingUnit: String)
 
@@ -18,22 +21,36 @@ class MyAdapter(private val dataSet: MutableList<RecyclerDataClass>, private val
     var lastPosition: Int = -1
     private lateinit var listener: OnRadioButtonsClickListener
 
-    inner class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var radioButton: MaterialRadioButton
         var radioTextView: TextView
+
         init {
+            val isRTL =
+                TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
 
             view.apply {
                 radioButton = findViewById(R.id.radioButtons)
-                radioTextView = findViewById(R.id.radioText)
+                radioTextView = findViewById<TextView>(R.id.radioText).apply {
+                    if (isRTL) {
+                        val params = layoutParams as ViewGroup.MarginLayoutParams
+                        params.marginEnd = 30.dpToInt(context)
+                        layoutParams = params
+                    }
+                }
             }
             radioButton.setOnClickListener {
                 lastPosition = adapterPosition
                 notifyItemRangeChanged(0, itemCount)
-                listener.radioButtonClicked(adapterPosition, radioButton.text, radioTextView.text)
+                listener.radioButtonClicked(
+                    adapterPosition,
+                    radioButton.text.toString(),
+                    radioTextView.text.toString()
+                )
             }
         }
     }
+
 
     // rest of the class
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -62,7 +79,7 @@ class MyAdapter(private val dataSet: MutableList<RecyclerDataClass>, private val
     }
 
     interface OnRadioButtonsClickListener {
-        fun radioButtonClicked(position: Int, text: CharSequence, unit: CharSequence) {
+        fun radioButtonClicked(position: Int, text: String, unit: String) {
         }
     }
 

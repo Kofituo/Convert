@@ -84,6 +84,8 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
     private var lastPosition = 1
     private var whichButton = -1
     private lateinit var string: String
+    private lateinit var convertDialogInterface: ConvertDialogInterface
+    private lateinit var positionKey: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.apply {
@@ -92,6 +94,7 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
             whichButton = getInt("whichButton")
         }
         string = if (whichButton == R.id.top_button) "topButton" else "bottomButton"
+        positionKey = string.substringBefore("B") + "Position"
         isPrefix = viewId == R.id.prefixes
         initializePrefixes()
         initializeSymbols()
@@ -296,6 +299,7 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
             layoutParams = params
 
             recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
+
                 setHasFixedSize(true)
                 viewManager = LinearLayoutManager(context)
                 layoutManager = viewManager
@@ -316,6 +320,7 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
 
         return dialog
     }
+
     private fun setDialogColors(colorInt: Int) {
         searchBar.boxStrokeColor = colorInt
         cancelButton.apply {
@@ -329,12 +334,19 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
         }
     }
 
-    override fun radioButtonClicked(position: Int, text: CharSequence, unit: CharSequence) {
+    override fun radioButtonClicked(position: Int, text: String, unit: String) {
         lastPosition = position
+        convertDialogInterface.getOtherValues(position, positionKey)
         GlobalScope.launch {
             delay(45)
             dismiss()
         }
+        convertDialogInterface.texts(text, unit)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        convertDialogInterface = context as ConvertDialogInterface
     }
 
     data class CompositeQuantities(val quantity: String, val unit: String)
@@ -443,4 +455,11 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
         super.onDismiss(dialog)
     }
 
+    interface ConvertDialogInterface {
+        fun texts(text: String, unit: String) {
+        }
+
+        fun getOtherValues(position: Int, positionKey: String) {
+        }
+    }
 }

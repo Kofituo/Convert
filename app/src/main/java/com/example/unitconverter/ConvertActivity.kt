@@ -1,26 +1,36 @@
 package com.example.unitconverter
 
+import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
+import android.util.ArrayMap
 import android.util.Log
+import android.util.SparseIntArray
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.TransitionManager
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.TextMessage
 import com.example.unitconverter.subclasses.ViewIdMessage
 import kotlinx.android.synthetic.main.activity_convert.*
+import java.math.BigDecimal
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.*
 
-class ConvertActivity : AppCompatActivity() {
+class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterface {
     private var swap = false
     private var randomColor = -1
     private var viewId = -1
@@ -29,6 +39,9 @@ class ConvertActivity : AppCompatActivity() {
 
     private var isPrefix = false
     private val bundle = Bundle()
+
+    lateinit var funtion: (String) -> String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_convert)
@@ -37,10 +50,9 @@ class ConvertActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
-
         secondEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
-
         firstEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
+        getLastConversions()
         val isRTL =
             TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
         if (!isRTL) {
@@ -67,7 +79,8 @@ class ConvertActivity : AppCompatActivity() {
                 settingColours(randomInt)
                 randomInt = randomColor
             }
-
+        whichView()
+        getTextWhileTyping()
         top_button.setOnClickListener {
             dialog.apply {
                 bundle.putInt("whichButton", it.id)
@@ -84,7 +97,137 @@ class ConvertActivity : AppCompatActivity() {
         }
     }
 
+    override fun texts(text: String, unit: String) {
+        val whichButton = bundle.getInt("whichButton")
+        if (whichButton == R.id.top_button) {
+            if (firstBox.hint != text) {
+                firstBox.hint = text
+                topTextView.apply {
+                    this.text = unit
+                    val params = layoutParams as ViewGroup.LayoutParams
+                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    Log.e("sda", "556")
+                    layoutParams = params
+                }
+            }
+        } else {
+            if (secondBox.hint != text) {
+                secondBox.hint = text
+                bottomTextView.apply {
+                    this.text = unit
+                    val params = layoutParams as ViewGroup.LayoutParams
+                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams = params
+                }
+            }
 
+        }
+    }
+
+    private val positionArray = ArrayMap<String, Int>(2)
+
+    override fun getOtherValues(position: Int, positionKey: String) {
+        positionArray[positionKey] = position
+    }
+
+    private fun whichView() {
+        when (viewId) {
+            R.id.Temperature -> {
+            }
+            R.id.Area -> {
+            }
+            R.id.Mass -> {
+                funtion = {
+                    if (positionArray.valueAt(0) == -1 || positionArray.valueAt(1) == -1) ""
+                    else {
+                        var topPosition = positionArray["topPosition"]
+                        Log.e("sd", "$topPosition")
+                        var bottomPosition = positionArray["bottomPosition"]
+                        val sparseArray = SparseIntArray(31).apply {
+                            append(0, 0)
+                            append(1, 18)//exa
+                            append(2, 15)//peta
+                            append(3, 12)//tera
+                            append(4, 9)//giga
+                            append(5, 6)//mego
+                            append(6, 3)//kilo
+                            append(7, 2)//hecto
+                            append(8, 1)//deca
+                            append(9, -1)//deci
+                            append(10, -2)//centi
+                            append(11, -3)//milli
+                            append(12, -6)//micro
+                            append(13, -9)//nano
+                            append(14, -12)//pico
+                            append(15, -15)//femto
+                            append(16, -18)//atto
+                        }
+                        if (topPosition in 0..17 && bottomPosition in 0..17) {
+                            topPosition = sparseArray[topPosition!!]
+                            bottomPosition = sparseArray[bottomPosition!!]
+                            Log.e("top", "$topPosition   $bottomPosition")
+                            com.example.unitconverter.funtions.Mass.top = topPosition
+                            com.example.unitconverter.funtions.Mass.bottom = bottomPosition
+                            com.example.unitconverter.funtions.Mass.prefixMultiplication(it)
+                        } else
+                            ""
+                    }
+                }
+            }
+            R.id.Volume -> {
+            }
+            R.id.Length -> {
+            }
+            R.id.Angle -> {
+            }
+            R.id.Pressure -> {
+            }
+            R.id.Speed -> {
+            }
+            R.id.time -> {
+            }
+            R.id.fuelEconomy -> {
+            }
+            R.id.dataStorage -> {
+            }
+            R.id.concentration -> {
+            }
+            R.id.luminance -> {
+            }
+            R.id.cooking -> {
+            }
+            R.id.capacitance -> {
+            }
+            R.id.Currency -> {
+            }
+            R.id.heatCapacity -> {
+            }
+            R.id.Angular_Velocity -> {
+            }
+            R.id.angularAcceleration -> {
+            }
+            R.id.sound -> {
+            }
+            R.id.resistance -> {
+            }
+            R.id.radioactivity -> {
+            }
+            R.id.resolution -> {
+            }
+            R.id.Illuminance -> {
+            }
+            R.id.inductance -> {
+            }
+            R.id.flow -> {
+            }
+            R.id.number_base -> {
+            }
+        }
+    }
+
+    //private fun
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -93,6 +236,14 @@ class ConvertActivity : AppCompatActivity() {
             }
             R.id.swap -> {
                 swap()
+                true
+            }
+            R.id.prefixes -> {
+                Intent(this, ConvertActivity::class.java).apply {
+                    putExtra(TextMessage, "Prefix")
+                    putExtra(ViewIdMessage, R.id.prefixes)
+                    startActivity(this)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -216,4 +367,72 @@ class ConvertActivity : AppCompatActivity() {
             )
         }
     }
+
+
+    private fun callBack(f: (String) -> String, x: String): String {
+        return f(x)
+    }
+
+    private fun getTextWhileTyping() {
+        firstEditText.addTextChangedListener {
+            Log.e("dadsd", callBack(funtion, it.toString()))
+            secondEditText.setText(callBack(funtion, it.toString()))
+            firstEditText.text = Editable.Factory.getInstance()
+                .newEditable(it.toString().toBigDecimal().insertCommas())
+        }
+        secondEditText.addTextChangedListener {
+        }
+    }
+
+    private fun getLastConversions() {
+        val topEditTextText: String?
+        val bottomEditTextText: String?
+        val sharedPreferences = getSharedPreferences(pkgName + viewId, Context.MODE_PRIVATE)
+        val topPosition: Int
+        val bottomPosition: Int
+        sharedPreferences?.apply {
+            topEditTextText = getString("topEditTextText", null)
+            bottomEditTextText = getString("bottomEditTextText", null)
+            secondBox.hint = bottomEditTextText?.let {
+                it
+            } ?: resources.getString(R.string.select_unit)
+            firstBox.hint = topEditTextText?.let {
+                it
+            } ?: resources.getString(R.string.select_unit)
+
+            //get last positions
+            topPosition = getInt("topPosition", -1)
+            bottomPosition = getInt("downPosition", -1)
+            positionArray.apply {
+                put("topPosition", topPosition)
+                put("bottomPosition", bottomPosition)
+            }
+        }
+    }
+
+    private fun saveData() {
+        getSharedPreferences(pkgName + viewId, Context.MODE_PRIVATE).apply {
+            with(edit()) {
+                putString("topEditTextText", firstBox.hint.toString())
+                putString("bottomEditTextText", secondBox.hint.toString())
+                putInt("topPosition", positionArray["topPosition"]!!)
+                putInt("bottomPosition", positionArray["bottomPosition"]!!)
+                apply()
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveData()
+    }
+}
+
+fun BigDecimal.insertCommas(): String {
+
+    val decimalFormat =
+        (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
+            applyLocalizedPattern("#,##0.00####")
+        }
+    return decimalFormat.format(this)
 }

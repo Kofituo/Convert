@@ -56,8 +56,8 @@
         app:layout_constraintTop_toBottomOf="@id/convert_app_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
             android:id="@+id/convert_inner"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.Guideline
@@ -90,7 +90,9 @@
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
                     android:paddingStart="20dp"
-                    android:paddingEnd="50dp" />
+                    android:letterSpacing="0.06"
+                    android:paddingEnd="50dp"
+                    android:textSize="18sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,10 +120,12 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/secondEditText"
                     android:layout_width="match_parent"
+                    android:letterSpacing="0.06"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
                     android:paddingStart="20dp"
-                    android:paddingEnd="50dp" />
+                    android:paddingEnd="60dp"
+                    android:textSize="18sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -129,9 +133,11 @@
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:maxWidth="100dp"
+                android:maxWidth="50dp"
                 app:layout_constraintBottom_toBottomOf="@+id/firstBox"
                 app:layout_constraintEnd_toEndOf="@+id/firstBox"
+                app:layout_constraintHorizontal_bias="0.97"
+                app:layout_constraintStart_toStartOf="@id/firstBox"
                 app:layout_constraintTop_toTopOf="@+id/firstBox"
                 app:layout_constraintVertical_bias="0.52" />
 
@@ -139,11 +145,12 @@
                 android:id="@+id/bottomTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="17dp"
                 android:gravity="center"
-                android:maxWidth="100dp"
+                android:maxWidth="50dp"
                 app:layout_constraintBottom_toBottomOf="@+id/secondBox"
                 app:layout_constraintEnd_toEndOf="@id/secondBox"
+                app:layout_constraintHorizontal_bias="0.97"
+                app:layout_constraintStart_toStartOf="@id/secondBox"
                 app:layout_constraintTop_toTopOf="@+id/secondBox"
                 app:layout_constraintVertical_bias="0.49" />
 
