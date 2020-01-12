@@ -93,6 +93,7 @@
                 app:boxCornerRadiusTopStart="10dp"
                 app:boxStrokeColor="#F8BBD0"
                 app:hintTextColor="@android:color/black"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.2"
                 app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +104,6 @@
                     android:id="@+id/firstEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:letterSpacing="0.06"
                     android:paddingStart="17dp"
                     android:paddingEnd="52dp"

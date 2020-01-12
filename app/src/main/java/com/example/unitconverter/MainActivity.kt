@@ -10,6 +10,8 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.*
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.util.SparseArray
 import android.util.TypedValue
@@ -18,6 +20,7 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.*
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
@@ -27,6 +30,11 @@ import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.round
 
 
@@ -366,3 +374,106 @@ val View.name: String
     get() =
         if (this.id == -0x1) "no id"
         else resources.getResourceEntryName(this.id)
+/*
+
+fun String.removeCommas(): String? {
+    if (this.isBlank()) return ""
+
+    (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
+
+        isParseBigDecimal = true
+        return parse(this@removeCommas)?.toString()
+    }
+}
+*/
+
+fun BigDecimal.insertCommas(): String {
+    val decimalFormat =
+        (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
+            applyLocalizedPattern("#,##0.####")
+        }
+    return decimalFormat.format(this)
+}
+
+open class SeparateThousands(val editText: EditText , val groupingSeparator: String, val decimalSeparator: String) :
+    TextWatcher {
+
+    private var busy = false
+    private var lastPosition = 0
+    override fun afterTextChanged(s: Editable?) {
+
+        if (s != null && !busy) {
+
+            busy = true
+            var place = 0
+
+            var decimalPointIndex = s.indexOf(decimalSeparator)
+
+            if (decimalPointIndex != s.lastIndexOf(decimalSeparator)) {
+                val subString = s.subSequence(decimalPointIndex + 1, s.lastIndex + 1)
+
+                val sString = s.subSequence(0, decimalPointIndex + 1)
+
+                val index = subString.indexOf(decimalSeparator)
+                Log.e("sub", "$subString $sString  dpI ->$decimalPointIndex  sel -> ${editText.selectionStart} $index   $$lastPosition")
+                if (editText.selectionStart > lastPosition) {
+                    s.delete(lastPosition,lastPosition+1)
+                    Log.e("as","called")
+                    if (s.length >4)decimalPointIndex = editText.selectionStart-1
+                }
+                else {
+                    //for example 123.654 ->  1.234
+                    s.delete(decimalPointIndex + index + 1, decimalPointIndex + index + 2)
+                    Log.e("whf", "${decimalSeparator in subString}")
+                    /*while (groupingSeparator in subString) {
+                        val newIndex = subString.indexOf(groupingSeparator)
+                        s.delete(decimalPointIndex+newIndex,decimalPointIndex+newIndex+1)
+                    }*/
+                }
+            }
+            val groupingSeparatorIndex = s.indexOf(groupingSeparator,decimalPointIndex)
+            if (groupingSeparatorIndex != -1 && decimalPointIndex != -1) {
+                var start = groupingSeparatorIndex
+                Log.e("start","$start   $s" )
+                while (groupingSeparator in s.subSequence(start,s.lastIndex+1) ) {
+                    Log.e("0","$start")
+                    s.delete(start,start+1)
+                    start = s.indexOf(groupingSeparator,start)
+                    Log.e("1","$start")
+                    if (start == -1) break
+                }
+            }
+            var i = if (decimalPointIndex == -1) {
+                s.length - 1
+            } else {
+                decimalPointIndex - 1
+            }
+
+            while (i >= 0) {
+                val c = s[i]
+                if (c == groupingSeparator[0]) {
+                    s.delete(i, i + 1)
+
+                } else {
+                    if (place % 3 == 0 && place != 0) {
+                        //Log.e("called","else")
+                        // insert a comma to the left of every 3rd digit (counting from right to
+                        // left) unless it's the leftmost digit
+                        s.insert(i + 1, groupingSeparator)
+                    }
+                    place++
+                }
+
+                i--
+            }
+            busy = false
+        }
+    }
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        if(s != null)lastPosition = s.indexOf(decimalSeparator)
+    }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+    }
+}

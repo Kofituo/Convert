@@ -2,13 +2,13 @@ package com.example.unitconverter
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextUtils
+import android.text.*
 import android.util.ArrayMap
 import android.util.Log
 import android.util.SparseIntArray
@@ -18,16 +18,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.TransitionManager
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.TextMessage
 import com.example.unitconverter.subclasses.ViewIdMessage
 import kotlinx.android.synthetic.main.activity_convert.*
-import java.math.BigDecimal
 import java.text.DecimalFormat
-import java.text.NumberFormat
+import java.text.DecimalFormatSymbols
 import java.util.*
 
 class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterface {
@@ -35,13 +33,11 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     private var randomColor = -1
     private var viewId = -1
     private lateinit var dialog: ConvertDialog
-
-
     private var isPrefix = false
     private val bundle = Bundle()
-
     lateinit var funtion: (String) -> String
-
+    lateinit var groupingSeparator: String
+    lateinit var decimalSeparator: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_convert)
@@ -50,9 +46,26 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
+        groupingSeparator =
+            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.groupingSeparator.toString()
+        decimalSeparator =
+            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.decimalSeparator.toString()
         secondEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
         firstEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
-        getLastConversions()
+
+        val fil = InputFilter { source, start, end, dest, dstart, dend ->
+            for (i in start until end) {
+
+                if (Character.isDigit(source[i]) || source[i] == groupingSeparator[0] || source[i] == decimalSeparator[0]) {
+                    Log.e("sour", "$source")
+                    return@InputFilter source
+                }
+            }
+            ""
+        }
+        firstEditText.filters = arrayOf(fil )
+        secondEditText.filters = arrayOf(fil)
+
         val isRTL =
             TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
         if (!isRTL) {
@@ -73,7 +86,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                 bundle.putInt("viewId", this)
             }
         }
-
+        getLastConversions()
         ViewModelProviders.of(this)[ConvertViewModel::class.java] // for the view model
             .apply {
                 settingColours(randomInt)
@@ -374,29 +387,42 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     }
 
     private fun getTextWhileTyping() {
-        firstEditText.addTextChangedListener {
-            Log.e("dadsd", callBack(funtion, it.toString()))
-            secondEditText.setText(callBack(funtion, it.toString()))
-            firstEditText.text = Editable.Factory.getInstance()
-                .newEditable(it.toString().toBigDecimal().insertCommas())
-        }
-        secondEditText.addTextChangedListener {
-        }
+        val groupingSeparator: String =
+            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.groupingSeparator.toString()
+        val decimalSeparator =
+            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.decimalSeparator.toString()
+        firstEditText.addTextChangedListener(SeparateThousands(firstEditText,groupingSeparator, decimalSeparator))
+        /*secondEditText.addTextChangedListener(object :
+            SeparateThousands(decimalSeparator, groupingSeparator) {
+        })*/
     }
 
+    private fun checkEditText(
+        text: String,
+        decimalSeparator: String,
+        groupingSeparator: String
+    ): Boolean {
+        return false
+    }
+
+    lateinit var sharedPreferences: SharedPreferences
     private fun getLastConversions() {
         val topEditTextText: String?
         val bottomEditTextText: String?
-        val sharedPreferences = getSharedPreferences(pkgName + viewId, Context.MODE_PRIVATE)
         val topPosition: Int
         val bottomPosition: Int
-        sharedPreferences?.apply {
+        sharedPreferences = getSharedPreferences(pkgName + viewId, Context.MODE_PRIVATE)
+
+        sharedPreferences.apply {
             topEditTextText = getString("topEditTextText", null)
             bottomEditTextText = getString("bottomEditTextText", null)
+            topTextView.text = getString("topTextViewText", null)
+            bottomTextView.text = getString("bottomTextViewText", null)
             secondBox.hint = bottomEditTextText?.let {
                 it
             } ?: resources.getString(R.string.select_unit)
             firstBox.hint = topEditTextText?.let {
+                Log.e("s1", it)
                 it
             } ?: resources.getString(R.string.select_unit)
 
@@ -411,12 +437,20 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     }
 
     private fun saveData() {
-        getSharedPreferences(pkgName + viewId, Context.MODE_PRIVATE).apply {
+        sharedPreferences.apply {
             with(edit()) {
-                putString("topEditTextText", firstBox.hint.toString())
-                putString("bottomEditTextText", secondBox.hint.toString())
+                putString(
+                    "topEditTextText",
+                    if (firstBox.hint.toString() != resources.getString(R.string.select_unit)) firstBox.hint.toString() else null
+                )
+                putString("topTextViewText", topTextView.text.toString())
+                putString("bottomTextViewText", bottomTextView.text.toString())
+                putString(
+                    "bottomEditTextText",
+                    if (secondBox.hint.toString() != resources.getString(R.string.select_unit)) secondBox.hint.toString() else null
+                )
                 putInt("topPosition", positionArray["topPosition"]!!)
-                putInt("bottomPosition", positionArray["bottomPosition"]!!)
+                putInt("downPosition", positionArray["bottomPosition"]!!)
                 apply()
             }
         }
@@ -426,13 +460,4 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         super.onPause()
         saveData()
     }
-}
-
-fun BigDecimal.insertCommas(): String {
-
-    val decimalFormat =
-        (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
-            applyLocalizedPattern("#,##0.00####")
-        }
-    return decimalFormat.format(this)
 }

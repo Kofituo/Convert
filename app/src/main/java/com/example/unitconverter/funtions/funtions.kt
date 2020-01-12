@@ -18,9 +18,8 @@ class Mass {
         fun prefixMultiplication(x: String): String {
             if (x.isEmpty()) return ""
             val h = BigDecimal(x).times((BigDecimal.TEN).pow(prefix(), MathContext(90)))
-            if (h.compareTo(BigDecimal.ZERO) == 0) return "0.00"
+            //if (h.compareTo(BigDecimal.ZERO) == 0) return "0.00"
             Log.e("pr", "$h  ${prefix()}")
-
             return h.stripTrailingZeros().insertCommas()
         }
     }
