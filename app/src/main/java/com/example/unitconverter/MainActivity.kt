@@ -5,7 +5,6 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
@@ -14,7 +13,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.util.SparseArray
-import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -22,20 +20,19 @@ import android.view.View
 import android.view.View.*
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import com.example.unitconverter.Utils.app_bar_bottom
+import com.example.unitconverter.Utils.getIntegerArrayList
+import com.example.unitconverter.Utils.name
+import com.example.unitconverter.Utils.putIntegerArrayList
 import com.example.unitconverter.subclasses.*
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
-import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.math.round
 
 
 lateinit var popupWindow: MyPopupWindow
@@ -131,6 +128,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             // gets the array if its there
+
             viewIdArray = sharedPreferences.getIntegerArrayList("originalLis", arrayListOf())
             recentlyUsed = sharedPreferences.getIntegerArrayList("recentlyUsed", arrayListOf())
             sharedArray = sharedPreferences.getIntegerArrayList("selectedOrder", arrayListOf())
@@ -342,59 +340,6 @@ fun endAnimation(): Boolean {
     return false
 }
 
-var app_bar_bottom = 0
-fun SharedPreferences.Editor.putIntegerArrayList(
-    key: String,
-    list: ArrayList<Int>
-): SharedPreferences.Editor {
-    putString(key, list.joinToString(","))
-    return this
-}
-
-fun SharedPreferences.getIntegerArrayList(
-    key: String,
-    default: ArrayList<Int>
-): ArrayList<Int> {
-    val value = getString(key, null)
-    if (value.isNullOrBlank()) return default
-    return ArrayList(value.split(",").map { it.toInt() })
-}
-
-internal fun Int.dpToInt(context: Context): Int = round(
-    TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        this.toFloat(),
-        context.resources.displayMetrics
-    )
-).toInt()
-
-
-// used to get name from id
-val View.name: String
-    get() =
-        if (this.id == -0x1) "no id"
-        else resources.getResourceEntryName(this.id)
-/*
-
-fun String.removeCommas(): String? {
-    if (this.isBlank()) return ""
-
-    (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
-
-        isParseBigDecimal = true
-        return parse(this@removeCommas)?.toString()
-    }
-}
-*/
-
-fun BigDecimal.insertCommas(): String {
-    val decimalFormat =
-        (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
-            applyLocalizedPattern("#,##0.####")
-        }
-    return decimalFormat.format(this)
-}
-
 open class SeparateThousands(
     private val editText: EditText,
     private val groupingSeparator: String,
@@ -406,17 +351,12 @@ open class SeparateThousands(
     private var lastPosition = 0
     private lateinit var prevString: CharSequence
 
+    @CallSuper
     override fun afterTextChanged(s: Editable?) {
-
         if (s != null && !busy) {
             busy = true
             //delete zeros first
-            if (s.length > 1 && s[1] == '0') {
-                while (s[1] == '0') {
-                    s.delete(1, 2)
-                    if (s.length == 1) break
-                }
-            }
+
             var place = 0
             val isInitialized = this::prevString.isInitialized
             var decimalPointIndex = s.indexOf(decimalSeparator)
@@ -475,6 +415,18 @@ open class SeparateThousands(
                         editTextSelectionIndex - 1
                     else editTextSelectionIndex
                 )
+            }
+            if (s.length > 1 && s[0] == '0') {
+                if (s[1] == groupingSeparator[0] && s.length > 2) {
+                    while (s.length > 2 && s[2] == '0') s.delete(2, 3)
+                    Log.e("still", "still")
+                } else if (s[1] == '0') {
+                    while (s[1] == '0') {
+                        Log.e("callin", "calling")
+                        s.delete(1, 2)
+                        if (s.length == 1) break
+                    }
+                }
             }
         }
     }

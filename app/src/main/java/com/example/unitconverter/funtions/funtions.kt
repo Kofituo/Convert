@@ -1,7 +1,7 @@
 package com.example.unitconverter.funtions
 
 import android.util.Log
-import com.example.unitconverter.insertCommas
+import com.example.unitconverter.Utils.insertCommas
 import java.math.BigDecimal
 import java.math.MathContext
 
@@ -17,9 +17,10 @@ class Mass {
 
         fun prefixMultiplication(x: String): String {
             if (x.isEmpty()) return ""
-            val h = BigDecimal(x).times((BigDecimal.TEN).pow(prefix(), MathContext(90)))
+            Log.e("str", "$x")
+            val h = BigDecimal(x).times((BigDecimal.TEN).pow(prefix(), MathContext(30)))
             //if (h.compareTo(BigDecimal.ZERO) == 0) return "0.00"
-            Log.e("pr", "$h  ${prefix()}")
+            //Log.e("pr", "$h  ${prefix()}")
             return h.stripTrailingZeros().insertCommas()
         }
     }

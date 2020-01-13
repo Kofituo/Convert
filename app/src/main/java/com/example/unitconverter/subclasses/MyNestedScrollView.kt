@@ -9,7 +9,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.widget.NestedScrollView
-import com.example.unitconverter.dpToInt
+import com.example.unitconverter.Utils.dpToInt
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

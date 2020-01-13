@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
 import android.util.ArrayMap
@@ -17,10 +18,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.TransitionManager
+import com.example.unitconverter.Utils.dpToInt
+import com.example.unitconverter.Utils.removeCommas
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.TextMessage
 import com.example.unitconverter.subclasses.ViewIdMessage
@@ -35,9 +39,10 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     private lateinit var dialog: ConvertDialog
     private var isPrefix = false
     private val bundle = Bundle()
-    lateinit var funtion: (String) -> String
+    lateinit var funtion: (String, Boolean) -> String
     lateinit var groupingSeparator: String
     lateinit var decimalSeparator: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_convert)
@@ -46,6 +51,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
+
         groupingSeparator =
             (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.groupingSeparator.toString()
         decimalSeparator =
@@ -62,7 +68,6 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
         firstEditText.filters = arrayOf(fil)
         secondEditText.filters = arrayOf(fil)
-
         val isRTL =
             TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
         if (!isRTL) {
@@ -83,12 +88,14 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                 bundle.putInt("viewId", this)
             }
         }
+
         getLastConversions()
         ViewModelProviders.of(this)[ConvertViewModel::class.java] // for the view model
             .apply {
                 settingColours(randomInt)
                 randomInt = randomColor
             }
+
         whichView()
         getTextWhileTyping()
         top_button.setOnClickListener {
@@ -107,6 +114,9 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
     }
 
+    lateinit var firstWatcher: CommonWatcher
+    lateinit var secondCommonWatcher: CommonWatcher
+
     override fun texts(text: String, unit: String) {
         val whichButton = bundle.getInt("whichButton")
         if (whichButton == R.id.top_button) {
@@ -117,7 +127,6 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     val params = layoutParams as ViewGroup.LayoutParams
                     params.width = ViewGroup.LayoutParams.WRAP_CONTENT
                     params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    Log.e("sda", "556")
                     layoutParams = params
                 }
             }
@@ -139,9 +148,11 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     private val positionArray = ArrayMap<String, Int>(2)
 
     override fun getOtherValues(position: Int, positionKey: String) {
+        val initialMap = ArrayMap(positionArray)
         positionArray[positionKey] = position
     }
 
+    var reverse = false
     private fun whichView() {
         when (viewId) {
             R.id.Temperature -> {
@@ -149,12 +160,14 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             R.id.Area -> {
             }
             R.id.Mass -> {
-                funtion = {
+                funtion = { string: String, reverse: Boolean ->
                     if (positionArray.valueAt(0) == -1 || positionArray.valueAt(1) == -1) ""
                     else {
-                        var topPosition = positionArray["topPosition"]
-                        Log.e("sd", "$topPosition")
-                        var bottomPosition = positionArray["bottomPosition"]
+                        var topPosition =
+                            if (reverse) positionArray["bottomPosition"] else positionArray["topPosition"]
+                        //Log.e("sd", "$topPosition")
+                        var bottomPosition =
+                            if (reverse) positionArray["topPosition"] else positionArray["bottomPosition"]
                         val sparseArray = SparseIntArray(31).apply {
                             append(0, 0)
                             append(1, 18)//exa
@@ -177,10 +190,10 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                         if (topPosition in 0..17 && bottomPosition in 0..17) {
                             topPosition = sparseArray[topPosition!!]
                             bottomPosition = sparseArray[bottomPosition!!]
-                            Log.e("top", "$topPosition   $bottomPosition")
+                            //Log.e("top", "$topPosition   $bottomPosition")
                             com.example.unitconverter.funtions.Mass.top = topPosition
                             com.example.unitconverter.funtions.Mass.bottom = bottomPosition
-                            com.example.unitconverter.funtions.Mass.prefixMultiplication(it)
+                            com.example.unitconverter.funtions.Mass.prefixMultiplication(string)
                         } else
                             ""
                     }
@@ -379,35 +392,59 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     }
 
 
-    private fun callBack(f: (String) -> String, x: String): String {
-        return f(x)
+    private fun callBack(f: (String, Boolean) -> String, x: String, reverse: Boolean): String {
+        return f(x, reverse)
     }
 
+    inner class CommonWatcher(editText: EditText, private val secondEditText: EditText) :
+        SeparateThousands(editText, groupingSeparator, decimalSeparator) {
+        private var t = ""
+        override fun afterTextChanged(s: Editable?) {
+            super.afterTextChanged(s)
+            Log.e("s", "$s  $t")
+            s?.toString()?.apply {
+                this.removeCommas(decimalSeparator)?.also {
+                    if (t == it) return
+                    secondEditText.setText(callBack(funtion, it, reverse))
+                    t = it
+                }
+            }
+
+        }
+    }
+
+    private var firstBoolean = false
+    private var secondBoolean = false
     private fun getTextWhileTyping() {
         firstEditText.apply {
-            addTextChangedListener(object :
-                SeparateThousands(this, groupingSeparator, decimalSeparator) {
-
-            })
+            firstWatcher = CommonWatcher(this, secondEditText)
+            setOnTouchListener { _, event ->
+                if (!firstBoolean) {
+                    secondEditText.removeTextChangedListener(secondCommonWatcher)
+                    addTextChangedListener(firstWatcher)
+                    Log.e("call", "first $firstBoolean $secondBoolean")
+                    reverse = false
+                    firstBoolean = true
+                    secondBoolean = false
+                }
+                super.onTouchEvent(event)
+            }
         }
         secondEditText.apply {
-            addTextChangedListener(object :
-                SeparateThousands(this, groupingSeparator, decimalSeparator) {
+            secondCommonWatcher = CommonWatcher(this, firstEditText)
+            setOnTouchListener { _, event ->
+                if (!secondBoolean) {
+                    firstEditText.removeTextChangedListener(firstWatcher)
+                    firstBoolean = false
+                    secondBoolean = true
+                    reverse = true
+                    Log.e("call", "call $firstBoolean $secondBoolean")
+                    addTextChangedListener(secondCommonWatcher)
+                }
+                super.onTouchEvent(event)
+            }
 
-            })
         }
-
-        /*secondEditText.addTextChangedListener(object :
-            SeparateThousands(decimalSeparator, groupingSeparator) {
-        })*/
-    }
-
-    private fun checkEditText(
-        text: String,
-        decimalSeparator: String,
-        groupingSeparator: String
-    ): Boolean {
-        return false
     }
 
     lateinit var sharedPreferences: SharedPreferences
