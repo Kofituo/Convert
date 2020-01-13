@@ -395,66 +395,69 @@ fun BigDecimal.insertCommas(): String {
     return decimalFormat.format(this)
 }
 
-open class SeparateThousands(val editText: EditText , val groupingSeparator: String, val decimalSeparator: String) :
+open class SeparateThousands(
+    private val editText: EditText,
+    private val groupingSeparator: String,
+    private val decimalSeparator: String
+) :
     TextWatcher {
 
     private var busy = false
     private var lastPosition = 0
+    private lateinit var prevString: CharSequence
+
     override fun afterTextChanged(s: Editable?) {
 
         if (s != null && !busy) {
-
             busy = true
-            var place = 0
-
-            var decimalPointIndex = s.indexOf(decimalSeparator)
-
-            if (decimalPointIndex != s.lastIndexOf(decimalSeparator)) {
-                val subString = s.subSequence(decimalPointIndex + 1, s.lastIndex + 1)
-
-                val sString = s.subSequence(0, decimalPointIndex + 1)
-
-                val index = subString.indexOf(decimalSeparator)
-                Log.e("sub", "$subString $sString  dpI ->$decimalPointIndex  sel -> ${editText.selectionStart} $index   $$lastPosition")
-                if (editText.selectionStart > lastPosition) {
-                    s.delete(lastPosition,lastPosition+1)
-                    Log.e("as","called")
-                    if (s.length >4)decimalPointIndex = editText.selectionStart-1
-                }
-                else {
-                    //for example 123.654 ->  1.234
-                    s.delete(decimalPointIndex + index + 1, decimalPointIndex + index + 2)
-                    Log.e("whf", "${decimalSeparator in subString}")
-                    /*while (groupingSeparator in subString) {
-                        val newIndex = subString.indexOf(groupingSeparator)
-                        s.delete(decimalPointIndex+newIndex,decimalPointIndex+newIndex+1)
-                    }*/
+            //delete zeros first
+            if (s.length > 1 && s[1] == '0') {
+                while (s[1] == '0') {
+                    s.delete(1, 2)
+                    if (s.length == 1) break
                 }
             }
-            val groupingSeparatorIndex = s.indexOf(groupingSeparator,decimalPointIndex)
+            var place = 0
+            val isInitialized = this::prevString.isInitialized
+            var decimalPointIndex = s.indexOf(decimalSeparator)
+            val lastIndex = s.lastIndexOf(decimalSeparator)
+            var editTextSelectionIndex: Int = -1
+            if (isInitialized) {
+                if (editText.selectionEnd < prevString.length && editText.selectionStart < s.length) {
+                    if ((s.length < prevString.length && prevString[editText.selectionStart] == groupingSeparator[0]) ||
+                        (s[editText.selectionStart] == groupingSeparator[0])
+                    ) {
+                        editTextSelectionIndex = editText.selectionStart
+                    }
+                }
+            }
+            if (decimalPointIndex != lastIndex) {
+                val subString = s.subSequence(decimalPointIndex + 1, s.lastIndex + 1)
+                val index = subString.indexOf(decimalSeparator)
+                if (editText.selectionStart > lastPosition) {
+                    s.delete(lastPosition, lastPosition + 1)
+                    if (lastIndex - decimalPointIndex > 1) decimalPointIndex =
+                        editText.selectionStart - 1
+                } else {
+                    //for example 123.654 ->  1.234//
+                    s.delete(decimalPointIndex + index + 1, decimalPointIndex + index + 2)
+                }
+            }
+            val groupingSeparatorIndex = s.indexOf(groupingSeparator, decimalPointIndex)
             if (groupingSeparatorIndex != -1 && decimalPointIndex != -1) {
                 var start = groupingSeparatorIndex
-                Log.e("start","$start   $s" )
-                while (groupingSeparator in s.subSequence(start,s.lastIndex+1) ) {
-                    Log.e("0","$start")
-                    s.delete(start,start+1)
-                    start = s.indexOf(groupingSeparator,start)
-                    Log.e("1","$start")
+                while (groupingSeparator in s.subSequence(start, s.lastIndex + 1)) {
+                    s.delete(start, start + 1)
+                    start = s.indexOf(groupingSeparator, start)
                     if (start == -1) break
                 }
             }
-            var i = if (decimalPointIndex == -1) {
-                s.length - 1
-            } else {
-                decimalPointIndex - 1
-            }
 
+            var i = if (decimalPointIndex == -1) s.length - 1 else decimalPointIndex - 1
             while (i >= 0) {
                 val c = s[i]
-                if (c == groupingSeparator[0]) {
-                    s.delete(i, i + 1)
-
-                } else {
+                if (c == groupingSeparator[0]) s.delete(i, i + 1)
+                else {
                     if (place % 3 == 0 && place != 0) {
                         //Log.e("called","else")
                         // insert a comma to the left of every 3rd digit (counting from right to
@@ -463,15 +466,24 @@ open class SeparateThousands(val editText: EditText , val groupingSeparator: Str
                     }
                     place++
                 }
-
                 i--
             }
             busy = false
+            if (editText.selectionStart != 0 && editTextSelectionIndex != -1) {
+                editText.setSelection(
+                    if (editTextSelectionIndex == editText.selectionStart)
+                        editTextSelectionIndex - 1
+                    else editTextSelectionIndex
+                )
+            }
         }
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        if(s != null)lastPosition = s.indexOf(decimalSeparator)
+        if (s != null && s.toString().isNotEmpty()) {
+            prevString = s.subSequence(0, s.length)
+            lastPosition = s.indexOf(decimalSeparator)
+        }
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

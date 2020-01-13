@@ -88,7 +88,7 @@
                     android:id="@+id/firstEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
+                    android:inputType="text"
                     android:paddingStart="20dp"
                     android:letterSpacing="0.06"
                     android:paddingEnd="50dp"
@@ -122,7 +122,7 @@
                     android:layout_width="match_parent"
                     android:letterSpacing="0.06"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
+                    android:inputType="text"
                     android:paddingStart="20dp"
                     android:paddingEnd="60dp"
                     android:textSize="18sp" />

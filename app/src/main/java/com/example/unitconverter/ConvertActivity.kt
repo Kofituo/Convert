@@ -8,7 +8,8 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.text.*
+import android.text.InputFilter
+import android.text.TextUtils
 import android.util.ArrayMap
 import android.util.Log
 import android.util.SparseIntArray
@@ -25,7 +26,6 @@ import com.example.unitconverter.subclasses.TextMessage
 import com.example.unitconverter.subclasses.ViewIdMessage
 import kotlinx.android.synthetic.main.activity_convert.*
 import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.util.*
 
 class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterface {
@@ -55,15 +55,12 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
 
         val fil = InputFilter { source, start, end, dest, dstart, dend ->
             for (i in start until end) {
-
-                if (Character.isDigit(source[i]) || source[i] == groupingSeparator[0] || source[i] == decimalSeparator[0]) {
-                    Log.e("sour", "$source")
+                if (Character.isDigit(source[i]) || source[i] == groupingSeparator[0] || source[i] == decimalSeparator[0])
                     return@InputFilter source
-                }
             }
             ""
         }
-        firstEditText.filters = arrayOf(fil )
+        firstEditText.filters = arrayOf(fil)
         secondEditText.filters = arrayOf(fil)
 
         val isRTL =
@@ -387,11 +384,19 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     }
 
     private fun getTextWhileTyping() {
-        val groupingSeparator: String =
-            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.groupingSeparator.toString()
-        val decimalSeparator =
-            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.decimalSeparator.toString()
-        firstEditText.addTextChangedListener(SeparateThousands(firstEditText,groupingSeparator, decimalSeparator))
+        firstEditText.apply {
+            addTextChangedListener(object :
+                SeparateThousands(this, groupingSeparator, decimalSeparator) {
+
+            })
+        }
+        secondEditText.apply {
+            addTextChangedListener(object :
+                SeparateThousands(this, groupingSeparator, decimalSeparator) {
+
+            })
+        }
+
         /*secondEditText.addTextChangedListener(object :
             SeparateThousands(decimalSeparator, groupingSeparator) {
         })*/

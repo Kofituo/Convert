@@ -67,6 +67,7 @@
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/convert_app_bar">
 
@@ -134,9 +135,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/secondEditText"
                     android:layout_width="match_parent"
-                    android:letterSpacing="0.06"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
+                    android:inputType="text"
+                    android:letterSpacing="0.06"
                     android:paddingStart="17dp"
                     android:paddingEnd="52dp"
                     android:textSize="18sp" />
