@@ -14,10 +14,7 @@ import android.text.TextUtils
 import android.util.ArrayMap
 import android.util.Log
 import android.util.SparseIntArray
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
@@ -150,6 +147,37 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     override fun getOtherValues(position: Int, positionKey: String) {
         val initialMap = ArrayMap(positionArray)
         positionArray[positionKey] = position
+        Log.e("first", "$firstBoolean")
+        Log.e("second", "$secondBoolean")
+        if (positionKey == "topPosition") {
+            //keep the top constant
+            firstEditText.apply {
+                val initialText = Editable.Factory.getInstance().newEditable(text)
+                text = null
+                if (!firstBoolean) {
+                    secondEditText.removeTextChangedListener(secondCommonWatcher)
+                    addTextChangedListener(firstWatcher)
+                    reverse = false
+                    firstBoolean = true
+                    secondBoolean = false
+                }
+                text = initialText
+            }
+        } else {
+            //keep bottom constant
+            secondEditText.apply {
+                val initialText = Editable.Factory.getInstance().newEditable(text)
+                text = null
+                if (!secondBoolean) {
+                    firstEditText.removeTextChangedListener(firstWatcher)
+                    firstBoolean = false
+                    secondBoolean = true
+                    reverse = true
+                    addTextChangedListener(secondCommonWatcher)
+                }
+                text = initialText
+            }
+        }
     }
 
     var reverse = false
@@ -250,7 +278,6 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
     }
 
-    //private fun
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -392,7 +419,10 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     }
 
 
-    private fun callBack(f: (String, Boolean) -> String, x: String, reverse: Boolean): String {
+    private fun callBack(
+        f: (String, Boolean) -> String,
+        x: String, reverse: Boolean
+    ): String {
         return f(x, reverse)
     }
 
@@ -401,7 +431,6 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         private var t = ""
         override fun afterTextChanged(s: Editable?) {
             super.afterTextChanged(s)
-            Log.e("s", "$s  $t")
             s?.toString()?.apply {
                 this.removeCommas(decimalSeparator)?.also {
                     if (t == it) return
@@ -409,7 +438,6 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     t = it
                 }
             }
-
         }
     }
 
@@ -419,10 +447,9 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         firstEditText.apply {
             firstWatcher = CommonWatcher(this, secondEditText)
             setOnTouchListener { _, event ->
-                if (!firstBoolean) {
+                if (!firstBoolean && event.actionMasked == MotionEvent.ACTION_UP) {
                     secondEditText.removeTextChangedListener(secondCommonWatcher)
                     addTextChangedListener(firstWatcher)
-                    Log.e("call", "first $firstBoolean $secondBoolean")
                     reverse = false
                     firstBoolean = true
                     secondBoolean = false
@@ -433,12 +460,11 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         secondEditText.apply {
             secondCommonWatcher = CommonWatcher(this, firstEditText)
             setOnTouchListener { _, event ->
-                if (!secondBoolean) {
+                if (!secondBoolean && event.actionMasked == MotionEvent.ACTION_UP) {
                     firstEditText.removeTextChangedListener(firstWatcher)
                     firstBoolean = false
                     secondBoolean = true
                     reverse = true
-                    Log.e("call", "call $firstBoolean $secondBoolean")
                     addTextChangedListener(secondCommonWatcher)
                 }
                 super.onTouchEvent(event)
@@ -447,7 +473,8 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
     }
 
-    lateinit var sharedPreferences: SharedPreferences
+
+    private lateinit var sharedPreferences: SharedPreferences
     private fun getLastConversions() {
         val topEditTextText: String?
         val bottomEditTextText: String?

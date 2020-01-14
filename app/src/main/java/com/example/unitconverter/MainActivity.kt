@@ -355,7 +355,7 @@ open class SeparateThousands(
     override fun afterTextChanged(s: Editable?) {
         if (s != null && !busy) {
             busy = true
-            //delete zeros first
+            editText.removeTextChangedListener(this)
 
             var place = 0
             val isInitialized = this::prevString.isInitialized
@@ -366,11 +366,10 @@ open class SeparateThousands(
                 if (editText.selectionEnd < prevString.length && editText.selectionStart < s.length) {
                     if ((s.length < prevString.length && prevString[editText.selectionStart] == groupingSeparator[0]) ||
                         (s[editText.selectionStart] == groupingSeparator[0])
-                    ) {
-                        editTextSelectionIndex = editText.selectionStart
-                    }
+                    ) editTextSelectionIndex = editText.selectionStart
                 }
             }
+
             if (decimalPointIndex != lastIndex) {
                 val subString = s.subSequence(decimalPointIndex + 1, s.lastIndex + 1)
                 val index = subString.indexOf(decimalSeparator)
@@ -409,25 +408,22 @@ open class SeparateThousands(
                 i--
             }
             busy = false
-            if (editText.selectionStart != 0 && editTextSelectionIndex != -1) {
-                editText.setSelection(
-                    if (editTextSelectionIndex == editText.selectionStart)
-                        editTextSelectionIndex - 1
-                    else editTextSelectionIndex
-                )
-            }
+            if (editText.selectionStart != 0 && editTextSelectionIndex != -1) editText.setSelection(
+                if (editTextSelectionIndex == editText.selectionStart)
+                    editTextSelectionIndex - 1
+                else editTextSelectionIndex
+            )
             if (s.length > 1 && s[0] == '0') {
                 if (s[1] == groupingSeparator[0] && s.length > 2) {
                     while (s.length > 2 && s[2] == '0') s.delete(2, 3)
-                    Log.e("still", "still")
                 } else if (s[1] == '0') {
                     while (s[1] == '0') {
-                        Log.e("callin", "calling")
                         s.delete(1, 2)
                         if (s.length == 1) break
                     }
                 }
             }
+            editText.addTextChangedListener(this)
         }
     }
 
