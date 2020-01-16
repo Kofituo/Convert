@@ -37,7 +37,7 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="#030303"
-        android:textSize="37sp" />
+        android:textSize="38sp" />
 
     <TextView
         android:id="@+id/app_bar_text"

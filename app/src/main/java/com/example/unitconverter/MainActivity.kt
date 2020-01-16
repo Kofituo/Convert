@@ -9,8 +9,6 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.*
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.util.SparseArray
 import android.view.Menu
@@ -18,9 +16,7 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.*
-import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.example.unitconverter.Utils.app_bar_bottom
@@ -157,7 +153,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             apply()
         }
         onCreateCalled = true
-
     }
 
 
@@ -338,102 +333,4 @@ fun endAnimation(): Boolean {
         }
     }
     return false
-}
-
-open class SeparateThousands(
-    private val editText: EditText,
-    private val groupingSeparator: String,
-    private val decimalSeparator: String
-) :
-    TextWatcher {
-
-    private var busy = false
-    private var lastPosition = 0
-    private lateinit var prevString: CharSequence
-
-    @CallSuper
-    override fun afterTextChanged(s: Editable?) {
-        if (s != null && !busy) {
-            busy = true
-            editText.removeTextChangedListener(this)
-
-            var place = 0
-            val isInitialized = this::prevString.isInitialized
-            var decimalPointIndex = s.indexOf(decimalSeparator)
-            val lastIndex = s.lastIndexOf(decimalSeparator)
-            var editTextSelectionIndex: Int = -1
-            if (isInitialized) {
-                if (editText.selectionEnd < prevString.length && editText.selectionStart < s.length) {
-                    if ((s.length < prevString.length && prevString[editText.selectionStart] == groupingSeparator[0]) ||
-                        (s[editText.selectionStart] == groupingSeparator[0])
-                    ) editTextSelectionIndex = editText.selectionStart
-                }
-            }
-
-            if (decimalPointIndex != lastIndex) {
-                val subString = s.subSequence(decimalPointIndex + 1, s.lastIndex + 1)
-                val index = subString.indexOf(decimalSeparator)
-                if (editText.selectionStart > lastPosition) {
-                    s.delete(lastPosition, lastPosition + 1)
-                    if (lastIndex - decimalPointIndex > 1) decimalPointIndex =
-                        editText.selectionStart - 1
-                } else {
-                    //for example 123.654 ->  1.234//
-                    s.delete(decimalPointIndex + index + 1, decimalPointIndex + index + 2)
-                }
-            }
-            val groupingSeparatorIndex = s.indexOf(groupingSeparator, decimalPointIndex)
-            if (groupingSeparatorIndex != -1 && decimalPointIndex != -1) {
-                var start = groupingSeparatorIndex
-                while (groupingSeparator in s.subSequence(start, s.lastIndex + 1)) {
-                    s.delete(start, start + 1)
-                    start = s.indexOf(groupingSeparator, start)
-                    if (start == -1) break
-                }
-            }
-
-            var i = if (decimalPointIndex == -1) s.length - 1 else decimalPointIndex - 1
-            while (i >= 0) {
-                val c = s[i]
-                if (c == groupingSeparator[0]) s.delete(i, i + 1)
-                else {
-                    if (place % 3 == 0 && place != 0) {
-                        //Log.e("called","else")
-                        // insert a comma to the left of every 3rd digit (counting from right to
-                        // left) unless it's the leftmost digit
-                        s.insert(i + 1, groupingSeparator)
-                    }
-                    place++
-                }
-                i--
-            }
-            busy = false
-            if (editText.selectionStart != 0 && editTextSelectionIndex != -1) editText.setSelection(
-                if (editTextSelectionIndex == editText.selectionStart)
-                    editTextSelectionIndex - 1
-                else editTextSelectionIndex
-            )
-            if (s.length > 1 && s[0] == '0') {
-                if (s[1] == groupingSeparator[0] && s.length > 2) {
-                    while (s.length > 2 && s[2] == '0') s.delete(2, 3)
-                } else if (s[1] == '0') {
-                    while (s[1] == '0') {
-                        s.delete(1, 2)
-                        if (s.length == 1) break
-                    }
-                }
-            }
-            editText.addTextChangedListener(this)
-        }
-    }
-
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        if (s != null && s.toString().isNotEmpty()) {
-            prevString = s.subSequence(0, s.length)
-            lastPosition = s.indexOf(decimalSeparator)
-        }
-    }
-
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-    }
 }

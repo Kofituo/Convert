@@ -21,13 +21,18 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.TransitionManager
 import com.example.unitconverter.Utils.dpToInt
+import com.example.unitconverter.Utils.insertCommas
 import com.example.unitconverter.Utils.removeCommas
+import com.example.unitconverter.funtions.Mass
+import com.example.unitconverter.funtions.Mass.buildPrefixMass
+import com.example.unitconverter.funtions.Prefixes
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.TextMessage
 import com.example.unitconverter.subclasses.ViewIdMessage
 import kotlinx.android.synthetic.main.activity_convert.*
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.properties.Delegates
 
 class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterface {
     private var swap = false
@@ -36,35 +41,45 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     private lateinit var dialog: ConvertDialog
     private var isPrefix = false
     private val bundle = Bundle()
-    lateinit var funtion: (String, Boolean) -> String
-    lateinit var groupingSeparator: String
-    lateinit var decimalSeparator: String
+    lateinit var function: (String) -> String
+    var groupingSeparator by Delegates.notNull<Char>()
+    var decimalSeparator by Delegates.notNull<Char>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_convert)
         setSupportActionBar(convert_app_bar)
         supportActionBar?.apply {
+
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
-
-        groupingSeparator =
-            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.groupingSeparator.toString()
-        decimalSeparator =
-            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.decimalSeparator.toString()
-        secondEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
-        firstEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
-
-        val fil = InputFilter { source, start, end, dest, dstart, dend ->
+        setSeparators()
+        val filter = InputFilter { source, start, end, dest, dstart, dend ->
+            val stringBuilder = StringBuilder(end - start)
+            var count = 0
             for (i in start until end) {
-                if (Character.isDigit(source[i]) || source[i] == groupingSeparator[0] || source[i] == decimalSeparator[0])
-                    return@InputFilter source
+                if (source[i].isDigit() ||
+                    source[i] == groupingSeparator ||
+                    source[i] == decimalSeparator
+                ) {
+                    if (source[i] == decimalSeparator) {
+                        count++
+                        if (count >= 2) continue
+                    }
+                    stringBuilder.append(source[i])
+                }
             }
-            ""
+            stringBuilder
         }
-        firstEditText.filters = arrayOf(fil)
-        secondEditText.filters = arrayOf(fil)
+        firstEditText.apply {
+            setRawInputType(Configuration.KEYBOARD_12KEY)
+            filters = arrayOf(filter)
+        }
+        secondEditText.apply {
+            filters = arrayOf(filter)
+            setRawInputType(Configuration.KEYBOARD_12KEY)
+        }
         val isRTL =
             TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
         if (!isRTL) {
@@ -113,6 +128,17 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
 
     lateinit var firstWatcher: CommonWatcher
     lateinit var secondCommonWatcher: CommonWatcher
+    private fun setSeparators() {
+        groupingSeparator =
+            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.groupingSeparator
+        decimalSeparator =
+            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.decimalSeparator
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        setSeparators()
+    }
 
     override fun texts(text: String, unit: String) {
         val whichButton = bundle.getInt("whichButton")
@@ -147,8 +173,9 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     override fun getOtherValues(position: Int, positionKey: String) {
         val initialMap = ArrayMap(positionArray)
         positionArray[positionKey] = position
-        Log.e("first", "$firstBoolean")
-        Log.e("second", "$secondBoolean")
+        Log.e("pos", "$positionArray")
+        if (initialMap == positionArray) return
+        //Log.e("bool", "$firstBoolean  $secondBoolean")
         if (positionKey == "topPosition") {
             //keep the top constant
             firstEditText.apply {
@@ -180,50 +207,60 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
     }
 
-    var reverse = false
+    var topPosition: Int = 0
+    var bottomPosition: Int = 0
+    private fun getPositions(): Boolean? {
+        if (positionArray.valueAt(0) == -1 ||
+            positionArray.valueAt(1) == -1
+        ) return false
+
+        topPosition =
+            if (reverse) positionArray["bottomPosition"]!! else positionArray["topPosition"]!!
+        bottomPosition =
+            if (reverse) positionArray["topPosition"]!! else positionArray["bottomPosition"]!!
+        if (topPosition == bottomPosition) return null
+        return true
+    }
+
+    private var reverse = false
     private fun whichView() {
         when (viewId) {
+            R.id.prefixes -> {
+                function = { string ->
+                    val getPosition = getPositions()
+
+                    if (getPosition == null) string.insertCommas()
+                    else if (!getPosition) ""
+                    else {
+                        val sparseIntArray = Prefixes.buildPrefix()
+                        topPosition = sparseIntArray[topPosition]
+                        bottomPosition = sparseIntArray[bottomPosition]
+                        Prefixes.top = topPosition
+                        Prefixes.bottom = bottomPosition
+                        Prefixes.prefixMultiplication(string)
+                    }
+                }
+            }
             R.id.Temperature -> {
             }
             R.id.Area -> {
             }
             R.id.Mass -> {
-                funtion = { string: String, reverse: Boolean ->
-                    if (positionArray.valueAt(0) == -1 || positionArray.valueAt(1) == -1) ""
+                function = { string ->
+                    val getPosition = getPositions()
+                    if (getPosition == null) string.insertCommas()
+                    else if (!getPosition) ""
                     else {
-                        var topPosition =
-                            if (reverse) positionArray["bottomPosition"] else positionArray["topPosition"]
-                        //Log.e("sd", "$topPosition")
-                        var bottomPosition =
-                            if (reverse) positionArray["topPosition"] else positionArray["bottomPosition"]
-                        val sparseArray = SparseIntArray(31).apply {
-                            append(0, 0)
-                            append(1, 18)//exa
-                            append(2, 15)//peta
-                            append(3, 12)//tera
-                            append(4, 9)//giga
-                            append(5, 6)//mego
-                            append(6, 3)//kilo
-                            append(7, 2)//hecto
-                            append(8, 1)//deca
-                            append(9, -1)//deci
-                            append(10, -2)//centi
-                            append(11, -3)//milli
-                            append(12, -6)//micro
-                            append(13, -9)//nano
-                            append(14, -12)//pico
-                            append(15, -15)//femto
-                            append(16, -18)//atto
-                        }
-                        if (topPosition in 0..17 && bottomPosition in 0..17) {
-                            topPosition = sparseArray[topPosition!!]
-                            bottomPosition = sparseArray[bottomPosition!!]
-                            //Log.e("top", "$topPosition   $bottomPosition")
-                            com.example.unitconverter.funtions.Mass.top = topPosition
-                            com.example.unitconverter.funtions.Mass.bottom = bottomPosition
-                            com.example.unitconverter.funtions.Mass.prefixMultiplication(string)
-                        } else
-                            ""
+                        val sparseArray = buildPrefixMass()
+                        // get which one
+                        //with elvis operator
+                        amongGram(string, sparseArray) ?: poundConversions(string, sparseArray)
+                        ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: ""
+                        ?: "" ?: "" ?: ""
+                        ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: ""
+                        ?: "" ?: "" ?: "" ?: "" ?: ""
+                        ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: ""
+                        ?: "" ?: "" ?: ""
                     }
                 }
             }
@@ -276,6 +313,42 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             R.id.number_base -> {
             }
         }
+    }
+
+    private fun amongGram(x: String, sparseArray: SparseIntArray): String? {
+        //val sparseArray = buildPrefixMass()
+        // means its amongst the gram family
+        if (topPosition in 0..16 && bottomPosition in 0..16) {
+            topPosition = sparseArray[topPosition]
+            bottomPosition = sparseArray[bottomPosition]
+            Log.e("top", "$topPosition   $bottomPosition")
+            Mass.top = topPosition
+            Mass.bottom = bottomPosition
+            return Mass.prefixMultiplication(x)
+        }
+        return null
+    }
+
+    //it works like a charm
+    private fun poundConversions(x: String, sparseArray: SparseIntArray): String? {
+        //val sparseArray = buildPrefixMass()
+        if (topPosition == 17 || bottomPosition == 17) {
+            if (topPosition in 0..16 || bottomPosition in 0..16) {
+                // g to lb or vice versa
+                //Log.e("pos","$topPosition  $bottomPosition")
+                //to prevent double calling
+                val temp = sparseArray[topPosition, -2]
+                val whichOne =
+                    if (temp == -2) sparseArray[bottomPosition] else temp
+                Mass.top = whichOne
+                Mass.bottom = sparseArray[6]
+                //Log.e("which","$whichOne  ${Mass.bottom} $reverse")
+                val pow = if (topPosition > bottomPosition) 1 else -1
+                //Log.e("pow","$pow   $reverse")
+                return Mass.somethingGramToPound(x, pow)
+            }
+        }
+        return null
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -418,12 +491,8 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
     }
 
-
-    private fun callBack(
-        f: (String, Boolean) -> String,
-        x: String, reverse: Boolean
-    ): String {
-        return f(x, reverse)
+    private inline fun callBack(f: (String) -> String, x: String): String {
+        return if (x.isEmpty()) "" else f(x)
     }
 
     inner class CommonWatcher(editText: EditText, private val secondEditText: EditText) :
@@ -431,10 +500,11 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         private var t = ""
         override fun afterTextChanged(s: Editable?) {
             super.afterTextChanged(s)
+
             s?.toString()?.apply {
                 this.removeCommas(decimalSeparator)?.also {
-                    if (t == it) return
-                    secondEditText.setText(callBack(funtion, it, reverse))
+                    if (t == it && t.isNotEmpty()) return
+                    secondEditText.setText(callBack(function, it))
                     t = it
                 }
             }
@@ -447,6 +517,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         firstEditText.apply {
             firstWatcher = CommonWatcher(this, secondEditText)
             setOnTouchListener { _, event ->
+                Log.e("pp", "$firstBoolean  ${event.actionMasked}")
                 if (!firstBoolean && event.actionMasked == MotionEvent.ACTION_UP) {
                     secondEditText.removeTextChangedListener(secondCommonWatcher)
                     addTextChangedListener(firstWatcher)
@@ -460,19 +531,19 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         secondEditText.apply {
             secondCommonWatcher = CommonWatcher(this, firstEditText)
             setOnTouchListener { _, event ->
+                Log.e("hmm", "$secondBoolean   ${event.actionMasked}")
                 if (!secondBoolean && event.actionMasked == MotionEvent.ACTION_UP) {
                     firstEditText.removeTextChangedListener(firstWatcher)
+                    addTextChangedListener(secondCommonWatcher)
                     firstBoolean = false
                     secondBoolean = true
                     reverse = true
-                    addTextChangedListener(secondCommonWatcher)
                 }
                 super.onTouchEvent(event)
             }
 
         }
     }
-
 
     private lateinit var sharedPreferences: SharedPreferences
     private fun getLastConversions() {

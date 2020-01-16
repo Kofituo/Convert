@@ -74,7 +74,6 @@ class MyAdapter(private val dataSet: MutableList<RecyclerDataClass>, private val
             text = dataSet[position].quantity
             isChecked = lastPosition == position
         }
-
         holder.radioTextView.text = dataSet[position].correspondingUnit
     }
 

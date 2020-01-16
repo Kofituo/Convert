@@ -47,7 +47,7 @@ object Utils {
             if (this.id == -0x1) "no id"
             else resources.getResourceEntryName(this.id)
 
-    fun String.removeCommas(decimalSeparator: String): String? {
+    fun String.removeCommas(decimalSeparator: Char): String? {
         if (this.isBlank()) return ""
         val checkString = StringBuilder()
         when {
@@ -66,8 +66,16 @@ object Utils {
     fun BigDecimal.insertCommas(): String {
         val decimalFormat =
             (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
-                applyLocalizedPattern("#,##0.#######")
+                applyPattern("#,##0.#######")
             }
         return decimalFormat.format(this)
+    }
+
+    fun String.insertCommas(): String {
+        val decimalFormat =
+            (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
+                applyPattern("#,##0.#######")
+            }
+        return decimalFormat.format(this.toBigDecimal())
     }
 }
