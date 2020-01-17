@@ -198,12 +198,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         super.onResume()
         if (recentlyUsedBool && (recentlyUsed != viewIdArray) && !onCreateCalled) {
             grid.sort(
-                sortValue, if (descending)
-                    recentlyUsed
-                else
-                    (ArrayList(
-                        recentlyUsed.reversed()
-                    ))
+                sortValue,
+                if (descending) recentlyUsed
+                else (ArrayList(recentlyUsed.reversed()))
             )
         }
         onCreateCalled = false

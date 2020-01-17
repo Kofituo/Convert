@@ -219,51 +219,19 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         bottomPosition =
             if (reverse) positionArray["topPosition"]!! else positionArray["bottomPosition"]!!
         if (topPosition == bottomPosition) return null
+
         return true
     }
 
     private var reverse = false
     private fun whichView() {
         when (viewId) {
-            R.id.prefixes -> {
-                function = { string ->
-                    val getPosition = getPositions()
-
-                    if (getPosition == null) string.insertCommas()
-                    else if (!getPosition) ""
-                    else {
-                        val sparseIntArray = Prefixes.buildPrefix()
-                        topPosition = sparseIntArray[topPosition]
-                        bottomPosition = sparseIntArray[bottomPosition]
-                        Prefixes.top = topPosition
-                        Prefixes.bottom = bottomPosition
-                        Prefixes.prefixMultiplication(string)
-                    }
-                }
-            }
+            R.id.prefixes -> prefixConversions()
             R.id.Temperature -> {
             }
             R.id.Area -> {
             }
-            R.id.Mass -> {
-                function = { string ->
-                    val getPosition = getPositions()
-                    if (getPosition == null) string.insertCommas()
-                    else if (!getPosition) ""
-                    else {
-                        val sparseArray = buildPrefixMass()
-                        // get which one
-                        //with elvis operator
-                        amongGram(string, sparseArray) ?: poundConversions(string, sparseArray)
-                        ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: ""
-                        ?: "" ?: "" ?: ""
-                        ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: ""
-                        ?: "" ?: "" ?: "" ?: "" ?: ""
-                        ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: "" ?: ""
-                        ?: "" ?: "" ?: ""
-                    }
-                }
-            }
+            R.id.Mass -> massConversions()
             R.id.Volume -> {
             }
             R.id.Length -> {
@@ -315,6 +283,39 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
     }
 
+    private fun prefixConversions() {
+        function = { string ->
+            val getPosition = getPositions()
+            if (getPosition == null) string.insertCommas()
+            else if (!getPosition) ""
+            else {
+                val sparseIntArray = Prefixes.buildPrefix()
+                topPosition = sparseIntArray[topPosition]
+                bottomPosition = sparseIntArray[bottomPosition]
+                Prefixes.top = topPosition
+                Prefixes.bottom = bottomPosition
+                Prefixes.prefixMultiplication(string)
+            }
+        }
+    }
+
+    private fun massConversions() {
+        function = { string ->
+            val getPosition = getPositions()
+            if (getPosition == null) string.insertCommas()
+            else if (!getPosition) ""
+            else {
+                val sparseArray = buildPrefixMass()
+                // get which one
+                //with elvis operator
+                amongGram(string, sparseArray) ?: poundConversions(string, sparseArray)
+                ?: gramConversions(string, sparseArray) ?: ounceConversions(string)
+                ?: ""
+
+            }
+        }
+    }
+
     private fun amongGram(x: String, sparseArray: SparseIntArray): String? {
         //val sparseArray = buildPrefixMass()
         // means its amongst the gram family
@@ -322,35 +323,124 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             topPosition = sparseArray[topPosition]
             bottomPosition = sparseArray[bottomPosition]
             Log.e("top", "$topPosition   $bottomPosition")
-            Mass.top = topPosition
-            Mass.bottom = bottomPosition
-            return Mass.prefixMultiplication(x)
-        }
-        return null
-    }
-
-    //it works like a charm
-    private fun poundConversions(x: String, sparseArray: SparseIntArray): String? {
-        //val sparseArray = buildPrefixMass()
-        if (topPosition == 17 || bottomPosition == 17) {
-            if (topPosition in 0..16 || bottomPosition in 0..16) {
-                // g to lb or vice versa
-                //Log.e("pos","$topPosition  $bottomPosition")
-                //to prevent double calling
-                val temp = sparseArray[topPosition, -2]
-                val whichOne =
-                    if (temp == -2) sparseArray[bottomPosition] else temp
-                Mass.top = whichOne
-                Mass.bottom = sparseArray[6]
-                //Log.e("which","$whichOne  ${Mass.bottom} $reverse")
-                val pow = if (topPosition > bottomPosition) 1 else -1
-                //Log.e("pow","$pow   $reverse")
-                return Mass.somethingGramToPound(x, pow)
+            Mass.apply {
+                top = topPosition
+                bottom = bottomPosition
+                return prefixMultiplication(x)
             }
         }
         return null
     }
 
+    private fun gramConversions(x: String, sparseArray: SparseIntArray): String? {
+        if (topPosition in 0..16 || bottomPosition in 0..16) {
+            Mass.apply {
+                if (topPosition == 18 || bottomPosition == 18) {
+                    //gram to ounce (oz) or vice versa
+                    constant = gramToOunceConstant
+                    val pow = simplifyKgConversions(sparseArray)
+                    return somethingToOunce(x, pow, true)
+                }
+                if (topPosition == 19 || bottomPosition == 19) {
+                    //gram to metric ton
+                    gramToMetricTonConversion(sparseArray)
+                    return prefixMultiplication(x)
+                }
+                if (topPosition == 20 || bottomPosition == 20) {
+                    //gram to short Ton
+                    constant = shortTonToKgConstant
+                    val pow = simplifyKgConversions(sparseArray)
+                    return gramToShortTon(x, pow)
+                }
+            }
+        }
+        return null
+    }
+
+    private fun gramToMetricTonConversion(sparseArray: SparseIntArray) {
+        val temp = sparseArray[topPosition, -2]
+        val metricTonPosition = sparseArray[5]
+        //
+        val whichOne =
+            if (temp == -2) sparseArray[bottomPosition] else temp
+        Mass.apply {
+            if (topPosition > bottomPosition) {
+                top = metricTonPosition
+                bottom = whichOne
+            } else {
+                top = whichOne
+                bottom = metricTonPosition
+            }
+        }
+    }
+
+    private fun simplifyKgConversions(sparseArray: SparseIntArray): Int {
+        //to prevent double calling
+        val temp = sparseArray[topPosition, -2]
+        val kgPosition = sparseArray[6]
+        //which one is not kilogram??
+        val whichOne =
+            if (temp == -2) sparseArray[bottomPosition] else temp
+        Mass.top = whichOne
+        Mass.bottom = kgPosition
+        return if (topPosition > bottomPosition) 1 else -1
+    }
+
+    private fun simplifyLbConversions(): Int {
+        return if (topPosition > bottomPosition) 1 else -1
+    }
+
+    //it works like a charm
+    private fun poundConversions(x: String, sparseArray: SparseIntArray): String? {
+        if (topPosition == 17 || bottomPosition == 17) {
+            Mass.apply {
+                if (topPosition in 0..16 || bottomPosition in 0..16) {
+                    // g to lb or vice versa
+                    constant = gramToPoundConstant
+                    return somethingGramToPound(x, simplifyKgConversions(sparseArray))
+                }
+                if (topPosition == 18 || bottomPosition == 18) {
+                    // pound to ounce
+                    constant = poundToOunceConstant
+                    return somethingToOunce(x, simplifyLbConversions(), false)
+                }
+                if (topPosition == 19 || bottomPosition == 19) {
+                    //pound to metric ton
+                    //since the constant is for kilo it has to be divided
+                    //by 1000
+                    constant = gramToPoundConstant.scaleByPowerOfTen(-3)
+                    return poundToMetricTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 20 || bottomPosition == 20) {
+                    //pound to short ton
+                    constant = shortTonToPoundConstant
+                    return poundToShortTon(x, simplifyLbConversions())
+                }
+            }
+        }
+        return null
+    }
+
+    private fun ounceConversions(x: String): String? {
+        if (topPosition == 18 || bottomPosition == 18) {
+            Mass.apply {
+                if (topPosition == 19 || bottomPosition == 19) {
+                    //ounce to metric ton
+                    //since the constant is for kilo it has to be divided
+                    //by 1000
+                    constant = gramToOunceConstant.scaleByPowerOfTen(-3)
+                    return ounceToMetricTon(x, simplifyLbConversions())
+                }
+                if (bottomPosition == 20 || topPosition == 20) {
+                    //ounce to short ton
+                    constant = ounceToShortTonConstant
+                    return ounceToShortTon(x, simplifyLbConversions())
+                }
+
+            }
+        }
+        return null
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -497,15 +587,12 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
 
     inner class CommonWatcher(editText: EditText, private val secondEditText: EditText) :
         SeparateThousands(editText, groupingSeparator, decimalSeparator) {
-        private var t = ""
         override fun afterTextChanged(s: Editable?) {
             super.afterTextChanged(s)
-
             s?.toString()?.apply {
                 this.removeCommas(decimalSeparator)?.also {
-                    if (t == it && t.isNotEmpty()) return
+                    Log.e("mayProblem", it)
                     secondEditText.setText(callBack(function, it))
-                    t = it
                 }
             }
         }
@@ -519,8 +606,8 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             setOnTouchListener { _, event ->
                 Log.e("pp", "$firstBoolean  ${event.actionMasked}")
                 if (!firstBoolean && event.actionMasked == MotionEvent.ACTION_UP) {
-                    secondEditText.removeTextChangedListener(secondCommonWatcher)
                     addTextChangedListener(firstWatcher)
+                    secondEditText.removeTextChangedListener(secondCommonWatcher)
                     reverse = false
                     firstBoolean = true
                     secondBoolean = false
@@ -533,8 +620,8 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             setOnTouchListener { _, event ->
                 Log.e("hmm", "$secondBoolean   ${event.actionMasked}")
                 if (!secondBoolean && event.actionMasked == MotionEvent.ACTION_UP) {
-                    firstEditText.removeTextChangedListener(firstWatcher)
                     addTextChangedListener(secondCommonWatcher)
+                    firstEditText.removeTextChangedListener(firstWatcher)
                     firstBoolean = false
                     secondBoolean = true
                     reverse = true

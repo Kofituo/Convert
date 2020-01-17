@@ -11,10 +11,9 @@ open class SeparateThousands(
     private val editText: EditText,
     private val groupingSeparator: Char,
     private val decimalSeparator: Char
-) :
-    TextWatcher {
+) : TextWatcher {
 
-    private var busy = false
+    //private var busy = false
     private var lastPosition = 0
     private lateinit var prevString: CharSequence
     private val zeroDigit =
@@ -22,8 +21,8 @@ open class SeparateThousands(
 
     @CallSuper
     override fun afterTextChanged(s: Editable?) {
-        if (s != null && !busy) {
-            busy = true
+        if (s != null) {
+            //busy = true
             editText.removeTextChangedListener(this)
             var place = 0
             val isInitialized = this::prevString.isInitialized
@@ -76,7 +75,7 @@ open class SeparateThousands(
                 }
                 i--
             }
-            busy = false
+
             if (editText.selectionStart != 0 && editTextSelectionIndex != -1) editText.setSelection(
                 if (editTextSelectionIndex == editText.selectionStart)
                     editTextSelectionIndex - 1
@@ -100,7 +99,7 @@ open class SeparateThousands(
                 }
             }
             editText.addTextChangedListener(this)
-
+            //busy = false
         }
     }
 

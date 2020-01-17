@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.TypedValue
 import android.view.View
-import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -63,19 +62,13 @@ object Utils {
         }
     }
 
-    fun BigDecimal.insertCommas(): String {
+    fun <T> T.insertCommas(): String {
         val decimalFormat =
             (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
                 applyPattern("#,##0.#######")
             }
-        return decimalFormat.format(this)
-    }
-
-    fun String.insertCommas(): String {
-        val decimalFormat =
-            (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
-                applyPattern("#,##0.#######")
-            }
-        return decimalFormat.format(this.toBigDecimal())
+        return if (this is String) decimalFormat.format(this.toBigDecimal()) else decimalFormat.format(
+            this
+        )
     }
 }

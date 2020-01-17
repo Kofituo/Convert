@@ -15,7 +15,10 @@
         android:id="@+id/favourite"
         android:title="@string/favourite"
         app:showAsAction="never" />
-
+    <item
+        android:id="@+id/preferences"
+        android:title="@string/preferences"
+        app:showAsAction="never" />
     <item
         android:id="@+id/prefixes"
         android:title="@string/prefixes"
