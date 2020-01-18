@@ -14,7 +14,10 @@ import android.text.TextUtils
 import android.util.ArrayMap
 import android.util.Log
 import android.util.SparseIntArray
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
@@ -175,34 +178,47 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         positionArray[positionKey] = position
         Log.e("pos", "$positionArray")
         if (initialMap == positionArray) return
-        //Log.e("bool", "$firstBoolean  $secondBoolean")
+
+        val initialReverse = if (reverse) 1 else 0
         if (positionKey == "topPosition") {
             //keep the top constant
+            //Log.e("topHere", "first $firstBoolean  second $secondBoolean  $positionKey")
             firstEditText.apply {
                 val initialText = Editable.Factory.getInstance().newEditable(text)
                 text = null
+                // if first one is false means its not in focus
+                // keep the top constant
                 if (!firstBoolean) {
+                    //Log.e("1","1  $reverse")
                     secondEditText.removeTextChangedListener(secondCommonWatcher)
                     addTextChangedListener(firstWatcher)
                     reverse = false
-                    firstBoolean = true
-                    secondBoolean = false
+                    /*firstBoolean = true
+                    secondBoolean = false*/
                 }
                 text = initialText
+                //setting things back
+                if (secondBoolean) secondEditText.addTextChangedListener(secondCommonWatcher)
+                if (!firstBoolean) removeTextChangedListener(firstWatcher)
+                if (initialReverse != 0) reverse = true
             }
         } else {
             //keep bottom constant
+            //Log.e("bottom", "$firstBoolean  $secondBoolean  $positionKey")
             secondEditText.apply {
                 val initialText = Editable.Factory.getInstance().newEditable(text)
                 text = null
                 if (!secondBoolean) {
+                    //Log.e("2","2  $reverse")
                     firstEditText.removeTextChangedListener(firstWatcher)
-                    firstBoolean = false
-                    secondBoolean = true
-                    reverse = true
                     addTextChangedListener(secondCommonWatcher)
+                    reverse = true
                 }
                 text = initialText
+                //setting things back
+                if (!secondBoolean) removeTextChangedListener(secondCommonWatcher)
+                if (firstBoolean) firstEditText.addTextChangedListener(firstWatcher)
+                if (initialReverse != 1) reverse = false
             }
         }
     }
@@ -310,7 +326,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                 //with elvis operator
                 amongGram(string, sparseArray) ?: poundConversions(string, sparseArray)
                 ?: gramConversions(string, sparseArray) ?: ounceConversions(string)
-                ?: ""
+                ?: metricTonConversions(string) ?: ""
 
             }
         }
@@ -421,6 +437,19 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         return null
     }
 
+    private fun metricTonConversions(x: String): String? {
+        if (topPosition == 19 || bottomPosition == 19) {
+            Mass.apply {
+                if (topPosition == 20 || bottomPosition == 20) {
+                    //short ton to metric ton
+                    constant = shortTonToMetricTonConstant
+                    return shortTonToMetricTon(x, simplifyLbConversions())
+                }
+            }
+        }
+        return null
+    }
+
     private fun ounceConversions(x: String): String? {
         if (topPosition == 18 || bottomPosition == 18) {
             Mass.apply {
@@ -441,6 +470,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
         return null
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -603,32 +633,30 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     private fun getTextWhileTyping() {
         firstEditText.apply {
             firstWatcher = CommonWatcher(this, secondEditText)
-            setOnTouchListener { _, event ->
-                Log.e("pp", "$firstBoolean  ${event.actionMasked}")
-                if (!firstBoolean && event.actionMasked == MotionEvent.ACTION_UP) {
+            setOnFocusChangeListener { _, hasFocus ->
+                firstBoolean = hasFocus
+
+                Log.e("3", "3 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
+                if (hasFocus) {
+                    ///Log.e("pp", "$firstBoolean ")
                     addTextChangedListener(firstWatcher)
                     secondEditText.removeTextChangedListener(secondCommonWatcher)
                     reverse = false
-                    firstBoolean = true
-                    secondBoolean = false
                 }
-                super.onTouchEvent(event)
             }
         }
         secondEditText.apply {
             secondCommonWatcher = CommonWatcher(this, firstEditText)
-            setOnTouchListener { _, event ->
-                Log.e("hmm", "$secondBoolean   ${event.actionMasked}")
-                if (!secondBoolean && event.actionMasked == MotionEvent.ACTION_UP) {
+            setOnFocusChangeListener { _, hasFocus ->
+                secondBoolean = hasFocus
+
+                Log.e("4", "4 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
+                if (hasFocus) {
                     addTextChangedListener(secondCommonWatcher)
                     firstEditText.removeTextChangedListener(firstWatcher)
-                    firstBoolean = false
-                    secondBoolean = true
                     reverse = true
                 }
-                super.onTouchEvent(event)
             }
-
         }
     }
 

@@ -29,6 +29,8 @@ object Mass {
 
     val shortTonToKgConstant get() = BigDecimal("907.18474")
 
+    val shortTonToMetricTonConstant: BigDecimal get() = shortTonToKgConstant.scaleByPowerOfTen(-3)
+
     val shortTonToPoundConstant get() = BigDecimal("2000")
 
     val ounceToShortTonConstant: BigDecimal
@@ -100,5 +102,8 @@ object Mass {
         somethingGramToPound(x, pow)
 
     fun ounceToShortTon(x: String, pow: Int): String? =
+        basicFunction(x, pow)
+
+    fun shortTonToMetricTon(x: String, pow: Int): String? =
         basicFunction(x, pow)
 }
