@@ -2,6 +2,7 @@ package com.example.unitconverter
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import java.text.DecimalFormat
@@ -39,7 +40,9 @@ object Utils {
         )
     ).toInt()
 
-
+    fun Int.toDp(context: Context): Int {
+        return this.div((context.resources.displayMetrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT)
+    }
     // used to get name from id
     val View.name: String
         get() =

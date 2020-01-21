@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.unitconverter.funtions.Mass.buildForMass
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.MyAdapter
 import com.example.unitconverter.subclasses.RecyclerDataClass
@@ -22,7 +23,6 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.math.round
 
 
@@ -34,7 +34,6 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewModel: ConvertViewModel
-    private lateinit var locale: Locale
     //Prefixes and their units
     private lateinit var yotta: String
     private lateinit var yottaSymbol: String
@@ -102,11 +101,11 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
             viewModel = ViewModelProviders.of(this)[ConvertViewModel::class.java]
             sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
         }
-        locale = Locale.getDefault()
         viewModel.dataSet = whichView(viewId)
+        lastPosition = sharedPreferences.getInt(string, -1)
     }
 
-    private fun buildPrefixes(quantity: String = "", unit: String = ""):
+    private val buildPrefixes = fun(quantity: String, unit: String):
             MutableList<RecyclerDataClass> {
         return mutableListOf<RecyclerDataClass>().apply {
             if (isPrefix) {
@@ -226,56 +225,56 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
     }
 
     private fun initializePrefixes() {
-        exa = string(R.string.exa)
-        peta = string(R.string.peta)
-        tera = string(R.string.tera)
-        giga = string(R.string.giga)
-        mega = string(R.string.mega)
-        kilo = string(R.string.kilo)
-        hecto = string(R.string.hecto)
-        deca = string(R.string.deca)
-        deci = string(R.string.deci)
-        centi = string(R.string.centi)
-        milli = string(R.string.milli)
-        micro = string(R.string.micro)
-        nano = string(R.string.nano)
-        pico = string(R.string.pico)
-        femto = string(R.string.femto)
-        atto = string(R.string.atto)
+        exa = lambdaString(R.string.exa)
+        peta = lambdaString(R.string.peta)
+        tera = lambdaString(R.string.tera)
+        giga = lambdaString(R.string.giga)
+        mega = lambdaString(R.string.mega)
+        kilo = lambdaString(R.string.kilo)
+        hecto = lambdaString(R.string.hecto)
+        deca = lambdaString(R.string.deca)
+        deci = lambdaString(R.string.deci)
+        centi = lambdaString(R.string.centi)
+        milli = lambdaString(R.string.milli)
+        micro = lambdaString(R.string.micro)
+        nano = lambdaString(R.string.nano)
+        pico = lambdaString(R.string.pico)
+        femto = lambdaString(R.string.femto)
+        atto = lambdaString(R.string.atto)
         if (isPrefix) {
-            yotta = string(R.string.yotta)
-            zetta = string(R.string.zetta)
-            zepto = string(R.string.zepto)
-            yocto = string(R.string.yocto)
+            yotta = lambdaString(R.string.yotta)
+            zetta = lambdaString(R.string.zetta)
+            zepto = lambdaString(R.string.zepto)
+            yocto = lambdaString(R.string.yocto)
         }
     }
 
     private fun initializeSymbols() {
-        exaSymbol = string(R.string.exa_symbol)
-        petaSymbol = string(R.string.peta_symbol)
-        teraSymbol = string(R.string.tera_symbol)
-        gigaSymbol = string(R.string.giga_symbol)
-        megaSymbol = string(R.string.mega_symbol)
-        kiloSymbol = string(R.string.kilo_symbol)
-        hectoSymbol = string(R.string.hecto_symbol)
-        decaSymbol = string(R.string.deca_symbol)
-        deciSymbol = string(R.string.deci_symbol)
-        centiSymbol = string(R.string.centi_symbol)
-        milliSymbol = string(R.string.milli_symbol)
-        microSymbol = string(R.string.micro_symbol)
-        nanoSymbol = string(R.string.nano_symbol)
-        picoSymbol = string(R.string.pico_symbol)
-        femtoSymbol = string(R.string.femto_symbol)
-        attoSymbol = string(R.string.atto_symbol)
+        exaSymbol = lambdaString(R.string.exa_symbol)
+        petaSymbol = lambdaString(R.string.peta_symbol)
+        teraSymbol = lambdaString(R.string.tera_symbol)
+        gigaSymbol = lambdaString(R.string.giga_symbol)
+        megaSymbol = lambdaString(R.string.mega_symbol)
+        kiloSymbol = lambdaString(R.string.kilo_symbol)
+        hectoSymbol = lambdaString(R.string.hecto_symbol)
+        decaSymbol = lambdaString(R.string.deca_symbol)
+        deciSymbol = lambdaString(R.string.deci_symbol)
+        centiSymbol = lambdaString(R.string.centi_symbol)
+        milliSymbol = lambdaString(R.string.milli_symbol)
+        microSymbol = lambdaString(R.string.micro_symbol)
+        nanoSymbol = lambdaString(R.string.nano_symbol)
+        picoSymbol = lambdaString(R.string.pico_symbol)
+        femtoSymbol = lambdaString(R.string.femto_symbol)
+        attoSymbol = lambdaString(R.string.atto_symbol)
         if (isPrefix) {
-            yottaSymbol = string(R.string.yotta_symbol)
-            zettaSymbol = string(R.string.zetta_symbol)
-            zeptoSymbol = string(R.string.zepto_symbol)
-            yoctoSymbol = string(R.string.yocto_symbol)
+            yottaSymbol = lambdaString(R.string.yotta_symbol)
+            zettaSymbol = lambdaString(R.string.zetta_symbol)
+            zeptoSymbol = lambdaString(R.string.zepto_symbol)
+            yoctoSymbol = lambdaString(R.string.yocto_symbol)
         }
     }
 
-    private fun string(stringId: Int) = resources.getString(stringId)
+    private val lambdaString: (Int) -> String = { resources.getString(it) }
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -336,12 +335,15 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
 
     override fun radioButtonClicked(position: Int, text: String, unit: String) {
         lastPosition = position
-        convertDialogInterface.getOtherValues(position, positionKey)
+        convertDialogInterface.apply {
+            getOtherValues(position, positionKey)
+            texts(text, unit)
+        }
         GlobalScope.launch {
             delay(45)
             dismiss()
         }
-        convertDialogInterface.texts(text, unit)
+
     }
 
     override fun onAttach(context: Context) {
@@ -349,91 +351,13 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
         convertDialogInterface = context as ConvertDialogInterface
     }
 
-    data class CompositeQuantities(val quantity: String, val unit: String)
-
-    private fun buildForMass(): MutableList<RecyclerDataClass> {
-        lastPosition = sharedPreferences.getInt(string, -1)
-        val gram =
-            CompositeQuantities(string(R.string.gram), string(R.string.gram_unit))
-        val pound =
-            CompositeQuantities(string(R.string.pound), string(R.string.pound_unit))
-        val ounce =
-            CompositeQuantities(string(R.string.ounce), string(R.string.ounce_unit))
-        val metricTon =
-            CompositeQuantities(string(R.string.metric_ton), string(R.string.metricTonUnit))
-        val shortTon =
-            CompositeQuantities(string(R.string.short_ton), string(R.string.short_ton_unit))
-        val longTon =
-            CompositeQuantities(string(R.string.long_ton), string(R.string.long_ton_unit))
-        val carat =
-            CompositeQuantities(string(R.string.carat), string(R.string.carat_unit))
-        val grain =
-            CompositeQuantities(string(R.string.grain), string(R.string.grain_unit))
-        val troyPound =
-            CompositeQuantities(string(R.string.troy_pound), string(R.string.troy_poundUnit))
-        val troyOunce =
-            CompositeQuantities(string(R.string.troy_ounce), string(R.string.troyOunceUnit))
-        val pennyweight =
-            CompositeQuantities(string(R.string.pennyweight), string(R.string.pennyweightUnit))
-        val stone =
-            CompositeQuantities(string(R.string.stone), string(R.string.stone_unit))
-        val atomicMassUnit =
-            CompositeQuantities(
-                string(R.string.atomicMassUnit),
-                string(R.string.atomic_mass_unit_unit)
-            )
-        val slugMass =
-            CompositeQuantities(string(R.string.slug_mass), string(R.string.slug_unit))
-        val planckMass =
-            CompositeQuantities(string(R.string.planck_mass), string(R.string.planck_mass_unit))
-        val solarMass =
-            CompositeQuantities(string(R.string.solar_mass), string(R.string.solar_mass_unit))
-
-        return mutableListOf<RecyclerDataClass>().apply {
-            gram.apply {
-                add(RecyclerDataClass(quantity, unit))
-                quantity.toLowerCase(locale).also {
-                    addAll(buildPrefixes(it, unit))
-                }
-            }
-            addAll(
-                addMany(
-                    pound,
-                    ounce,
-                    metricTon,
-                    shortTon,
-                    longTon,
-                    carat,
-                    grain,
-                    troyPound,
-                    troyOunce,
-                    pennyweight,
-                    stone,
-                    slugMass,
-                    atomicMassUnit,
-                    planckMass,
-                    solarMass
-                )
-            )
-        }
-    }
-
-    private fun addMany(vararg data: CompositeQuantities):
-            MutableList<RecyclerDataClass> {
-        return mutableListOf<RecyclerDataClass>().apply {
-            for (i in data)
-                add(RecyclerDataClass(i.quantity, i.unit))
-        }
-    }
-
     private fun whichView(id: Int): MutableList<RecyclerDataClass> {
         return when (id) {
             R.id.Mass -> {
-                buildForMass()
+                buildForMass(lambdaString, buildPrefixes)
             }
             R.id.prefixes -> {
-                lastPosition = sharedPreferences.getInt(string, -1)
-                buildPrefixes()
+                buildPrefixes("", "")
             }
             else -> {
                 mutableListOf()
@@ -456,10 +380,8 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
     }
 
     interface ConvertDialogInterface {
-        fun texts(text: String, unit: String) {
-        }
+        fun texts(text: String, unit: String)
 
-        fun getOtherValues(position: Int, positionKey: String) {
-        }
+        fun getOtherValues(position: Int, positionKey: String)
     }
 }

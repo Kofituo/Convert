@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.unitconverter">
 
     <dist:module dist:instant="true" />
@@ -13,13 +14,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ConvertActivity"
-            android:configChanges="layoutDirection|locale"></activity>
+            android:configChanges="layoutDirection|locale" />
+
         <activity
             android:name=".MainActivity"
-            android:hardwareAccelerated="true">
+            android:hardwareAccelerated="true"
+            android:resizeableActivity="false"
+            tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,3 +34,7 @@
     </application>
 
 </manifest>
+
+    <!--android:configChanges="smallestScreenSize|screenLayout|screenSize|orientation
+    will add it when people ask for it"  android:resizeableActivity="false" will set it to true when asked for
+    -->

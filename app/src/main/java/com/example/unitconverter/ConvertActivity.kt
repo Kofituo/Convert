@@ -53,7 +53,6 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         setContentView(R.layout.activity_convert)
         setSupportActionBar(convert_app_bar)
         supportActionBar?.apply {
-
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
@@ -114,15 +113,17 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         whichView()
         getTextWhileTyping()
         top_button.setOnClickListener {
-            dialog.apply {
-                bundle.putInt("whichButton", it.id)
-                arguments = bundle
-                show(supportFragmentManager, "dialog")
-            }
+            if (!dialog.isAdded)
+                dialog.apply {
+                    bundle.putInt("whichButton", it.id)
+                    arguments = bundle
+                    show(supportFragmentManager, "dialog")
+                }
         }
         bottom_button.setOnClickListener {
-            bundle.putInt("whichButton", it.id)
+            if (!dialog.isAdded)
             dialog.apply {
+                bundle.putInt("whichButton", it.id)
                 arguments = bundle
                 show(supportFragmentManager, "dialog")
             }
@@ -326,7 +327,8 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                 //with elvis operator
                 amongGram(string, sparseArray) ?: poundConversions(string, sparseArray)
                 ?: gramConversions(string, sparseArray) ?: ounceConversions(string)
-                ?: metricTonConversions(string) ?: ""
+                ?: metricTonConversions(string) ?: shortTonConversions(string)
+                ?: ""
 
             }
         }
@@ -367,6 +369,17 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = shortTonToKgConstant
                     val pow = simplifyKgConversions(sparseArray)
                     return gramToShortTon(x, pow)
+                }
+                if (topPosition == 21 || bottomPosition == 21) {
+                    //gram to long Ton
+                    constant = gramToLonTonConstant
+                    val pow = simplifyKgConversions(sparseArray)
+                    return gramToLongTon(x, pow)
+                }
+                if (topPosition == 22 || bottomPosition == 22) {
+                    //gram to carat
+                    constant = gramToCaratConstant
+                    return gramToCarat(x, simplifyKgConversions(sparseArray))
                 }
             }
         }
@@ -432,6 +445,15 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = shortTonToPoundConstant
                     return poundToShortTon(x, simplifyLbConversions())
                 }
+                if (topPosition == 21 || bottomPosition == 21) {
+                    //pound to long ton
+                    constant = poundToLonTonConstant
+                    return poundToLongTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 22 || bottomPosition == 22) {
+                    constant = poundToCaratConstant
+                    return poundToCarat(x, simplifyLbConversions())
+                }
             }
         }
         return null
@@ -444,6 +466,10 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     //short ton to metric ton
                     constant = shortTonToMetricTonConstant
                     return shortTonToMetricTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 21 || bottomPosition == 21) {
+                    constant = metricTonToLonTonConstant
+                    return metricTonToLongTon(x, simplifyLbConversions())
                 }
             }
         }
@@ -465,7 +491,30 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = ounceToShortTonConstant
                     return ounceToShortTon(x, simplifyLbConversions())
                 }
+                if (topPosition == 21 || bottomPosition == 21) {
+                    //ounce to long ton
+                    constant = ounceToLongTonConstant
+                    return ounceToLongTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 22 || bottomPosition == 22) {
+                    //ounce to carat
+                    constant = ounceToCaratConstant
+                    Log.e("co", "$ounceToCaratConstant")
+                    return ounceToCarat(x, simplifyLbConversions())
+                }
+            }
+        }
+        return null
+    }
 
+    private fun shortTonConversions(x: String): String? {
+        if (topPosition == 20 || bottomPosition == 20) {
+            Mass.apply {
+                if (topPosition == 21 || bottomPosition == 21) {
+                    //short Ton to long ton
+                    constant = shortTonToLongConstant
+                    return shortTonToLongTon(x, simplifyLbConversions())
+                }
             }
         }
         return null
@@ -618,11 +667,13 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     inner class CommonWatcher(editText: EditText, private val secondEditText: EditText) :
         SeparateThousands(editText, groupingSeparator, decimalSeparator) {
         override fun afterTextChanged(s: Editable?) {
+            val start = System.currentTimeMillis()
             super.afterTextChanged(s)
             s?.toString()?.apply {
                 this.removeCommas(decimalSeparator)?.also {
                     Log.e("mayProblem", it)
                     secondEditText.setText(callBack(function, it))
+                    Log.e("finish", "${System.currentTimeMillis() - start}")
                 }
             }
         }
@@ -635,8 +686,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             firstWatcher = CommonWatcher(this, secondEditText)
             setOnFocusChangeListener { _, hasFocus ->
                 firstBoolean = hasFocus
-
-                Log.e("3", "3 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
+                //Log.e("3", "3 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
                 if (hasFocus) {
                     ///Log.e("pp", "$firstBoolean ")
                     addTextChangedListener(firstWatcher)
@@ -649,8 +699,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             secondCommonWatcher = CommonWatcher(this, firstEditText)
             setOnFocusChangeListener { _, hasFocus ->
                 secondBoolean = hasFocus
-
-                Log.e("4", "4 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
+                //Log.e("4", "4 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
                 if (hasFocus) {
                     addTextChangedListener(secondCommonWatcher)
                     firstEditText.removeTextChangedListener(firstWatcher)
@@ -661,6 +710,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     }
 
     private lateinit var sharedPreferences: SharedPreferences
+
     private fun getLastConversions() {
         val topEditTextText: String?
         val bottomEditTextText: String?

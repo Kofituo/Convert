@@ -60,6 +60,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private var sortValue = -1
     private var sharedArray = arrayListOf<Int>()
 
+    private var h = 0
+    private var w = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.front_page_activity)
@@ -67,7 +69,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         supportActionBar?.setDisplayShowTitleEnabled(false)
         myConfiguration(this.resources.configuration.orientation)
         window.statusBarColor = Color.parseColor("#4DD0E1")
-
+        h = resources.displayMetrics.heightPixels / 2
+        w = resources.displayMetrics.widthPixels / 2
         Log.e(
             "id",
             "${dataStorage.id} ${resources.displayMetrics.widthPixels}  ${resources.displayMetrics.density}"
@@ -154,7 +157,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
         onCreateCalled = true
     }
-
 
     override fun selection(firstSelection: Int, secondSelection: Int) {
         recentlyUsedBool = false
