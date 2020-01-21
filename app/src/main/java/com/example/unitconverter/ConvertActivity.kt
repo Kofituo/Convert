@@ -13,7 +13,6 @@ import android.text.InputFilter
 import android.text.TextUtils
 import android.util.ArrayMap
 import android.util.Log
-import android.util.SparseIntArray
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -57,7 +56,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             setDisplayShowTitleEnabled(false)
         }
         setSeparators()
-        val filter = InputFilter { source, start, end, dest, dstart, dend ->
+        val filter = InputFilter { source, start, end, _, _, dend ->
             val stringBuilder = StringBuilder(end - start)
             var count = 0
             for (i in start until end) {
@@ -122,11 +121,11 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
         bottom_button.setOnClickListener {
             if (!dialog.isAdded)
-            dialog.apply {
-                bundle.putInt("whichButton", it.id)
-                arguments = bundle
-                show(supportFragmentManager, "dialog")
-            }
+                dialog.apply {
+                    bundle.putInt("whichButton", it.id)
+                    arguments = bundle
+                    show(supportFragmentManager, "dialog")
+                }
         }
     }
 
@@ -322,111 +321,123 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             if (getPosition == null) string.insertCommas()
             else if (!getPosition) ""
             else {
-                val sparseArray = buildPrefixMass()
                 // get which one
                 //with elvis operator
-                amongGram(string, sparseArray) ?: poundConversions(string, sparseArray)
-                ?: gramConversions(string, sparseArray) ?: ounceConversions(string)
+                amongGram(string) ?: poundConversions(string)
+                ?: gramConversions(string) ?: ounceConversions(string)
                 ?: metricTonConversions(string) ?: shortTonConversions(string)
+                ?: longTonConversions(string)
                 ?: ""
 
             }
         }
     }
 
-    private fun amongGram(x: String, sparseArray: SparseIntArray): String? {
+    private fun amongGram(x: String): String? {
         //val sparseArray = buildPrefixMass()
         // means its amongst the gram family
         if (topPosition in 0..16 && bottomPosition in 0..16) {
-            topPosition = sparseArray[topPosition]
-            bottomPosition = sparseArray[bottomPosition]
-            Log.e("top", "$topPosition   $bottomPosition")
             Mass.apply {
-                top = topPosition
-                bottom = bottomPosition
-                return prefixMultiplication(x)
+                buildPrefixMass().also {
+                    topPosition = it[topPosition]
+                    bottomPosition = it[bottomPosition]
+                    top = topPosition
+                    bottom = bottomPosition
+                    return prefixMultiplication(x)
+                }
             }
         }
         return null
     }
 
-    private fun gramConversions(x: String, sparseArray: SparseIntArray): String? {
+    private fun gramConversions(x: String): String? {
         if (topPosition in 0..16 || bottomPosition in 0..16) {
             Mass.apply {
+                val pow: Int
                 if (topPosition == 18 || bottomPosition == 18) {
                     //gram to ounce (oz) or vice versa
                     constant = gramToOunceConstant
-                    val pow = simplifyKgConversions(sparseArray)
+                    pow = simplifyKgConversions()
                     return somethingToOunce(x, pow, true)
                 }
                 if (topPosition == 19 || bottomPosition == 19) {
                     //gram to metric ton
-                    gramToMetricTonConversion(sparseArray)
+                    gramToMetricTonConversion()
                     return prefixMultiplication(x)
                 }
                 if (topPosition == 20 || bottomPosition == 20) {
                     //gram to short Ton
                     constant = shortTonToKgConstant
-                    val pow = simplifyKgConversions(sparseArray)
+                    pow = simplifyKgConversions()
                     return gramToShortTon(x, pow)
                 }
                 if (topPosition == 21 || bottomPosition == 21) {
                     //gram to long Ton
                     constant = gramToLonTonConstant
-                    val pow = simplifyKgConversions(sparseArray)
+                    pow = simplifyKgConversions()
                     return gramToLongTon(x, pow)
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
                     //gram to carat
                     constant = gramToCaratConstant
-                    return gramToCarat(x, simplifyKgConversions(sparseArray))
+                    pow = simplifyKgConversions()
+                    return gramToCarat(x, pow)
+                }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    constant = grainToGramConstant
+                    pow = simplifyKgConversions()
+                    return grainToGram(x, pow)
                 }
             }
         }
         return null
     }
 
-    private fun gramToMetricTonConversion(sparseArray: SparseIntArray) {
-        val temp = sparseArray[topPosition, -2]
-        val metricTonPosition = sparseArray[5]
-        //
-        val whichOne =
-            if (temp == -2) sparseArray[bottomPosition] else temp
+    private fun gramToMetricTonConversion() {
         Mass.apply {
-            if (topPosition > bottomPosition) {
-                top = metricTonPosition
-                bottom = whichOne
-            } else {
-                top = whichOne
-                bottom = metricTonPosition
+            buildPrefixMass().also {
+                val temp = it[topPosition, -2]
+                val metricTonPosition = it[5]
+                //
+                val whichOne =
+                    if (temp == -2) it[bottomPosition] else temp
+
+                if (topPosition > bottomPosition) {
+                    top = metricTonPosition
+                    bottom = whichOne
+                } else {
+                    top = whichOne
+                    bottom = metricTonPosition
+                }
             }
         }
     }
 
-    private fun simplifyKgConversions(sparseArray: SparseIntArray): Int {
+    private fun simplifyKgConversions(): Int {
         //to prevent double calling
-        val temp = sparseArray[topPosition, -2]
-        val kgPosition = sparseArray[6]
-        //which one is not kilogram??
-        val whichOne =
-            if (temp == -2) sparseArray[bottomPosition] else temp
-        Mass.top = whichOne
-        Mass.bottom = kgPosition
-        return if (topPosition > bottomPosition) 1 else -1
+        buildPrefixMass().also {
+            val temp = it[topPosition, -2]
+            val kgPosition = it[6]
+            //which one is not kilogram??
+            val whichOne =
+                if (temp == -2) it[bottomPosition] else temp
+
+            Mass.top = whichOne
+            Mass.bottom = kgPosition
+            return if (topPosition > bottomPosition) 1 else -1
+        }
     }
 
-    private fun simplifyLbConversions(): Int {
-        return if (topPosition > bottomPosition) 1 else -1
-    }
+    private fun simplifyLbConversions() = if (topPosition > bottomPosition) 1 else -1
 
     //it works like a charm
-    private fun poundConversions(x: String, sparseArray: SparseIntArray): String? {
+    private fun poundConversions(x: String): String? {
         if (topPosition == 17 || bottomPosition == 17) {
             Mass.apply {
                 if (topPosition in 0..16 || bottomPosition in 0..16) {
                     // g to lb or vice versa
                     constant = gramToPoundConstant
-                    return somethingGramToPound(x, simplifyKgConversions(sparseArray))
+                    return somethingGramToPound(x, simplifyKgConversions())
                 }
                 if (topPosition == 18 || bottomPosition == 18) {
                     // pound to ounce
@@ -451,8 +462,14 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     return poundToLongTon(x, simplifyLbConversions())
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
+                    //pound to carat
                     constant = poundToCaratConstant
                     return poundToCarat(x, simplifyLbConversions())
+                }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to grain
+                    constant = grainToPoundConstant
+                    return poundToGrain(x, simplifyLbConversions())
                 }
             }
         }
@@ -470,6 +487,16 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                 if (topPosition == 21 || bottomPosition == 21) {
                     constant = metricTonToLonTonConstant
                     return metricTonToLongTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 22 || bottomPosition == 22) {
+                    //metric ton to carat
+                    constant = metricTonToCaratConstant
+                    return metricTonToCarat(x, simplifyLbConversions())
+                }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    // to grain
+                    constant = grainToMetricTonConstant
+                    return grainToMetricTon(x, simplifyLbConversions())
                 }
             }
         }
@@ -499,8 +526,12 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                 if (topPosition == 22 || bottomPosition == 22) {
                     //ounce to carat
                     constant = ounceToCaratConstant
-                    Log.e("co", "$ounceToCaratConstant")
                     return ounceToCarat(x, simplifyLbConversions())
+                }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to grain
+                    constant = grainToOunceConstant
+                    return ounceToGrain(x, simplifyLbConversions())
                 }
             }
         }
@@ -514,6 +545,34 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     //short Ton to long ton
                     constant = shortTonToLongConstant
                     return shortTonToLongTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 22 || bottomPosition == 22) {
+                    //to carat
+                    constant = shortTonToCaratConstant
+                    return shortTonToCarat(x, simplifyLbConversions())
+                }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to grain
+                    constant = grainToShortTonConstant
+                    return grainToShortTon(x, simplifyLbConversions())
+                }
+            }
+        }
+        return null
+    }
+
+    private fun longTonConversions(x: String): String? {
+        if (topPosition == 21 || bottomPosition == 21) {
+            Mass.apply {
+                if (topPosition == 22 || bottomPosition == 22) {
+                    //to carat
+                    constant = longTonToCaratConstant
+                    return longTonToCarat(x, simplifyLbConversions())
+                }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to grain
+                    constant = grainToLongTonConstant
+                    return grainToLongTon(x, simplifyLbConversions())
                 }
             }
         }

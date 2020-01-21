@@ -1,14 +1,13 @@
 package com.example.unitconverter.funtions
 
 import android.util.SparseIntArray
-import com.example.unitconverter.R
 import com.example.unitconverter.Utils.insertCommas
-import com.example.unitconverter.subclasses.RecyclerDataClass
 import java.math.BigDecimal
 import java.math.MathContext
-import java.util.*
 
 object Mass {
+    private val mathContext: MathContext get() = MathContext(30)
+
     var top: Int = 0x00
         set(value) {
             if (field != value) field = value
@@ -45,7 +44,7 @@ object Mass {
 
     val poundToLonTonConstant: BigDecimal get() = BigDecimal(2240)
 
-    val shortTonToLongConstant: BigDecimal get() = BigDecimal(1.12)
+    val shortTonToLongConstant: BigDecimal get() = BigDecimal("1.12")
 
     val metricTonToLonTonConstant: BigDecimal
         get() =
@@ -59,13 +58,38 @@ object Mass {
 
     val poundToCaratConstant: BigDecimal
         get() =
-            gramToCaratConstant.divide(gramToPoundConstant, MathContext(30))
+            gramToCaratConstant.divide(gramToPoundConstant, mathContext)
 
     val ounceToCaratConstant: BigDecimal
-        get() = BigDecimal.ONE.divide(gramToCaratConstant)
+        get() =
+            gramToCaratConstant.divide(gramToPoundConstant, mathContext)
+                .multiply(BigDecimal(16))
+
+    val metricTonToCaratConstant: BigDecimal
+        get() = gramToCaratConstant.scaleByPowerOfTen(-3)
+
+    val shortTonToCaratConstant: BigDecimal get() = BigDecimal("4535923.7")
+
+    val longTonToCaratConstant: BigDecimal get() = BigDecimal("5080234.544")
+
+    val grainToGramConstant: BigDecimal get() = BigDecimal("64.79891").scaleByPowerOfTen(-6)
+
+    val grainToPoundConstant: BigDecimal
+        get() = BigDecimal.ONE.divide(BigDecimal(7000), mathContext)
+
+    val grainToOunceConstant: BigDecimal get() = grainToPoundConstant.multiply(BigDecimal(16))
+
+    val grainToMetricTonConstant: BigDecimal
+        get() = grainToGramConstant.scaleByPowerOfTen(-3)
+
+    val grainToShortTonConstant: BigDecimal
+        get() = grainToGramConstant.divide(shortTonToKgConstant, mathContext)
+
+    val grainToLongTonConstant: BigDecimal
+        get() = BigDecimal(15_680_000)
 
     fun buildPrefixMass(): SparseIntArray =
-        SparseIntArray(31).apply {
+        SparseIntArray(17).apply {
             append(0, 0)
             append(1, 18)//exa
             append(2, 15)//peta
@@ -112,112 +136,72 @@ object Mass {
         } else basicFunction(x, pow) //for other conversions
     }
 
-    fun poundToMetricTon(x: String, pow: Int): String? =
+    fun poundToMetricTon(x: String, pow: Int) =
         basicFunction(x, -pow)
 
-    fun ounceToMetricTon(x: String, pow: Int): String? =
+    fun ounceToMetricTon(x: String, pow: Int) =
         basicFunction(x, -pow)
 
-    fun poundToShortTon(x: String, pow: Int): String? {
-        return basicFunction(x, pow)
-    }
+    fun poundToShortTon(x: String, pow: Int) =
+        basicFunction(x, pow)
 
-    fun gramToShortTon(x: String, pow: Int): String? =
+    fun gramToShortTon(x: String, pow: Int) =
         somethingGramToPound(x, pow)
 
-    fun ounceToShortTon(x: String, pow: Int): String? =
+    fun ounceToShortTon(x: String, pow: Int) =
         basicFunction(x, pow)
 
-    fun shortTonToMetricTon(x: String, pow: Int): String? =
+    fun shortTonToMetricTon(x: String, pow: Int) =
         basicFunction(x, pow)
 
-    fun poundToLongTon(x: String, pow: Int): String? =
+    fun poundToLongTon(x: String, pow: Int) =
         basicFunction(x, pow)
 
-    fun metricTonToLongTon(x: String, pow: Int): String? =
+    fun metricTonToLongTon(x: String, pow: Int) =
         basicFunction(x, pow)
 
-    fun shortTonToLongTon(x: String, pow: Int): String? =
+    fun shortTonToLongTon(x: String, pow: Int) =
         basicFunction(x, pow)
 
-    fun gramToLongTon(x: String, pow: Int): String? =
+    fun gramToLongTon(x: String, pow: Int) =
         somethingGramToPound(x, pow)
 
-    fun ounceToLongTon(x: String, pow: Int): String? =
+    fun ounceToLongTon(x: String, pow: Int) =
         basicFunction(x, pow)
 
-    fun gramToCarat(x: String, pow: Int): String? =
+    fun gramToCarat(x: String, pow: Int) =
         somethingGramToPound(x, pow)
 
-    fun ounceToCarat(x: String, pow: Int): String? =
+    fun ounceToCarat(x: String, pow: Int) =
         basicFunction(x, pow)
 
-    fun poundToCarat(x: String, pow: Int): String? =
+    fun poundToCarat(x: String, pow: Int) =
         basicFunction(x, pow)
 
-    fun buildForMass(
-        getString: (Int) -> String,
-        buildPrefixes: (String, String) -> MutableList<RecyclerDataClass>
-    ): MutableList<RecyclerDataClass> {
-        val gram =
-            RecyclerDataClass(getString(R.string.gram), getString(R.string.gram_unit))
-        val pound =
-            RecyclerDataClass(getString(R.string.pound), getString(R.string.pound_unit))
-        val ounce =
-            RecyclerDataClass(getString(R.string.ounce), getString(R.string.ounce_unit))
-        val metricTon =
-            RecyclerDataClass(getString(R.string.metric_ton), getString(R.string.metricTonUnit))
-        val shortTon =
-            RecyclerDataClass(getString(R.string.short_ton), getString(R.string.short_ton_unit))
-        val longTon =
-            RecyclerDataClass(getString(R.string.long_ton), getString(R.string.long_ton_unit))
-        val carat =
-            RecyclerDataClass(getString(R.string.carat), getString(R.string.carat_unit))
-        val grain =
-            RecyclerDataClass(getString(R.string.grain), getString(R.string.grain_unit))
-        val troyPound =
-            RecyclerDataClass(getString(R.string.troy_pound), getString(R.string.troy_poundUnit))
-        val troyOunce =
-            RecyclerDataClass(getString(R.string.troy_ounce), getString(R.string.troyOunceUnit))
-        val pennyweight =
-            RecyclerDataClass(getString(R.string.pennyweight), getString(R.string.pennyweightUnit))
-        val stone =
-            RecyclerDataClass(getString(R.string.stone), getString(R.string.stone_unit))
-        val atomicMassUnit =
-            RecyclerDataClass(
-                getString(R.string.atomicMassUnit),
-                getString(R.string.atomic_mass_unit_unit)
-            )
-        val slugMass =
-            RecyclerDataClass(getString(R.string.slug_mass), getString(R.string.slug_unit))
-        val planckMass =
-            RecyclerDataClass(getString(R.string.planck_mass), getString(R.string.planck_mass_unit))
-        val solarMass =
-            RecyclerDataClass(getString(R.string.solar_mass), getString(R.string.solar_mass_unit))
+    fun metricTonToCarat(x: String, pow: Int) =
+        basicFunction(x, pow)
 
-        return mutableListOf<RecyclerDataClass>().apply {
-            gram.apply {
-                add(this)
-                quantity.toLowerCase(Locale.getDefault()).also {
-                    addAll(buildPrefixes(it, correspondingUnit))
-                }
-            }
-            add(pound)
-            add(ounce)
-            add(metricTon)
-            add(shortTon)
-            add(longTon)
-            add(carat)
-            add(grain)
-            add(troyPound)
-            add(troyOunce)
-            add(pennyweight)
-            add(stone)
-            add(slugMass)
-            add(atomicMassUnit)
-            add(planckMass)
-            add(solarMass)
-        }
-    }
+    fun shortTonToCarat(x: String, pow: Int) =
+        basicFunction(x, -pow)
 
+    fun longTonToCarat(x: String, pow: Int) =
+        basicFunction(x, -pow)
+
+    fun grainToGram(x: String, pow: Int) =
+        somethingGramToPound(x, pow)
+
+    fun poundToGrain(x: String, pow: Int) =
+        basicFunction(x, pow)
+
+    fun ounceToGrain(x: String, pow: Int) =
+        basicFunction(x, pow)
+
+    fun grainToMetricTon(x: String, pow: Int) =
+        basicFunction(x, pow)
+
+    fun grainToShortTon(x: String, pow: Int) =
+        basicFunction(x, pow)
+
+    fun grainToLongTon(x: String, pow: Int) =
+        basicFunction(x, -pow)
 }

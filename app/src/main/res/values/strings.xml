@@ -131,4 +131,13 @@
     <string name="stone">Stone</string>
     <string name="stone_unit">st</string>
 
+    <!--for temperature-->
+    <string name="celsius">Celsius</string>
+    <string name="celsius_unit">°C</string>
+    <string name="kelvin">kelvin</string>
+    <string name="kelvin_unit">K</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="fahrenheit_unit">°F</string>
+
+
 </resources>
