@@ -326,7 +326,8 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                 amongGram(string) ?: poundConversions(string)
                 ?: gramConversions(string) ?: ounceConversions(string)
                 ?: metricTonConversions(string) ?: shortTonConversions(string)
-                ?: longTonConversions(string)
+                ?: longTonConversions(string) ?: caratConversions(string)
+                ?: grainConversions(string)
                 ?: ""
 
             }
@@ -384,9 +385,16 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     return gramToCarat(x, pow)
                 }
                 if (topPosition == 23 || bottomPosition == 23) {
+                    //to grain
                     constant = grainToGramConstant
                     pow = simplifyKgConversions()
                     return grainToGram(x, pow)
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to troy pound
+                    constant = gramToTroyPoundConstant
+                    pow = simplifyKgConversions()
+                    return gramToTroyPound(x, pow)
                 }
             }
         }
@@ -471,6 +479,10 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = grainToPoundConstant
                     return poundToGrain(x, simplifyLbConversions())
                 }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    constant = troyPoundToPoundConstant
+                    return troyPoundToPound(x, simplifyLbConversions())
+                }
             }
         }
         return null
@@ -497,6 +509,11 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     // to grain
                     constant = grainToMetricTonConstant
                     return grainToMetricTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to troy pound
+                    constant = metricTonTroyPoundConstant
+                    return troyPoundToMetricTon(x, simplifyLbConversions())
                 }
             }
         }
@@ -533,6 +550,11 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = grainToOunceConstant
                     return ounceToGrain(x, simplifyLbConversions())
                 }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to troy Pound
+                    constant = troyPoundToOunceConstant
+                    return troyPoundToOunce(x, simplifyLbConversions())
+                }
             }
         }
         return null
@@ -556,6 +578,11 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = grainToShortTonConstant
                     return grainToShortTon(x, simplifyLbConversions())
                 }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to troy pound
+                    constant = shortTonToTroyPound
+                    return troyPoundToShortTon(x, simplifyLbConversions())
+                }
             }
         }
         return null
@@ -573,6 +600,43 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     //to grain
                     constant = grainToLongTonConstant
                     return grainToLongTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    // to troy pound
+                    constant = longTonToTroyPoundConstant
+                    return longTonToTroyPound(x, simplifyLbConversions())
+                }
+            }
+        }
+        return null
+    }
+
+    private fun caratConversions(x: String): String? {
+        if (topPosition == 22 || bottomPosition == 22) {
+            Mass.apply {
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to grain
+                    constant = grainToCaratConstant
+                    return grainToCarat(x, simplifyLbConversions())
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to troy pound
+                    constant = caratToTroyPoundConstant
+                    return caratToTroyPound(x, simplifyLbConversions())
+                }
+            }
+        }
+        return null
+    }
+
+    private fun grainConversions(x: String): String? {
+        if (topPosition == 23 || bottomPosition == 23) {
+            Mass.apply {
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to troy pound
+                    constant = grainToTroyPoundConstant
+                    return troyPoundToGrain(x, simplifyLbConversions())
+
                 }
             }
         }
@@ -719,9 +783,8 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
     }
 
-    private inline fun callBack(f: (String) -> String, x: String): String {
-        return if (x.isEmpty()) "" else f(x)
-    }
+    private inline fun callBack(f: (String) -> String, x: String) =
+        if (x.isEmpty()) "" else f(x)
 
     inner class CommonWatcher(editText: EditText, private val secondEditText: EditText) :
         SeparateThousands(editText, groupingSeparator, decimalSeparator) {

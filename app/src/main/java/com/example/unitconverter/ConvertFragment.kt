@@ -8,6 +8,8 @@ import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
@@ -18,11 +20,13 @@ import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.MyAdapter
 import com.example.unitconverter.subclasses.RecyclerDataClass
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.Comparator
 import kotlin.math.round
 
 
@@ -85,6 +89,10 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
     private lateinit var string: String
     private lateinit var convertDialogInterface: ConvertDialogInterface
     private lateinit var positionKey: String
+    private val comparator = Comparator { first: RecyclerDataClass, second: RecyclerDataClass ->
+        first.quantity.compareTo(second.quantity)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.apply {
@@ -298,19 +306,55 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
             layoutParams = params
 
             recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
-
                 setHasFixedSize(true)
                 viewManager = LinearLayoutManager(context)
                 layoutManager = viewManager
-                this@ConvertDialog.viewAdapter =
-                    MyAdapter(viewModel.dataSet, viewModel.randomInt).apply {
+                this@ConvertDialog.viewAdapter = // add comparator to params
+                    MyAdapter(viewModel.dataSet, viewModel.randomInt, comparator).apply {
                         setOnRadioButtonsClickListener(this@ConvertDialog)
                     }
-                adapter = viewAdapter
+                adapter = (viewAdapter as MyAdapter).apply {
+                    add(viewModel.dataSet)
 
-                (adapter as MyAdapter).apply {
                     lastPosition = this@ConvertDialog.lastPosition
+
                     if (lastPosition != -1) smoothScrollToPosition(lastPosition)
+
+                    searchBar.findViewById<TextInputEditText>(R.id.searchEditText).apply {
+
+                        addTextChangedListener(object : TextWatcher {
+                            var called = false
+                            override fun afterTextChanged(s: Editable?) {
+                                val filteredList = filter(viewModel.dataSet, s.toString())
+                                replaceAll(filteredList)
+                                if (s.isNullOrEmpty()) {
+                                    boolean = false
+                                    called = false
+                                    notifyItemRangeChanged(0, itemCount)
+                                }
+                                smoothScrollToPosition(0)
+                            }
+
+                            override fun beforeTextChanged(
+                                s: CharSequence?,
+                                start: Int,
+                                count: Int,
+                                after: Int
+                            ) {
+                                boolean = true
+                                if (!called) notifyItemRangeChanged(0, itemCount)
+                                called = true
+                            }
+
+                            override fun onTextChanged(
+                                s: CharSequence?,
+                                start: Int,
+                                before: Int,
+                                count: Int
+                            ) {
+                            }
+                        })
+                    }
                 }
             }
         }
@@ -352,15 +396,13 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
 
     private fun whichView(id: Int): MutableList<RecyclerDataClass> {
         return when (id) {
-            R.id.Mass -> {
-                buildForMass()
-            }
-            R.id.prefixes -> {
-                buildPrefixes("", "")
-            }
-            else -> {
-                mutableListOf()
-            }
+            R.id.Mass -> buildForMass()
+
+            R.id.prefixes -> buildPrefixes("", "")
+
+            R.id.Temperature -> buildForTemperature()
+
+            else -> mutableListOf()
         }
     }
 
@@ -376,6 +418,20 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
     override fun onDismiss(dialog: DialogInterface) {
         saveData()
         super.onDismiss(dialog)
+    }
+
+    fun filter(
+        dataSet: MutableList<RecyclerDataClass>,
+        searchText: String
+    ): MutableList<RecyclerDataClass> {
+        val locale = Locale.getDefault()
+        return mutableListOf<RecyclerDataClass>().apply {
+            for (i in dataSet) {
+                val text = i.quantity.toLowerCase(locale)
+                if (text.contains(searchText.trim().toLowerCase(locale)))
+                    add(i)
+            }
+        }
     }
 
     interface ConvertDialogInterface {
@@ -444,6 +500,21 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
             add(atomicMassUnit)
             add(planckMass)
             add(solarMass)
+        }
+    }
+
+    private fun buildForTemperature(): MutableList<RecyclerDataClass> {
+        val celsius =
+            RecyclerDataClass(string(R.string.celsius), string(R.string.celsius_unit))
+        val fahrenheit =
+            RecyclerDataClass(string(R.string.fahrenheit), string(R.string.fahrenheit_unit))
+        val kelvin =
+            RecyclerDataClass(string(R.string.kelvin), string(R.string.kelvin_unit))
+
+        return mutableListOf<RecyclerDataClass>().apply {
+            add(celsius)
+            add(fahrenheit)
+            add(kelvin)
         }
     }
 }

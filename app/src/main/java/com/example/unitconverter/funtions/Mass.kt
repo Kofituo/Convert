@@ -34,7 +34,7 @@ object Mass {
     val shortTonToMetricTonConstant: BigDecimal
         get() = shortTonToKgConstant.scaleByPowerOfTen(-3)
 
-    val shortTonToPoundConstant get() = BigDecimal("2000")
+    val shortTonToPoundConstant get() = BigDecimal(2000)
 
     val ounceToShortTonConstant: BigDecimal
         get() = BigDecimal(16).multiply(BigDecimal(2000))
@@ -85,8 +85,38 @@ object Mass {
     val grainToShortTonConstant: BigDecimal
         get() = grainToGramConstant.divide(shortTonToKgConstant, mathContext)
 
-    val grainToLongTonConstant: BigDecimal
-        get() = BigDecimal(15_680_000)
+    val grainToLongTonConstant: BigDecimal get() = BigDecimal(15_680_000)
+
+    val grainToCaratConstant: BigDecimal
+        get() = BigDecimal(200).divide(BigDecimal("64.79891"), mathContext)
+
+    val grainToTroyPoundConstant: BigDecimal get() = BigDecimal(5760)
+
+    val gramToTroyPoundConstant: BigDecimal
+        get() = grainToGramConstant.multiply(grainToTroyPoundConstant)
+
+    val troyPoundToPoundConstant: BigDecimal
+        get() = grainToPoundConstant.multiply(grainToTroyPoundConstant)
+
+    val troyPoundToOunceConstant: BigDecimal
+        get() = troyPoundToPoundConstant.multiply(BigDecimal(16))
+
+    val metricTonTroyPoundConstant: BigDecimal
+        get() = gramToTroyPoundConstant.scaleByPowerOfTen(-3)
+
+    val shortTonToTroyPound: BigDecimal
+        get() =
+            BigDecimal.ONE.divide(troyPoundToPoundConstant, mathContext)
+                .multiply(BigDecimal.valueOf(2000))
+
+    val longTonToTroyPoundConstant: BigDecimal
+        get() =
+            BigDecimal.ONE.divide(troyPoundToPoundConstant, mathContext)
+                .multiply(BigDecimal.valueOf(2240))
+
+    val caratToTroyPoundConstant: BigDecimal
+        get() =
+            BigDecimal("64.79891").multiply(grainToTroyPoundConstant).divide(BigDecimal(200))
 
     fun buildPrefixMass(): SparseIntArray =
         SparseIntArray(17).apply {
@@ -204,4 +234,31 @@ object Mass {
 
     fun grainToLongTon(x: String, pow: Int) =
         basicFunction(x, -pow)
+
+    fun grainToCarat(x: String, pow: Int) =
+        basicFunction(x, -pow)
+
+    fun troyPoundToGrain(x: String, pow: Int) =
+        basicFunction(x, pow)
+
+    fun gramToTroyPound(x: String, pow: Int) =
+        somethingGramToPound(x, pow)
+
+    fun troyPoundToPound(x: String, pow: Int) =
+        basicFunction(x, pow)
+
+    fun troyPoundToOunce(x: String, pow: Int) =
+        basicFunction(x, pow)
+
+    fun troyPoundToMetricTon(x: String, pow: Int) =
+        basicFunction(x, pow)
+
+    fun troyPoundToShortTon(x: String, pow: Int) =
+        basicFunction(x, -pow)
+
+    fun longTonToTroyPound(x: String, pow: Int) =
+        basicFunction(x, -pow)
+
+    fun caratToTroyPound(x: String, pow: Int) =
+        basicFunction(x, pow)
 }

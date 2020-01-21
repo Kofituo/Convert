@@ -67,7 +67,7 @@ object Utils {
     fun <T> T.insertCommas(): String {
         val decimalFormat =
             (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
-                applyPattern("#,##0.#######")
+                applyPattern("#,##0.######")
             }
         return if (this is String) decimalFormat.format(this.toBigDecimal()) else decimalFormat.format(
             this

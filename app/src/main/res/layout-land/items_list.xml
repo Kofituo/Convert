@@ -83,6 +83,8 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:paddingStart="20dp"
+            android:id="@+id/searchEditText"
+            android:maxLength="25"
             android:paddingEnd="50dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
