@@ -115,7 +115,7 @@
     <string name="solar_mass">Solar Mass</string>
     <string name="solar_mass_unit">M☉</string>
     <string name="pound">Pound</string>
-    <string name="pound_unit">lbs</string>
+    <string name="pound_unit">lb</string>
     <string name="gram">Gram</string>
     <string name="gram_unit">g</string>
     <string name="troy_pound">Troy pound</string>

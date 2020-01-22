@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputFilter
 import android.text.TextUtils
 import android.util.ArrayMap
 import android.util.Log
@@ -23,6 +22,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.TransitionManager
 import com.example.unitconverter.Utils.dpToInt
+import com.example.unitconverter.Utils.filters
 import com.example.unitconverter.Utils.insertCommas
 import com.example.unitconverter.Utils.removeCommas
 import com.example.unitconverter.funtions.Mass
@@ -56,29 +56,12 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             setDisplayShowTitleEnabled(false)
         }
         setSeparators()
-        val filter = InputFilter { source, start, end, _, _, dend ->
-            val stringBuilder = StringBuilder(end - start)
-            var count = 0
-            for (i in start until end) {
-                if (source[i].isDigit() ||
-                    source[i] == groupingSeparator ||
-                    source[i] == decimalSeparator
-                ) {
-                    if (source[i] == decimalSeparator) {
-                        count++
-                        if (count >= 2) continue
-                    }
-                    stringBuilder.append(source[i])
-                }
-            }
-            stringBuilder
-        }
         firstEditText.apply {
             setRawInputType(Configuration.KEYBOARD_12KEY)
-            filters = arrayOf(filter)
+            filters = filters(groupingSeparator, decimalSeparator)
         }
         secondEditText.apply {
-            filters = arrayOf(filter)
+            filters = filters(groupingSeparator, decimalSeparator)
             setRawInputType(Configuration.KEYBOARD_12KEY)
         }
         val isRTL =
@@ -129,8 +112,8 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
     }
 
-    lateinit var firstWatcher: CommonWatcher
-    lateinit var secondCommonWatcher: CommonWatcher
+    private lateinit var firstWatcher: CommonWatcher
+    private lateinit var secondCommonWatcher: CommonWatcher
     private fun setSeparators() {
         groupingSeparator =
             (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.groupingSeparator
@@ -223,8 +206,8 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
     }
 
-    var topPosition: Int = 0
-    var bottomPosition: Int = 0
+    private var topPosition: Int = 0
+    private var bottomPosition: Int = 0
     private fun getPositions(): Boolean? {
         if (positionArray.valueAt(0) == -1 ||
             positionArray.valueAt(1) == -1
@@ -352,6 +335,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     }
 
     private fun gramConversions(x: String): String? {
+        // among gram
         if (topPosition in 0..16 || bottomPosition in 0..16) {
             Mass.apply {
                 val pow: Int

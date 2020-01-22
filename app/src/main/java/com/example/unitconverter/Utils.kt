@@ -2,6 +2,7 @@ package com.example.unitconverter
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.text.InputFilter
 import android.util.TypedValue
 import android.view.View
 import java.text.DecimalFormat
@@ -72,5 +73,30 @@ object Utils {
         return if (this is String) decimalFormat.format(this.toBigDecimal()) else decimalFormat.format(
             this
         )
+    }
+
+    //filters
+
+    fun filters(comma: Char, fullStop: Char): Array<InputFilter> {
+        val filter = InputFilter { source, start, end, _, _, _ ->
+            val stringBuilder = StringBuilder(end - start)
+            var count = 0
+            for (i in start until end) {
+                if (source[i].isDigit() ||
+                    source[i] == comma ||
+                    source[i] == fullStop
+                ) {
+                    if (source[i] == fullStop) {
+                        count++
+                        if (count >= 2) continue
+                    }
+                    stringBuilder.append(source[i])
+                }
+            }
+            stringBuilder
+        }
+        val lengthFilter = InputFilter.LengthFilter(50)
+
+        return arrayOf(filter, lengthFilter)
     }
 }
