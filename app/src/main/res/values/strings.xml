@@ -106,7 +106,7 @@
     <string name="short_ton_unit">ton (US)</string>
     <string name="long_ton">Long ton</string>
     <string name="long_ton_unit">ton (UK)</string>
-    <string name="atomicMassUnit">Atomic mass unit</string>
+    <string name="atomicMassUnit" translatable="false">Atomic mass unit</string>
     <string name="atomic_mass_unit_unit">u</string>
     <string name="slug_mass">Slug</string>
     <string name="slug_unit">sl</string>

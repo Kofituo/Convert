@@ -1,4 +1,4 @@
-package com.example.unitconverter.funtions
+package com.example.unitconverter.constants
 
 import android.util.SparseIntArray
 import com.example.unitconverter.Utils.insertCommas

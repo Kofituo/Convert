@@ -1,8 +1,6 @@
 package com.example.unitconverter
 
 
-import android.animation.Animator
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -10,7 +8,6 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.os.*
 import android.util.Log
-import android.util.SparseArray
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -19,26 +16,28 @@ import android.view.View.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import com.example.unitconverter.AdditionItems.TextMessage
+import com.example.unitconverter.AdditionItems.ViewIdMessage
+import com.example.unitconverter.AdditionItems.bugDetected
+import com.example.unitconverter.AdditionItems.endAnimation
+import com.example.unitconverter.AdditionItems.isInitialized
+import com.example.unitconverter.AdditionItems.motionHandler
+import com.example.unitconverter.AdditionItems.orient
+import com.example.unitconverter.AdditionItems.popupWindow
+import com.example.unitconverter.AdditionItems.recentlyUsed
+import com.example.unitconverter.AdditionItems.statusBarHeight
+import com.example.unitconverter.AdditionItems.viewArray
+import com.example.unitconverter.AdditionItems.viewSparseArray
 import com.example.unitconverter.Utils.app_bar_bottom
 import com.example.unitconverter.Utils.getIntegerArrayList
 import com.example.unitconverter.Utils.name
 import com.example.unitconverter.Utils.putIntegerArrayList
-import com.example.unitconverter.subclasses.*
+import com.example.unitconverter.subclasses.ConvertViewModel
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-
-lateinit var popupWindow: MyPopupWindow
-var animateStart: Animator? = null
-var animateFinal: Animator? = null
-var orient = 0
-lateinit var motionHandler: Handler
-var statusBarHeight = 0
-var viewSparseArray: SparseArray<View> = SparseArray()
-lateinit var recentlyUsed: ArrayList<Int>
 
 //change manifest setting to backup allow true
 class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface {
@@ -89,6 +88,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         Toast.makeText(this, "hi bro ", Toast.LENGTH_LONG).show()
         val viewModel = ViewModelProviders.of(this@MainActivity)[ConvertViewModel::class.java]
         motion?.apply {
+
             motionHandler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
                     when (msg.what) {
@@ -308,7 +308,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun onDestroy() {
         super.onDestroy()
-        if (::popupWindow.isInitialized) popupWindow.dismiss()
+        if (isInitialized) popupWindow.dismiss()
         viewArray.clear()
     }
 
@@ -318,18 +318,3 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 }
 
-fun endAnimation(): Boolean {
-    animateStart?.apply {
-        if (isRunning) {
-            end()
-            ObjectAnimator.ofFloat(card, Y, cardY).start()
-            animateFinal?.apply {
-                duration = 200
-                start()
-            }
-            if (popupWindow.isShowing) popupWindow.dismiss()
-            return true
-        }
-    }
-    return false
-}

@@ -9,6 +9,9 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.widget.NestedScrollView
+import com.example.unitconverter.AdditionItems.bugDetected
+import com.example.unitconverter.AdditionItems.mProgress
+import com.example.unitconverter.AdditionItems.motionHandler
 import com.example.unitconverter.Utils.dpToInt
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -18,7 +21,6 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.sqrt
 
-var bugDetected =false
 
 class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedScrollView (context,attributeSet) ,
     GestureDetector.OnGestureListener {
@@ -49,7 +51,7 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
         velocityY: Float
     ): Boolean {
 
-        Log.e("size", "$screenSize")
+        Log.e("size", "${(e2!!.rawY - e1!!.rawY) * screenSize} ${minVelocity * screenSize}")
         if (e1 != null && e2 != null) {
             val iDontKnow = (e2.rawY - e1.rawY) * screenSize
             val justDoIt = minVelocity * screenSize
@@ -122,6 +124,6 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
 
 
     override fun getHandler(): Handler {
-        return com.example.unitconverter.motionHandler
+        return motionHandler
     }
 }

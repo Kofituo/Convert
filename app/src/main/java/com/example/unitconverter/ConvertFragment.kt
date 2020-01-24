@@ -17,9 +17,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.unitconverter.AdditionItems.pkgName
+import com.example.unitconverter.conversionClasses.Mass
+import com.example.unitconverter.conversionClasses.Prefix
+import com.example.unitconverter.conversionClasses.Temperature
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.MyAdapter
-import com.example.unitconverter.subclasses.RecyclerDataClass
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -30,8 +33,7 @@ import java.util.*
 import kotlin.Comparator
 import kotlin.math.round
 
-
-class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
+class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
 
     private lateinit var cancelButton: MaterialButton
     private lateinit var searchBar: TextInputLayout
@@ -102,8 +104,10 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
         Comparator { first: RecyclerDataClass, second: RecyclerDataClass ->
             first.quantity.compareTo(second.quantity)
         }
+    var start = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        start = System.currentTimeMillis()
         super.onCreate(savedInstanceState)
         arguments?.apply {
             viewId = getInt("viewId")
@@ -121,22 +125,6 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
         }
         viewModel.dataSet = whichView(viewId)
         lastPosition = sharedPreferences.getInt(string, -1)
-    }
-
-    private fun buildPrefixes():
-            MutableList<RecyclerDataClass> {
-        return mutableListOf<RecyclerDataClass>().apply {
-
-            add(RecyclerDataClass(yotta, yottaSymbol, 0))
-
-            add(RecyclerDataClass(zetta, zettaSymbol, 1))
-            //
-            addAll(massPrefixes("", "", 2))
-            //
-            add(RecyclerDataClass(zepto, zeptoSymbol, 18))
-            add(RecyclerDataClass(yocto, yoctoSymbol, 19))
-
-        }
     }
 
     private fun initializePrefixes() {
@@ -213,15 +201,14 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
                 setHasFixedSize(true)
                 viewManager = LinearLayoutManager(context)
                 layoutManager = viewManager
-                this@ConvertDialog.viewAdapter = // add comparator to params
+                this@ConvertFragment.viewAdapter = // add comparator to params
                     MyAdapter(viewModel.dataSet, viewModel.randomInt, comparator)
-                        .apply { setOnRadioButtonsClickListener(this@ConvertDialog) }
+                        .apply { setOnRadioButtonsClickListener(this@ConvertFragment) }
 
                 adapter = (viewAdapter as MyAdapter).apply {
                     add(viewModel.dataSet)
 
-                    lastPosition = this@ConvertDialog.lastPosition
-
+                    lastPosition = this@ConvertFragment.lastPosition
                     if (lastPosition != -1) smoothScrollToPosition(lastPosition)
 
                     searchBar.findViewById<TextInputEditText>(R.id.searchEditText)?.apply {
@@ -231,6 +218,7 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
                             override fun afterTextChanged(s: Editable?) {
                                 val filteredList =
                                     filter(viewModel.dataSet, s.toString())
+                                Log.e("fil", "$filteredList")
                                 replaceAll(filteredList)
                                 if (s.isNullOrEmpty()) {
                                     boolean = false
@@ -264,7 +252,7 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
         }
 
         setDialogColors(viewModel.randomInt)
-
+        Log.e("time", "${System.currentTimeMillis() - start}")
         return dialog
     }
 
@@ -288,7 +276,7 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
             texts(text, unit)
         }
         GlobalScope.launch {
-            delay(45)
+            delay(25)
             dismiss()
         }
     }
@@ -299,12 +287,14 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
     }
 
     private fun whichView(id: Int): MutableList<RecyclerDataClass> {
+        val context = context as Context
         return when (id) {
-            R.id.Mass -> buildForMass()
 
-            R.id.prefixes -> buildPrefixes()
+            R.id.Mass -> Mass(context).getList()
 
-            R.id.Temperature -> buildForTemperature()
+            R.id.prefixes -> Prefix(context).getList()
+
+            R.id.Temperature -> Temperature(context).getList()
 
             else -> mutableListOf()
         }
@@ -343,168 +333,5 @@ class ConvertDialog : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
     interface ConvertDialogInterface {
         fun texts(text: String, unit: String)
         fun getOtherValues(position: Int, positionKey: String)
-    }
-
-    //FUNCTIONS
-    private fun buildForMass(): MutableList<RecyclerDataClass> {
-        val gram =
-            RecyclerDataClass(getString(R.string.gram), getString(R.string.gram_unit), 0)
-        val pound =
-            RecyclerDataClass(getString(R.string.pound), getString(R.string.pound_unit), 17)
-        val ounce =
-            RecyclerDataClass(getString(R.string.ounce), getString(R.string.ounce_unit), 18)
-        val metricTon =
-            RecyclerDataClass(getString(R.string.metric_ton), getString(R.string.metricTonUnit), 19)
-        val shortTon =
-            RecyclerDataClass(getString(R.string.short_ton), getString(R.string.short_ton_unit), 20)
-        val longTon =
-            RecyclerDataClass(getString(R.string.long_ton), getString(R.string.long_ton_unit), 21)
-        val carat =
-            RecyclerDataClass(getString(R.string.carat), getString(R.string.carat_unit), 22)
-        val grain =
-            RecyclerDataClass(getString(R.string.grain), getString(R.string.grain_unit), 23)
-        val troyPound =
-            RecyclerDataClass(
-                getString(R.string.troy_pound),
-                getString(R.string.troy_poundUnit),
-                24
-            )
-        val troyOunce =
-            RecyclerDataClass(getString(R.string.troy_ounce), getString(R.string.troyOunceUnit), 25)
-        val pennyweight =
-            RecyclerDataClass(
-                getString(R.string.pennyweight),
-                getString(R.string.pennyweightUnit),
-                26
-            )
-        val stone =
-            RecyclerDataClass(getString(R.string.stone), getString(R.string.stone_unit), 27)
-        val atomicMassUnit =
-            RecyclerDataClass(
-                getString(R.string.atomicMassUnit),
-                getString(R.string.atomic_mass_unit_unit), 28
-            )
-        val slugMass =
-            RecyclerDataClass(getString(R.string.slug_mass), getString(R.string.slug_unit), 29)
-        val planckMass =
-            RecyclerDataClass(
-                getString(R.string.planck_mass),
-                getString(R.string.planck_mass_unit),
-                30
-            )
-        val solarMass =
-            RecyclerDataClass(
-                getString(R.string.solar_mass),
-                getString(R.string.solar_mass_unit),
-                31
-            )
-
-        return mutableListOf<RecyclerDataClass>().apply {
-            gram.apply {
-                add(this)
-                quantity.toLowerCase(Locale.getDefault()).also {
-                    addAll(massPrefixes(it, correspondingUnit, 1))
-                }
-            }
-            add(pound)
-            add(ounce)
-            add(metricTon)
-            add(shortTon)
-            add(longTon)
-            add(carat)
-            add(grain)
-            add(troyPound)
-            add(troyOunce)
-            add(pennyweight)
-            add(stone)
-            add(slugMass)
-            add(atomicMassUnit)
-            add(planckMass)
-            add(solarMass)
-        }
-    }
-
-    private fun massPrefixes(
-        quantity: String,
-        unit: String,
-        start: Int
-    ): MutableList<RecyclerDataClass> {
-        var startInt = start
-        return mutableListOf<RecyclerDataClass>().apply {
-            add(
-                RecyclerDataClass(exa + quantity, exaSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(peta + quantity, petaSymbol + unit, startInt++)
-            )
-
-            add(
-                RecyclerDataClass(tera + quantity, teraSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(giga + quantity, gigaSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(mega + quantity, megaSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(kilo + quantity, kiloSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(hecto + quantity, hectoSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(deca + quantity, decaSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(deci + quantity, deciSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(centi + quantity, centiSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(milli + quantity, milliSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(micro + quantity, microSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(nano + quantity, nanoSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(pico + quantity, picoSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(femto + quantity, femtoSymbol + unit, startInt++)
-            )
-            add(
-                RecyclerDataClass(atto + quantity, attoSymbol + unit, startInt++)
-            )
-            Log.e("st", "$startInt")
-        }
-    }
-
-    private fun buildForTemperature(): MutableList<RecyclerDataClass> {
-        val celsius =
-            RecyclerDataClass(
-                getString(R.string.celsius),
-                getString(R.string.celsius_unit), 0
-            )
-        val fahrenheit =
-            RecyclerDataClass(
-                getString(R.string.fahrenheit),
-                getString(R.string.fahrenheit_unit), 1
-            )
-        val kelvin =
-            RecyclerDataClass(
-                getString(R.string.kelvin),
-                getString(R.string.kelvin_unit), 2
-            )
-
-        return mutableListOf<RecyclerDataClass>().apply {
-            add(celsius)
-            add(fahrenheit)
-            add(kelvin)
-        }
     }
 }

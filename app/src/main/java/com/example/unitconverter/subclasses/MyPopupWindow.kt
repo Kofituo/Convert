@@ -12,12 +12,13 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
 import androidx.constraintlayout.widget.ConstraintSet
+import com.example.unitconverter.AdditionItems.animateFinal
+import com.example.unitconverter.AdditionItems.endAnimation
+import com.example.unitconverter.AdditionItems.longPress
+import com.example.unitconverter.AdditionItems.statusBarHeight
 import com.example.unitconverter.R
 import com.example.unitconverter.Utils.app_bar_bottom
 import com.example.unitconverter.Utils.dpToInt
-import com.example.unitconverter.animateFinal
-import com.example.unitconverter.endAnimation
-import com.example.unitconverter.statusBarHeight
 import com.google.android.material.card.MaterialCardView
 
 

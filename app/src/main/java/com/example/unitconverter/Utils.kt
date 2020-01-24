@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.text.InputFilter
 import android.util.TypedValue
 import android.view.View
+import com.google.android.material.textfield.TextInputEditText
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
@@ -76,9 +77,8 @@ object Utils {
     }
 
     //filters
-
-    fun filters(comma: Char, fullStop: Char): Array<InputFilter> {
-        val filter = InputFilter { source, start, end, _, _, _ ->
+    fun filters(comma: Char, fullStop: Char, editText: TextInputEditText): Array<InputFilter> {
+        val filter = InputFilter { source, start, end, dest, _, _ ->
             val stringBuilder = StringBuilder(end - start)
             var count = 0
             for (i in start until end) {
@@ -87,8 +87,15 @@ object Utils {
                     source[i] == fullStop
                 ) {
                     if (source[i] == fullStop) {
+                        // ensures only one decimal separator is in the text
                         count++
                         if (count >= 2) continue
+                        if (source.length > 1 && editText.isFocused) {
+                            val text = editText.text
+                            if (text != null
+                                && text.contains(fullStop)
+                            ) continue
+                        }
                     }
                     stringBuilder.append(source[i])
                 }
@@ -96,7 +103,7 @@ object Utils {
             stringBuilder
         }
         val lengthFilter = InputFilter.LengthFilter(50)
-
+        //val k = InputFilter { source, start, end, dest, dstart, dend ->  }
         return arrayOf(filter, lengthFilter)
     }
 }

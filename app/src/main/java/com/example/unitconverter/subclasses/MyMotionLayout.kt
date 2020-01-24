@@ -3,8 +3,7 @@ package com.example.unitconverter.subclasses
 import android.content.Context
 import android.util.AttributeSet
 import androidx.constraintlayout.motion.widget.MotionLayout
-
-var mProgress = 0f
+import com.example.unitconverter.AdditionItems.mProgress
 
 class MyMotionLayout(context: Context, attributeSet: AttributeSet? = null) :
     MotionLayout(context,attributeSet) {

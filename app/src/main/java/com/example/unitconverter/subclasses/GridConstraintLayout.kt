@@ -10,11 +10,10 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.constraintlayout.widget.Guideline
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
+import com.example.unitconverter.AdditionItems.viewArray
+import com.example.unitconverter.AdditionItems.viewSparseArray
 import com.example.unitconverter.R
 import com.example.unitconverter.Utils.dpToInt
-import com.example.unitconverter.viewSparseArray
-
-var viewArray: ArrayList<View> = arrayListOf()
 
 class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null) :
     ConstraintLayout(context, attributeSet) {

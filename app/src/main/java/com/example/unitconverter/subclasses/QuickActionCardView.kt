@@ -8,15 +8,17 @@ import android.util.AttributeSet
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import com.example.unitconverter.AdditionItems.animateFinal
+import com.example.unitconverter.AdditionItems.card
+import com.example.unitconverter.AdditionItems.popupWindow
 import com.example.unitconverter.R
-import com.example.unitconverter.animateFinal
-import com.example.unitconverter.popupWindow
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.Q)
-class QuickActionCardView(context: Context, attributeSet: AttributeSet) : MaterialCardView(context,attributeSet) {
+class QuickActionCardView(context: Context, attributeSet: AttributeSet) :
+    MaterialCardView(context, attributeSet) {
 
 
     init {

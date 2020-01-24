@@ -21,26 +21,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.TransitionManager
+import com.example.unitconverter.AdditionItems.TextMessage
+import com.example.unitconverter.AdditionItems.ViewIdMessage
+import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.filters
 import com.example.unitconverter.Utils.insertCommas
 import com.example.unitconverter.Utils.removeCommas
-import com.example.unitconverter.funtions.Mass
-import com.example.unitconverter.funtions.Mass.buildPrefixMass
-import com.example.unitconverter.funtions.Prefixes
+import com.example.unitconverter.constants.Prefixes
+import com.example.unitconverter.functions.Mass
 import com.example.unitconverter.subclasses.ConvertViewModel
-import com.example.unitconverter.subclasses.TextMessage
-import com.example.unitconverter.subclasses.ViewIdMessage
 import kotlinx.android.synthetic.main.activity_convert.*
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.properties.Delegates
 
-class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterface {
+class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface {
     private var swap = false
     private var randomColor = -1
     private var viewId = -1
-    private lateinit var dialog: ConvertDialog
+    private lateinit var dialog: ConvertFragment
     private var isPrefix = false
     private val bundle = Bundle()
     lateinit var function: (String) -> String
@@ -57,11 +57,11 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         }
         setSeparators()
         firstEditText.apply {
+            filters = filters(groupingSeparator, decimalSeparator, this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
-            filters = filters(groupingSeparator, decimalSeparator)
         }
         secondEditText.apply {
-            filters = filters(groupingSeparator, decimalSeparator)
+            filters = filters(groupingSeparator, decimalSeparator, this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
         }
         val isRTL =
@@ -70,7 +70,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             bottom_button.setTopPadding(-3) //converts it to dp
             top_button.setTopPadding(-3)
         }
-        dialog = ConvertDialog()
+        dialog = ConvertFragment()
         // for setting the text
         intent.apply {
             getStringExtra(TextMessage)?.also {
@@ -80,7 +80,6 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             }
             viewId = getIntExtra(ViewIdMessage, -1).apply {
                 isPrefix = equals(R.id.prefixes)
-
                 bundle.putInt("viewId", this)
             }
         }
@@ -161,48 +160,47 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         positionArray[positionKey] = position
         Log.e("pos", "$positionArray")
         if (initialMap == positionArray) return
-
-        val initialReverse = if (reverse) 1 else 0
-        if (positionKey == "topPosition") {
-            //keep the top constant
-            //Log.e("topHere", "first $firstBoolean  second $secondBoolean  $positionKey")
-            firstEditText.apply {
-                val initialText = Editable.Factory.getInstance().newEditable(text)
-                text = null
-                // if first one is false means its not in focus
-                // keep the top constant
-                if (!firstBoolean) {
-                    //Log.e("1","1  $reverse")
-                    secondEditText.removeTextChangedListener(secondCommonWatcher)
-                    addTextChangedListener(firstWatcher)
-                    reverse = false
-                    /*firstBoolean = true
-                    secondBoolean = false*/
-                }
-                text = initialText
-                //setting things back
-                if (secondBoolean) secondEditText.addTextChangedListener(secondCommonWatcher)
-                if (!firstBoolean) removeTextChangedListener(firstWatcher)
-                if (initialReverse != 0) reverse = true
-            }
+        val editTextInFocus: EditText
+        val editTextNotInFocus: EditText
+        val editTextInFocusBoolean: Boolean
+        val editTextNotInFocusBoolean: Boolean
+        val editTextInFocusWatcher: CommonWatcher
+        val editTextNotInFocusWatcher: CommonWatcher
+        //initialize variables
+        if (firstEditText.isFocused) {
+            editTextInFocus = firstEditText
+            editTextInFocus.text?.apply { if (isEmpty()) return }
+            editTextNotInFocus = secondEditText
+            editTextInFocusBoolean = firstBoolean
+            editTextNotInFocusBoolean = secondBoolean
+            editTextInFocusWatcher = firstWatcher
+            editTextNotInFocusWatcher = secondCommonWatcher
         } else {
-            //keep bottom constant
-            //Log.e("bottom", "$firstBoolean  $secondBoolean  $positionKey")
-            secondEditText.apply {
-                val initialText = Editable.Factory.getInstance().newEditable(text)
-                text = null
-                if (!secondBoolean) {
-                    //Log.e("2","2  $reverse")
-                    firstEditText.removeTextChangedListener(firstWatcher)
-                    addTextChangedListener(secondCommonWatcher)
-                    reverse = true
-                }
-                text = initialText
-                //setting things back
-                if (!secondBoolean) removeTextChangedListener(secondCommonWatcher)
-                if (firstBoolean) firstEditText.addTextChangedListener(firstWatcher)
-                if (initialReverse != 1) reverse = false
+            editTextInFocus = secondEditText
+            editTextInFocus.text?.apply { if (isEmpty()) return }
+            editTextNotInFocus = firstEditText
+            editTextInFocusBoolean = secondBoolean
+            editTextNotInFocusBoolean = firstBoolean
+            editTextInFocusWatcher = secondCommonWatcher
+            editTextNotInFocusWatcher = firstWatcher
+        }
+        val initialReverse = if (reverse) 1 else 0
+        // keep the text in focused edit text constant
+        editTextInFocus.apply {
+            //initial text
+            val initialText = Editable.Factory.getInstance().newEditable(text)
+            text = null
+            if (!editTextInFocusBoolean) {
+                editTextNotInFocus.removeTextChangedListener(editTextNotInFocusWatcher)
+                addTextChangedListener(editTextInFocusWatcher)
+                reverse = this != firstEditText
             }
+            text = initialText
+            //settings thing back
+            if (editTextNotInFocusBoolean)
+                editTextNotInFocus.addTextChangedListener(editTextNotInFocusWatcher)
+            if (!editTextInFocusBoolean) removeTextChangedListener(editTextInFocusWatcher)
+            reverse = initialReverse != 0
         }
     }
 
@@ -223,6 +221,9 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     }
 
     private var reverse = false
+
+    data class Positions(val topPosition: Int, val bottomPosition: Int, val input: String)
+
     private fun whichView() {
         when (viewId) {
             R.id.prefixes -> prefixConversions()
@@ -304,20 +305,25 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
             if (getPosition == null) string.insertCommas()
             else if (!getPosition) ""
             else {
+                val positions = Positions(topPosition, bottomPosition, string)
                 // get which one
                 //with elvis operator
-                amongGram(string) ?: poundConversions(string)
+                /***@Deprecated
+                /*amongGram(string) ?: poundConversions(string)
                 ?: gramConversions(string) ?: ounceConversions(string)
                 ?: metricTonConversions(string) ?: shortTonConversions(string)
                 ?: longTonConversions(string) ?: caratConversions(string)
-                ?: grainConversions(string)
-                ?: ""
+                ?: grainConversions(string) ?: troyPoundConversion(string)
+                ?: troyOunceConversions(string)
+                ?: ""*/
+                 */
+                Mass(positions).getText()
 
             }
         }
     }
 
-    private fun amongGram(x: String): String? {
+    /*private fun amongGram(x: String): String? {
         //val sparseArray = buildPrefixMass()
         // means its amongst the gram family
         if (topPosition in 0..16 && bottomPosition in 0..16) {
@@ -343,7 +349,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     //gram to ounce (oz) or vice versa
                     constant = gramToOunceConstant
                     pow = simplifyKgConversions()
-                    return somethingToOunce(x, pow, true)
+                    return gramToOunce(x, pow)
                 }
                 if (topPosition == 19 || bottomPosition == 19) {
                     //gram to metric ton
@@ -379,6 +385,25 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = gramToTroyPoundConstant
                     pow = simplifyKgConversions()
                     return gramToTroyPound(x, pow)
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    // to troy ounce
+                    constant = troyOunceToGramConstant
+                    pow = simplifyKgConversions()
+                    return troyOunceToGram(x, pow)
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to pennyWeight
+                    constant = pennyWeightToGramConstant
+                    pow = simplifyKgConversions()
+                    return pennyWeightToGram(x, pow)
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    // to stone
+                    constant = stoneToGramConstant
+                    pow = simplifyKgConversions()
+                    return stoneToGram(x, pow)
+
                 }
             }
         }
@@ -421,7 +446,6 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
     }
 
     private fun simplifyLbConversions() = if (topPosition > bottomPosition) 1 else -1
-
     //it works like a charm
     private fun poundConversions(x: String): String? {
         if (topPosition == 17 || bottomPosition == 17) {
@@ -434,7 +458,7 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                 if (topPosition == 18 || bottomPosition == 18) {
                     // pound to ounce
                     constant = poundToOunceConstant
-                    return somethingToOunce(x, simplifyLbConversions(), false)
+                    return poundToOunce(x, simplifyLbConversions())
                 }
                 if (topPosition == 19 || bottomPosition == 19) {
                     //pound to metric ton
@@ -464,8 +488,25 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     return poundToGrain(x, simplifyLbConversions())
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
+                    //to troy pound
                     constant = troyPoundToPoundConstant
                     return troyPoundToPound(x, simplifyLbConversions())
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to troy ounce
+                    constant = troyOunceToPoundConstant
+                    return troyOunceToPound(x, simplifyLbConversions())
+                }
+                if (topPosition == 26 || bottomPosition == 26 ) {
+                    //to pennyWeight
+                    constant = pennyWeightToPoundConstant
+                    return pennyWeightToPound(x,simplifyLbConversions())
+                }
+                if (topPosition == 27 || bottomPosition == 27){
+                    // to stone
+                    constant = stoneToPoundConstant
+                    return stoneToPound(x,simplifyLbConversions())
+
                 }
             }
         }
@@ -498,6 +539,21 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     //to troy pound
                     constant = metricTonTroyPoundConstant
                     return troyPoundToMetricTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to troy ounce
+                    constant = troyOunceToMetricTonConstant
+                    return troyOunceToMetricTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 26 || bottomPosition ==26) {
+                    //to pennyWeight
+                    constant= pennyWeightToMetricTonConstant
+                    return pennyWeightToMetricTon(x,simplifyLbConversions())
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    // to stone
+                    constant = stoneToMetricTonConstant
+                    return stoneToMetricTon(x,simplifyLbConversions())
                 }
             }
         }
@@ -539,6 +595,21 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = troyPoundToOunceConstant
                     return troyPoundToOunce(x, simplifyLbConversions())
                 }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to troy ounce
+                    constant = troyOunceToOunceConstant
+                    return troyOunceToOunce(x, simplifyLbConversions())
+                }
+                if (topPosition == 26 || bottomPosition== 26) {
+                    //to pennyWeight
+                    constant = pennyWeightToOunceConstant
+                    return pennyWeightToOunce(x,simplifyLbConversions())
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    // to stone
+                    constant = stoneToOunceConstant
+                    return stoneToOunce(x,simplifyLbConversions())
+                }
             }
         }
         return null
@@ -567,6 +638,21 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = shortTonToTroyPound
                     return troyPoundToShortTon(x, simplifyLbConversions())
                 }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to troy ounce
+                    constant = troyOunceToShortTonConstant
+                    return troyOunceToShortTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    // to pennyweight
+                    constant= pennyWeightToShortTonConstant
+                    return pennyWeightToShortTon(x,simplifyLbConversions())
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    // to stone
+                    constant = stoneToShortTonConstant
+                    return basicFunction(x,simplifyLbConversions())
+                }
             }
         }
         return null
@@ -590,6 +676,21 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = longTonToTroyPoundConstant
                     return longTonToTroyPound(x, simplifyLbConversions())
                 }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    // to troy ounce
+                    constant = troyOunceToLongTonConstant
+                    return troyOunceToLongTon(x, simplifyLbConversions())
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to pennyWeight
+                    constant = pennyWeightToLongTonConstant
+                    return pennyWeightToLongTon(x,simplifyLbConversions())
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    // to stone
+                    constant = stoneToLonTonConstant
+                    return basicFunction(x,simplifyLbConversions())
+                }
             }
         }
         return null
@@ -608,6 +709,20 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     constant = caratToTroyPoundConstant
                     return caratToTroyPound(x, simplifyLbConversions())
                 }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    // to troy ounce
+                    constant = caratToTroyOunceConstant
+                    return troyOunceToCarat(x, simplifyLbConversions())
+                }
+                if (topPosition ==26 || bottomPosition ==26){
+                    // to pennyWeight
+                    constant = pennyWeightToCaratConstant
+                    return pennyWeightToCarat(x,simplifyLbConversions())
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    // to stone
+
+                }
             }
         }
         return null
@@ -620,13 +735,59 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
                     //to troy pound
                     constant = grainToTroyPoundConstant
                     return troyPoundToGrain(x, simplifyLbConversions())
-
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    // to troy ounce
+                    constant = troyOunceToGrainConstant
+                    return troyOunceToGrain(x, simplifyLbConversions())
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    // to pennyWeight
+                    constant = pennyWeightToGrainConstant
+                    return pennyWeightToGrain(x, simplifyLbConversions())
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to stone
+                    constant = stoneToGrainConstant
+                    return basicFunction(x,simplifyLbConversions())
                 }
             }
         }
         return null
     }
 
+    private fun troyPoundConversion(x: String): String? {
+        if (topPosition == 24 || bottomPosition == 24) {
+            Mass.apply {
+                //troy pound
+                if (topPosition == 25 || bottomPosition == 25) {
+                    // to troy ounce
+                    constant = troyOunceToTroyPoundConstant
+                    return troyOunceToTroyPound(x, simplifyLbConversions())
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    // to pennyWeight
+                    constant = pennyWeightToTroyPoundConstant
+                    return pennyWeightToTroyPound(x, simplifyLbConversions())
+                }
+            }
+        }
+        return null
+    }
+
+    private fun troyOunceConversions(x: String): String? {
+        if (topPosition == 25 || bottomPosition == 25) {
+            Mass.apply {
+                if (topPosition == 26 || bottomPosition == 26) {
+                    // to pennyWeight
+                    constant = pennyWeightToTroyOunceConstant
+                    return pennyWeightToTroyOunce(x, simplifyLbConversions())
+                }
+            }
+        }
+        return null
+    }
+*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -774,12 +935,13 @@ class ConvertActivity : AppCompatActivity(), ConvertDialog.ConvertDialogInterfac
         SeparateThousands(editText, groupingSeparator, decimalSeparator) {
         override fun afterTextChanged(s: Editable?) {
             val start = System.currentTimeMillis()
+            Log.e("wh", "$s")
             super.afterTextChanged(s)
             s?.toString()?.apply {
                 this.removeCommas(decimalSeparator)?.also {
-                    Log.e("mayProblem", it)
+                    Log.e("may be Problem", it)
                     secondEditText.setText(callBack(function, it))
-                    Log.e("finish", "${System.currentTimeMillis() - start}")
+                    Log.e("finish", "${System.currentTimeMillis() - start} ${secondEditText.text}")
                 }
             }
         }

@@ -7,17 +7,22 @@ import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.TextView
-import com.example.unitconverter.*
+import com.example.unitconverter.AdditionItems.TextMessage
+import com.example.unitconverter.AdditionItems.ViewIdMessage
+import com.example.unitconverter.AdditionItems.animateFinal
+import com.example.unitconverter.AdditionItems.animateStart
+import com.example.unitconverter.AdditionItems.card
+import com.example.unitconverter.AdditionItems.cardY
+import com.example.unitconverter.AdditionItems.longPress
+import com.example.unitconverter.AdditionItems.orient
+import com.example.unitconverter.AdditionItems.popupWindow
+import com.example.unitconverter.AdditionItems.recentlyUsed
+import com.example.unitconverter.ConvertActivity
+import com.example.unitconverter.R
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-
-var card: MyCardView? = null
-var cardY: Float = 1f
-var longPress: Boolean = false
-const val TextMessage = "com.kofi.unitconverter.TextMessage"
-const val ViewIdMessage = "com.kofi.unitconverter.ViewIdMessage"
 
 class MyCardView(context: Context, attributeSet: AttributeSet) :
     MaterialCardView(context, attributeSet) {

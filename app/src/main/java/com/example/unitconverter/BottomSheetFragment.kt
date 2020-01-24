@@ -10,12 +10,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.fragment.app.DialogFragment
+import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.Utils.dpToInt
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlin.math.round
 
-const val pkgName = "com.example.unit_converter"
+
 class BottomSheetFragment : DialogFragment() {
 
     private lateinit var firstGroup: RadioGroup
@@ -50,7 +51,7 @@ class BottomSheetFragment : DialogFragment() {
         }
 
         val sharedPreferences = activity?.getSharedPreferences(
-            "com.example.unit_converter.sortingSelection",
+            "$pkgName.sortingSelection",
             Context.MODE_PRIVATE
         )
         val firstSelection = sharedPreferences?.getInt("firstSelection", -1)

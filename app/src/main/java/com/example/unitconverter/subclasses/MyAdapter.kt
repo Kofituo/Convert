@@ -2,7 +2,6 @@ package com.example.unitconverter.subclasses
 
 import android.content.res.ColorStateList
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import com.example.unitconverter.R
+import com.example.unitconverter.RecyclerDataClass
 import com.example.unitconverter.Utils.dpToInt
 import com.google.android.material.radiobutton.MaterialRadioButton
 import java.util.*
-
-data class RecyclerDataClass(val quantity: String, val correspondingUnit: String, val id: Int)
 
 class MyAdapter(
     private val dataSet: MutableList<RecyclerDataClass>,
@@ -50,7 +48,6 @@ class MyAdapter(
                 //lastPosition = adapterPosition
                 lastPosition = radioButton.myId
                 notifyItemRangeChanged(0, itemCount)
-                Log.e("d", "${radioButton.myId}  ${radioButton.text}")
                 listener.radioButtonClicked(
                     radioButton.myId,
                     radioButton.text.toString(),
@@ -71,7 +68,6 @@ class MyAdapter(
             )
         view.findViewById<MaterialRadioButton>(R.id.radioButtons).buttonTintList =
             ColorStateList.valueOf(colorInt)
-
         return MyViewHolder(view)
     }
 
@@ -114,39 +110,30 @@ class MyAdapter(
     private val mSortedList =
         SortedList(RecyclerDataClass::class.java,
             object : SortedList.Callback<RecyclerDataClass>() {
-                override fun areItemsTheSame(item1: RecyclerDataClass, item2: RecyclerDataClass)
-                        : Boolean {
-                    return item1.quantity == item2.quantity && item1.correspondingUnit == item2.correspondingUnit
-                }
+                override fun areItemsTheSame(item1: RecyclerDataClass, item2: RecyclerDataClass) =
+                    item1.quantity == item2.quantity &&
+                            item1.correspondingUnit == item2.correspondingUnit
 
-                override fun onMoved(fromPosition: Int, toPosition: Int) {
+                override fun onMoved(fromPosition: Int, toPosition: Int) =
                     notifyItemMoved(fromPosition, toPosition)
-                }
 
-                override fun onChanged(position: Int, count: Int) {
+                override fun onChanged(position: Int, count: Int) =
                     notifyItemRangeChanged(position, count)
-                }
 
-                override fun onInserted(position: Int, count: Int) {
-                    Log.e("9", "$position  $count")
+                override fun onInserted(position: Int, count: Int) =
                     notifyItemRangeInserted(position, count)
-                }
 
-                override fun onRemoved(position: Int, count: Int) {
+                override fun onRemoved(position: Int, count: Int) =
                     notifyItemRangeRemoved(position, count)
-                }
 
-                override fun compare(o1: RecyclerDataClass?, o2: RecyclerDataClass?): Int =
+                override fun compare(o1: RecyclerDataClass, o2: RecyclerDataClass) =
                     comparator.compare(o1, o2)
 
                 override fun areContentsTheSame(
                     oldItem: RecyclerDataClass?,
                     newItem: RecyclerDataClass?
-                ): Boolean {
-                    return oldItem == newItem
-                }
+                ) = oldItem == newItem
             })
-
 }
 /*
 fun add(data: RecyclerDataClass) = mSortedList.add(data)

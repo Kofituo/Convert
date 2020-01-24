@@ -3,7 +3,6 @@ package com.example.unitconverter
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import androidx.annotation.CallSuper
 import java.text.DecimalFormat
 import java.util.*
 
@@ -12,14 +11,12 @@ open class SeparateThousands(
     private val groupingSeparator: Char,
     private val decimalSeparator: Char
 ) : TextWatcher {
-
     //private var busy = false
     private var lastPosition = 0
     private lateinit var prevString: CharSequence
     private val zeroDigit =
         (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.zeroDigit
 
-    @CallSuper
     override fun afterTextChanged(s: Editable?) {
         if (s != null) {
             //busy = true
@@ -31,10 +28,15 @@ open class SeparateThousands(
 
             var editTextSelectionIndex: Int = -1
             if (isInitialized) {
-                if (editText.selectionEnd < prevString.length && editText.selectionStart < s.length) {
-                    if ((s.length < prevString.length && prevString[editText.selectionStart] == groupingSeparator) ||
-                        (s[editText.selectionStart] == groupingSeparator)
-                    ) editTextSelectionIndex = editText.selectionStart
+                if (editText.selectionEnd < prevString.length) {
+                    if (editText.selectionStart < s.length) {
+                        if ((s.length < prevString.length && prevString[editText.selectionStart] == groupingSeparator) ||
+                            (s[editText.selectionStart] == groupingSeparator)
+                        ) {//,234,225  < -  1,234,225
+                            //reset the selection |234,225
+                            editTextSelectionIndex = editText.selectionStart
+                        }
+                    }
                 }
             }
 
@@ -75,31 +77,37 @@ open class SeparateThousands(
                 }
                 i--
             }
+            //delete zeroes properly
+
+            if (s.length == 2 && s[0] == zeroDigit && s[1] == zeroDigit) s.delete(1, 2)
+            if (s.length > 2) {
+                if (s[0] == zeroDigit && s[1] == groupingSeparator)
+                    s.delete(0, 2) // no 0,264.554715
+                val f = StringBuilder(s).lastIndex
+                for (x in 0..f) {
+                    if (s[0] == decimalSeparator) {
+                        s.insert(0, zeroDigit.toString())
+                        break
+                    }
+                    if (s[0] == zeroDigit && s[1].isDigit() && s[1] != zeroDigit) break
+                    if (s[0].isDigit() && s[0] != zeroDigit) {
+                        break
+                    }
+                    s.delete(0, 0 + 1)
+                }
+            }
 
             if (editText.selectionStart != 0 && editTextSelectionIndex != -1) editText.setSelection(
                 if (editTextSelectionIndex == editText.selectionStart)
                     editTextSelectionIndex - 1
                 else editTextSelectionIndex
             )
+
             //0.0000003 -> 00000000.03
             //0.03
             //0.030001 -> 0030.01
             //30.01
-
-            if (s.length == 2 && s[0] == zeroDigit && s[1] == zeroDigit) s.delete(1, 2)
-            if (s.length > 2) {
-                val f = StringBuilder(s).lastIndex
-                for (x in 0 until f) {
-                    if (s[0] == decimalSeparator) {
-                        s.insert(0, zeroDigit.toString())
-                        break
-                    }
-                    if (s[0].isDigit() && s[0] != zeroDigit) break
-                    s.delete(0, 0 + 1)
-                }
-            }
             editText.addTextChangedListener(this)
-            //busy = false
         }
     }
 
