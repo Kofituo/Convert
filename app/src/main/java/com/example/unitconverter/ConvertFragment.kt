@@ -42,47 +42,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewModel: ConvertViewModel
     //Prefixes and their units
-    private lateinit var yotta: String
-    private lateinit var yottaSymbol: String
-    private lateinit var zetta: String
-    private lateinit var zettaSymbol: String
-    private lateinit var exa: String
-    private lateinit var exaSymbol: String
-    private lateinit var peta: String
-    private lateinit var petaSymbol: String
-    private lateinit var tera: String
-    private lateinit var teraSymbol: String
-    private lateinit var giga: String
-    private lateinit var gigaSymbol: String
-    private lateinit var mega: String
-    private lateinit var megaSymbol: String
-    private lateinit var kilo: String
-    private lateinit var kiloSymbol: String
-    private lateinit var hecto: String
-    private lateinit var hectoSymbol: String
-    private lateinit var deca: String
-    private lateinit var decaSymbol: String
-    private lateinit var deci: String
-    private lateinit var deciSymbol: String
-    private lateinit var centi: String
-    private lateinit var centiSymbol: String
-    private lateinit var milli: String
-    private lateinit var milliSymbol: String
-    private lateinit var micro: String
-    private lateinit var microSymbol: String
-    private lateinit var nano: String
-    private lateinit var nanoSymbol: String
-    private lateinit var pico: String
-    private lateinit var picoSymbol: String
-    private lateinit var femto: String
-    private lateinit var femtoSymbol: String
-    private lateinit var atto: String
-    private lateinit var attoSymbol: String
-    private lateinit var zepto: String
-    private lateinit var zeptoSymbol: String
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var yocto: String
-    private lateinit var yoctoSymbol: String
     //
     private var isPrefix = false
     private var viewId: Int = -1
@@ -117,64 +77,12 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         string = if (whichButton == R.id.top_button) "topButton" else "bottomButton"
         positionKey = string.substringBefore("B") + "Position"
         isPrefix = viewId == R.id.prefixes
-        initializePrefixes()
-        initializeSymbols()
         activity?.run {
             viewModel = ViewModelProviders.of(this)[ConvertViewModel::class.java]
             sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
         }
         viewModel.dataSet = whichView(viewId)
         lastPosition = sharedPreferences.getInt(string, -1)
-    }
-
-    private fun initializePrefixes() {
-        exa = getString(R.string.exa)
-        peta = getString(R.string.peta)
-        tera = getString(R.string.tera)
-        giga = getString(R.string.giga)
-        mega = getString(R.string.mega)
-        kilo = getString(R.string.kilo)
-        hecto = getString(R.string.hecto)
-        deca = getString(R.string.deca)
-        deci = getString(R.string.deci)
-        centi = getString(R.string.centi)
-        milli = getString(R.string.milli)
-        micro = getString(R.string.micro)
-        nano = getString(R.string.nano)
-        pico = getString(R.string.pico)
-        femto = getString(R.string.femto)
-        atto = getString(R.string.atto)
-        if (isPrefix) {
-            yotta = getString(R.string.yotta)
-            zetta = getString(R.string.zetta)
-            zepto = getString(R.string.zepto)
-            yocto = getString(R.string.yocto)
-        }
-    }
-
-    private fun initializeSymbols() {
-        exaSymbol = getString(R.string.exa_symbol)
-        petaSymbol = getString(R.string.peta_symbol)
-        teraSymbol = getString(R.string.tera_symbol)
-        gigaSymbol = getString(R.string.giga_symbol)
-        megaSymbol = getString(R.string.mega_symbol)
-        kiloSymbol = getString(R.string.kilo_symbol)
-        hectoSymbol = getString(R.string.hecto_symbol)
-        decaSymbol = getString(R.string.deca_symbol)
-        deciSymbol = getString(R.string.deci_symbol)
-        centiSymbol = getString(R.string.centi_symbol)
-        milliSymbol = getString(R.string.milli_symbol)
-        microSymbol = getString(R.string.micro_symbol)
-        nanoSymbol = getString(R.string.nano_symbol)
-        picoSymbol = getString(R.string.pico_symbol)
-        femtoSymbol = getString(R.string.femto_symbol)
-        attoSymbol = getString(R.string.atto_symbol)
-        if (isPrefix) {
-            yottaSymbol = getString(R.string.yotta_symbol)
-            zettaSymbol = getString(R.string.zetta_symbol)
-            zeptoSymbol = getString(R.string.zepto_symbol)
-            yoctoSymbol = getString(R.string.yocto_symbol)
-        }
     }
 
     @SuppressLint("InflateParams")
