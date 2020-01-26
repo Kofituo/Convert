@@ -34,9 +34,7 @@ object Prefixes {
             append(19, -24)
         }
 
-    fun prefix(top: Int, bottom: Int): Int {
-        return top - bottom
-    }
+    fun prefix(top: Int, bottom: Int): Int = top - bottom
 
     fun internalPrefixMultiplication(x: String, pow: Int): String {
         if (x.isEmpty()) return ""
@@ -44,7 +42,6 @@ object Prefixes {
         return h.stripTrailingZeros().insertCommas()
     }
 
-    fun prefixMultiplication(x: String): String {
-        return internalPrefixMultiplication(x, prefix(top, bottom))
-    }
+    fun prefixMultiplication(x: String) =
+        internalPrefixMultiplication(x, prefix(top, bottom))
 }

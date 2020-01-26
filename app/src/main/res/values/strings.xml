@@ -138,6 +138,16 @@
     <string name="kelvin_unit">K</string>
     <string name="fahrenheit">Fahrenheit</string>
     <string name="fahrenheit_unit">°F</string>
+    <string name="newton_temperature">Newton</string>
+    <string name="newton_temperature_unit">°N</string>
+    <string name="Delisle">Delisle</string>
+    <string name="delisle_unit">°De</string>
+    <string name="Rankine">Rankine</string>
+    <string name="rankine_unit">°R</string>
+    <string name="romer">Rømer</string>
+    <string name="rømer_unit">°Rø</string>
+    <string name="réaumur">Réaumur</string>
+    <string name="réaumur_unit">°Ré</string>
 
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.unitconverter.conversionClasses
+package com.example.unitconverter.recyclerViewData
 
 import android.content.Context
 import com.example.unitconverter.RecyclerDataClass

@@ -1,26 +1,27 @@
 package com.example.unitconverter.functions
 
-import com.example.unitconverter.ConvertActivity
+import com.example.unitconverter.ConvertActivity.Positions
 import com.example.unitconverter.constants.Mass
 
-class Mass(private val positions: ConvertActivity.Positions) : FunctionsInterface {
-    override val topPosition get() = positions.topPosition
+class Mass(positions: Positions) : ConstantsAbstractClass() {
+    override val topPosition = positions.topPosition
 
-    override val bottomPosition get() = positions.bottomPosition
+    override val bottomPosition = positions.bottomPosition
 
-    override val inputString get() = positions.input
+    override val inputString = positions.input
+
 
     override fun getText(): String {
-        return amongGram(inputString) ?: poundConversions(inputString)
-        ?: gramConversions(inputString) ?: ounceConversions(inputString)
-        ?: metricTonConversions(inputString) ?: shortTonConversions(inputString)
-        ?: longTonConversions(inputString) ?: caratConversions(inputString)
-        ?: grainConversions(inputString) ?: troyPoundConversion(inputString)
-        ?: troyOunceConversions(inputString)
+        return amongGram() ?: poundConversions()
+        ?: gramConversions() ?: ounceConversions()
+        ?: metricTonConversions() ?: shortTonConversions()
+        ?: longTonConversions() ?: caratConversions()
+        ?: grainConversions() ?: troyPoundConversion()
+        ?: troyOunceConversions() ?: pennyWeightConversions()
         ?: ""
     }
 
-    private fun amongGram(x: String): String? {
+    private fun amongGram(): String? {
         //val sparseArray = buildPrefixMass()
         // means its amongst the gram family
         if (topPosition in 0..16 && bottomPosition in 0..16) {
@@ -28,14 +29,14 @@ class Mass(private val positions: ConvertActivity.Positions) : FunctionsInterfac
                 buildPrefixMass().also {
                     top = it[topPosition]
                     bottom = it[bottomPosition]
-                    return prefixMultiplication(x)
+                    return prefixMultiplication(inputString)
                 }
             }
         }
         return null
     }
 
-    private fun gramConversions(x: String): String? {
+    private fun gramConversions(): String? {
         // among gram
         if (topPosition in 0..16 || bottomPosition in 0..16) {
             Mass.apply {
@@ -44,60 +45,60 @@ class Mass(private val positions: ConvertActivity.Positions) : FunctionsInterfac
                     //gram to ounce (oz) or vice versa
                     constant = gramToOunceConstant
                     pow = simplifyKgConversions()
-                    return gramToOunce(x, pow)
+                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 19 || bottomPosition == 19) {
                     //gram to metric ton
                     gramToMetricTonConversion()
-                    return prefixMultiplication(x)
+                    return prefixMultiplication(inputString)
                 }
                 if (topPosition == 20 || bottomPosition == 20) {
                     //gram to short Ton
                     constant = shortTonToKgConstant
                     pow = simplifyKgConversions()
-                    return gramToShortTon(x, pow)
+                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 21 || bottomPosition == 21) {
                     //gram to long Ton
                     constant = gramToLonTonConstant
                     pow = simplifyKgConversions()
-                    return gramToLongTon(x, pow)
+                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
                     //gram to carat
                     constant = gramToCaratConstant
                     pow = simplifyKgConversions()
-                    return gramToCarat(x, pow)
+                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 23 || bottomPosition == 23) {
                     //to grain
                     constant = grainToGramConstant
                     pow = simplifyKgConversions()
-                    return grainToGram(x, pow)
+                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
                     constant = gramToTroyPoundConstant
                     pow = simplifyKgConversions()
-                    return gramToTroyPound(x, pow)
+                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     // to troy ounce
                     constant = troyOunceToGramConstant
                     pow = simplifyKgConversions()
-                    return troyOunceToGram(x, pow)
+                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     //to pennyWeight
                     constant = pennyWeightToGramConstant
                     pow = simplifyKgConversions()
-                    return pennyWeightToGram(x, pow)
+                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     constant = stoneToGramConstant
                     pow = simplifyKgConversions()
-                    return stoneToGram(x, pow)
+                    return forMultiplePrefixes(inputString, pow)
 
                 }
             }
@@ -134,73 +135,72 @@ class Mass(private val positions: ConvertActivity.Positions) : FunctionsInterfac
             val whichOne =
                 if (temp == -2) it[bottomPosition] else temp
 
-            Mass.top = whichOne
-            Mass.bottom = kgPosition
+            top = whichOne
+            bottom = kgPosition
             return if (topPosition > bottomPosition) 1 else -1
         }
     }
 
-    private fun simplifyLbConversions() = if (topPosition > bottomPosition) 1 else -1
     //it works like a charm
-    private fun poundConversions(x: String): String? {
+    private fun poundConversions(): String? {
         if (topPosition == 17 || bottomPosition == 17) {
             Mass.apply {
                 if (topPosition in 0..16 || bottomPosition in 0..16) {
                     // g to lb or vice versa
                     constant = gramToPoundConstant
-                    return somethingGramToPound(x, simplifyKgConversions())
+                    return forMultiplePrefixes(inputString, simplifyKgConversions())
                 }
                 if (topPosition == 18 || bottomPosition == 18) {
                     // pound to ounce
                     constant = poundToOunceConstant
-                    return poundToOunce(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 19 || bottomPosition == 19) {
                     //pound to metric ton
                     //since the constant is for kilo it has to be divided
                     //by 1000
                     constant = gramToPoundConstant.scaleByPowerOfTen(-3)
-                    return poundToMetricTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 20 || bottomPosition == 20) {
                     //pound to short ton
                     constant = shortTonToPoundConstant
-                    return poundToShortTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 21 || bottomPosition == 21) {
                     //pound to long ton
                     constant = poundToLonTonConstant
-                    return poundToLongTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
                     //pound to carat
                     constant = poundToCaratConstant
-                    return poundToCarat(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 23 || bottomPosition == 23) {
                     //to grain
                     constant = grainToPoundConstant
-                    return poundToGrain(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
                     constant = troyPoundToPoundConstant
-                    return troyPoundToPound(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     //to troy ounce
                     constant = troyOunceToPoundConstant
-                    return troyOunceToPound(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     //to pennyWeight
                     constant = pennyWeightToPoundConstant
-                    return pennyWeightToPound(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     constant = stoneToPoundConstant
-                    return stoneToPound(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
 
                 }
             }
@@ -208,54 +208,54 @@ class Mass(private val positions: ConvertActivity.Positions) : FunctionsInterfac
         return null
     }
 
-    private fun metricTonConversions(x: String): String? {
+    private fun metricTonConversions(): String? {
         if (topPosition == 19 || bottomPosition == 19) {
             Mass.apply {
                 if (topPosition == 20 || bottomPosition == 20) {
                     //short ton to metric ton
                     constant = shortTonToMetricTonConstant
-                    return shortTonToMetricTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 21 || bottomPosition == 21) {
                     constant = metricTonToLonTonConstant
-                    return metricTonToLongTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
                     //metric ton to carat
                     constant = metricTonToCaratConstant
-                    return metricTonToCarat(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 23 || bottomPosition == 23) {
                     // to grain
                     constant = grainToMetricTonConstant
-                    return grainToMetricTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
                     constant = metricTonTroyPoundConstant
-                    return troyPoundToMetricTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     //to troy ounce
                     constant = troyOunceToMetricTonConstant
-                    return troyOunceToMetricTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     //to pennyWeight
                     constant = pennyWeightToMetricTonConstant
-                    return pennyWeightToMetricTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     constant = stoneToMetricTonConstant
-                    return stoneToMetricTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
             }
         }
         return null
     }
 
-    private fun ounceConversions(x: String): String? {
+    private fun ounceConversions(): String? {
         if (topPosition == 18 || bottomPosition == 18) {
             Mass.apply {
                 if (topPosition == 19 || bottomPosition == 19) {
@@ -263,223 +263,250 @@ class Mass(private val positions: ConvertActivity.Positions) : FunctionsInterfac
                     //since the constant is for kilo it has to be divided
                     //by 1000
                     constant = gramToOunceConstant.scaleByPowerOfTen(-3)
-                    return ounceToMetricTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (bottomPosition == 20 || topPosition == 20) {
                     //ounce to short ton
                     constant = ounceToShortTonConstant
-                    return ounceToShortTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 21 || bottomPosition == 21) {
                     //ounce to long ton
                     constant = ounceToLongTonConstant
-                    return ounceToLongTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
                     //ounce to carat
                     constant = ounceToCaratConstant
-                    return ounceToCarat(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 23 || bottomPosition == 23) {
                     //to grain
                     constant = grainToOunceConstant
-                    return ounceToGrain(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy Pound
                     constant = troyPoundToOunceConstant
-                    return troyPoundToOunce(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     //to troy ounce
                     constant = troyOunceToOunceConstant
-                    return troyOunceToOunce(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     //to pennyWeight
                     constant = pennyWeightToOunceConstant
-                    return pennyWeightToOunce(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     constant = stoneToOunceConstant
-                    return stoneToOunce(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
             }
         }
         return null
     }
 
-    private fun shortTonConversions(x: String): String? {
+    private fun shortTonConversions(): String? {
         if (topPosition == 20 || bottomPosition == 20) {
             Mass.apply {
                 if (topPosition == 21 || bottomPosition == 21) {
                     //short Ton to long ton
                     constant = shortTonToLongConstant
-                    return shortTonToLongTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
                     //to carat
                     constant = shortTonToCaratConstant
-                    return shortTonToCarat(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 23 || bottomPosition == 23) {
                     //to grain
                     constant = grainToShortTonConstant
-                    return grainToShortTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
                     constant = shortTonToTroyPound
-                    return troyPoundToShortTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     //to troy ounce
                     constant = troyOunceToShortTonConstant
-                    return troyOunceToShortTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     // to pennyweight
                     constant = pennyWeightToShortTonConstant
-                    return pennyWeightToShortTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     constant = stoneToShortTonConstant
-                    return basicFunction(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
             }
         }
         return null
     }
 
-    private fun longTonConversions(x: String): String? {
+    private fun longTonConversions(): String? {
         if (topPosition == 21 || bottomPosition == 21) {
             Mass.apply {
                 if (topPosition == 22 || bottomPosition == 22) {
                     //to carat
                     constant = longTonToCaratConstant
-                    return longTonToCarat(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 23 || bottomPosition == 23) {
                     //to grain
                     constant = grainToLongTonConstant
-                    return grainToLongTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
                     // to troy pound
                     constant = longTonToTroyPoundConstant
-                    return longTonToTroyPound(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     // to troy ounce
                     constant = troyOunceToLongTonConstant
-                    return troyOunceToLongTon(x, simplifyLbConversions())
+
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     //to pennyWeight
                     constant = pennyWeightToLongTonConstant
-                    return pennyWeightToLongTon(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     constant = stoneToLonTonConstant
-                    return basicFunction(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
             }
         }
         return null
     }
 
-    private fun caratConversions(x: String): String? {
+    private fun caratConversions(): String? {
         if (topPosition == 22 || bottomPosition == 22) {
             Mass.apply {
                 if (topPosition == 23 || bottomPosition == 23) {
                     //to grain
                     constant = grainToCaratConstant
-                    return grainToCarat(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
                     constant = caratToTroyPoundConstant
-                    return caratToTroyPound(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     // to troy ounce
                     constant = caratToTroyOunceConstant
-                    return troyOunceToCarat(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     // to pennyWeight
                     constant = pennyWeightToCaratConstant
-                    return pennyWeightToCarat(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
-
+                    constant = stoneToCaratConstant
+                    return basicFunction(inputString, swapConversions())
                 }
             }
         }
         return null
     }
 
-    private fun grainConversions(x: String): String? {
+    private fun grainConversions(): String? {
         if (topPosition == 23 || bottomPosition == 23) {
             Mass.apply {
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
                     constant = grainToTroyPoundConstant
-                    return troyPoundToGrain(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     // to troy ounce
                     constant = troyOunceToGrainConstant
-                    return troyOunceToGrain(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     // to pennyWeight
                     constant = pennyWeightToGrainConstant
-                    return pennyWeightToGrain(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     //to stone
                     constant = stoneToGrainConstant
-                    return basicFunction(x, simplifyLbConversions())
+                    return basicFunction(inputString, swapConversions())
                 }
             }
         }
         return null
     }
 
-    private fun troyPoundConversion(x: String): String? {
+    private fun troyPoundConversion(): String? {
         if (topPosition == 24 || bottomPosition == 24) {
             Mass.apply {
                 //troy pound
                 if (topPosition == 25 || bottomPosition == 25) {
                     // to troy ounce
                     constant = troyOunceToTroyPoundConstant
-                    return troyOunceToTroyPound(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     // to pennyWeight
                     constant = pennyWeightToTroyPoundConstant
-                    return pennyWeightToTroyPound(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    // to stone
+                    constant = stoneToTroyPoundConstant
+                    return basicFunction(inputString, swapConversions())
                 }
             }
         }
         return null
     }
 
-    private fun troyOunceConversions(x: String): String? {
+    private fun troyOunceConversions(): String? {
         if (topPosition == 25 || bottomPosition == 25) {
             Mass.apply {
                 if (topPosition == 26 || bottomPosition == 26) {
                     // to pennyWeight
                     constant = pennyWeightToTroyOunceConstant
-                    return pennyWeightToTroyOunce(x, simplifyLbConversions())
+                    return basicFunction(inputString, -swapConversions())
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    // to stone
+                    constant = stoneToTroyOunceConstant
+                    return basicFunction(inputString, swapConversions())
                 }
             }
         }
         return null
     }
+
+    private fun pennyWeightConversions(): String? {
+        if (topPosition == 26 || bottomPosition == 26) {
+            Mass.apply {
+                if (topPosition == 27 || bottomPosition == 27) {
+                    // to stone
+                    constant = stoneToPennyWeightConstant
+                    return basicFunction(inputString, swapConversions())
+                }
+            }
+        }
+        return null
+    }
+
+
 }

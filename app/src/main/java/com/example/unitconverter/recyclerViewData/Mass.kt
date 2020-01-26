@@ -1,4 +1,4 @@
-package com.example.unitconverter.conversionClasses
+package com.example.unitconverter.recyclerViewData
 
 import android.content.Context
 import com.example.unitconverter.R
@@ -29,8 +29,8 @@ class Mass(override val context: Context) : RecyclerDataInterface {
             add(R.string.troy_ounce, R.string.troyOunceUnit)
             add(R.string.pennyweight, R.string.pennyweightUnit)
             add(R.string.stone, R.string.stone_unit)
-            add(R.string.atomicMassUnit, R.string.atomic_mass_unit_unit)
             add(R.string.slug_mass, R.string.slug_unit)
+            add(R.string.atomicMassUnit, R.string.atomic_mass_unit_unit)
             add(R.string.planck_mass, R.string.planck_mass_unit)
             add(R.string.solar_mass, R.string.solar_mass_unit)
         }

@@ -1,8 +1,13 @@
 package com.example.unitconverter
 
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
+import com.example.unitconverter.Utils.lengthFilter
+import com.example.unitconverter.Utils.minusSign
+import com.example.unitconverter.miscellaneous.isNotNull
 import java.text.DecimalFormat
 import java.util.*
 
@@ -16,11 +21,20 @@ open class SeparateThousands(
     private lateinit var prevString: CharSequence
     private val zeroDigit =
         (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.zeroDigit
-
+    private var isNegative = false
+    private lateinit var filters: Array<InputFilter>
     override fun afterTextChanged(s: Editable?) {
-        if (s != null) {
-            //busy = true
-            editText.removeTextChangedListener(this)
+        if (s.isNotNull()) {
+            Log.e("init", "$s")
+            isNegative = s.isNotEmpty() && s[0] == minusSign
+
+            editText.apply {
+                removeTextChangedListener(this@SeparateThousands)
+                if (isNegative && s.length > 1) {
+                    this@SeparateThousands.filters = this.filters.copyOf()
+                    this.filters = arrayOf(lengthFilter())
+                }
+            }
             var place = 0
             val isInitialized = this::prevString.isInitialized
             var decimalPointIndex = s.indexOf(decimalSeparator)
@@ -107,6 +121,15 @@ open class SeparateThousands(
             //0.03
             //0.030001 -> 0030.01
             //30.01
+
+            if (isNegative && s.length > 1) {
+                s.apply {
+                    Log.e("first", "called ${s[0]} ${filters[0]}  $s")
+                    //delete(0,1)
+                    if (s[0] != minusSign) insert(0, minusSign.toString())
+                }
+                editText.filters = this.filters
+            }
             editText.addTextChangedListener(this)
         }
     }

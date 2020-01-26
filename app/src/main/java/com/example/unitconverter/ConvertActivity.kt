@@ -27,10 +27,15 @@ import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.filters
 import com.example.unitconverter.Utils.insertCommas
+import com.example.unitconverter.Utils.lengthFilter
+import com.example.unitconverter.Utils.minusSign
 import com.example.unitconverter.Utils.removeCommas
+import com.example.unitconverter.Utils.temperatureFilters
 import com.example.unitconverter.constants.Prefixes
 import com.example.unitconverter.functions.Mass
+import com.example.unitconverter.functions.Temperature
 import com.example.unitconverter.subclasses.ConvertViewModel
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_convert.*
 import java.text.DecimalFormat
 import java.util.*
@@ -44,8 +49,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private var isPrefix = false
     private val bundle = Bundle()
     lateinit var function: (String) -> String
-    var groupingSeparator by Delegates.notNull<Char>()
-    var decimalSeparator by Delegates.notNull<Char>()
+    private var groupingSeparator by Delegates.notNull<Char>()
+    private var decimalSeparator by Delegates.notNull<Char>()
+    private val isTemperature: Boolean get() = viewId == R.id.Temperature
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,14 +62,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             setDisplayShowTitleEnabled(false)
         }
         setSeparators()
-        firstEditText.apply {
-            filters = filters(groupingSeparator, decimalSeparator, this)
-            setRawInputType(Configuration.KEYBOARD_12KEY)
-        }
-        secondEditText.apply {
-            filters = filters(groupingSeparator, decimalSeparator, this)
-            setRawInputType(Configuration.KEYBOARD_12KEY)
-        }
+
         val isRTL =
             TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
         if (!isRTL) {
@@ -82,6 +81,24 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 isPrefix = equals(R.id.prefixes)
                 bundle.putInt("viewId", this)
             }
+        }
+
+        Log.e("view", "${viewId == R.id.Temperature}")
+        firstEditText.apply {
+            filters =
+                if (viewId == R.id.Temperature)
+                    temperatureFilters(groupingSeparator, decimalSeparator, this)
+                else filters(groupingSeparator, decimalSeparator, this)
+
+            setRawInputType(Configuration.KEYBOARD_12KEY)
+        }
+        secondEditText.apply {
+            filters =
+                if (viewId == R.id.Temperature)
+                    temperatureFilters(groupingSeparator, decimalSeparator, this)
+                else filters(groupingSeparator, decimalSeparator, this)
+
+            setRawInputType(Configuration.KEYBOARD_12KEY)
         }
 
         getLastConversions()
@@ -110,6 +127,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 }
         }
     }
+
 
     private lateinit var firstWatcher: CommonWatcher
     private lateinit var secondCommonWatcher: CommonWatcher
@@ -227,8 +245,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private fun whichView() {
         when (viewId) {
             R.id.prefixes -> prefixConversions()
-            R.id.Temperature -> {
-            }
+            R.id.Temperature -> temperatureConversions()
             R.id.Area -> {
             }
             R.id.Mass -> massConversions()
@@ -285,45 +302,307 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private fun prefixConversions() {
         function = { string ->
-            val getPosition = getPositions()
-            if (getPosition == null) string.insertCommas()
-            else if (!getPosition) ""
-            else {
-                val sparseIntArray = Prefixes.buildPrefix()
-                topPosition = sparseIntArray[topPosition]
-                bottomPosition = sparseIntArray[bottomPosition]
-                Prefixes.top = topPosition
-                Prefixes.bottom = bottomPosition
-                Prefixes.prefixMultiplication(string)
-            }
+            val sparseIntArray = Prefixes.buildPrefix()
+            topPosition = sparseIntArray[topPosition]
+            bottomPosition = sparseIntArray[bottomPosition]
+            Prefixes.top = topPosition
+            Prefixes.bottom = bottomPosition
+            Prefixes.prefixMultiplication(string)
         }
     }
 
     private fun massConversions() {
         function = { string ->
+            /**@Deprecated
             val getPosition = getPositions()
             if (getPosition == null) string.insertCommas()
             else if (!getPosition) ""
             else {
-                val positions = Positions(topPosition, bottomPosition, string)
-                // get which one
-                //with elvis operator
-                /***@Deprecated
-                /*amongGram(string) ?: poundConversions(string)
-                ?: gramConversions(string) ?: ounceConversions(string)
-                ?: metricTonConversions(string) ?: shortTonConversions(string)
-                ?: longTonConversions(string) ?: caratConversions(string)
-                ?: grainConversions(string) ?: troyPoundConversion(string)
-                ?: troyOunceConversions(string)
-                ?: ""*/
-                 */
-                Mass(positions).getText()
+            // get which one
+            //with elvis operator
+            /*amongGram(string) ?: poundConversions(string)
+            ?: gramConversions(string) ?: ounceConversions(string)
+            ?: metricTonConversions(string) ?: shortTonConversions(string)
+            ?: longTonConversions(string) ?: caratConversions(string)
+            ?: grainConversions(string) ?: troyPoundConversion(string)
+            ?: troyOunceConversions(string)
+            ?: ""*/
+             */
+            val positions = Positions(topPosition, bottomPosition, string)
+            Mass(positions).getText()
+        }
+    }
 
+    private fun temperatureConversions() {
+        function = { string ->
+            val positions = Positions(topPosition, bottomPosition, string)
+            Temperature(positions).getText()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            R.id.swap -> {
+                swap()
+                true
+            }
+            R.id.prefixes -> {
+                Intent(this, ConvertActivity::class.java).apply {
+                    putExtra(TextMessage, "Prefix")
+                    putExtra(ViewIdMessage, R.id.prefixes)
+                    startActivity(this)
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.convert_menu, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        if (isPrefix) menu?.removeItem(R.id.prefixes)
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    private fun swap() {
+        val constraintSet = ConstraintSet()
+        val firstBox = if (swap) R.id.secondBox else R.id.firstBox
+        val secondBox = if (swap) R.id.firstBox else R.id.secondBox
+        val topButton = if (swap) R.id.bottom_button else R.id.top_button
+        val bottomButton = if (swap) R.id.top_button else R.id.bottom_button
+
+        constraintSet.apply {
+            clone(convert_inner)
+            // for the first box
+            //clear(R.id.firstBox,ConstraintSet.TOP)
+            connect(
+                firstBox,
+                ConstraintSet.TOP,
+                secondBox,
+                ConstraintSet.BOTTOM,
+                40.dpToInt(this@ConvertActivity)
+            )
+            connect(
+                firstBox,
+                ConstraintSet.BOTTOM,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.BOTTOM,
+                0
+            )
+
+            // for the second box
+            //clear(R.id.secondBox,ConstraintSet.TOP)
+            clear(secondBox, ConstraintSet.BOTTOM)
+            connect(secondBox, ConstraintSet.TOP, R.id.topGuide, ConstraintSet.TOP, 0)
+
+            // for the top button
+            connect(topButton, ConstraintSet.TOP, firstBox, ConstraintSet.TOP)
+            connect(topButton, ConstraintSet.BOTTOM, firstBox, ConstraintSet.BOTTOM)
+            connect(topButton, ConstraintSet.START, firstBox, ConstraintSet.END)
+
+            //for the down button
+            connect(bottomButton, ConstraintSet.TOP, R.id.topGuide, ConstraintSet.TOP)
+            connect(bottomButton, ConstraintSet.BOTTOM, secondBox, ConstraintSet.BOTTOM)
+            connect(bottomButton, ConstraintSet.START, secondBox, ConstraintSet.END)
+
+            TransitionManager.beginDelayedTransition(convert_inner)
+            applyTo(convert_inner)
+        }
+        swap = !swap
+    }
+
+    private fun settingColours(colorInt: Int = 0) {
+        val colourArray = listOf(
+            "#29B6F6", "#FFD54F", "#DCE775",
+            "#D4E157", "#E1BEE7", "#E57373",
+            "#EF5350", "#66BB6A", "#FFA726",
+            "#5C6BC0", "#FFCA28", "#9CCC65",
+            "#FFCCBC", "#7986CB", "#42A5F5",
+            "#26A69A", "#03A9F4", "#00BCD4",
+            "#F06292", "#FF8A65", "#FFB74D",
+            "#26C6DA", "#4CAF50", "#FFC107",
+            "#FFCDD2", "#4FC3F7", "#4DB6AC",
+            "#FF7043", "#64B5F6", "#F8BBD0",
+            "#AED581", "#FF5722", "#43A047",
+            "#EC407A", "#81C784", "#4DD0E1",
+            "#FFE0B2", "#7E57C2", "#9575CD",
+            "#C5CAE9", "#BA68C8", "#F44336",
+            "#a0793d", "#2196F3", "#c8a165",
+            "#DCB579", "#ffa54f", "#cd8500",
+            "#b2beb5", "#b2beb5", "#77DD9911",
+            "#77DD99", "#7d9182"
+        )
+        //randomly get colour
+        randomColor = if (colorInt == 0) Color.parseColor(colourArray.random()) else colorInt
+        window?.apply {
+            statusBarColor = randomColor
+            decorView.apply {
+                post {
+                    if (Build.VERSION.SDK_INT > 22) systemUiVisibility =
+                        systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
+            }
+        }
+        Log.e("color", String.format("#%06X", (0xffffff and randomColor)))
+        randomColor.also {
+            window.statusBarColor = it
+            convert_parent.setBackgroundColor(it)
+            firstBox.boxStrokeColor = it
+            secondBox.boxStrokeColor = it
+            val colorStateList = ColorStateList.valueOf(it)
+            top_button.apply {
+                iconTint = colorStateList
+                rippleColor = colorStateList
+            }
+            bottom_button.apply {
+                iconTint = colorStateList
+                rippleColor = colorStateList
             }
         }
     }
 
-    /*private fun amongGram(x: String): String? {
+    private fun View.setTopPadding(padding: Int) {
+        this.apply {
+            setPadding(
+                padding.dpToInt(this@ConvertActivity),
+                paddingTop,
+                paddingRight,
+                paddingBottom
+            )
+        }
+    }
+
+    private inline fun callBack(f: (String) -> String, x: String): String {
+        return if (x.isEmpty()) "" else {
+            val getPosition = getPositions()
+            if (getPosition == null) x.insertCommas()
+            else if (!getPosition) ""
+            else f(x)
+        }
+    }
+
+    inner class CommonWatcher(editText: EditText, private val secondEditText: TextInputEditText) :
+        SeparateThousands(editText, groupingSeparator, decimalSeparator) {
+        override fun afterTextChanged(s: Editable?) {
+            val start = System.currentTimeMillis()
+            Log.e("came", "$s")
+            super.afterTextChanged(s)
+            s?.toString()?.apply {
+                if (s.length == 1 && s[0] == minusSign) {
+                    secondEditText.text = null // to prevent Unparseable number "-"error
+                    return
+                }
+                this.removeCommas(decimalSeparator)?.also {
+                    Log.e("may be Problem", it)
+                    secondEditText.apply {
+                        if (isTemperature) filters = arrayOf(lengthFilter())
+
+                        setText(callBack(function, it))
+                        if (isTemperature)
+                            filters = temperatureFilters(groupingSeparator, decimalSeparator, this)
+                    }
+                    Log.e("finish", "${System.currentTimeMillis() - start} ${secondEditText.text}")
+                }
+            }
+        }
+    }
+
+    private var firstBoolean = false
+    private var secondBoolean = false
+    private fun getTextWhileTyping() {
+        firstEditText.apply {
+            firstWatcher = CommonWatcher(this, secondEditText)
+            setOnFocusChangeListener { _, hasFocus ->
+                firstBoolean = hasFocus
+                //Log.e("3", "3 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
+                if (hasFocus) {
+                    ///Log.e("pp", "$firstBoolean ")
+                    addTextChangedListener(firstWatcher)
+                    secondEditText.removeTextChangedListener(secondCommonWatcher)
+                    reverse = false
+                }
+            }
+        }
+        secondEditText.apply {
+            secondCommonWatcher = CommonWatcher(this, firstEditText)
+            setOnFocusChangeListener { _, hasFocus ->
+                secondBoolean = hasFocus
+                //Log.e("4", "4 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
+                if (hasFocus) {
+                    addTextChangedListener(secondCommonWatcher)
+                    firstEditText.removeTextChangedListener(firstWatcher)
+                    reverse = true
+                }
+            }
+        }
+    }
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+    private fun getLastConversions() {
+        val topEditTextText: String?
+        val bottomEditTextText: String?
+        val topPosition: Int
+        val bottomPosition: Int
+        sharedPreferences = getSharedPreferences(pkgName + viewId, Context.MODE_PRIVATE)
+
+        sharedPreferences.apply {
+            topEditTextText = getString("topEditTextText", null)
+            bottomEditTextText = getString("bottomEditTextText", null)
+            topTextView.text = getString("topTextViewText", null)
+            bottomTextView.text = getString("bottomTextViewText", null)
+            secondBox.hint = bottomEditTextText?.let {
+                it
+            } ?: resources.getString(R.string.select_unit)
+            firstBox.hint = topEditTextText?.let {
+                Log.e("s1", it)
+                it
+            } ?: resources.getString(R.string.select_unit)
+
+            //get last positions
+            topPosition = getInt("topPosition", -1)
+            bottomPosition = getInt("downPosition", -1)
+            positionArray.apply {
+                put("topPosition", topPosition)
+                put("bottomPosition", bottomPosition)
+            }
+        }
+    }
+
+    private fun saveData() {
+        sharedPreferences.apply {
+            with(edit()) {
+                putString(
+                    "topEditTextText",
+                    if (firstBox.hint.toString() != resources.getString(R.string.select_unit)) firstBox.hint.toString() else null
+                )
+                putString("topTextViewText", topTextView.text.toString())
+                putString("bottomTextViewText", bottomTextView.text.toString())
+                putString(
+                    "bottomEditTextText",
+                    if (secondBox.hint.toString() != resources.getString(R.string.select_unit)) secondBox.hint.toString() else null
+                )
+                putInt("topPosition", positionArray["topPosition"]!!)
+                putInt("downPosition", positionArray["bottomPosition"]!!)
+                apply()
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveData()
+    }
+}
+/*private fun amongGram(x: String): String? {
         //val sparseArray = buildPrefixMass()
         // means its amongst the gram family
         if (topPosition in 0..16 && bottomPosition in 0..16) {
@@ -788,249 +1067,3 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         return null
     }
 */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            R.id.swap -> {
-                swap()
-                true
-            }
-            R.id.prefixes -> {
-                Intent(this, ConvertActivity::class.java).apply {
-                    putExtra(TextMessage, "Prefix")
-                    putExtra(ViewIdMessage, R.id.prefixes)
-                    startActivity(this)
-                }
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.convert_menu, menu)
-        return true
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        if (isPrefix) menu?.removeItem(R.id.prefixes)
-        return super.onPrepareOptionsMenu(menu)
-    }
-
-    private fun swap() {
-        val constraintSet = ConstraintSet()
-        val firstBox = if (swap) R.id.secondBox else R.id.firstBox
-        val secondBox = if (swap) R.id.firstBox else R.id.secondBox
-        val topButton = if (swap) R.id.bottom_button else R.id.top_button
-        val bottomButton = if (swap) R.id.top_button else R.id.bottom_button
-
-        constraintSet.apply {
-            clone(convert_inner)
-            // for the first box
-            //clear(R.id.firstBox,ConstraintSet.TOP)
-            connect(
-                firstBox,
-                ConstraintSet.TOP,
-                secondBox,
-                ConstraintSet.BOTTOM,
-                40.dpToInt(this@ConvertActivity)
-            )
-            connect(
-                firstBox,
-                ConstraintSet.BOTTOM,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM,
-                0
-            )
-
-            // for the second box
-            //clear(R.id.secondBox,ConstraintSet.TOP)
-            clear(secondBox, ConstraintSet.BOTTOM)
-            connect(secondBox, ConstraintSet.TOP, R.id.topGuide, ConstraintSet.TOP, 0)
-
-            // for the top button
-            connect(topButton, ConstraintSet.TOP, firstBox, ConstraintSet.TOP)
-            connect(topButton, ConstraintSet.BOTTOM, firstBox, ConstraintSet.BOTTOM)
-            connect(topButton, ConstraintSet.START, firstBox, ConstraintSet.END)
-
-            //for the down button
-            connect(bottomButton, ConstraintSet.TOP, R.id.topGuide, ConstraintSet.TOP)
-            connect(bottomButton, ConstraintSet.BOTTOM, secondBox, ConstraintSet.BOTTOM)
-            connect(bottomButton, ConstraintSet.START, secondBox, ConstraintSet.END)
-
-            TransitionManager.beginDelayedTransition(convert_inner)
-            applyTo(convert_inner)
-        }
-        swap = !swap
-    }
-
-    private fun settingColours(colorInt: Int = 0) {
-        val colourArray = listOf(
-            "#29B6F6", "#FFD54F", "#DCE775",
-            "#D4E157", "#E1BEE7", "#E57373",
-            "#EF5350", "#66BB6A", "#FFA726",
-            "#5C6BC0", "#FFCA28", "#9CCC65",
-            "#FFCCBC", "#7986CB", "#42A5F5",
-            "#26A69A", "#03A9F4", "#00BCD4",
-            "#F06292", "#FF8A65", "#FFB74D",
-            "#26C6DA", "#4CAF50", "#FFC107",
-            "#FFCDD2", "#4FC3F7", "#4DB6AC",
-            "#FF7043", "#64B5F6", "#F8BBD0",
-            "#AED581", "#FF5722", "#43A047",
-            "#EC407A", "#81C784", "#4DD0E1",
-            "#FFE0B2", "#7E57C2", "#9575CD",
-            "#C5CAE9", "#BA68C8", "#F44336",
-            "#a0793d", "#2196F3", "#c8a165",
-            "#DCB579", "#ffa54f", "#cd8500",
-            "#b2beb5", "#b2beb5", "#77DD9911",
-            "#77DD99", "#7d9182"
-        )
-        //randomly get colour
-        randomColor = if (colorInt == 0) Color.parseColor(colourArray.random()) else colorInt
-        window?.apply {
-            statusBarColor = randomColor
-            decorView.apply {
-                post {
-                    if (Build.VERSION.SDK_INT > 22) systemUiVisibility =
-                        systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                }
-            }
-        }
-        Log.e("color", String.format("#%06X", (0xffffff and randomColor)))
-        randomColor.also {
-            window.statusBarColor = it
-            convert_parent.setBackgroundColor(it)
-            firstBox.boxStrokeColor = it
-            secondBox.boxStrokeColor = it
-            val colorStateList = ColorStateList.valueOf(it)
-            top_button.apply {
-                iconTint = colorStateList
-                rippleColor = colorStateList
-            }
-            bottom_button.apply {
-                iconTint = colorStateList
-                rippleColor = colorStateList
-            }
-        }
-    }
-
-    private fun View.setTopPadding(padding: Int) {
-        this.apply {
-            setPadding(
-                padding.dpToInt(this@ConvertActivity),
-                paddingTop,
-                paddingRight,
-                paddingBottom
-            )
-        }
-    }
-
-    private inline fun callBack(f: (String) -> String, x: String) =
-        if (x.isEmpty()) "" else f(x)
-
-    inner class CommonWatcher(editText: EditText, private val secondEditText: EditText) :
-        SeparateThousands(editText, groupingSeparator, decimalSeparator) {
-        override fun afterTextChanged(s: Editable?) {
-            val start = System.currentTimeMillis()
-            Log.e("wh", "$s")
-            super.afterTextChanged(s)
-            s?.toString()?.apply {
-                this.removeCommas(decimalSeparator)?.also {
-                    Log.e("may be Problem", it)
-                    secondEditText.setText(callBack(function, it))
-                    Log.e("finish", "${System.currentTimeMillis() - start} ${secondEditText.text}")
-                }
-            }
-        }
-    }
-
-    private var firstBoolean = false
-    private var secondBoolean = false
-    private fun getTextWhileTyping() {
-        firstEditText.apply {
-            firstWatcher = CommonWatcher(this, secondEditText)
-            setOnFocusChangeListener { _, hasFocus ->
-                firstBoolean = hasFocus
-                //Log.e("3", "3 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
-                if (hasFocus) {
-                    ///Log.e("pp", "$firstBoolean ")
-                    addTextChangedListener(firstWatcher)
-                    secondEditText.removeTextChangedListener(secondCommonWatcher)
-                    reverse = false
-                }
-            }
-        }
-        secondEditText.apply {
-            secondCommonWatcher = CommonWatcher(this, firstEditText)
-            setOnFocusChangeListener { _, hasFocus ->
-                secondBoolean = hasFocus
-                //Log.e("4", "4 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
-                if (hasFocus) {
-                    addTextChangedListener(secondCommonWatcher)
-                    firstEditText.removeTextChangedListener(firstWatcher)
-                    reverse = true
-                }
-            }
-        }
-    }
-
-    private lateinit var sharedPreferences: SharedPreferences
-
-    private fun getLastConversions() {
-        val topEditTextText: String?
-        val bottomEditTextText: String?
-        val topPosition: Int
-        val bottomPosition: Int
-        sharedPreferences = getSharedPreferences(pkgName + viewId, Context.MODE_PRIVATE)
-
-        sharedPreferences.apply {
-            topEditTextText = getString("topEditTextText", null)
-            bottomEditTextText = getString("bottomEditTextText", null)
-            topTextView.text = getString("topTextViewText", null)
-            bottomTextView.text = getString("bottomTextViewText", null)
-            secondBox.hint = bottomEditTextText?.let {
-                it
-            } ?: resources.getString(R.string.select_unit)
-            firstBox.hint = topEditTextText?.let {
-                Log.e("s1", it)
-                it
-            } ?: resources.getString(R.string.select_unit)
-
-            //get last positions
-            topPosition = getInt("topPosition", -1)
-            bottomPosition = getInt("downPosition", -1)
-            positionArray.apply {
-                put("topPosition", topPosition)
-                put("bottomPosition", bottomPosition)
-            }
-        }
-    }
-
-    private fun saveData() {
-        sharedPreferences.apply {
-            with(edit()) {
-                putString(
-                    "topEditTextText",
-                    if (firstBox.hint.toString() != resources.getString(R.string.select_unit)) firstBox.hint.toString() else null
-                )
-                putString("topTextViewText", topTextView.text.toString())
-                putString("bottomTextViewText", bottomTextView.text.toString())
-                putString(
-                    "bottomEditTextText",
-                    if (secondBox.hint.toString() != resources.getString(R.string.select_unit)) secondBox.hint.toString() else null
-                )
-                putInt("topPosition", positionArray["topPosition"]!!)
-                putInt("downPosition", positionArray["bottomPosition"]!!)
-                apply()
-            }
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        saveData()
-    }
-}

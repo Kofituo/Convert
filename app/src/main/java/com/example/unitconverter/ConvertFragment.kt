@@ -18,9 +18,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.AdditionItems.pkgName
-import com.example.unitconverter.conversionClasses.Mass
-import com.example.unitconverter.conversionClasses.Prefix
-import com.example.unitconverter.conversionClasses.Temperature
+import com.example.unitconverter.recyclerViewData.Mass
+import com.example.unitconverter.recyclerViewData.Prefix
+import com.example.unitconverter.recyclerViewData.Temperature
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.MyAdapter
 import com.google.android.material.button.MaterialButton

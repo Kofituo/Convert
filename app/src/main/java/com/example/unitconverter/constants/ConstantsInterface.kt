@@ -1,0 +1,17 @@
+package com.example.unitconverter.constants
+
+import java.math.BigDecimal
+import java.math.MathContext
+
+interface ConstantsInterface {
+    val mathContext get() = MathContext(30)
+
+    fun BigDecimal.divide(int: Int): BigDecimal = this.divide(BigDecimal(int))
+
+    fun BigDecimal.divide(int: Int, mathContext: MathContext): BigDecimal =
+        this.divide(BigDecimal(int), mathContext)
+
+    fun BigDecimal.multiply(int: Int): BigDecimal = this.multiply(BigDecimal(int))
+
+    fun BigDecimal.minus(string: String): BigDecimal = this.subtract(BigDecimal(string))
+}

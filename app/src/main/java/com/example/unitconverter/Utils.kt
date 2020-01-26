@@ -3,8 +3,10 @@ package com.example.unitconverter
 import android.content.Context
 import android.content.SharedPreferences
 import android.text.InputFilter
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import com.example.unitconverter.miscellaneous.isNotNull
 import com.google.android.material.textfield.TextInputEditText
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -15,6 +17,10 @@ import kotlin.math.round
 object Utils {
 
     var app_bar_bottom = 0
+
+    val minusSign
+        get() =
+            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.minusSign
 
     fun SharedPreferences.Editor.putIntegerArrayList(
         key: String,
@@ -71,9 +77,8 @@ object Utils {
             (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
                 applyPattern("#,##0.######")
             }
-        return if (this is String) decimalFormat.format(this.toBigDecimal()) else decimalFormat.format(
-            this
-        )
+        return if (this is String) decimalFormat.format(this.toBigDecimal())
+        else decimalFormat.format(this)
     }
 
     //filters
@@ -92,7 +97,7 @@ object Utils {
                         if (count >= 2) continue
                         if (source.length > 1 && editText.isFocused) {
                             val text = editText.text
-                            if (text != null
+                            if (text.isNotNull()
                                 && text.contains(fullStop)
                             ) continue
                         }
@@ -102,8 +107,70 @@ object Utils {
             }
             stringBuilder
         }
-        val lengthFilter = InputFilter.LengthFilter(50)
         //val k = InputFilter { source, start, end, dest, dstart, dend ->  }
-        return arrayOf(filter, lengthFilter)
+        return arrayOf(filter, lengthFilter())
     }
+
+    // temperature filter
+    fun temperatureFilters(
+        comma: Char,
+        fullStop: Char,
+        editText: TextInputEditText
+    ): Array<InputFilter> {
+        val filter = InputFilter { source, start, end, dest, _, _ ->
+            val stringBuilder = StringBuilder(end - start)
+            var count = 0
+            for (i in start until end) {
+                if (editText.isFocused) Log.e(
+                    "i",
+                    "i $i source[i] ${source[i]}  source $source  source.lenght ${source.length} edittext last index ${editText.text?.lastIndexOf(
+                        minusSign
+                    )} souce last index ${source.lastIndexOf(minusSign)}  ${editText.selectionEnd}  ${editText.text?.indexOf(
+                        minusSign
+                    )}"
+                )
+                if (source[i] == minusSign) {
+                    if (editText.isFocused) Log.e(
+                        "if",
+                        "first ${i != 0} second ${editText.selectionStart != 0} third ${editText.text?.indexOf(
+                            minusSign
+                        ) != -1}"
+                    )
+                    if (i != 0) continue
+                    val editTextSelectionStart = editText.selectionStart
+                    if (
+                        editTextSelectionStart != editText.selectionEnd ||
+                        editTextSelectionStart != 0
+                    ) continue
+
+                    val text = editText.text
+                    if (text.isNotNull() && text.indexOf(minusSign) != -1) continue
+                    stringBuilder.append(source[i])
+                    if (editText.isFocused) Log.e("ap", "appended")
+                }
+                if (source[i].isDigit() ||
+                    source[i] == comma ||
+                    source[i] == fullStop
+                ) {
+                    if (source[i] == fullStop) {
+                        // ensures only one decimal separator is in the text
+                        count++
+                        if (count >= 2) continue
+                        if (source.length > 1 && editText.isFocused) {
+                            val text = editText.text
+                            if (text.isNotNull()
+                                && text.contains(fullStop)
+                            ) continue
+                        }
+                    }
+                    stringBuilder.append(source[i])
+                }
+            }
+            if (editText.isFocused) Log.e("string", "$stringBuilder ${editText.text}  $source")
+            stringBuilder
+        }
+        return arrayOf(filter, lengthFilter())
+    }
+
+    fun lengthFilter() = InputFilter.LengthFilter(50)
 }
