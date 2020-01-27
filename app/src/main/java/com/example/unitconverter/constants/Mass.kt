@@ -220,6 +220,39 @@ object Mass : ConstantsInterface {
     val slugToStoneConstant: BigDecimal
         get() = slugToPoundConstant.divide(stoneToPoundConstant, mathContext)
 
+    val amuToKg: BigDecimal get() = BigDecimal(16605390666).scaleByPowerOfTen(-37)//boom
+
+    val amuToPound: BigDecimal get() = amuToKg.divide(gramToPoundConstant, mathContext)
+
+    val amuToOunce: BigDecimal get() = amuToPound.multiply(16)
+
+    val amuToMetricTon: BigDecimal get() = amuToKg.toMetricTon()
+
+    val amuToShotTon: BigDecimal get() = amuToPound.divide(shortTonToPoundConstant, mathContext)
+
+    val amuToLongTon: BigDecimal get() = amuToPound.divide(poundToLonTonConstant, mathContext)
+
+    val amuToCarat: BigDecimal get() = amuToKg.divide(gramToCaratConstant, mathContext)
+
+    val amuToGrain: BigDecimal get() = amuToKg.divide(grainToGramConstant, mathContext)
+
+    val amuToTroyPound: BigDecimal get() = amuToGrain.divide(grainToTroyPoundConstant, mathContext)
+
+    val amuToTroyOunce: BigDecimal
+        get() = amuToTroyPound.multiply(troyOunceToTroyPoundConstant)
+
+    val amuToPennyWeight: BigDecimal
+        get() = amuToGrain.divide(pennyWeightToGrainConstant, mathContext)
+
+    val amuToStone: BigDecimal get() = amuToPound.divide(stoneToPoundConstant, mathContext)
+
+    val amuToSlug: BigDecimal get() = amuToPound.divide(slugToPoundConstant, mathContext)
+
+    val planckMassToKg: BigDecimal get() = BigDecimal("2.176435").scaleByPowerOfTen(-8)
+
+    val planckMassToPound: BigDecimal
+        get() = planckMassToKg.divide(gramToPoundConstant, mathContext)
+
     fun buildPrefixMass(): SparseIntArray =
         SparseIntArray(17).apply {
             append(0, 0)

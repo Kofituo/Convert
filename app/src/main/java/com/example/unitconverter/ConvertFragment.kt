@@ -64,7 +64,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     var start = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        start = System.currentTimeMillis()
+        start = System.nanoTime()
         super.onCreate(savedInstanceState)
         arguments?.apply {
             viewId = getInt("viewId")
@@ -129,7 +129,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         }
 
         setDialogColors(viewModel.randomInt)
-        Log.e("time", "${System.currentTimeMillis() - start}")
+        Log.e("time", "${System.nanoTime() - start}")
         return dialog
     }
 

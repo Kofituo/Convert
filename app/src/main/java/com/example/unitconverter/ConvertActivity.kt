@@ -303,13 +303,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     private fun prefixConversions() {
-        function = { positions ->
-            Prefixes(positions).getText()
+        function = {
+            Prefixes(it).getText()
         }
     }
 
     private fun massConversions() {
-        function = { positions ->
+        function = {
             /**@Deprecated
             val getPosition = getPositions()
             if (getPosition == null) string.insertCommas()
@@ -325,13 +325,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             ?: troyOunceConversions(string)
             ?: ""*/
              */
-            Mass(positions).getText()
+            Mass(it).getText()
         }
     }
 
     private fun temperatureConversions() {
-        function = { positions ->
-            Temperature(positions).getText()
+        function = {
+            Temperature(it).getText()
         }
     }
 
@@ -475,12 +475,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    private lateinit var convertClass: Any
-
-    private fun getConversion(positions: Positions) {
-
-    }
-
+    //could have used reflection
     private inline fun callBack(f: (Positions) -> String, x: String): String {
         return if (x.isEmpty()) "" else {
             val getPosition = getPositions()
@@ -489,7 +484,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             else f(Positions(topPosition, bottomPosition, x))
         }
     }
-
     inner class CommonWatcher(editText: EditText, private val secondEditText: TextInputEditText) :
         SeparateThousands(editText, groupingSeparator, decimalSeparator) {
         override fun afterTextChanged(s: Editable?) {
