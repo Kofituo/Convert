@@ -117,7 +117,7 @@ object Utils {
         fullStop: Char,
         editText: TextInputEditText
     ): Array<InputFilter> {
-        val filter = InputFilter { source, start, end, dest, _, _ ->
+        val filter = InputFilter { source, start, end, _, _, _ ->
             val stringBuilder = StringBuilder(end - start)
             var count = 0
             for (i in start until end) {

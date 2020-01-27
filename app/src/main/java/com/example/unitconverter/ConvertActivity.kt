@@ -34,6 +34,7 @@ import com.example.unitconverter.Utils.temperatureFilters
 import com.example.unitconverter.constants.Prefixes
 import com.example.unitconverter.functions.Mass
 import com.example.unitconverter.functions.Temperature
+import com.example.unitconverter.miscellaneous.isNull
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_convert.*
@@ -483,7 +484,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private inline fun callBack(f: (String) -> String, x: String): String {
         return if (x.isEmpty()) "" else {
             val getPosition = getPositions()
-            if (getPosition == null) x.insertCommas()
+            if (getPosition.isNull()) x.insertCommas()
             else if (!getPosition) ""
             else f(x)
         }

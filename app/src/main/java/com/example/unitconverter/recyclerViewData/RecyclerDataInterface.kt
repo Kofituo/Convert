@@ -5,6 +5,7 @@ import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
 
 interface RecyclerDataInterface {
+
     val yotta get() = getString(R.string.yotta)
     val zetta get() = getString(R.string.zetta)
     val zepto get() = getString(R.string.zepto)

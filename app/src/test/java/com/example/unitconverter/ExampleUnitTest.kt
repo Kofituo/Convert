@@ -6,7 +6,7 @@ import org.junit.Test
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
- * See [recycler_view documentation](http://d.android.com/tools/recycler_view).
+ * See [recycler_view_items documentation](http://d.android.com/tools/recycler_view_items).
  */
 class ExampleUnitTest {
     @Test

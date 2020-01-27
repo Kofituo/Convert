@@ -13,5 +13,7 @@ interface ConstantsInterface {
 
     fun BigDecimal.multiply(int: Int): BigDecimal = this.multiply(BigDecimal(int))
 
+    fun BigDecimal.plus(string: String): BigDecimal = this.add(BigDecimal(string))
+
     fun BigDecimal.minus(string: String): BigDecimal = this.subtract(BigDecimal(string))
 }

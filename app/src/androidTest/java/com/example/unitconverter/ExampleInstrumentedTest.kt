@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 /**
  * Instrumented test, which will execute on an Android device.
  *
- * See [recycler_view documentation](http://d.android.com/tools/recycler_view).
+ * See [recycler_view_items documentation](http://d.android.com/tools/recycler_view_items).
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {

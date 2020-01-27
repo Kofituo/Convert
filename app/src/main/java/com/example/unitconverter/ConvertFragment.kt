@@ -8,8 +8,6 @@ import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.AdditionItems.pkgName
+import com.example.unitconverter.miscellaneous.SearchTextChangeListenerF
 import com.example.unitconverter.recyclerViewData.Mass
 import com.example.unitconverter.recyclerViewData.Prefix
 import com.example.unitconverter.recyclerViewData.Temperature
@@ -29,8 +28,6 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.Comparator
 import kotlin.math.round
 
 class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener {
@@ -47,7 +44,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private var isPrefix = false
     private var viewId: Int = -1
     private lateinit var viewName: String
-    private var lastPosition = 1
+    private var lastPosition = -1
     private var whichButton = -1
     private lateinit var string: String
     private lateinit var convertDialogInterface: ConvertDialogInterface
@@ -93,7 +90,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         val dialog = Dialog(context!!, R.style.sortDialogStyle)
         //view
         LayoutInflater.from(context).inflate(R.layout.items_list, null).apply {
-
             dialog.setContentView(this)
             cancelButton = findViewById(R.id.cancel_button)
             searchBar = findViewById(R.id.search_bar)
@@ -117,52 +113,26 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
                     add(viewModel.dataSet)
 
                     lastPosition = this@ConvertFragment.lastPosition
+
                     if (lastPosition != -1) smoothScrollToPosition(lastPosition)
-
-                    searchBar.findViewById<TextInputEditText>(R.id.searchEditText)?.apply {
-
-                        addTextChangedListener(object : TextWatcher {
-                            var called = false
-                            override fun afterTextChanged(s: Editable?) {
-                                val filteredList =
-                                    filter(viewModel.dataSet, s.toString())
-                                Log.e("fil", "$filteredList")
-                                replaceAll(filteredList)
-                                if (s.isNullOrEmpty()) {
-                                    boolean = false
-                                    called = false
-                                    notifyItemRangeChanged(0, itemCount)
-                                }
-                                smoothScrollToPosition(0)
-                            }
-
-                            override fun beforeTextChanged(
-                                s: CharSequence?,
-                                start: Int,
-                                count: Int,
-                                after: Int
-                            ) {
-                                boolean = true
-                                if (!called) notifyItemRangeChanged(0, itemCount)
-                                called = true
-                            }
-
-                            override fun onTextChanged(
-                                s: CharSequence?,
-                                start: Int,
-                                before: Int,
-                                count: Int
-                            ) = Unit
-                        })
-                    }
+                    Log.e("las", "$lastPosition  ${this@ConvertFragment.lastPosition}")
                 }
             }
+            searchBar.findViewById<TextInputEditText>(R.id.searchEditText)
+                ?.addTextChangedListener(
+                    SearchTextChangeListenerF(
+                        recyclerView,
+                        recyclerView.adapter as MyAdapter,
+                        viewModel.dataSet
+                    )
+                )
         }
 
         setDialogColors(viewModel.randomInt)
         Log.e("time", "${System.currentTimeMillis() - start}")
         return dialog
     }
+
 
     private fun setDialogColors(colorInt: Int) {
         searchBar.boxStrokeColor = colorInt
@@ -220,22 +190,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     override fun onDismiss(dialog: DialogInterface) {
         saveData()
         super.onDismiss(dialog)
-    }
-
-    private fun filter(
-        dataSet: MutableList<RecyclerDataClass>,
-        searchText: String
-    ): MutableList<RecyclerDataClass> {
-        val locale = Locale.getDefault()
-        val mainText = searchText.trim().toLowerCase(locale)
-        return mutableListOf<RecyclerDataClass>().apply {
-            for (i in dataSet) {
-                val text = i.quantity.toLowerCase(locale)
-                val unit = i.correspondingUnit.toLowerCase(locale)
-                if (text.contains(mainText) || unit.contains(mainText))
-                    add(i)
-            }
-        }
     }
 
     interface ConvertDialogInterface {
