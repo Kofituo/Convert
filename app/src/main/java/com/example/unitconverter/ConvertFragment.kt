@@ -113,9 +113,9 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
                     add(viewModel.dataSet)
 
                     lastPosition = this@ConvertFragment.lastPosition
-
                     if (lastPosition != -1) smoothScrollToPosition(lastPosition)
-                    Log.e("las", "$lastPosition  ${this@ConvertFragment.lastPosition}")
+
+                    Log.e("last", "$lastPosition ")
                 }
             }
             searchBar.findViewById<TextInputEditText>(R.id.searchEditText)
@@ -149,6 +149,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
     override fun radioButtonClicked(position: Int, text: String, unit: String) {
         lastPosition = position
+        Log.e("last", "$position  $text")
         convertDialogInterface.apply {
             getOtherValues(position, positionKey)
             texts(text, unit)

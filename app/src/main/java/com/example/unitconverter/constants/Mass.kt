@@ -1,10 +1,12 @@
 package com.example.unitconverter.constants
 
 import android.util.SparseIntArray
-
 import java.math.BigDecimal
 
 object Mass : ConstantsInterface {
+
+    private fun BigDecimal.toMetricTon(): BigDecimal =
+        this.scaleByPowerOfTen(-3)
 
     private val sixteen = BigDecimal(16)
 
@@ -19,7 +21,7 @@ object Mass : ConstantsInterface {
     val shortTonToKgConstant get() = BigDecimal("907.18474")
 
     val shortTonToMetricTonConstant: BigDecimal
-        get() = shortTonToKgConstant.scaleByPowerOfTen(-3)
+        get() = shortTonToKgConstant.toMetricTon()
 
     val shortTonToPoundConstant get() = BigDecimal(2000)
 
@@ -31,11 +33,11 @@ object Mass : ConstantsInterface {
 
     val poundToLonTonConstant: BigDecimal get() = BigDecimal(2240)
 
-    val shortTonToLongConstant: BigDecimal get() = BigDecimal("1.12")
+    val shortTonToLongTonConstant: BigDecimal get() = BigDecimal("1.12")
 
     val metricTonToLonTonConstant: BigDecimal
         get() =
-            poundToLonTonConstant.multiply(gramToPoundConstant.scaleByPowerOfTen(-3))
+            poundToLonTonConstant.multiply(gramToPoundConstant.toMetricTon())
 
     val ounceToLongTonConstant: BigDecimal
         get() = poundToLonTonConstant.multiply(sixteen)
@@ -53,7 +55,7 @@ object Mass : ConstantsInterface {
                 .multiply(sixteen)
 
     val metricTonToCaratConstant: BigDecimal
-        get() = gramToCaratConstant.scaleByPowerOfTen(-3)
+        get() = gramToCaratConstant.toMetricTon()
 
     val shortTonToCaratConstant: BigDecimal get() = BigDecimal("4535923.7")
 
@@ -67,7 +69,7 @@ object Mass : ConstantsInterface {
     val grainToOunceConstant: BigDecimal get() = BigDecimal("437.5")
 
     val grainToMetricTonConstant: BigDecimal
-        get() = grainToGramConstant.scaleByPowerOfTen(-3)
+        get() = grainToGramConstant.toMetricTon()
 
     val grainToShortTonConstant: BigDecimal
         get() = grainToGramConstant.divide(shortTonToKgConstant, mathContext)
@@ -89,7 +91,7 @@ object Mass : ConstantsInterface {
         get() = troyPoundToPoundConstant.multiply(sixteen)
 
     val metricTonTroyPoundConstant: BigDecimal
-        get() = gramToTroyPoundConstant.scaleByPowerOfTen(-3)
+        get() = gramToTroyPoundConstant.toMetricTon()
 
     val shortTonToTroyPound: BigDecimal
         get() =
@@ -113,7 +115,7 @@ object Mass : ConstantsInterface {
         get() = BigDecimal(175 * 16).divide(192, mathContext)
 
     val troyOunceToMetricTonConstant: BigDecimal
-        get() = troyOunceToGramConstant.scaleByPowerOfTen(-3)
+        get() = troyOunceToGramConstant.toMetricTon()
 
     val troyOunceToShortTonConstant: BigDecimal
         get() =
@@ -137,7 +139,7 @@ object Mass : ConstantsInterface {
     val pennyWeightToTroyPoundConstant: BigDecimal get() = BigDecimal(240)
 
     val pennyWeightToGramConstant: BigDecimal
-        get() = BigDecimal("1.55517384").scaleByPowerOfTen(-3)
+        get() = BigDecimal("1.55517384").toMetricTon() //does'nt really mean to metric ton
 
     val pennyWeightToMetricTonConstant: BigDecimal
         get() = BigDecimal("1.55517384").scaleByPowerOfTen(-6)
@@ -147,7 +149,7 @@ object Mass : ConstantsInterface {
             pennyWeightToGramConstant.divide(shortTonToKgConstant, mathContext)
 
     val pennyWeightToLongTonConstant: BigDecimal
-        get() = pennyWeightToShortTonConstant.divide(shortTonToLongConstant, mathContext)
+        get() = pennyWeightToShortTonConstant.divide(shortTonToLongTonConstant, mathContext)
 
     val pennyWeightToCaratConstant: BigDecimal get() = BigDecimal("7.7758692")
 
@@ -164,7 +166,7 @@ object Mass : ConstantsInterface {
 
     val stoneToGramConstant: BigDecimal get() = BigDecimal("6.35029318")
 
-    val stoneToMetricTonConstant: BigDecimal get() = stoneToGramConstant.scaleByPowerOfTen(-3)
+    val stoneToMetricTonConstant: BigDecimal get() = stoneToGramConstant.toMetricTon()
 
     val stoneToShortTonConstant: BigDecimal get() = BigDecimal("0.007")
 
@@ -182,6 +184,41 @@ object Mass : ConstantsInterface {
     val stoneToTroyOunceConstant: BigDecimal get() = stoneToTroyPoundConstant.multiply(12)
 
     val stoneToPennyWeightConstant: BigDecimal get() = stoneToTroyOunceConstant.multiply(20)
+
+    val slugToPoundConstant: BigDecimal get() = BigDecimal("32.1740486948667165")
+
+    val gramToSlugConstant: BigDecimal
+        get() = slugToPoundConstant.multiply(gramToPoundConstant)
+
+    val metricTonToSlugConstant: BigDecimal get() = gramToSlugConstant.toMetricTon()
+
+    val slugToOunceConstant: BigDecimal get() = slugToPoundConstant.multiply(16)
+
+    val slugToShortTonConstant: BigDecimal
+        get() = slugToPoundConstant.divide(shortTonToPoundConstant)
+
+    //(a / b) /c
+    val slugToLongTonConstant: BigDecimal
+        get() = slugToPoundConstant.divide(
+            shortTonToPoundConstant.multiply(shortTonToLongTonConstant),
+            mathContext
+        )
+
+    val slugToCaratConstant: BigDecimal
+        get() = slugToPoundConstant.divide(poundToCaratConstant, mathContext)
+
+    val slugToGrainConstant: BigDecimal get() = slugToPoundConstant.multiply(7000)
+
+    val slugToTroyPoundConstant: BigDecimal
+        get() = slugToPoundConstant.divide(troyPoundToPoundConstant, mathContext)
+
+    val slugToTroyOunceConstant: BigDecimal get() = slugToTroyPoundConstant.multiply(12)
+
+    val slugToPennyWeight: BigDecimal
+        get() = slugToPoundConstant.divide(pennyWeightToPoundConstant, mathContext)
+
+    val slugToStoneConstant: BigDecimal
+        get() = slugToPoundConstant.divide(stoneToPoundConstant, mathContext)
 
     fun buildPrefixMass(): SparseIntArray =
         SparseIntArray(17).apply {

@@ -12,6 +12,7 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
         ?: longTonConversions() ?: caratConversions()
         ?: grainConversions() ?: troyPoundConversion()
         ?: troyOunceConversions() ?: pennyWeightConversions()
+        ?: stoneConversions()
         ?: ""
 
     private fun amongGram(): String? {
@@ -93,7 +94,12 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                     pow = simplifyKgConversions()
                     return forMultiplePrefixes(inputString, pow)
                 }
-                //return forMultiplePrefixes(inputString, pow)
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = gramToSlugConstant
+                    pow = simplifyKgConversions()
+                    return forMultiplePrefixes(inputString, pow)
+                }
             }
         }
         return null
@@ -194,7 +200,11 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                     // to stone
                     ratio = stoneToPoundConstant
                     return basicFunction(inputString, swapConversions())
-
+                }
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = slugToPoundConstant
+                    return basicFunction(inputString, swapConversions())
                 }
             }
         }
@@ -241,6 +251,11 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     ratio = stoneToMetricTonConstant
+                    return basicFunction(inputString, swapConversions())
+                }
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = metricTonToSlugConstant
                     return basicFunction(inputString, swapConversions())
                 }
             }
@@ -298,6 +313,11 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                     ratio = stoneToOunceConstant
                     return basicFunction(inputString, swapConversions())
                 }
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = slugToOunceConstant
+                    return basicFunction(inputString, swapConversions())
+                }
             }
         }
         return null
@@ -308,7 +328,7 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
             Mass.apply {
                 if (topPosition == 21 || bottomPosition == 21) {
                     //short Ton to long ton
-                    ratio = shortTonToLongConstant
+                    ratio = shortTonToLongTonConstant
                     return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
@@ -339,6 +359,11 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     ratio = stoneToShortTonConstant
+                    return basicFunction(inputString, swapConversions())
+                }
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = slugToShortTonConstant
                     return basicFunction(inputString, swapConversions())
                 }
             }
@@ -380,6 +405,11 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                     ratio = stoneToLonTonConstant
                     return basicFunction(inputString, swapConversions())
                 }
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = slugToLongTonConstant
+                    return basicFunction(inputString, swapConversions())
+                }
             }
         }
         return null
@@ -413,6 +443,11 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                     ratio = stoneToCaratConstant
                     return basicFunction(inputString, swapConversions())
                 }
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = slugToCaratConstant
+                    return basicFunction(inputString, swapConversions())
+                }
             }
         }
         return null
@@ -441,6 +476,11 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                     ratio = stoneToGrainConstant
                     return basicFunction(inputString, swapConversions())
                 }
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = slugToGrainConstant
+                    return basicFunction(inputString, swapConversions())
+                }
             }
         }
         return null
@@ -465,6 +505,11 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                     ratio = stoneToTroyPoundConstant
                     return basicFunction(inputString, swapConversions())
                 }
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = slugToTroyPoundConstant
+                    return basicFunction(inputString, swapConversions())
+                }
             }
         }
         return null
@@ -483,6 +528,11 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                     ratio = stoneToTroyOunceConstant
                     return basicFunction(inputString, swapConversions())
                 }
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = slugToTroyOunceConstant
+                    return basicFunction(inputString, swapConversions())
+                }
             }
         }
         return null
@@ -496,10 +546,26 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                     ratio = stoneToPennyWeightConstant
                     return basicFunction(inputString, swapConversions())
                 }
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = slugToPennyWeight
+                    return basicFunction(inputString, swapConversions())
+                }
             }
         }
         return null
     }
 
-
+    private fun stoneConversions(): String? {
+        if (topPosition == 27 || bottomPosition == 27) {
+            Mass.apply {
+                if (topPosition == 28 || bottomPosition == 28) {
+                    // to slug
+                    ratio = slugToStoneConstant
+                    return basicFunction(inputString, swapConversions())
+                }
+            }
+        }
+        return null
+    }
 }
