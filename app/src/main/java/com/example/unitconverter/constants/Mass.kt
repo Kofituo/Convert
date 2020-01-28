@@ -253,6 +253,80 @@ object Mass : ConstantsInterface {
     val planckMassToPound: BigDecimal
         get() = planckMassToKg.divide(gramToPoundConstant, mathContext)
 
+    val planckMassToMetricTon: BigDecimal get() = planckMassToKg.toMetricTon()
+
+    val planckMassToOunce: BigDecimal get() = planckMassToPound.multiply(16)
+
+    val plankMassToShortTon: BigDecimal
+        get() = planckMassToPound.divide(shortTonToPoundConstant, mathContext)
+
+    val planckMassToLongTon: BigDecimal
+        get() = planckMassToPound.divide(poundToLonTonConstant, mathContext)
+
+    val planckMassToCarat: BigDecimal
+        get() = planckMassToKg.divide(gramToCaratConstant, mathContext)
+
+    val planckMassToGrain: BigDecimal
+        get() = planckMassToKg.divide(grainToGramConstant, mathContext)
+
+    val planckMassToTroyPound: BigDecimal
+        get() = planckMassToGrain.divide(grainToTroyPoundConstant, mathContext)
+
+    val planckMassToTroyOunce: BigDecimal
+        get() = planckMassToTroyPound.multiply(troyOunceToTroyPoundConstant)
+
+    val planckMassToPennyWeight: BigDecimal
+        get() = planckMassToGrain.divide(pennyWeightToGrainConstant, mathContext)
+
+    val planckMassToStone: BigDecimal
+        get() = planckMassToPound.divide(stoneToPoundConstant, mathContext)
+
+    val planckMassToSlug: BigDecimal
+        get() = planckMassToPound.divide(slugToPoundConstant, mathContext)
+
+    val planckMassToAmu: BigDecimal
+        get() = BigDecimal("7.62957532219899374").scaleByPowerOfTen(-20)
+
+    val solarMassToKg: BigDecimal get() = BigDecimal("1.98847").scaleByPowerOfTen(30)
+
+    val solarMassToPound: BigDecimal get() = solarMassToKg.divide(gramToPoundConstant, mathContext)
+
+    val solarMassToMetricTon: BigDecimal get() = solarMassToKg.toMetricTon()
+
+    val solarMassToOunce: BigDecimal get() = solarMassToPound.multiply(16)
+
+    val solarMassToShortTon: BigDecimal
+        get() = solarMassToPound.divide(shortTonToPoundConstant, mathContext)
+
+    val solarMassToLongTon: BigDecimal
+        get() = solarMassToPound.divide(poundToLonTonConstant, mathContext)
+
+    val solarMassToCarat: BigDecimal get() = solarMassToKg.divide(gramToCaratConstant, mathContext)
+
+    val solarMassToGrain: BigDecimal
+        get() = solarMassToKg.divide(grainToGramConstant, mathContext)
+
+    val solarMassToTroyPound: BigDecimal
+        get() = solarMassToGrain.divide(grainToTroyPoundConstant, mathContext)
+
+    val solarMassToTroyOunce: BigDecimal
+        get() = solarMassToTroyPound.multiply(troyOunceToTroyPoundConstant)
+
+    val solarMassToPennyWeight: BigDecimal
+        get() = solarMassToGrain.divide(pennyWeightToGrainConstant, mathContext)
+
+    val solarMassToStone: BigDecimal
+        get() = solarMassToPound.divide(stoneToPoundConstant, mathContext)
+
+    val solarMassToSlug: BigDecimal
+        get() = solarMassToPound.divide(slugToPoundConstant, mathContext)
+
+    val solarMassToAmu: BigDecimal
+        get() = solarMassToKg.divide(amuToKg, mathContext)
+
+    val solarMassToPlanckMass: BigDecimal
+        get() = solarMassToAmu.divide(planckMassToAmu.pow(-1, mathContext), mathContext)
+
     fun buildPrefixMass(): SparseIntArray =
         SparseIntArray(17).apply {
             append(0, 0)

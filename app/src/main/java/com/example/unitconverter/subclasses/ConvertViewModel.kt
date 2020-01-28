@@ -12,4 +12,5 @@ class ConvertViewModel : ViewModel() {
                 field = value
             }
         }
+    var whichButton = -1
 }

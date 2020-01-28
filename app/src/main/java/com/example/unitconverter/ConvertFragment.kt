@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.AdditionItems.pkgName
-import com.example.unitconverter.miscellaneous.SearchTextChangeListenerF
+import com.example.unitconverter.miscellaneous.SearchTextChangeListener
 import com.example.unitconverter.recyclerViewData.Mass
 import com.example.unitconverter.recyclerViewData.Prefix
 import com.example.unitconverter.recyclerViewData.Temperature
@@ -71,14 +71,20 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             viewName = getString("viewName", "")
             whichButton = getInt("whichButton")
         }
+
         string = if (whichButton == R.id.top_button) "topButton" else "bottomButton"
+
         positionKey = string.substringBefore("B") + "Position"
+
         isPrefix = viewId == R.id.prefixes
+
         activity?.run {
             viewModel = ViewModelProviders.of(this)[ConvertViewModel::class.java]
             sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
         }
+
         viewModel.dataSet = whichView(viewId)
+
         lastPosition = sharedPreferences.getInt(string, -1)
     }
 
@@ -120,7 +126,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             }
             searchBar.findViewById<TextInputEditText>(R.id.searchEditText)
                 ?.addTextChangedListener(
-                    SearchTextChangeListenerF(
+                    SearchTextChangeListener(
                         recyclerView,
                         recyclerView.adapter as MyAdapter,
                         viewModel.dataSet
@@ -149,7 +155,10 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
     override fun radioButtonClicked(position: Int, text: String, unit: String) {
         lastPosition = position
-        Log.e("last", "$position  $text")
+        Log.e(
+            "last",
+            "$position  $text  $positionKey  $whichButton  ${whichButton == R.id.bottom_button}"
+        )
         convertDialogInterface.apply {
             getOtherValues(position, positionKey)
             texts(text, unit)
@@ -186,6 +195,11 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
                 apply()
             }
         }
+    }
+
+    override fun onStart() {
+        Log.e("start", "start")
+        super.onStart()
     }
 
     override fun onDismiss(dialog: DialogInterface) {

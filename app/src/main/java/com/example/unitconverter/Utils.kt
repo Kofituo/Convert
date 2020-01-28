@@ -172,5 +172,5 @@ object Utils {
         return arrayOf(filter, lengthFilter())
     }
 
-    fun lengthFilter() = InputFilter.LengthFilter(50)
+    fun lengthFilter() = InputFilter.LengthFilter(77)//for atm
 }

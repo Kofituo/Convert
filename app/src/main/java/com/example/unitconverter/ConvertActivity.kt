@@ -53,6 +53,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private var groupingSeparator by Delegates.notNull<Char>()
     private var decimalSeparator by Delegates.notNull<Char>()
     private val isTemperature: Boolean get() = viewId == R.id.Temperature
+    private lateinit var viewModel: ConvertViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +104,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
 
         getLastConversions()
-        ViewModelProviders.of(this)[ConvertViewModel::class.java] // for the view model
+        viewModel = ViewModelProviders.of(this)[ConvertViewModel::class.java] // for the view model
             .apply {
                 settingColours(randomInt)
                 randomInt = randomColor
@@ -115,6 +116,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             if (!dialog.isAdded)
                 dialog.apply {
                     bundle.putInt("whichButton", it.id)
+                    viewModel.whichButton = it.id
                     arguments = bundle
                     show(supportFragmentManager, "dialog")
                 }
@@ -123,6 +125,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             if (!dialog.isAdded)
                 dialog.apply {
                     bundle.putInt("whichButton", it.id)
+                    viewModel.whichButton = it.id
                     arguments = bundle
                     show(supportFragmentManager, "dialog")
                 }
@@ -145,7 +148,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     override fun texts(text: String, unit: String) {
-        val whichButton = bundle.getInt("whichButton")
+        val whichButton = viewModel.whichButton
+        Log.e("which", "$whichButton  $text  ${whichButton == R.id.top_button}")
         if (whichButton == R.id.top_button) {
             if (firstBox.hint != text) {
                 firstBox.hint = text
@@ -484,6 +488,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             else f(Positions(topPosition, bottomPosition, x))
         }
     }
+
     inner class CommonWatcher(editText: EditText, private val secondEditText: TextInputEditText) :
         SeparateThousands(editText, groupingSeparator, decimalSeparator) {
         override fun afterTextChanged(s: Editable?) {
@@ -504,7 +509,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         if (isTemperature)
                             filters = temperatureFilters(groupingSeparator, decimalSeparator, this)
                     }
-                    Log.e("finish", "${System.currentTimeMillis() - start} ${secondEditText.text}")
+                    Log.e(
+                        "finish",
+                        "${System.currentTimeMillis() - start} ${secondEditText.text} ${secondEditText.text?.length}"
+                    )
                 }
             }
         }

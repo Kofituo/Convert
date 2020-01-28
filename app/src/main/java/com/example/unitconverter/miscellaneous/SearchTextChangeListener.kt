@@ -7,7 +7,7 @@ import com.example.unitconverter.RecyclerDataClass
 import com.example.unitconverter.subclasses.MyAdapter
 import java.util.*
 
-class SearchTextChangeListenerF( //F for fragment
+class SearchTextChangeListener(
     private val recyclerView: RecyclerView,
     private val adapter: MyAdapter,
     private val dataSet: MutableList<RecyclerDataClass>

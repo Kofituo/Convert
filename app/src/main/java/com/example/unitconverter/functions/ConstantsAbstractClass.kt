@@ -48,10 +48,10 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
     private fun basicConversionFunction(x: String, pow: Int): BigDecimal =
         BigDecimal(x).multiply((ratio).pow(pow, mathContext))
 
-    fun basicFunction(x: String, pow: Int): String? =
+    fun basicFunction(x: String, pow: Int): String =
         basicConversionFunction(x, pow).toStringWithCommas()
 
-    fun forMultiplePrefixes(x: String, pow: Int): String? {
+    fun forMultiplePrefixes(x: String, pow: Int): String {
         val scale = prefix() * -pow
         return basicConversionFunction(x, pow)
             .scaleByPowerOfTen(scale).toStringWithCommas()
