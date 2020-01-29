@@ -46,6 +46,8 @@ interface RecyclerDataInterface {
     val zettaSymbol get() = getString(R.string.zetta_symbol)
     val zeptoSymbol get() = getString(R.string.zepto_symbol)
     val yoctoSymbol get() = getString(R.string.yocto_symbol)
+    val squareSymbol get() = getString(R.string.square_symbol)
+    val square get() = getString(R.string.square)
     //
     val context: Context
 

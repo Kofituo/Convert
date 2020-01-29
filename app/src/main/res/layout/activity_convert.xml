@@ -5,7 +5,7 @@
     android:id="@+id/convert_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DD9911"
+    android:background="#FF77AA"
     app:layoutDescription="@xml/convert_scene"
     app:motionProgress="1"
     tools:context=".ConvertActivity">
@@ -36,7 +36,6 @@
         android:text="@string/angularAcceleration"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="#030303"
         android:textSize="38sp" />
 
     <TextView
@@ -47,10 +46,8 @@
         android:text="@string/mass"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#030303"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/convert_app_bar"
-        tools:layout_editor_absoluteY="219dp" />
+        app:layout_constraintStart_toStartOf="@+id/convert_app_bar" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/convert_app_barGuideline"
@@ -64,7 +61,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/rounded_front"
-        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -74,8 +70,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/convert_inner"
             android:layout_width="match_parent"
-            android:splitMotionEvents="false"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:splitMotionEvents="false">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/topGuide"
@@ -93,8 +89,6 @@
                 app:boxCornerRadiusBottomStart="10dp"
                 app:boxCornerRadiusTopEnd="10dp"
                 app:boxCornerRadiusTopStart="10dp"
-                app:boxStrokeColor="#F8BBD0"
-                app:hintTextColor="@android:color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.2"
                 app:layout_constraintStart_toStartOf="parent"
@@ -122,9 +116,7 @@
                 app:boxCornerRadiusBottomStart="10dp"
                 app:boxCornerRadiusTopEnd="10dp"
                 app:boxCornerRadiusTopStart="10dp"
-                app:boxStrokeColor="#F8BBD0"
                 app:boxStrokeErrorColor="@color/design_default_color_primary_dark"
-                app:hintTextColor="@android:color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.2"
@@ -188,6 +180,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/firstBox"
                 app:layout_constraintTop_toTopOf="@id/topGuide"
+                app:strokeColor="?android:attr/textColorPrimary"
                 app:strokeWidth="2dp" />
 
             <com.google.android.material.button.MaterialButton
@@ -209,6 +202,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/secondBox"
                 app:layout_constraintTop_toTopOf="@id/secondBox"
+                app:strokeColor="?android:attr/textColorPrimary"
                 app:strokeWidth="2dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

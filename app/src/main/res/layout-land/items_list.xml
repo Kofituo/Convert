@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layoutAnimation="@anim/fall_down_layout_animation"
-    android:background="@drawable/all_round">
+    android:background="@drawable/all_round"
+    android:layoutAnimation="@anim/fall_down_layout_animation">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuide"
@@ -35,7 +35,7 @@
         android:padding="5dp"
         android:text="@string/select_unit"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000000"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/viewDivider1"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
@@ -52,16 +52,6 @@
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/select_unit" />
 
-    <!--<ImageView
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="15dp"
-        android:alpha="0.67"
-        android:src="@drawable/ic_magnifying_glass"
-        app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/viewDivider1" />
-
-    <-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_bar"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -73,19 +63,19 @@
         app:boxCornerRadiusBottomStart="10dp"
         app:boxCornerRadiusTopEnd="10dp"
         app:boxCornerRadiusTopStart="10dp"
-        app:hintTextColor="@android:color/black"
+        app:hintTextColor="?android:attr/textColorPrimary"
         app:layout_constraintBottom_toTopOf="@id/recycler_view"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/viewDivider1">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLength="25"
             android:maxLines="1"
             android:paddingStart="20dp"
-            android:id="@+id/searchEditText"
-            android:maxLength="25"
             android:paddingEnd="50dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,7 +84,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
-        android:background="@android:color/white"
+        android:background="?attr/colorSurface"
         android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/viewDivider2"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
@@ -123,6 +113,5 @@
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
-        app:layout_constraintTop_toBottomOf="@id/viewDivider2"
-        app:strokeColor="@android:color/black" />
+        app:layout_constraintTop_toBottomOf="@id/viewDivider2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

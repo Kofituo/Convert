@@ -9,7 +9,7 @@
         motion:motionInterpolator="linear">
         <OnSwipe
             motion:dragDirection="dragUp"
-            motion:maxAcceleration="20"
+            motion:maxAcceleration="40"
             motion:touchAnchorId="@id/convert_app_bar"
             motion:touchAnchorSide="bottom" />
 

@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
         grid.sort(sortValue, bufferArray)
         sharedArray = ArrayList(bufferArray)
-        bufferArray.clear()
+        //bufferArray.clear()
     }
 
     private var descending = false

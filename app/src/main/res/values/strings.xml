@@ -148,4 +148,61 @@
     <string name="rømer_unit">°Rø</string>
     <string name="réaumur">Réaumur</string>
     <string name="réaumur_unit">°Ré</string>
+
+    <!--for length-->
+    <string name="metre">Metre</string>
+    <string name="metre_unit">m</string>
+    <string name="foot">Foot</string>
+    <string name="foot_unit">ft</string>
+    <string name="inch">Inch</string>
+    <string name="inch_unit">in</string>
+    <string name="mile">Mile</string>
+    <string name="mile_unit">mi</string>
+    <string name="yard">Yard</string>
+    <string name="yard_unit">yd</string>
+    <string name="line">Line</string>
+    <string name="line_unit">lin</string>
+    <string name="nautical_mile">Nautical mile</string>
+    <string name="nautical_mile_unit">nmi</string>
+    <string name="nautical_league">Nautical league</string>
+    <string name="nautical_league_unit">naut. leag</string>
+    <string name="league">League</string>
+    <string name="league_unit">leag</string>
+    <string name="fathom">Fathom</string>
+    <string name="fathom_unit">ftm</string>
+    <string name="planck_length">Planck length</string>
+    <string name="planck_length_unit">ℓₚ</string>
+    <string name="chain">Chain</string>
+    <string name="chain_unit">chain</string>
+    <string name="light_year">Light Year</string>
+    <string name="light_year_unit">ly</string>
+
+    <!--volume-->
+
+    <string name="pint">Pint</string>
+    <string name="litre">Litre</string>
+    <string name="gallon">Gallon</string>
+    <string name="barrel">Barrel</string>
+    <string name="degrees">Degrees</string>
+    <string name="degrees_unit">°</string>
+    <string name="radians">Radians</string>
+    <string name="revolution">Revolution</string>
+    <string name="hour">Hour</string>
+    <string name="minute">Minute</string>
+    <string name="second">Second</string>
+    <string name="grad">Grad</string>
+    <string name="sextant">Sextant</string>
+    <string name="quadrant">Quadrant</string>
+    <string name="atm_barn">Barn</string>
+    <string name="atm_barn_unit">b</string>
+    <string name="hectare">Hectare</string>
+    <string name="hectare_unit">ha</string>
+    <string name="acre">Acre</string>
+    <string name="acre_unit">ac</string>
+    <string name="are">Are</string>
+    <string name="are_unit">a</string>
+
+    <string name="square_symbol">²</string>
+    <string name="square">Square</string>
+
 </resources>

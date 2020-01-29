@@ -35,7 +35,6 @@
         android:layout_marginBottom="3dp"
         android:text="@string/sort_by"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000000"
         app:layout_constraintBottom_toTopOf="@id/firstGroup"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toTopOf="@id/topGuide" />

@@ -19,7 +19,6 @@
         android:text="@string/header"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="#030303"
         android:textSize="37sp" />
 
     <androidx.appcompat.widget.Toolbar

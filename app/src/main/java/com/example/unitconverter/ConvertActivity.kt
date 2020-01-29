@@ -12,6 +12,7 @@ import android.text.Editable
 import android.text.TextUtils
 import android.util.ArrayMap
 import android.util.Log
+
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -103,7 +104,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             setRawInputType(Configuration.KEYBOARD_12KEY)
         }
 
+
         getLastConversions()
+
         viewModel = ViewModelProviders.of(this)[ConvertViewModel::class.java] // for the view model
             .apply {
                 settingColours(randomInt)
@@ -149,7 +152,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     override fun texts(text: String, unit: String) {
         val whichButton = viewModel.whichButton
-        Log.e("which", "$whichButton  $text  ${whichButton == R.id.top_button}")
         if (whichButton == R.id.top_button) {
             if (firstBox.hint != text) {
                 firstBox.hint = text
@@ -418,7 +420,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         swap = !swap
     }
 
-    private fun settingColours(colorInt: Int = 0) {
+    private fun settingColours(colorInt: Int) {
         val colourArray = listOf(
             "#29B6F6", "#FFD54F", "#DCE775",
             "#D4E157", "#E1BEE7", "#E57373",
@@ -437,7 +439,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             "#a0793d", "#2196F3", "#c8a165",
             "#DCB579", "#ffa54f", "#cd8500",
             "#b2beb5", "#b2beb5", "#77DD9911",
-            "#77DD99", "#7d9182"
+            "#77DD99", "#7d9182", "#FED766",
+            "#F6ABB6", "#EEC9D2", "#FE8A71",
+            "#F6CD61", "#FEB2A8", "#7BC043",
+            "#DFA290", "#88D8B0", "#BE9B7B",
+            "#DCEDC1", "#00B159", "#FF77AA"
         )
         //randomly get colour
         randomColor = if (colorInt == 0) Color.parseColor(colourArray.random()) else colorInt

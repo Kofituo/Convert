@@ -17,9 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.miscellaneous.SearchTextChangeListener
-import com.example.unitconverter.recyclerViewData.Mass
-import com.example.unitconverter.recyclerViewData.Prefix
-import com.example.unitconverter.recyclerViewData.Temperature
+import com.example.unitconverter.recyclerViewData.*
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.MyAdapter
 import com.google.android.material.button.MaterialButton
@@ -183,6 +181,10 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             R.id.prefixes -> Prefix(context).getList()
 
             R.id.Temperature -> Temperature(context).getList()
+
+            R.id.Area -> Area(context).getList()
+
+            R.id.Length -> Length(context).getList()
 
             else -> mutableListOf()
         }

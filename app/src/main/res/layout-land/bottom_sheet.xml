@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/all_round"
-
     android:theme="@style/sortStyle">
 
     <androidx.constraintlayout.widget.Guideline
@@ -35,7 +34,6 @@
         android:fontFamily="serif"
         android:text="@string/sort_by"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000000"
         app:layout_constraintBottom_toTopOf="@id/firstGroup"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toTopOf="@id/topGuide" />

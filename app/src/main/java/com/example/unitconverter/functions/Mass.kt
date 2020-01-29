@@ -15,7 +15,7 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
         ?: troyOunceConversions() ?: pennyWeightConversions()
         ?: stoneConversions() ?: slugConversions()
         ?: amuConversion() ?: plankMassConversion()
-        ?: throw Exception("top position = $topPosition  bottom position = $bottomPosition")
+        ?: throw Exception("top position = $topPosition  bottom position = $bottomPosition")//just in case i forgot one
 
     private fun amongGram(): String? {
         //val sparseArray = buildPrefixMass()

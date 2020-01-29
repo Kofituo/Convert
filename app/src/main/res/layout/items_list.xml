@@ -34,7 +34,7 @@
         android:padding="5dp"
         android:text="@string/select_unit"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#000000"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/viewDivider1"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
@@ -62,18 +62,18 @@
         app:boxCornerRadiusBottomStart="10dp"
         app:boxCornerRadiusTopEnd="10dp"
         app:boxCornerRadiusTopStart="10dp"
-        app:hintTextColor="@android:color/black"
+        app:hintTextColor="?android:attr/textColorPrimary"
         app:layout_constraintBottom_toTopOf="@id/recycler_view"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/viewDivider1">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/searchEditText"
-            android:maxLines="1"
             android:maxLength="20"
+            android:maxLines="1"
             android:paddingStart="20dp"
             android:paddingEnd="20dp" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -83,7 +83,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="1dp"
-        android:background="@android:color/white"
+        android:background="?attr/colorSurface"
         android:layoutAnimation="@anim/convert_recycler_layout_animation"
         android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/viewDivider2"
@@ -113,7 +113,6 @@
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
-        app:layout_constraintTop_toBottomOf="@id/viewDivider2"
-        app:strokeColor="@android:color/black" />
+        app:layout_constraintTop_toBottomOf="@id/viewDivider2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
