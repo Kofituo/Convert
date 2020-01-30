@@ -160,8 +160,6 @@
     <string name="mile_unit">mi</string>
     <string name="yard">Yard</string>
     <string name="yard_unit">yd</string>
-    <string name="line">Line</string>
-    <string name="line_unit">lin</string>
     <string name="nautical_mile">Nautical mile</string>
     <string name="nautical_mile_unit">nmi</string>
     <string name="nautical_league">Nautical league</string>
@@ -179,22 +177,45 @@
 
     <!--volume-->
 
-    <string name="pint">Pint</string>
+    <string name="us_pint">Pint (US)</string>
+    <string name="us_pint_unit">pt (US)</string>
+    <string name="imperial_pint">Imperial pint</string>
+    <string name="imperial_pint_unit">pt (UK)</string>
     <string name="litre">Litre</string>
-    <string name="gallon">Gallon</string>
-    <string name="barrel">Barrel</string>
+    <string name="litre_unit">L</string>
+    <string name="us_gallon">Gallon (US)</string>
+    <string name="us_gallon_unit">US gal</string>
+    <string name="uk_gallon">Imperial gallon</string>
+    <string name="uk_gallon_unit">imp gal</string>
+    <string name="barrel">Oil barrel</string>
+    <string name="barrel_unit">bbl</string>
+
+    <string name="us_fluid_ounce">Fluid ounce (US)</string>
+    <string name="us_fluid_ounce_unit">US fl oz</string>
+    <string name="uk_fluid_ounce">Imperial fluid ounce</string>
+    <string name="uk_fluid_ounce_unit">imp fl oz</string>
+    <string name="quart">Quart</string>
+    <string name="quart_unit">qt</string>
+    <!--for angle-->
+
     <string name="degrees">Degrees</string>
     <string name="degrees_unit">°</string>
     <string name="radians">Radians</string>
+    <string name="radians_unit">rad</string>
     <string name="revolution">Revolution</string>
-    <string name="hour">Hour</string>
-    <string name="minute">Minute</string>
-    <string name="second">Second</string>
+    <string name="revolution_unit">rev</string>
+    <string name="arc_minute">Arc minute</string>
+    <string name="arc_minute_unit"> ′</string>
+    <string name="arc_second">Arc second</string>
+    <string name="arc_second_unit">″</string>
     <string name="grad">Grad</string>
+    <string name="grad_unit">ᵍ</string>
     <string name="sextant">Sextant</string>
     <string name="quadrant">Quadrant</string>
     <string name="atm_barn">Barn</string>
     <string name="atm_barn_unit">b</string>
+
+    <!--area-->
     <string name="hectare">Hectare</string>
     <string name="hectare_unit">ha</string>
     <string name="acre">Acre</string>
@@ -204,5 +225,6 @@
 
     <string name="square_symbol">²</string>
     <string name="square">Square</string>
-
+    <string name="cubic">Cubic</string>
+    <string name="cubic_unit">³</string>
 </resources>

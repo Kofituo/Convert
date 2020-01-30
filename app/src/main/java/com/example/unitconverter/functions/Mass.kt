@@ -1,6 +1,5 @@
 package com.example.unitconverter.functions
 
-import android.util.Log
 import com.example.unitconverter.ConvertActivity.Positions
 import com.example.unitconverter.constants.Mass
 
@@ -21,12 +20,10 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
         //val sparseArray = buildPrefixMass()
         // means its amongst the gram family
         if (topPosition in 0..16 && bottomPosition in 0..16) {
-            Mass.apply {
-                buildPrefixMass().also {
-                    top = it[topPosition]
-                    bottom = it[bottomPosition]
-                    return prefixMultiplication(inputString)
-                }
+            Mass.buildPrefixMass().also {
+                top = it[topPosition]
+                bottom = it[bottomPosition]
+                return prefixMultiplication(inputString)
             }
         }
         return null
@@ -36,12 +33,9 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
         // among gram
         if (topPosition in 0..16 || bottomPosition in 0..16) {
             Mass.apply {
-                val pow: Int
                 if (topPosition == 18 || bottomPosition == 18) {
                     //gram to ounce (oz) or vice versa
                     ratio = gramToOunceConstant
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 19 || bottomPosition == 19) {
                     //gram to metric ton
@@ -51,75 +45,53 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 20 || bottomPosition == 20) {
                     //gram to short Ton
                     ratio = shortTonToKgConstant
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 21 || bottomPosition == 21) {
                     //gram to long Ton
                     ratio = gramToLonTonConstant
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
                     //gram to carat
                     ratio = gramToCaratConstant
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 23 || bottomPosition == 23) {
                     //to grain
                     ratio = grainToGramConstant
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
                     ratio = gramToTroyPoundConstant
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     // to troy ounce
                     ratio = troyOunceToGramConstant
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     //to pennyWeight
                     ratio = pennyWeightToGramConstant
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     ratio = stoneToGramConstant
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 28 || bottomPosition == 28) {
                     // to slug
                     ratio = gramToSlugConstant
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 29 || bottomPosition == 29) {
                     //to amu
                     ratio = amuToKg
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 30 || bottomPosition == 30) {
                     // to planck mas
                     ratio = planckMassToKg
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
                 if (topPosition == 31 || bottomPosition == 31) {
                     //final solar mass
                     ratio = solarMassToKg
-                    pow = simplifyKgConversions()
-                    return forMultiplePrefixes(inputString, pow)
                 }
+                val pow = simplifyMultiplePrefix()
+                return forMultiplePrefixes(inputString, pow)
             }
         }
         return null
@@ -145,7 +117,7 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
         }
     }
 
-    private fun simplifyKgConversions(): Int {
+    private fun simplifyMultiplePrefix(): Int {
         //to prevent double calling
         Mass.buildPrefixMass().also {
             val temp = it[topPosition, -2]
@@ -167,7 +139,7 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition in 0..16 || bottomPosition in 0..16) {
                     // g to lb or vice versa
                     ratio = gramToPoundConstant
-                    return forMultiplePrefixes(inputString, simplifyKgConversions())
+                    return forMultiplePrefixes(inputString, simplifyMultiplePrefix())
                 }
                 if (topPosition == 18 || bottomPosition == 18) {
                     // pound to ounce
@@ -256,58 +228,48 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 }
                 if (topPosition == 21 || bottomPosition == 21) {
                     ratio = metricTonToLonTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
                     //metric ton to carat
                     ratio = metricTonToCaratConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 23 || bottomPosition == 23) {
                     // to grain
                     ratio = grainToMetricTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
                     ratio = metricTonTroyPoundConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     //to troy ounce
                     ratio = troyOunceToMetricTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     //to pennyWeight
                     ratio = pennyWeightToMetricTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     ratio = stoneToMetricTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 28 || bottomPosition == 28) {
                     // to slug
                     ratio = metricTonToSlugConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 29 || bottomPosition == 29) {
                     //to amu
                     ratio = amuToMetricTon
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 30 || bottomPosition == 30) {
                     // to planck mass
                     ratio = planckMassToMetricTon
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 31 || bottomPosition == 31) {
                     //to solar mass
                     ratio = solarMassToMetricTon
-                    return basicFunction(inputString, swapConversions())
                 }
+                return basicFunction(inputString, swapConversions())
             }
         }
         return null
@@ -326,17 +288,14 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (bottomPosition == 20 || topPosition == 20) {
                     //ounce to short ton
                     ratio = ounceToShortTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 21 || bottomPosition == 21) {
                     //ounce to long ton
                     ratio = ounceToLongTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
                     //ounce to carat
                     ratio = ounceToCaratConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 23 || bottomPosition == 23) {
                     //to grain
@@ -346,43 +305,36 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy Pound
                     ratio = troyPoundToOunceConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     //to troy ounce
                     ratio = troyOunceToOunceConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     //to pennyWeight
                     ratio = pennyWeightToOunceConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     ratio = stoneToOunceConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 28 || bottomPosition == 28) {
                     // to slug
                     ratio = slugToOunceConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 29 || bottomPosition == 29) {
                     //to amu
                     ratio = amuToOunce
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 30 || bottomPosition == 30) {
                     // to planck mass
                     ratio = planckMassToOunce
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 31 || bottomPosition == 31) {
                     //to solar mass
                     ratio = solarMassToOunce
-                    return basicFunction(inputString, swapConversions())
                 }
+                return basicFunction(inputString, swapConversions())
             }
         }
         return null
@@ -394,7 +346,6 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 21 || bottomPosition == 21) {
                     //short Ton to long ton
                     ratio = shortTonToLongTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 22 || bottomPosition == 22) {
                     //to carat
@@ -404,7 +355,6 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 23 || bottomPosition == 23) {
                     //to grain
                     ratio = grainToShortTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
@@ -419,33 +369,28 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 26 || bottomPosition == 26) {
                     // to pennyweight
                     ratio = pennyWeightToShortTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     ratio = stoneToShortTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 28 || bottomPosition == 28) {
                     // to slug
                     ratio = slugToShortTonConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 29 || bottomPosition == 29) {
                     //to amu
                     ratio = amuToShotTon
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 30 || bottomPosition == 30) {
                     // to planck mass
                     ratio = plankMassToShortTon
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 31 || bottomPosition == 31) {
                     // to solar mass
                     ratio = solarMassToShortTon
-                    return basicFunction(inputString, swapConversions())
                 }
+                return basicFunction(inputString, swapConversions())
             }
         }
         return null
@@ -521,43 +466,36 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
                     ratio = caratToTroyPoundConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     // to troy ounce
                     ratio = caratToTroyOunceConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     // to pennyWeight
                     ratio = pennyWeightToCaratConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     ratio = stoneToCaratConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 28 || bottomPosition == 28) {
                     // to slug
                     ratio = slugToCaratConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 29 || bottomPosition == 29) {
                     //to amu
                     ratio = amuToCarat
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 30 || bottomPosition == 30) {
                     // to planck mass
                     ratio = planckMassToCarat
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 31 || bottomPosition == 31) {
                     //to solar mass
                     ratio = solarMassToCarat
-                    return basicFunction(inputString, swapConversions())
                 }
+                return basicFunction(inputString, swapConversions())
             }
         }
         return null
@@ -569,42 +507,35 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 24 || bottomPosition == 24) {
                     //to troy pound
                     ratio = grainToTroyPoundConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 25 || bottomPosition == 25) {
                     // to troy ounce
                     ratio = troyOunceToGrainConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 26 || bottomPosition == 26) {
                     // to pennyWeight
                     ratio = pennyWeightToGrainConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 27 || bottomPosition == 27) {
                     //to stone
                     ratio = stoneToGrainConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 28 || bottomPosition == 28) {
                     // to slug
                     ratio = slugToGrainConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 29 || bottomPosition == 29) {
                     //to amu
                     ratio = amuToGrain
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 30 || bottomPosition == 30) {
                     ratio = planckMassToGrain
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 31 || bottomPosition == 31) {
                     //to solar mass
                     ratio = solarMassToGrain
-                    return basicFunction(inputString, swapConversions())
                 }
+                return basicFunction(inputString, swapConversions())
             }
         }
         return null
@@ -698,28 +629,24 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 27 || bottomPosition == 27) {
                     // to stone
                     ratio = stoneToPennyWeightConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 28 || bottomPosition == 28) {
                     // to slug
                     ratio = slugToPennyWeight
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 29 || bottomPosition == 29) {
                     ratio = amuToPennyWeight
-                    return basicFunction(inputString, swapConversions())
                     //to amu
                 }
                 if (topPosition == 30 || bottomPosition == 30) {
                     //to planck mass
                     ratio = planckMassToPennyWeight
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 31 || bottomPosition == 31) {
                     //to solar mass
                     ratio = solarMassToPennyWeight
-                    return basicFunction(inputString, swapConversions())
                 }
+                return basicFunction(inputString, swapConversions())
             }
         }
         return null
@@ -731,23 +658,20 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 28 || bottomPosition == 28) {
                     // to slug
                     ratio = slugToStoneConstant
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 29 || bottomPosition == 29) {
                     //to amu
                     ratio = amuToStone
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 30 || bottomPosition == 30) {
                     //to planck mass
                     ratio = planckMassToStone
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 31 || bottomPosition == 31) {
                     //to solar mass
                     ratio = solarMassToStone
-                    return basicFunction(inputString, swapConversions())
                 }
+                return basicFunction(inputString, swapConversions())
             }
         }
         return null
@@ -759,18 +683,16 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 29 || bottomPosition == 29) {
                     //to amu
                     ratio = amuToSlug
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 30 || bottomPosition == 30) {
                     //to planck mass
                     ratio = planckMassToSlug
-                    return basicFunction(inputString, swapConversions())
                 }
                 if (topPosition == 31 || bottomPosition == 31) {
                     //to solar mass
                     ratio = solarMassToSlug
-                    return basicFunction(inputString, swapConversions())
                 }
+                return basicFunction(inputString, swapConversions())
             }
         }
         return null
@@ -800,7 +722,6 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
             topPosition == 31 || bottomPosition == 31
         ) {
             ratio = Mass.solarMassToPlanckMass
-            Log.e("ratio", "$ratio  ${basicFunction(inputString, swapConversions())}")
             return basicFunction(inputString, swapConversions())
         }
         return null

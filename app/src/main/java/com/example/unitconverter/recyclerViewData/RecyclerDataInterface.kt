@@ -3,8 +3,10 @@ package com.example.unitconverter.recyclerViewData
 import android.content.Context
 import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
+import java.util.*
 
 interface RecyclerDataInterface {
+    val locale: Locale get() = Locale.getDefault()
 
     val yotta get() = getString(R.string.yotta)
     val zetta get() = getString(R.string.zetta)

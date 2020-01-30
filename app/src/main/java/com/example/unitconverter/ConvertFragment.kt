@@ -186,6 +186,10 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.Length -> Length(context).getList()
 
+            R.id.Volume -> Volume(context).getList()
+
+            R.id.Angle -> Angle(context).getList()
+
             else -> mutableListOf()
         }
     }

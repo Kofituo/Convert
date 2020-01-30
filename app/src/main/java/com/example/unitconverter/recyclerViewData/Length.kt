@@ -21,7 +21,6 @@ class Length(override val context: Context) : RecyclerDataInterface {
             add(R.string.inch, R.string.inch_unit)
             add(R.string.mile, R.string.mile_unit)
             add(R.string.yard, R.string.yard_unit)
-            add(R.string.line, R.string.line_unit)
             add(R.string.nautical_mile, R.string.nautical_mile_unit)
             add(R.string.nautical_league, R.string.nautical_league_unit)
             add(R.string.league, R.string.league_unit)

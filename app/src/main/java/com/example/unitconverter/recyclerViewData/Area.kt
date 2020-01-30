@@ -11,17 +11,38 @@ class Area(override val context: Context) : RecyclerDataInterface {
 
     override fun getList(): MutableList<RecyclerDataClass> {
         return mutableListOf<RecyclerDataClass>().apply {
-            val locale = Locale.getDefault()
-            add(R.string.metre, R.string.metre_unit)
+
+            squareAdd(R.string.metre, R.string.metre_unit)
             val quantity = getString(R.string.metre).toLowerCase(locale)
             val unit = getString(R.string.metre_unit)
-            add(square + kilo.toLowerCase(locale) + quantity, kiloSymbol + unit + squareSymbol)
-            add(square + hecto.toLowerCase(locale) + quantity, hectoSymbol + unit + squareSymbol)
-            add(square + deca.toLowerCase(locale) + quantity, decaSymbol + unit + squareSymbol)
-            add(square + deci.toLowerCase(locale) + quantity, deciSymbol + unit + squareSymbol)
-            add(square + centi.toLowerCase(locale) + quantity, centiSymbol + unit + squareSymbol)
-            add(square + milli.toLowerCase(locale) + quantity, milliSymbol + unit + squareSymbol)
-            add(square + micro.toLowerCase(locale) + quantity, microSymbol + unit + squareSymbol)
+            add(
+                square + " " + kilo.toLowerCase(locale) + quantity,
+                kiloSymbol + unit + squareSymbol
+            )
+            add(
+                square + " " + hecto.toLowerCase(locale) + quantity,
+                hectoSymbol + unit + squareSymbol
+            )
+            add(
+                square + " " + deca.toLowerCase(locale) + quantity,
+                decaSymbol + unit + squareSymbol
+            )
+            add(
+                square + " " + deci.toLowerCase(locale) + quantity,
+                deciSymbol + unit + squareSymbol
+            )
+            add(
+                square + " " + centi.toLowerCase(locale) + quantity,
+                centiSymbol + unit + squareSymbol
+            )
+            add(
+                square + " " + milli.toLowerCase(locale) + quantity,
+                milliSymbol + unit + squareSymbol
+            )
+            add(
+                square + " " + micro.toLowerCase(locale) + quantity,
+                microSymbol + unit + squareSymbol
+            )
             squareAdd(R.string.foot, R.string.foot_unit)
             squareAdd(R.string.inch, R.string.inch_unit)
             squareAdd(R.string.yard, R.string.yard_unit)
@@ -35,7 +56,7 @@ class Area(override val context: Context) : RecyclerDataInterface {
 
     private fun MutableList<RecyclerDataClass>.squareAdd(quantity: Int, unit: Int) =
         add(
-            square + getString(quantity).toLowerCase(Locale.getDefault()),
+            square + " " + getString(quantity).toLowerCase(Locale.getDefault()),
             getString(unit) + squareSymbol
         )
 }

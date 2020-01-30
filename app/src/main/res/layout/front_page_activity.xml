@@ -41,7 +41,6 @@
         android:fontFamily="sans-serif-thin"
         android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#E6000000"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/app_bar"

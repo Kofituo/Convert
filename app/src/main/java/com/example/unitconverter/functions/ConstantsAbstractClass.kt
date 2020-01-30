@@ -1,6 +1,5 @@
 package com.example.unitconverter.functions
 
-
 import com.example.unitconverter.ConvertActivity.Positions
 import com.example.unitconverter.Utils.insertCommas
 import com.example.unitconverter.constants.ConstantsInterface
@@ -60,27 +59,37 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
     fun prefixMultiplication(x: String): String =
         Prefixes.internalPrefixMultiplication(x, prefix())
 
-    fun complexConversionFunction(x: String, pow: Int): String {
-        /**
-         * For use with units such as temperature
-         * eg the following is from Delisle to and vice versa::Notice the brackets
-         * Celsius	[°C] = 100 − [°De] × ​2 ⁄ 3 ;fixed value is 100 constant is 2/3
-         * [°De] = (100 − [°C]) × ​3 ⁄ 2
-         * Fahrenheit	[°F] = 212 − [°De] × ​6⁄5
-         * [°De] = (212 − [°F]) × ​5⁄6
-         * Kelvin    [ K] = 373.15 − [°De] × ​2⁄3
-         * [°De] = (373.15 − [ K]) × ​3 ⁄ 2
-         * Rankine	[°R] = 671.67 − [°De] × ​6 ⁄ 5
-         * [°De] = (671.67 − [°R]) × ​5 ⁄ 6
-         *
-         * constant is 32 since it does'nt change
-         * use 9 / 5 as ratio
-         *  1 (0°C × 9/5) + 32 = F
-         *
-         *  2 (0°F − 32) × 5/9
-         *
-         */
+    /**
+     * For use with units such as temperature
+     *
+     * eg the following is from Delisle to and vice versa::Notice the brackets
+     *
+     * Celsius	[°C] = 100 − [°De] × ​2 ⁄ 3 ;fixed value is 100 constant is 2/3
+     *
+     * [°De] = (100 − [°C]) × ​3 ⁄ 2
+     *
+     * Fahrenheit	[°F] = 212 − [°De] × ​6⁄5
+     *
+     * [°De] = (212 − [°F]) × ​5⁄6
+     *
+     * Kelvin    [ K] = 373.15 − [°De] × ​2⁄3
+     *
+     * [°De] = (373.15 − [ K]) × ​3 ⁄ 2
+     *
+     * Rankine	[°R] = 671.67 − [°De] × ​6 ⁄ 5
+     *
+     * [°De] = (671.67 − [°R]) × ​5 ⁄ 6
+     *
+     *
+     * constant is 32 since it does'nt change.
+     * use 9 / 5 as ratio
+     *  1 (0°C × 9/5) + 32 = F
+     *
+     *  2 (0°F − 32) × 5/9
+     *
+     */
 
+    fun complexConversionFunction(x: String, pow: Int): String {
         /** for case 1 (0°C × 9/5) + 32 = F
          * x is value to convert
          * the ratio is still the same

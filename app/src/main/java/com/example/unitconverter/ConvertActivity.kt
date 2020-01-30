@@ -32,9 +32,7 @@ import com.example.unitconverter.Utils.lengthFilter
 import com.example.unitconverter.Utils.minusSign
 import com.example.unitconverter.Utils.removeCommas
 import com.example.unitconverter.Utils.temperatureFilters
-import com.example.unitconverter.functions.Mass
-import com.example.unitconverter.functions.Prefixes
-import com.example.unitconverter.functions.Temperature
+import com.example.unitconverter.functions.*
 import com.example.unitconverter.miscellaneous.isNull
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.google.android.material.textfield.TextInputEditText
@@ -86,7 +84,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
         }
 
-        Log.e("view", "${viewId == R.id.Temperature}")
         firstEditText.apply {
             filters =
                 if (viewId == R.id.Temperature)
@@ -253,14 +250,17 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private fun whichView() {
         when (viewId) {
             R.id.prefixes -> prefixConversions()
+
             R.id.Temperature -> temperatureConversions()
-            R.id.Area -> {
-            }
+
+            R.id.Area -> areaConversions()
+
             R.id.Mass -> massConversions()
+
             R.id.Volume -> {
             }
-            R.id.Length -> {
-            }
+            R.id.Length -> lengthConversions()
+
             R.id.Angle -> {
             }
             R.id.Pressure -> {
@@ -308,12 +308,22 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    private fun areaConversions() {
+        function = {
+            Area(it).getText()
+        }
+    }
     private fun prefixConversions() {
         function = {
             Prefixes(it).getText()
         }
     }
 
+    private fun lengthConversions() {
+        function = {
+            Length(it).getText()
+        }
+    }
     private fun massConversions() {
         function = {
             /**@Deprecated
@@ -443,7 +453,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             "#F6ABB6", "#EEC9D2", "#FE8A71",
             "#F6CD61", "#FEB2A8", "#7BC043",
             "#DFA290", "#88D8B0", "#BE9B7B",
-            "#DCEDC1", "#00B159", "#FF77AA"
+            "#DCEDC1", "#00B159", "#FF77AA",
+            "#696969"
         )
         //randomly get colour
         randomColor = if (colorInt == 0) Color.parseColor(colourArray.random()) else colorInt

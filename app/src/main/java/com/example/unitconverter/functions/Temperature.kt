@@ -6,14 +6,18 @@ import java.math.BigDecimal
 
 class Temperature(override val positions: Positions) : ConstantsAbstractClass() {
 
+    private val pow get() = swapConversions()
+
     override fun getText() =
         celsiusConversions() ?: fahrenheitConversions()
-        ?: ""
+        ?: kelvinConversions() ?: newtonConversions()
+        ?: delisleConversions() ?: rankineConversions()
+        ?: romerConversions()
+        ?: throw Exception("top position = $topPosition  bottom position = $bottomPosition")//just in case i forgot one
 
     private fun celsiusConversions(): String? {
         if (topPosition == 0 || bottomPosition == 0) {
             Temperature.apply {
-                val pow = swapConversions()
                 if (topPosition == 1 || bottomPosition == 1) {
                     // to fahrenheit
                     fixedValue = celsiusToFahrenheitFixedValue
@@ -41,7 +45,6 @@ class Temperature(override val positions: Positions) : ConstantsAbstractClass() 
                      * [°C] = [°N] × ​100⁄33
                      * (pow == 1) for the normal conversion
                      */
-
                     ratio = celsiusToDelisleRatio
                     val hundred = BigDecimal(100)
                     return if (pow == -1)
@@ -55,15 +58,13 @@ class Temperature(override val positions: Positions) : ConstantsAbstractClass() 
                     // to Rankine
                     //like newton
                     ratio = celsiusToFahrenheitRatio //has the same value
+                    //complexConversionFunction(inputString, -pow)
                     if (pow == -1)
                         return complexConversionFunction(
                             celsiusToKelvinFixedValue.plus(inputString),
                             -pow
                         )
-                    else {
-                        fixedValue = celsiusToRankineFixedValue
-                        //complexConversionFunction(inputString, -pow)
-                    }
+                    else fixedValue = celsiusToRankineFixedValue
                 }
                 if (topPosition == 6 || bottomPosition == 6) {
                     ratio = celsiusToRomerRatio
@@ -71,7 +72,7 @@ class Temperature(override val positions: Positions) : ConstantsAbstractClass() 
 
                 }
                 if (topPosition == 7 || bottomPosition == 7) {
-                    // to Réaumur
+                    // to Reaumur
                     ratio = celsiusToReaumur
                     //return complexConversionFunction(inputString, -pow)
                 }
@@ -83,27 +84,7 @@ class Temperature(override val positions: Positions) : ConstantsAbstractClass() 
 
     private fun fahrenheitConversions(): String? {
         if (topPosition == 1 || bottomPosition == 1) {
-            /**
-             * For use with units such as temperature
-             * eg the following is from Delisle to and vice versa::Notice the brackets
-             * Celsius	[°C] = 100 − [°De] × ​2 ⁄ 3 ;fixed value is 100 constant is 2/3
-             * [°De] = (100 − [°C]) × ​3 ⁄ 2
-             * Fahrenheit	[°F] = 212 − [°De] × ​6⁄5
-             * [°De] = (212 − [°F]) × ​5⁄6
-             * Kelvin    [ K] = 373.15 − [°De] × ​2⁄3
-             * [°De] = (373.15 − [ K]) × ​3 ⁄ 2
-             * Rankine	[°R] = 671.67 − [°De] × ​6 ⁄ 5
-             * [°De] = (671.67 − [°R]) × ​5 ⁄ 6
-             *
-             * constant is 32 since it does'nt change
-             * use 9 / 5 as ratio
-             *  1 (0°C × 9/5) + 32 = F
-             *
-             *  2 (0°F − 32) × 5/9
-             *
-             */
             Temperature.apply {
-                val pow = swapConversions()
                 if (topPosition == 2 || bottomPosition == 2) {
                     // to kelvin
                     fixedValue = fahrenheitToKelvinFixedValue
@@ -140,24 +121,147 @@ class Temperature(override val positions: Positions) : ConstantsAbstractClass() 
         return null
     }
 
+    private fun kelvinConversions(): String? {
+        if (topPosition == 2 || bottomPosition == 2) {
+            Temperature.apply {
+                if (topPosition == 3 || bottomPosition == 3) {
+                    //to newton
+                    fixedValue = celsiusToKelvinFixedValue
+                    ratio = celsiusToNewtonRatio.pow(-1, mathContext)
+                }
+                if (topPosition == 4 || bottomPosition == 4) {
+                    //to delisle
+                    ratio = celsiusToDelisleInverseRatio
+                    return someDelisleConversions(pow, kelvinToDelisleFixedValue)
+                }
+                if (topPosition == 5 || bottomPosition == 5) {
+                    //to rankine
+                    ratio = celsiusToFahrenheitRatio.pow(-1, mathContext)
+                }
+                if (topPosition == 6 || bottomPosition == 6) {
+                    //to romer
+                    ratio = celsiusToRomerRatio
+                    fixedValue = celsiusToKelvinFixedValue
+                    return someRomerConversions(inputString, -pow)
+                }
+                if (topPosition == 7 || bottomPosition == 7) {
+                    // to reaumur
+                    fixedValue = celsiusToKelvinFixedValue
+                    ratio = celsiusToReaumur.pow(-1, mathContext)
+                }
+                return complexConversionFunction(inputString, pow)
+            }
+        }
+        return null
+    }
+
+    private fun newtonConversions(): String? {
+        if (topPosition == 3 || bottomPosition == 3) {
+            Temperature.apply {
+                if (topPosition == 4 || bottomPosition == 4) {
+                    //to delisle
+                    ratio = newtonToDelisleRatio
+                    return someDelisleConversions(pow, BigDecimal(33))
+                }
+                if (topPosition == 5 || bottomPosition == 5) {
+                    //to rankine
+                    ratio = fahrenheitToNewtonRatio
+                    fixedValue = celsiusToRankineFixedValue
+                    return complexConversionFunction(inputString, -pow)
+                }
+                if (topPosition == 6 || bottomPosition == 6) {
+                    //to romer
+                    ratio = newtonToRomerRatio
+                    return someRomerConversions(inputString, -pow)
+                }
+                if (topPosition == 7 || bottomPosition == 7) {
+                    //to reaumur
+                    ratio = newtonToReaumurRatio
+                    return complexConversionFunction(inputString, pow)
+                }
+            }
+        }
+        return null
+    }
+
+    private fun delisleConversions(): String? {
+        if (topPosition == 4 || bottomPosition == 4) {
+            Temperature.apply {
+                if (topPosition == 5 || bottomPosition == 5) {
+                    //to rankine
+                    ratio = fahrenheitToDelisleRatio
+                    return someDelisleConversions(-pow, BigDecimal("671.67"))
+                }
+                if (topPosition == 6 || bottomPosition == 6) {
+                    //to romer
+                    ratio = delisleToRomerRatio
+                    return someDelisleConversions(-pow, BigDecimal(60))
+                }
+                if (topPosition == 7 || bottomPosition == 7) {
+                    ratio = delisleToReaumurRatio
+                    return someDelisleConversions(-pow, BigDecimal.valueOf(80))
+                }
+            }
+        }
+        return null
+    }
+
+    private fun rankineConversions(): String? {
+        if (topPosition == 5 || bottomPosition == 5) {
+            Temperature.apply {
+                if (topPosition == 6 || bottomPosition == 6) {
+                    // to romer
+                    ratio = fahrenheitToRomerRatio
+                    fixedValue = celsiusToRankineFixedValue
+                    return someRomerConversions(inputString, -pow)
+                }
+                if (topPosition == 7 || bottomPosition == 7) {
+                    // to reaumur
+                    fixedValue = celsiusToRankineFixedValue
+                    ratio = fahrenheitToReaumurRatio
+                    return complexConversionFunction(inputString, pow)
+                }
+            }
+        }
+        return null
+    }
+
+    private fun romerConversions(): String? {
+        if (topPosition == 6 || bottomPosition == 6) {
+            if (topPosition == 7 || bottomPosition == 7) {
+                ratio = BigDecimal(21).divide(32, mathContext)
+                return someRomerConversions(inputString, pow)
+            }
+        }
+        return null
+    }
+
     private fun someDelisleConversions(pow: Int, fixedValue: BigDecimal) =
+        /**
+         * for things like this
+         *
+         * [°De] = (373.15 − [ K]) × ​3⁄2 --- for pow == -1
+         *
+         * [ K] = 373.15 − [°De] × ​2⁄3 ---- 2
+         * */
         if (pow == -1)
             complexConversionFunction(fixedValue.minus(inputString), pow)
         else fixedValue
             .minus(BigDecimal(inputString).multiply(ratio))
             .toStringWithCommas()
 
+    /**
+     * for some romer conversions
+     * e.g
+     *
+     * [°Rø] = ([°F] − 32) × ​7⁄24 + 7.5  (pow == 1)
+     *
+     * [°F] = ([°Rø] − 7.5) × ​24⁄7 + 32
+     */
     private fun someRomerConversions(
         string: String,
         pow: Int
     ): String {
-        /**
-         * for some romer conversions
-         * e.g
-         * Rømer
-         * [°Rø] = ([°F] − 32) × ​7⁄24 + 7.5
-         * [°F] = ([°Rø] − 7.5) × ​24⁄7 + 32
-         */
         val romerConstant = BigDecimal("7.5")
         return if (pow == 1) {
             //first case ([°F] − 32) × ​7⁄24 + 7.5
