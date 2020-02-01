@@ -16,4 +16,7 @@ interface ConstantsInterface {
     fun BigDecimal.plus(string: String): BigDecimal = this.add(BigDecimal(string))
 
     fun BigDecimal.minus(string: String): BigDecimal = this.subtract(BigDecimal(string))
+
+    fun inverseOf(bigDecimal: BigDecimal): BigDecimal =
+        BigDecimal.ONE.divide(bigDecimal, mathContext)
 }

@@ -164,8 +164,12 @@
     <string name="nautical_mile_unit">nmi</string>
     <string name="nautical_league">Nautical league</string>
     <string name="nautical_league_unit">naut. leag</string>
-    <string name="league">League</string>
-    <string name="league_unit">leag</string>
+    <string name="angstrom">Angstrom</string>
+    <string name="angstrom_unit">Å</string>
+    <string name="rod">Rod</string>
+    <string name="rod_unit">rod</string>
+    <string name="thou">Thou</string>
+    <string name="thou_unit">thou</string>
     <string name="fathom">Fathom</string>
     <string name="fathom_unit">ftm</string>
     <string name="planck_length">Planck length</string>
@@ -174,6 +178,8 @@
     <string name="chain_unit">chain</string>
     <string name="light_year">Light Year</string>
     <string name="light_year_unit">ly</string>
+    <string name="furlong">Furlong</string>
+    <string name="furlong_unit">fur</string>
 
     <!--volume-->
 
@@ -222,6 +228,18 @@
     <string name="acre_unit">ac</string>
     <string name="are">Are</string>
     <string name="are_unit">a</string>
+
+    <!-- for pressure-->
+    <string name="pascal">Pascal</string>
+    <string name="pascal_unit">Pa</string>
+    <string name="bar">Bar</string>
+    <string name="psi">psi</string>
+    <string name="per">per</string>
+    <string name="bar_unit">bar</string>
+    <string name="atm">Atmosphere</string>
+    <string name="atm_unit">atm</string>
+    <string name="mercury">of mercury</string>
+    <string name="mercury_unit">Hg</string>
 
     <string name="square_symbol">²</string>
     <string name="square">Square</string>

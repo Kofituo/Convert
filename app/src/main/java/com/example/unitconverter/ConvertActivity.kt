@@ -526,9 +526,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         if (isTemperature)
                             filters = temperatureFilters(groupingSeparator, decimalSeparator, this)
                     }
+                    var k = 0
+                    for (i in secondEditText.text!!) if (i.isDigit()) k++
                     Log.e(
                         "finish",
-                        "${System.currentTimeMillis() - start} ${secondEditText.text} ${secondEditText.text?.length}"
+                        "${System.currentTimeMillis() - start} ${secondEditText.text} ${secondEditText.text?.length}" +
+                                " len $k"
                     )
                 }
             }

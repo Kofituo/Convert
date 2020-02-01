@@ -29,6 +29,7 @@
         android:layout_marginStart="55dp"
         android:splitMotionEvents="false"
         android:text="@string/mass"
+        android:textColor="?android:attr/textColorPrimary"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="21sp"

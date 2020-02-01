@@ -13,7 +13,7 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
         ?: grainConversions() ?: troyPoundConversion()
         ?: troyOunceConversions() ?: pennyWeightConversions()
         ?: stoneConversions() ?: slugConversions()
-        ?: amuConversion() ?: plankMassConversion()
+        ?: amuConversion() ?: planckMassConversion()
         ?: throw Exception("top position = $topPosition  bottom position = $bottomPosition")//just in case i forgot one
 
     private fun amongGram(): String? {
@@ -717,7 +717,7 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
     }
 
     // last function  yaaaaaaaaaaaay
-    private fun plankMassConversion(): String? {
+    private fun planckMassConversion(): String? {
         if (topPosition == 30 || bottomPosition == 30 &&
             topPosition == 31 || bottomPosition == 31
         ) {

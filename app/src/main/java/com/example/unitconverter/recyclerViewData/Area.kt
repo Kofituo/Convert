@@ -47,9 +47,12 @@ class Area(override val context: Context) : RecyclerDataInterface {
             squareAdd(R.string.inch, R.string.inch_unit)
             squareAdd(R.string.yard, R.string.yard_unit)
             squareAdd(R.string.mile, R.string.mile_unit)
+            squareAdd(R.string.nautical_mile, R.string.nautical_mile_unit)
+            squareAdd(R.string.nautical_league, R.string.nautical_league_unit)
+            squareAdd(R.string.chain, R.string.chain_unit)
+            add(R.string.acre, R.string.acre_unit)
             add(R.string.hectare, R.string.hectare_unit)
             add(R.string.are, R.string.are_unit)
-            add(R.string.acre, R.string.acre_unit)
             add(R.string.atm_barn, R.string.atm_barn_unit)
         }
     }

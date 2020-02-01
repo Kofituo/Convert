@@ -143,7 +143,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         cancelButton.apply {
             ColorStateList.valueOf(colorInt).also {
                 rippleColor = it
-                setTextColor(it)
+                //setTextColor(it)
+                strokeColor = it
             }
             setOnClickListener {
                 dismiss()
@@ -189,6 +190,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             R.id.Volume -> Volume(context).getList()
 
             R.id.Angle -> Angle(context).getList()
+
+            R.id.Pressure -> Pressure(context).getList()
 
             else -> mutableListOf()
         }

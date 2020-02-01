@@ -23,10 +23,13 @@ class Length(override val context: Context) : RecyclerDataInterface {
             add(R.string.yard, R.string.yard_unit)
             add(R.string.nautical_mile, R.string.nautical_mile_unit)
             add(R.string.nautical_league, R.string.nautical_league_unit)
-            add(R.string.league, R.string.league_unit)
             add(R.string.fathom, R.string.fathom_unit)
-            add(R.string.planck_length, R.string.planck_length_unit)
+            add(R.string.rod, R.string.rod_unit)
+            add(R.string.thou, R.string.thou_unit)
             add(R.string.chain, R.string.chain_unit)
+            add(R.string.furlong, R.string.furlong_unit)
+            add(R.string.angstrom, R.string.angstrom_unit)
+            add(R.string.planck_length, R.string.planck_length_unit)
             add(R.string.light_year, R.string.light_year_unit)
         }
     }
