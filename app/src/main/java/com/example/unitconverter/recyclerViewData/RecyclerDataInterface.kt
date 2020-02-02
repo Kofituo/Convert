@@ -83,6 +83,6 @@ interface RecyclerDataInterface {
     fun MutableList<RecyclerDataClass>.add(quantity: Int, unit: Int) =
         add(RecyclerDataClass(getString(quantity), getString(unit), start++))
 
-    fun MutableList<RecyclerDataClass>.add(quantity: String, unit: String) =
+    fun MutableList<RecyclerDataClass>.add(quantity: String, unit: CharSequence) =
         add(RecyclerDataClass(quantity, unit, start++))
 }

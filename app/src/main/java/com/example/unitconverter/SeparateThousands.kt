@@ -18,7 +18,8 @@ open class SeparateThousands(
     //private var busy = false
     private var lastPosition = 0
     private lateinit var prevString: CharSequence
-    private val zeroDigit =
+    private val zeroDigit
+        get() =
         (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.zeroDigit
     private var isNegative = false
     private lateinit var filters: Array<InputFilter>
@@ -97,11 +98,13 @@ open class SeparateThousands(
                 if (s[0] == zeroDigit && s[1] == groupingSeparator)
                     s.delete(0, 2) // no 0,264.554715
                 val f = StringBuilder(s).lastIndex
+
                 for (x in 0..f) {
                     if (s[0] == decimalSeparator) {
                         s.insert(0, zeroDigit.toString())
                         break
                     }
+                    if (s.length <= 1) break
                     if (s[0] == zeroDigit && s[1].isDigit() && s[1] != zeroDigit) break
                     if (s[0].isDigit() && s[0] != zeroDigit) {
                         break

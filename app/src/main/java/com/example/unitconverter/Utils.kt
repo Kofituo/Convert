@@ -125,7 +125,7 @@ object Utils {
                     "i",
                     "i $i source[i] ${source[i]}  source $source  source.lenght ${source.length} edittext last index ${editText.text?.lastIndexOf(
                         minusSign
-                    )} souce last index ${source.lastIndexOf(minusSign)}  ${editText.selectionEnd}  ${editText.text?.indexOf(
+                    )} source last index ${source.lastIndexOf(minusSign)}  ${editText.selectionEnd}  ${editText.text?.indexOf(
                         minusSign
                     )}"
                 )

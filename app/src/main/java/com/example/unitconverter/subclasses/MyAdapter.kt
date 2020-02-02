@@ -51,7 +51,7 @@ class MyAdapter(
                 listener.radioButtonClicked(
                     radioButton.myId,
                     radioButton.text.toString(),
-                    radioTextView.text.toString()
+                    radioTextView.text
                 )
             }
         }
@@ -99,7 +99,7 @@ class MyAdapter(
     }
 
     interface OnRadioButtonsClickListener {
-        fun radioButtonClicked(position: Int, text: String, unit: String)
+        fun radioButtonClicked(position: Int, text: String, unit: CharSequence)
     }
 
     fun setOnRadioButtonsClickListener(listener: OnRadioButtonsClickListener) {

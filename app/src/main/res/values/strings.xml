@@ -213,7 +213,7 @@
     <string name="arc_minute">Arc minute</string>
     <string name="arc_minute_unit"> ′</string>
     <string name="arc_second">Arc second</string>
-    <string name="arc_second_unit">″</string>
+    <string name="arc_second_unit"><b>″</b></string>
     <string name="grad">Grad</string>
     <string name="grad_unit">ᵍ</string>
     <string name="sextant">Sextant</string>

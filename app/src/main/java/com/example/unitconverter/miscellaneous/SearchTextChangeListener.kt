@@ -48,7 +48,7 @@ class SearchTextChangeListener(
         return mutableListOf<RecyclerDataClass>().apply {
             for (i in dataSet) {
                 val text = i.quantity.toLowerCase(locale)
-                val unit = i.correspondingUnit.toLowerCase(locale)
+                val unit = (i.correspondingUnit as String).toLowerCase(locale)
                 if (text.contains(mainText) || unit.contains(mainText))
                     add(i)
             }

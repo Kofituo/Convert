@@ -152,7 +152,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         }
     }
 
-    override fun radioButtonClicked(position: Int, text: String, unit: String) {
+    override fun radioButtonClicked(position: Int, text: String, unit: CharSequence) {
         lastPosition = position
         Log.e(
             "last",
@@ -217,7 +217,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     }
 
     interface ConvertDialogInterface {
-        fun texts(text: String, unit: String)
+        fun texts(text: String, unit: CharSequence)
         fun getOtherValues(position: Int, positionKey: String)
     }
 }

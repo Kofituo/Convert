@@ -9,10 +9,10 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.text.SpannedString
 import android.text.TextUtils
 import android.util.ArrayMap
 import android.util.Log
-
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -39,7 +39,6 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_convert.*
 import java.text.DecimalFormat
 import java.util.*
-import kotlin.properties.Delegates
 
 class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface {
     private var swap = false
@@ -49,8 +48,16 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private var isPrefix = false
     private val bundle = Bundle()
     lateinit var function: (Positions) -> String
-    private var groupingSeparator by Delegates.notNull<Char>()
-    private var decimalSeparator by Delegates.notNull<Char>()
+
+    private val groupingSeparator
+        get() =
+            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
+                .decimalFormatSymbols.groupingSeparator
+    private val decimalSeparator
+        get() =
+            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
+                .decimalFormatSymbols.decimalSeparator
+
     private val isTemperature: Boolean get() = viewId == R.id.Temperature
     private lateinit var viewModel: ConvertViewModel
 
@@ -62,7 +69,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
-        setSeparators()
 
         val isRTL =
             TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
@@ -85,19 +91,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
 
         firstEditText.apply {
-            filters =
-                if (viewId == R.id.Temperature)
-                    temperatureFilters(groupingSeparator, decimalSeparator, this)
-                else filters(groupingSeparator, decimalSeparator, this)
-
+            setFilters(this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
         }
         secondEditText.apply {
-            filters =
-                if (viewId == R.id.Temperature)
-                    temperatureFilters(groupingSeparator, decimalSeparator, this)
-                else filters(groupingSeparator, decimalSeparator, this)
-
+            setFilters(this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
         }
 
@@ -135,25 +133,29 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private lateinit var firstWatcher: CommonWatcher
     private lateinit var secondCommonWatcher: CommonWatcher
-    private fun setSeparators() {
-        groupingSeparator =
-            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.groupingSeparator
-        decimalSeparator =
-            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.decimalSeparator
+
+    private fun setFilters(editText: TextInputEditText) {
+        editText.filters =
+            if (viewId == R.id.Temperature)
+                temperatureFilters(groupingSeparator, decimalSeparator, editText)
+            else filters(groupingSeparator, decimalSeparator, editText)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        setSeparators()
+        firstEditText?.text = null
+        secondEditText?.text = null
+        setFilters(firstEditText)
+        setFilters(secondEditText)
     }
 
-    override fun texts(text: String, unit: String) {
+    override fun texts(text: String, unit: CharSequence) {
         val whichButton = viewModel.whichButton
         if (whichButton == R.id.top_button) {
             if (firstBox.hint != text) {
                 firstBox.hint = text
                 topTextView.apply {
-                    this.text = unit
+                    this.text = if (unit is SpannedString) unit else unit
                     val params = layoutParams as ViewGroup.LayoutParams
                     params.width = ViewGroup.LayoutParams.WRAP_CONTENT
                     params.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -164,7 +166,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             if (secondBox.hint != text) {
                 secondBox.hint = text
                 bottomTextView.apply {
-                    this.text = unit
+                    this.text = if (unit is SpannedString) unit else unit
                     val params = layoutParams as ViewGroup.LayoutParams
                     params.width = ViewGroup.LayoutParams.WRAP_CONTENT
                     params.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -313,6 +315,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             Area(it).getText()
         }
     }
+
     private fun prefixConversions() {
         function = {
             Prefixes(it).getText()
@@ -324,6 +327,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             Length(it).getText()
         }
     }
+
     private fun massConversions() {
         function = {
             /**@Deprecated
@@ -502,7 +506,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             val getPosition = getPositions()
             if (getPosition.isNull()) x.insertCommas()
             else if (!getPosition) ""
-            else f(Positions(topPosition, bottomPosition, x))
+            else {
+                f(Positions(topPosition, bottomPosition, x))
+            }
         }
     }
 
