@@ -137,7 +137,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             // gets the array if its there
             //rethinking almost everything to make sure it works well always
             /**
-             * since [viewArray] is the most accurate I'd use that one
              * for all the checks
              * [viewsMap] maps int to views
              * the int values should never be outdated
@@ -153,6 +152,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
              * when 123 is wrong (it's now 456)
              * it refills the whole map again
              */
+
             /*val originalJsonMap = sharedPreferences.getString("originalMap", "")
             if (originalJsonMap.isNeitherNullNorEmpty()) {
                 */
@@ -286,7 +286,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             if (descending) grid.sort(sortValue, mRecentlyUsed)
             //since the problem of different ids is corrected right from onCreate
             //it's safe to do the following
-            else grid.sort(sortValue, ArrayList(mRecentlyUsed.values.reversed()))
+            else grid.sort(sortValue, mRecentlyUsed.reversed())
         }
         onCreateCalled = false
     }
@@ -317,9 +317,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
     }
 
-    fun test(v: View) {
+    fun test(v: View) =
         Toast.makeText(this, "well", Toast.LENGTH_SHORT).show()
-    }
 
     private fun myConfiguration(orientation: Int) {
 
@@ -343,9 +342,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     SYSTEM_UI_FLAG_HIDE_NAVIGATION
     }
 
-    /**
+    /*
     private var mVelocityTracker: VelocityTracker? = null
-
     private var callAgain = 2
      */
 
@@ -398,11 +396,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     override fun onDestroy() {
         super.onDestroy()
         if (isInitialized) popupWindow.dismiss()
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        Toast.makeText(this, "restart", Toast.LENGTH_LONG).show()
     }
 }
 

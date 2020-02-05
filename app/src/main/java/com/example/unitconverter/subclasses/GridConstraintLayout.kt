@@ -150,7 +150,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
         Log.e("fin", "${System.currentTimeMillis() - o}")
     }
 
-    fun sort(number: Int, viewIdArray: ArrayList<Int>) {
+    /*fun sort(number: Int, viewIdArray: ArrayList<Int>) {
         val o = System.currentTimeMillis()
         val constraintSet = ConstraintSet()
         constraintSet.apply {
@@ -195,9 +195,9 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                     }
                 }
             }
-            /* Looks cool but no
+            *//* Looks cool but no
             val transitionArray = arrayListOf<Interpolator>(AccelerateInterpolator(0.05f),AccelerateDecelerateInterpolator())
-            transitionArray.shuffle()*/
+            transitionArray.shuffle()*//*
             TransitionManager
                 .beginDelayedTransition(this@GridConstraintLayout, ChangeBounds()
                     .apply {
@@ -216,7 +216,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             }
         }
         Log.e("fin1", "${System.currentTimeMillis() - o}")
-    }
+    }*/
 
 
     private fun ConstraintSet.constrainTopToBottom(firstView: Int, secondView: Int) =

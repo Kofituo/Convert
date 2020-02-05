@@ -19,7 +19,7 @@ object AdditionItems {
     lateinit var motionHandler: Handler
     var statusBarHeight = 0
     /**
-     * to prevent find view by id
+     * To prevent find view by id.
      * */
     var viewsMap: SparseArray<View> = SparseArray()
     var originalMap = mutableMapOf<String, Int>()
@@ -27,7 +27,6 @@ object AdditionItems {
     /**Map which keeps track of opened activities
      * in descending order (last open is the first in the map)
      * */
-    //lateinit var recentlyUsed: ArrayMap<String,Int>
     lateinit var mRecentlyUsed: MutableMap<String, Int>
     /**
      * viewArray is always updated

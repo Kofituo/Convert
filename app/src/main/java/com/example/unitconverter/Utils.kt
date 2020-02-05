@@ -1,7 +1,6 @@
 package com.example.unitconverter
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.text.InputFilter
 import android.util.Log
 import android.util.SparseArray
@@ -14,7 +13,6 @@ import com.google.android.material.textfield.TextInputEditText
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.round
 
 object Utils {
@@ -25,7 +23,7 @@ object Utils {
         get() =
             (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.minusSign
 
-    fun SharedPreferences.Editor.putIntegerArrayList(
+    /*fun SharedPreferences.Editor.putIntegerArrayList(
         key: String,
         list: ArrayList<Int>
     ): SharedPreferences.Editor {
@@ -41,7 +39,7 @@ object Utils {
         if (value.isNullOrBlank()) return default
         return ArrayList(value.split(",").map { it.toInt() })
     }
-
+*/
     /*fun <K,V> Map<K,V>.plusAssign(arrayMap: ArrayMap<K,V>): ArrayMap<K, V> {
 
         return ArrayMap<K,V>().apply {
@@ -76,9 +74,16 @@ object Utils {
         return this.div((context.resources.displayMetrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT)
     }*/
 
-    // used to get name from id
-    //fist checks from a map is its there
+    /**
+     * map which holds view ids and view names
+     * Used to <br>quickly</br> get name of views instead of using
+     * resources.getResourceEntryName(view.id)
+     * */
     private val mutableMap = mutableMapOf<Int, String>()
+    /**
+     * used to get name from id
+     * fist checks from a map is its there
+     * */
     val View.name: String
         get() =
             if (this.id == -0x1) "no id"
@@ -119,7 +124,7 @@ object Utils {
 
     //filters
     fun filters(comma: Char, fullStop: Char, editText: TextInputEditText): Array<InputFilter> {
-        val filter = InputFilter { source, start, end, dest, _, _ ->
+        val filter = InputFilter { source, start, end, _, _, _ ->
             val stringBuilder = StringBuilder(end - start)
             var count = 0
             for (i in start until end) {
@@ -223,7 +228,12 @@ object Utils {
         }
     }
 
+    /**
+     * Returns are new [MutableMap] where the key / values are reversed.
+     * i.e. the last pair becomes the first pair
+     * */
     fun <K, V> Map<K, V>.reversed(): MutableMap<K, V> {
+        if (size < 2) return this.toMutableMap()
         val reverseValue = values.reversed().iterator()
         val reverseKeys = keys.reversed().iterator()
         val reversedMap = mutableMapOf<K, V>()
