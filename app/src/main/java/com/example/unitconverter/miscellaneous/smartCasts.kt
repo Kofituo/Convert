@@ -21,3 +21,11 @@ inline fun <T> T.isNull(): Boolean {
     }
     return this == null
 }
+
+@UseExperimental(ExperimentalContracts::class)
+inline fun CharSequence?.isNeitherNullNorEmpty(): Boolean {
+    contract {
+        returns(true) implies (this@isNeitherNullNorEmpty != null)
+    }
+    return this.isNotNull() && this.isNotEmpty()
+}

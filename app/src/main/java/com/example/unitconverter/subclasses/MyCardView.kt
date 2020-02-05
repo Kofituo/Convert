@@ -14,11 +14,12 @@ import com.example.unitconverter.AdditionItems.animateStart
 import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.cardY
 import com.example.unitconverter.AdditionItems.longPress
+import com.example.unitconverter.AdditionItems.mRecentlyUsed
 import com.example.unitconverter.AdditionItems.orient
 import com.example.unitconverter.AdditionItems.popupWindow
-import com.example.unitconverter.AdditionItems.recentlyUsed
 import com.example.unitconverter.ConvertActivity
 import com.example.unitconverter.R
+import com.example.unitconverter.Utils.name
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -93,10 +94,12 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
     }
 
     fun updateArray() {
-        recentlyUsed.apply {
+        /*recentlyUsed.apply {//what if some ids have been changed???
             remove(this@MyCardView.id)
             add(0, this@MyCardView.id)
-        }
+        }*/
+
+        mRecentlyUsed = (mapOf(this.name to this.id) + mRecentlyUsed).toMutableMap()
     }
 
     fun startActivity() {

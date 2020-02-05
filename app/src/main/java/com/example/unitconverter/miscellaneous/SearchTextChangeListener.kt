@@ -2,6 +2,7 @@ package com.example.unitconverter.miscellaneous
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.RecyclerDataClass
 import com.example.unitconverter.subclasses.MyAdapter
@@ -16,6 +17,7 @@ class SearchTextChangeListener(
     private var called = false
     override fun afterTextChanged(s: Editable) {
         val filteredList = filter(dataSet, s.toString())
+        Log.e("fil", "$filteredList")
         adapter.replaceAll(filteredList) // so the list would be updated to work with item count
         /**
          * scroll to the selected position if there's no text
@@ -48,10 +50,18 @@ class SearchTextChangeListener(
         return mutableListOf<RecyclerDataClass>().apply {
             for (i in dataSet) {
                 val text = i.quantity.toLowerCase(locale)
-                val unit = (i.correspondingUnit as String).toLowerCase(locale)
-                if (text.contains(mainText) || unit.contains(mainText))
+                val unit = (i.correspondingUnit.toString()).toLowerCase(locale)
+                Log.e(
+                    "maintext",
+                    " $mainText $unit  ${mainText == unit} ${unit in mainText} ${unit.contains(
+                        mainText
+                    )}  ${text.contains(mainText)}"
+                )
+                if (text.contains(mainText) || unit.contains(mainText)) {
                     add(i)
+                }
             }
+            Log.e("this", "$this")
         }
     }
 }

@@ -4,9 +4,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.text.InputFilter
 import android.util.Log
+import android.util.SparseArray
 import android.util.TypedValue
 import android.view.View
+import androidx.core.util.forEach
 import com.example.unitconverter.miscellaneous.isNotNull
+import com.example.unitconverter.miscellaneous.isNull
 import com.google.android.material.textfield.TextInputEditText
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -39,6 +42,28 @@ object Utils {
         return ArrayList(value.split(",").map { it.toInt() })
     }
 
+    /*fun <K,V> Map<K,V>.plusAssign(arrayMap: ArrayMap<K,V>): ArrayMap<K, V> {
+
+        return ArrayMap<K,V>().apply {
+            for ((k,v) in this@plusAssign) put(k,v)
+            putAll(arrayMap)
+        }
+    }*/
+
+    /*fun <K,V> Map<K,V>.toArrayMap(): ArrayMap<K, V> {
+        val arrayMap = ArrayMap<K,V>(45)
+        forEach { (t, u) -> arrayMap[t] = u }
+        return arrayMap
+    }*/
+    val <V>SparseArray<V>.values: MutableList<V>
+        get() {
+            val mutableList = mutableListOf<V>()
+            this.forEach { _, value ->
+                mutableList.add(value)
+            }
+            return mutableList
+        }
+
     internal fun Int.dpToInt(context: Context): Int = round(
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
@@ -50,11 +75,22 @@ object Utils {
     /*fun Int.toDp(context: Context): Int {
         return this.div((context.resources.displayMetrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT)
     }*/
+
     // used to get name from id
+    //fist checks from a map is its there
+    private val mutableMap = mutableMapOf<Int, String>()
     val View.name: String
         get() =
             if (this.id == -0x1) "no id"
-            else resources.getResourceEntryName(this.id)
+            else {
+                var string = mutableMap[this.id]
+                if (string.isNull()) {
+                    string = resources.getResourceEntryName(this.id)
+                    mutableMap[this.id] = string
+                }
+                string ?: throw Exception("string is surprisingly null")
+            }
+
 
     fun String.removeCommas(decimalSeparator: Char): String? {
         if (this.isBlank()) return ""
@@ -173,4 +209,27 @@ object Utils {
     }
 
     fun lengthFilter() = InputFilter.LengthFilter(77)//for atm
+
+    fun <K, V> Map<K, V>.toJson(): String {
+        if (isEmpty()) return "[]"
+        return buildString {
+            append("[")
+            this@toJson.forEach { (k, v) ->
+                append("""{"$k":"$v"}""")
+                append(",")
+            }
+            delete(length - 1, length)// deletes the last comma
+            append("]")
+        }
+    }
+
+    fun <K, V> Map<K, V>.reversed(): MutableMap<K, V> {
+        val reverseValue = values.reversed().iterator()
+        val reverseKeys = keys.reversed().iterator()
+        val reversedMap = mutableMapOf<K, V>()
+        for (i in 0 until size)
+            reversedMap[reverseKeys.next()] = reverseValue.next()
+
+        return reversedMap
+    }
 }

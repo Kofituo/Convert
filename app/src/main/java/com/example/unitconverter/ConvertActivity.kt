@@ -20,7 +20,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
@@ -102,7 +102,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
         getLastConversions()
 
-        viewModel = ViewModelProviders.of(this)[ConvertViewModel::class.java] // for the view model
+        viewModel = ViewModelProvider(this)[ConvertViewModel::class.java] // for the view model
             .apply {
                 settingColours(randomInt)
                 randomInt = randomColor
@@ -155,7 +155,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             if (firstBox.hint != text) {
                 firstBox.hint = text
                 topTextView.apply {
-                    this.text = if (unit is SpannedString) unit else unit
+                    this.text = unit
                     val params = layoutParams as ViewGroup.LayoutParams
                     params.width = ViewGroup.LayoutParams.WRAP_CONTENT
                     params.height = ViewGroup.LayoutParams.WRAP_CONTENT

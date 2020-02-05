@@ -15,31 +15,37 @@ import android.view.View
 import android.view.View.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.bugDetected
 import com.example.unitconverter.AdditionItems.endAnimation
 import com.example.unitconverter.AdditionItems.isInitialized
+import com.example.unitconverter.AdditionItems.mRecentlyUsed
 import com.example.unitconverter.AdditionItems.motionHandler
 import com.example.unitconverter.AdditionItems.orient
+import com.example.unitconverter.AdditionItems.originalMap
 import com.example.unitconverter.AdditionItems.popupWindow
-import com.example.unitconverter.AdditionItems.recentlyUsed
 import com.example.unitconverter.AdditionItems.statusBarHeight
-import com.example.unitconverter.AdditionItems.viewArray
-import com.example.unitconverter.AdditionItems.viewSparseArray
+import com.example.unitconverter.AdditionItems.viewsMap
 import com.example.unitconverter.Utils.app_bar_bottom
-import com.example.unitconverter.Utils.getIntegerArrayList
 import com.example.unitconverter.Utils.name
-import com.example.unitconverter.Utils.putIntegerArrayList
+import com.example.unitconverter.Utils.reversed
+import com.example.unitconverter.Utils.toJson
+import com.example.unitconverter.Utils.values
+import com.example.unitconverter.miscellaneous.DeserializeMap
+import com.example.unitconverter.miscellaneous.isNeitherNullNorEmpty
 import com.example.unitconverter.subclasses.ConvertViewModel
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.json.Json
 
 //change manifest setting to backup allow true
+@UnstableDefault
 class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface {
 
     private val downTime = SystemClock.uptimeMillis()
@@ -55,12 +61,13 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private val motionEventMove: MotionEvent =
         MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_MOVE, xPoint, yPoint, metaState)
 
-    private lateinit var viewIdArray: ArrayList<Int>
     private var sortValue = -1
-    private var sharedArray = arrayListOf<Int>()
 
     private var h = 0
     private var w = 0
+
+    private lateinit var mSelectedOrderArray: Map<String, Int>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.front_page_activity)
@@ -85,8 +92,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
+
         Toast.makeText(this, "hi bro ", Toast.LENGTH_LONG).show()
-        val viewModel = ViewModelProviders.of(this@MainActivity)[ConvertViewModel::class.java]
+        val viewModel = ViewModelProvider(this@MainActivity)[ConvertViewModel::class.java]
         motion?.apply {
 
             motionHandler = object : Handler(Looper.getMainLooper()) {
@@ -127,32 +135,91 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             // gets the array if its there
+            //rethinking almost everything to make sure it works well always
+            /**
+             * since [viewArray] is the most accurate I'd use that one
+             * for all the checks
+             * [viewsMap] maps int to views
+             * the int values should never be outdated
+             * I'd use maps so everything would be easy
+             *
+             * */
+            /**
+             * for retrieving the original list
+             * the original list [view id (int): name of view (String)]
+             * it is used to update any outdated view id
+             * when a view id it wrong,it uses the name to update the map
+             * eg map = [123:"temperature"]
+             * when 123 is wrong (it's now 456)
+             * it refills the whole map again
+             */
+            /*val originalJsonMap = sharedPreferences.getString("originalMap", "")
+            if (originalJsonMap.isNeitherNullNorEmpty()) {
+                */
+            /**
+             * convert it back to the map
+             * it should have the form ["12903":"Temperature"]
+             *//*
+                originalMap = Json.parse(Deserialize, originalJsonMap)
+            } else {
+                originalMap = SparseArray(45)
+                for (i in viewArray) originalMap.append(i.id, i.name)
+            }*/
 
-            viewIdArray = sharedPreferences.getIntegerArrayList("originalLis", arrayListOf())
-            recentlyUsed = sharedPreferences.getIntegerArrayList("recentlyUsed", arrayListOf())
-            sharedArray = sharedPreferences.getIntegerArrayList("selectedOrder", arrayListOf())
+            /*originalIdList = sharedPreferences.getIntegerArrayList("originalList", arrayListOf())
+            if (originalIdList.isEmpty()) {
+                for (i in 0 until originalMap.size())
+                    originalIdList.add(originalMap.keyAt(i))
+                Log.e("originl", "$originalIdList[5  ${originalIdList[5] == viewArray[5].id}")
+                putIntegerArrayList("originalList", originalIdList)
+            }*/
+            /**
+             * recently used would also be a map : int ->String
+             * when some ids have changed it would get updated ...keeping the order intact
+             * */
+            sharedPreferences.getString("mRecentlyUsed", "").apply {
+                mRecentlyUsed =
+                    if (this.isNeitherNullNorEmpty()) {
+                        Json.parse(DeserializeMap, this).toMutableMap()
+                    } else originalMap.apply { putString("mRecentlyUsed", toJson()) }
+                Log.e("rescent", "res  $mRecentlyUsed")
+            }
+
+            sharedPreferences.getString("mSelectedOrder", "").apply {
+                mSelectedOrderArray =
+                    if (this.isNeitherNullNorEmpty()) {
+                        //sorting occurred
+                        //so we have to keep it like that
+                        Log.e("this", "$this ")
+                        val selectedOrder =
+                            Json.parse(DeserializeMap, this)// as ArrayMap<String, Int>
+                        grid.sort(sortValue, selectedOrder)
+                        selectedOrder
+                    } else mapOf()
+            }
+            Log.e("select", "$mSelectedOrderArray ko")
+            //recentlyUsed = sharedPreferences.getIntegerArrayList("recentlyUsed", arrayListOf())
+            //sharedArray = sharedPreferences.getIntegerArrayList("selectedOrder", arrayListOf())
             descending = sharedPreferences.getBoolean("descending", false)
             recentlyUsedBool = sharedPreferences.getBoolean("recentlyUsedBoolean", false)
             // does this check in case the ids have been changed or new views added
-            //val check: ArrayList<Int> = arrayListOf() not necessaray
+            //val check: ArrayList<Int> = arrayListOf() not necessary
             //for (i in viewArray) check.add(i.id)
             // means the array is not there or has to be updated
-            if (viewIdArray.isEmpty()) {
-                for (i in viewArray) viewIdArray.add(i.id)
-                putIntegerArrayList("originalLis", viewIdArray)
-            }
-            if (recentlyUsed.isEmpty()) {
-                recentlyUsed.addAll(viewIdArray)
+
+            /*if (recentlyUsed.isEmpty()) {
+                recentlyUsed.addAll(originalIdList)
                 putIntegerArrayList("recentlyUsed", recentlyUsed)
-            }
+            }*/
             // creating the map
+            //sharedArray
             // not so good
             //for (i in viewIdArray.indices) viewSparseArray[viewIdArray[i]] = viewArray[i]
-            for (i in viewIdArray.indices) viewSparseArray.append(viewIdArray[i], viewArray[i])
-            if (sharedArray.isNotEmpty()) {
+//            for (i in originalIdList.indices) mapOfViews.append(originalIdList[i], viewArray[i])
+            /*if (sharedArray.isNotEmpty()) { //means sorting occurred
                 grid.sort(sortValue, sharedArray)
                 Log.e("hisd", "$sharedArray  ${sharedArray.size}  ")
-            }
+            }*/
             apply()
         }
         onCreateCalled = true
@@ -160,50 +227,66 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun selection(firstSelection: Int, secondSelection: Int) {
         recentlyUsedBool = false
-        var bufferArray = arrayListOf<Int>()
+        var temporalMap = mutableMapOf<String, Int>()
         if (firstSelection == -1) {
             // use default
-            grid.sort(sortValue, viewIdArray)
-            sharedArray = ArrayList(viewIdArray)
+            grid.sort(sortValue, originalMap)
+            mSelectedOrderArray = originalMap
+            Log.e("1", "1")
             return
         }
         descending = secondSelection == R.id.descending
+        Log.e("des", "$descending  $secondSelection  ${R.id.descending}")
         if (firstSelection == R.id.titleButton) {
+            //sort by title
             val newArray =
-                viewArray.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+                viewsMap.values.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
             for (i in
             if (descending) newArray.reversed()
             else newArray
-            ) bufferArray.add(i.id)
+            ) temporalMap[i.name] = i.id
+            Log.e("2", "2  $temporalMap  $newArray  ")
 
         } else {
             recentlyUsedBool = true
-            bufferArray =
-                if (recentlyUsed == viewIdArray || descending)
-                    ArrayList(recentlyUsed)
-                else ArrayList(
-                    recentlyUsed.reversed()
-                )
+            Log.e(
+                "-90",
+                "-0 $descending  ${mRecentlyUsed == originalMap}  ${mRecentlyUsed.values == originalMap.values}"
+            )
+            Log.e("ori", "$mRecentlyUsed pp  $originalMap")
+            temporalMap =
+                if (descending || mRecentlyUsed.values == originalMap.values)
+                    mRecentlyUsed.toMutableMap()
+                else {
+                    mRecentlyUsed.reversed()
+                }
+            Log.e("3", "3  $temporalMap ")
         }
-        grid.sort(sortValue, bufferArray)
-        sharedArray = ArrayList(bufferArray)
+        grid.sort(sortValue, temporalMap)
+        mSelectedOrderArray = temporalMap.toMutableMap()
         //bufferArray.clear()
     }
 
     private var descending = false
 
+    /**
+     * True means recently used was selected
+     * */
     private var recentlyUsedBool = false
 
     private var onCreateCalled = false
 
     override fun onResume() {
         super.onResume()
-        if (recentlyUsedBool && (recentlyUsed != viewIdArray) && !onCreateCalled) {
-            grid.sort(
-                sortValue,
-                if (descending) recentlyUsed
-                else (ArrayList(recentlyUsed.reversed()))
-            )
+        /**
+         * called when from convert activity
+         * */
+        if (recentlyUsedBool && !onCreateCalled && mRecentlyUsed.values != originalMap.values) {
+            //Log.e("res","res  $descending")
+            if (descending) grid.sort(sortValue, mRecentlyUsed)
+            //since the problem of different ids is corrected right from onCreate
+            //it's safe to do the following
+            else grid.sort(sortValue, ArrayList(mRecentlyUsed.values.reversed()))
         }
         onCreateCalled = false
     }
@@ -212,15 +295,21 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         super.onPause()
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
-            putIntegerArrayList("recentlyUsed", recentlyUsed)
-            val arrayHasChanged = recentlyUsed != viewIdArray
-            putIntegerArrayList(
-                "selectedOrder", if (arrayHasChanged && recentlyUsedBool) {
-                    if (descending) recentlyUsed
-                    else ArrayList(
-                        recentlyUsed.reversed()
-                    )
-                } else sharedArray
+            //putIntegerArrayList("recentlyUsed", recentlyUsed)
+            /*Log.e("pause","$descending  $onCreateCalled  $recentlyUsedBool")
+            Log.e("json","${mRecentlyUsed.toJson()} " )*/
+            Log.e(
+                "resce",
+                "${mSelectedOrderArray.toJson()} AAAA${mRecentlyUsed.reversed().toJson()} BBBB ${mRecentlyUsed.toJson()}"
+            )
+            putString("mRecentlyUsed", mRecentlyUsed.toJson())
+            val arrayHasChanged = mRecentlyUsed.values != originalMap.values
+            putString(
+                "mSelectedOrder", if (arrayHasChanged && recentlyUsedBool) {
+                    if (descending) mRecentlyUsed.toJson()
+                    else mRecentlyUsed.reversed().toJson()
+
+                } else mSelectedOrderArray.toJson()
             )
             putBoolean("descending", descending)
             putBoolean("recentlyUsedBoolean", recentlyUsedBool)
@@ -309,7 +398,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     override fun onDestroy() {
         super.onDestroy()
         if (isInitialized) popupWindow.dismiss()
-        viewArray.clear()
     }
 
     override fun onRestart() {

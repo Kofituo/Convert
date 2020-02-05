@@ -858,6 +858,7 @@
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@id/flow"
+
         app:layout_constraintTop_toBottomOf="@id/radioactivity"
         app:layout_constraintWidth_percent="0.185">
 
@@ -875,5 +876,6 @@
             android:textColor="#EB2B2313"
             android:textSize="13sp" />
     </com.example.unitconverter.subclasses.MyCardView>
+
 
 </com.example.unitconverter.subclasses.GridConstraintLayout>

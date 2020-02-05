@@ -213,7 +213,7 @@
     <string name="arc_minute">Arc minute</string>
     <string name="arc_minute_unit"> ′</string>
     <string name="arc_second">Arc second</string>
-    <string name="arc_second_unit"><b>″</b></string>
+    <string name="arc_second_unit">″</string>
     <string name="grad">Grad</string>
     <string name="grad_unit">ᵍ</string>
     <string name="sextant">Sextant</string>
@@ -245,4 +245,38 @@
     <string name="square">Square</string>
     <string name="cubic">Cubic</string>
     <string name="cubic_unit">³</string>
+
+    <!--for time-->
+    <string name="minute">Minute</string>
+    <string name="seconds">Second</string>
+    <string name="seconds_unit">s</string>
+    <string name="minute_unit">min</string>
+    <string name="hour">Hour</string>
+    <string name="hour_unit">h</string>
+    <string name="day">Day</string>
+    <string name="svedberg">Svedberg</string>
+    <string name="svedberg_unit">S</string>
+    <string name="kè">Kè</string>
+    <string name="kè_unit">kè</string> <!--italics-->
+    <string name="week">Week</string>
+    <string name="fortnight">Fortnight</string>
+    <string name="fortnight_unit">Fortn</string>
+    <string name="month">Month</string>
+    <string name="month_unit">mo</string>
+    <string name="c_year">Calendar year</string>
+    <string name="year_unit">yr</string>
+    <string name="year_exact">Year</string>
+    <string name="leap_year">Leap year</string>
+    <string name="leap_year_unit">lyr</string>
+    <string name="decade">Decade</string>
+    <string name="decade_unit">deca</string>
+    <string name="century">Century</string>
+    <string name="century_unit">c</string>
+    <string name="millennium">Millennium</string>
+    <string name="millennium_unit">mil</string>
+    <string name="eon">Eon</string>
+    <string name="planck_time">Planck time</string>
+    <string name="planck_time_unit">t</string>
+
+
 </resources>
