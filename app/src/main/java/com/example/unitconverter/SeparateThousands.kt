@@ -3,6 +3,7 @@ package com.example.unitconverter
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
 import com.example.unitconverter.Utils.lengthFilter
 import com.example.unitconverter.Utils.minusSign
@@ -25,7 +26,7 @@ open class SeparateThousands(
     private lateinit var filters: Array<InputFilter>
     override fun afterTextChanged(s: Editable?) {
         if (s.isNotNull()) {
-            //Log.e("init", "$s")
+            Log.e("init", "$s")
             isNegative = s.isNotEmpty() && s[0] == minusSign
 
             editText.apply {

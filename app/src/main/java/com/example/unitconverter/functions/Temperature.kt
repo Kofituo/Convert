@@ -6,7 +6,7 @@ import java.math.BigDecimal
 
 class Temperature(override val positions: Positions) : ConstantsAbstractClass() {
 
-    private val pow get() = swapConversions()
+    private inline val pow get() = swapConversions()
 
     override fun getText() =
         celsiusConversions() ?: fahrenheitConversions()

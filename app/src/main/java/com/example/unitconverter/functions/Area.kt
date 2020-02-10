@@ -394,11 +394,11 @@ class Area(override val positions: Positions) : ConstantsAbstractClass() {
     }
 
     private fun areConversion(): String? {
-        if (topPosition == 17 || bottomPosition == 17 &&
-            topPosition == 18 || bottomPosition == 18
-        ) {
-            ratio = Area.barnToAre
-            return basicFunction(inputString, pow)
+        if (topPosition == 17 || bottomPosition == 17) {
+            if (topPosition == 18 || bottomPosition == 18) {
+                ratio = Area.barnToAre
+                return basicFunction(inputString, pow)
+            }
         }
         return null
     }

@@ -195,6 +195,7 @@
     <string name="uk_gallon_unit">imp gal</string>
     <string name="barrel">Oil barrel</string>
     <string name="barrel_unit">bbl</string>
+    <string name="cubic_centimetre">[cc]</string>
 
     <string name="us_fluid_ounce">Fluid ounce (US)</string>
     <string name="us_fluid_ounce_unit">US fl oz</string>
@@ -218,6 +219,8 @@
     <string name="grad_unit">ᵍ</string>
     <string name="sextant">Sextant</string>
     <string name="quadrant">Quadrant</string>
+    <string name="quadrant_unit">quard</string>
+    <string name="sextant_unit">sext</string>
     <string name="atm_barn">Barn</string>
     <string name="atm_barn_unit">b</string>
 
@@ -239,6 +242,16 @@
     <string name="atm">Atmosphere</string>
     <string name="atm_unit">atm</string>
     <string name="mercury">of mercury</string>
+    <string name="kilograms_force_per_square_centimetre">
+        Kilogram-force /square centimetre
+    </string>
+    <string name="kilograms_force_per_square_centimetre_unit">kgf/cm²
+    </string>
+
+    <string name="grams_force_per_square_centimetre">
+        Gram-force /square centimetre
+    </string>
+    <string name="grams_force_per_square_centimetre_unit">gf/cm²</string>
     <string name="mercury_unit">Hg</string>
 
     <string name="square_symbol">²</string>
@@ -277,6 +290,5 @@
     <string name="eon">Eon</string>
     <string name="planck_time">Planck time</string>
     <string name="planck_time_unit">t</string>
-
 
 </resources>

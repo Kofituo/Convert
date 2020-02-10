@@ -573,12 +573,12 @@ class Length(override val positions: ConvertActivity.Positions) : ConstantsAbstr
     }
 
     private fun planckConversion(): String? {
-        if (topPosition == 29 || bottomPosition == 29 &&
-            topPosition == 30 || bottomPosition == 30
-        ) {
-            //to light year
-            ratio = Length.lyToPlanck
-            return basicFunction(inputString, swapConversions())
+        if (topPosition == 29 || bottomPosition == 29) {
+            if (topPosition == 30 || bottomPosition == 30) {
+                //to light year
+                ratio = Length.lyToPlanck
+                return basicFunction(inputString, swapConversions())
+            }
         }
         return null
     }

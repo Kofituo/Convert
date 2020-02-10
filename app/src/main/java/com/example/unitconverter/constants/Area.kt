@@ -23,7 +23,6 @@ import java.math.BigDecimal
 
 object Area : ConstantsInterface {
 
-
     val footToInch: BigDecimal get() = inverseOf(BigDecimal(144))
 
     val footToYard get() = BigDecimal(9)

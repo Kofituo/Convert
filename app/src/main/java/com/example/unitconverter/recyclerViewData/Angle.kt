@@ -26,6 +26,8 @@ class Angle(override val context: Context) : RecyclerDataInterface {
                     setSpan(StyleSpan(Typeface.BOLD), 0, length, 0)
                 }
             )
+            add(R.string.quadrant, R.string.quadrant_unit)
+            add(R.string.sextant, R.string.sextant_unit)
         }
     }
 

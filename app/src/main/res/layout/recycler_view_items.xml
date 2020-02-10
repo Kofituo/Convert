@@ -6,17 +6,16 @@
 
     <com.example.unitconverter.subclasses.MyRadioButton
         android:id="@+id/radioButtons"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:fontFamily="sans-serif-light"
-        android:padding="10dp"
         android:text="@string/temperature"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/radioText"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -24,13 +23,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
+        android:padding="10dp"
         android:text="@string/pound"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/radioButtons"
-        app:layout_constraintLeft_toLeftOf="@id/radioButtons"
         app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintRight_toRightOf="@id/radioButtons"
+        app:layout_constraintLeft_toRightOf="@id/radioButtons"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/radioButtons" />
 </androidx.constraintlayout.widget.ConstraintLayout>

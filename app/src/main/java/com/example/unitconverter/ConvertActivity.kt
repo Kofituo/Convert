@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.text.Html
 import android.text.SpannedString
 import android.text.TextUtils
 import android.util.ArrayMap
@@ -98,7 +99,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             setFilters(this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
         }
-
 
         getLastConversions()
 
@@ -248,7 +248,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     data class Positions(val topPosition: Int, val bottomPosition: Int, val input: String)
 
-
     private fun whichView() {
         when (viewId) {
             R.id.prefixes -> prefixConversions()
@@ -259,8 +258,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.Mass -> massConversions()
 
-            R.id.Volume -> {
-            }
+            R.id.Volume -> volumeConversions()
+
             R.id.Length -> lengthConversions()
 
             R.id.Angle -> {
@@ -313,6 +312,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private fun areaConversions() {
         function = {
             Area(it).getText()
+        }
+    }
+
+    private fun volumeConversions() {
+        function = {
+            Volume(it).getText()
         }
     }
 
@@ -516,7 +521,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         SeparateThousands(editText, groupingSeparator, decimalSeparator) {
         override fun afterTextChanged(s: Editable?) {
             val start = System.currentTimeMillis()
-            Log.e("came", "$s")
+            Log.e("came", "$s   ${secondEditText.text}")
             super.afterTextChanged(s)
             s?.toString()?.apply {
                 if (s.length == 1 && s[0] == minusSign) {
@@ -586,8 +591,21 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         sharedPreferences.apply {
             topEditTextText = getString("topEditTextText", null)
             bottomEditTextText = getString("bottomEditTextText", null)
-            topTextView.text = getString("topTextViewText", null)
-            bottomTextView.text = getString("bottomTextViewText", null)
+            getString("topTextViewText", null).apply {
+                topTextView.text =
+                    if (getBoolean("topIsSpans", false))
+                        if (Build.VERSION.SDK_INT < 24) Html.fromHtml(this).trim()
+                        else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT).trim()
+                    else this
+            }
+
+            getString("bottomTextViewText", null).apply {
+                bottomTextView.text =
+                    if (getBoolean("bottomIsSpans", false))
+                        if (Build.VERSION.SDK_INT < 24) Html.fromHtml(this).trim()
+                        else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT).trim()
+                    else this
+            }
             secondBox.hint = bottomEditTextText?.let {
                 it
             } ?: resources.getString(R.string.select_unit)
@@ -613,8 +631,28 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     "topEditTextText",
                     if (firstBox.hint.toString() != resources.getString(R.string.select_unit)) firstBox.hint.toString() else null
                 )
-                putString("topTextViewText", topTextView.text.toString())
-                putString("bottomTextViewText", bottomTextView.text.toString())
+                val topTextViewText = topTextView.text
+
+                putString(
+                    "topTextViewText",
+                    if (topTextViewText is SpannedString)
+                        if (Build.VERSION.SDK_INT < 24) Html.toHtml(topTextViewText)
+                        else Html.toHtml(topTextViewText, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
+                    else topTextView.toString()
+                )
+                putBoolean("topIsSpans", topTextViewText is SpannedString)
+
+                val bottomTextViewText = bottomTextView.text
+                putString(
+                    "bottomTextViewText",
+                    if (bottomTextViewText is SpannedString)
+                        if (Build.VERSION.SDK_INT < 24) Html.toHtml(bottomTextViewText)
+                        else
+                            Html.toHtml(bottomTextViewText, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
+                    else bottomTextViewText.toString()
+                )
+                putBoolean("bottomIsSpans", bottomTextViewText is SpannedString)
+
                 putString(
                     "bottomEditTextText",
                     if (secondBox.hint.toString() != resources.getString(R.string.select_unit)) secondBox.hint.toString() else null

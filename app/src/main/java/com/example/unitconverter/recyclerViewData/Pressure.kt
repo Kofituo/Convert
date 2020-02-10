@@ -42,6 +42,14 @@ class Pressure(override val context: Context) : RecyclerDataInterface {
             add(centi + bar, centiSymbol + barUnit)
             add(milli + bar, milliSymbol + barUnit)
             add(
+                R.string.grams_force_per_square_centimetre,
+                R.string.grams_force_per_square_centimetre_unit
+            )
+            add(
+                R.string.kilograms_force_per_square_centimetre,
+                R.string.kilograms_force_per_square_centimetre_unit
+            )
+            add(
                 getString(R.string.pound) + " "
                         + getString(R.string.per) + " "
                         + square.toLowerCase(locale) + " "

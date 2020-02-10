@@ -30,7 +30,7 @@ class Volume(override val context: Context) : RecyclerDataInterface {
             )
             add(
                 cubic + " " + centi.toLowerCase(locale) + quantity,
-                centiSymbol + unit + cubicUnit
+                centiSymbol + unit + cubicUnit + " " + getString(R.string.cubic_centimetre)
             )
             add(
                 cubic + " " + milli.toLowerCase(locale) + quantity,

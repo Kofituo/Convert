@@ -2,11 +2,11 @@ package com.example.unitconverter
 
 import android.content.Context
 import android.text.InputFilter
-import android.util.Log
 import android.util.SparseArray
 import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
+import com.example.unitconverter.miscellaneous.isNeitherNullNorEmpty
 import com.example.unitconverter.miscellaneous.isNotNull
 import com.example.unitconverter.miscellaneous.isNull
 import com.google.android.material.textfield.TextInputEditText
@@ -23,36 +23,6 @@ object Utils {
         get() =
             (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.minusSign
 
-    /*fun SharedPreferences.Editor.putIntegerArrayList(
-        key: String,
-        list: ArrayList<Int>
-    ): SharedPreferences.Editor {
-        putString(key, list.joinToString(","))
-        return this
-    }
-
-    fun SharedPreferences.getIntegerArrayList(
-        key: String,
-        default: ArrayList<Int>
-    ): ArrayList<Int> {
-        val value = getString(key, null)
-        if (value.isNullOrBlank()) return default
-        return ArrayList(value.split(",").map { it.toInt() })
-    }
-*/
-    /*fun <K,V> Map<K,V>.plusAssign(arrayMap: ArrayMap<K,V>): ArrayMap<K, V> {
-
-        return ArrayMap<K,V>().apply {
-            for ((k,v) in this@plusAssign) put(k,v)
-            putAll(arrayMap)
-        }
-    }*/
-
-    /*fun <K,V> Map<K,V>.toArrayMap(): ArrayMap<K, V> {
-        val arrayMap = ArrayMap<K,V>(45)
-        forEach { (t, u) -> arrayMap[t] = u }
-        return arrayMap
-    }*/
     val <V>SparseArray<V>.values: MutableList<V>
         get() {
             val mutableList = mutableListOf<V>()
@@ -162,32 +132,21 @@ object Utils {
             val stringBuilder = StringBuilder(end - start)
             var count = 0
             for (i in start until end) {
-                if (editText.isFocused) Log.e(
-                    "i",
-                    "i $i source[i] ${source[i]}  source $source  source.lenght ${source.length} edittext last index ${editText.text?.lastIndexOf(
-                        minusSign
-                    )} source last index ${source.lastIndexOf(minusSign)}  ${editText.selectionEnd}  ${editText.text?.indexOf(
-                        minusSign
-                    )}"
-                )
+
                 if (source[i] == minusSign) {
-                    if (editText.isFocused) Log.e(
-                        "if",
-                        "first ${i != 0} second ${editText.selectionStart != 0} third ${editText.text?.indexOf(
-                            minusSign
-                        ) != -1}"
-                    )
-                    if (i != 0) continue
+                    val text = editText.text
+
+                    if (i != 0 || text.isNeitherNullNorEmpty()) continue
+
                     val editTextSelectionStart = editText.selectionStart
+
                     if (
                         editTextSelectionStart != editText.selectionEnd ||
                         editTextSelectionStart != 0
                     ) continue
 
-                    val text = editText.text
                     if (text.isNotNull() && text.indexOf(minusSign) != -1) continue
                     stringBuilder.append(source[i])
-                    if (editText.isFocused) Log.e("ap", "appended")
                 }
                 if (source[i].isDigit() ||
                     source[i] == comma ||
@@ -207,7 +166,6 @@ object Utils {
                     stringBuilder.append(source[i])
                 }
             }
-            if (editText.isFocused) Log.e("string", "$stringBuilder ${editText.text}  $source")
             stringBuilder
         }
         return arrayOf(filter, lengthFilter())
@@ -233,7 +191,7 @@ object Utils {
      * i.e. the last pair becomes the first pair
      * */
     fun <K, V> Map<K, V>.reversed(): MutableMap<K, V> {
-        if (size < 2) return this.toMutableMap()
+        if (size < 2) return toMutableMap()
         val reverseValue = values.reversed().iterator()
         val reverseKeys = keys.reversed().iterator()
         val reversedMap = mutableMapOf<K, V>()

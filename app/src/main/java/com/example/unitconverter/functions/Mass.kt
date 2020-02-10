@@ -718,11 +718,11 @@ class Mass(override val positions: Positions) : ConstantsAbstractClass() {
 
     // last function  yaaaaaaaaaaaay
     private fun planckMassConversion(): String? {
-        if (topPosition == 30 || bottomPosition == 30 &&
-            topPosition == 31 || bottomPosition == 31
-        ) {
-            ratio = Mass.solarMassToPlanckMass
-            return basicFunction(inputString, swapConversions())
+        if (topPosition == 30 || bottomPosition == 30) {
+            if (topPosition == 31 || bottomPosition == 31) {
+                ratio = Mass.solarMassToPlanckMass
+                return basicFunction(inputString, swapConversions())
+            }
         }
         return null
     }
