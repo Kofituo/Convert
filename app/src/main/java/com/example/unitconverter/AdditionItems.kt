@@ -13,7 +13,6 @@ object AdditionItems {
     lateinit var popupWindow: MyPopupWindow
     var animateStart: Animator? = null
     var animateFinal: Animator? = null
-
     var orient = 0
     val isInitialized get() = this::popupWindow.isInitialized
     lateinit var motionHandler: Handler
@@ -40,6 +39,7 @@ object AdditionItems {
     const val pkgName = "com.example.unit_converter"
     const val TextMessage = "$pkgName.TextMessage"
     const val ViewIdMessage = "$pkgName.ViewIdMessage"
+
     fun endAnimation(): Boolean {
         animateStart?.apply {
             if (isRunning) {

@@ -219,7 +219,7 @@
     <string name="grad_unit">ᵍ</string>
     <string name="sextant">Sextant</string>
     <string name="quadrant">Quadrant</string>
-    <string name="quadrant_unit">quard</string>
+    <string name="quadrant_unit">quad</string>
     <string name="sextant_unit">sext</string>
     <string name="atm_barn">Barn</string>
     <string name="atm_barn_unit">b</string>

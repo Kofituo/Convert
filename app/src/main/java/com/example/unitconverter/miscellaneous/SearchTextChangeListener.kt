@@ -57,11 +57,8 @@ class SearchTextChangeListener(
                         mainText
                     )}  ${text.contains(mainText)}"
                 )
-                if (text.contains(mainText) || unit.contains(mainText)) {
-                    add(i)
-                }
+                if (text.contains(mainText) || unit.contains(mainText)) add(i)
             }
-            Log.e("this", "$this")
         }
     }
 }

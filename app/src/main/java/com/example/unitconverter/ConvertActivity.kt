@@ -42,24 +42,28 @@ import java.text.DecimalFormat
 import java.util.*
 
 class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface {
+
     private var swap = false
     private var randomColor = -1
     private var viewId = -1
     private lateinit var dialog: ConvertFragment
     private var isPrefix = false
     private val bundle = Bundle()
+    private lateinit var viewName: String
     lateinit var function: (Positions) -> String
 
     private val groupingSeparator
         get() =
             (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
                 .decimalFormatSymbols.groupingSeparator
+
     private val decimalSeparator
         get() =
             (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
                 .decimalFormatSymbols.decimalSeparator
 
-    private val isTemperature: Boolean get() = viewId == R.id.Temperature
+    private inline val isTemperature: Boolean get() = viewId == R.id.Temperature
+
     private lateinit var viewModel: ConvertViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,12 +88,14 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 bundle.putString("viewName", it)
                 convert_header?.text = it
                 app_bar_text.text = it
+                viewName = it
             }
             viewId = getIntExtra(ViewIdMessage, -1).apply {
                 isPrefix = equals(R.id.prefixes)
                 bundle.putInt("viewId", this)
             }
         }
+        Log.e("id", "$viewId")
 
         firstEditText.apply {
             setFilters(this)
@@ -129,7 +135,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 }
         }
     }
-
 
     private lateinit var firstWatcher: CommonWatcher
     private lateinit var secondCommonWatcher: CommonWatcher
@@ -335,21 +340,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private fun massConversions() {
         function = {
-            /**@Deprecated
-            val getPosition = getPositions()
-            if (getPosition == null) string.insertCommas()
-            else if (!getPosition) ""
-            else {
-            // get which one
-            //with elvis operator
-            /*amongGram(string) ?: poundConversions(string)
-            ?: gramConversions(string) ?: ounceConversions(string)
-            ?: metricTonConversions(string) ?: shortTonConversions(string)
-            ?: longTonConversions(string) ?: caratConversions(string)
-            ?: grainConversions(string) ?: troyPoundConversion(string)
-            ?: troyOunceConversions(string)
-            ?: ""*/
-             */
             Mass(it).getText()
         }
     }
@@ -586,7 +576,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         val bottomEditTextText: String?
         val topPosition: Int
         val bottomPosition: Int
-        sharedPreferences = getSharedPreferences(pkgName + viewId, Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
 
         sharedPreferences.apply {
             topEditTextText = getString("topEditTextText", null)
@@ -635,24 +625,23 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
                 putString(
                     "topTextViewText",
-                    if (topTextViewText is SpannedString)
+                    if (topTextViewText is SpannedString) {
                         if (Build.VERSION.SDK_INT < 24) Html.toHtml(topTextViewText)
                         else Html.toHtml(topTextViewText, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
-                    else topTextView.toString()
+                    } else topTextViewText.toString()
                 )
                 putBoolean("topIsSpans", topTextViewText is SpannedString)
 
                 val bottomTextViewText = bottomTextView.text
                 putString(
                     "bottomTextViewText",
-                    if (bottomTextViewText is SpannedString)
+                    if (bottomTextViewText is SpannedString) {
                         if (Build.VERSION.SDK_INT < 24) Html.toHtml(bottomTextViewText)
                         else
                             Html.toHtml(bottomTextViewText, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
-                    else bottomTextViewText.toString()
+                    } else bottomTextViewText.toString()
                 )
                 putBoolean("bottomIsSpans", bottomTextViewText is SpannedString)
-
                 putString(
                     "bottomEditTextText",
                     if (secondBox.hint.toString() != resources.getString(R.string.select_unit)) secondBox.hint.toString() else null

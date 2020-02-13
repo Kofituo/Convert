@@ -56,7 +56,7 @@ object Utils {
      * */
     val View.name: String
         get() =
-            if (this.id == -0x1) "no id"
+            if (id == -0x1) "no id"
             else {
                 var string = mutableMap[this.id]
                 if (string.isNull()) {

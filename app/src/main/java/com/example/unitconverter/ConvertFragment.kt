@@ -12,7 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.AdditionItems.pkgName
@@ -77,7 +77,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         isPrefix = viewId == R.id.prefixes
 
         activity?.run {
-            viewModel = ViewModelProviders.of(this)[ConvertViewModel::class.java]
+            viewModel = ViewModelProvider(this)[ConvertViewModel::class.java]
             sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
         }
 
@@ -104,7 +104,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             params.height =
                 if (isPortrait) round(screenHeight * 0.92).toInt() else ViewGroup.LayoutParams.WRAP_CONTENT
             layoutParams = params
-
             recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
                 setHasFixedSize(true)
                 viewManager = LinearLayoutManager(context)
@@ -114,12 +113,10 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
                         .apply { setOnRadioButtonsClickListener(this@ConvertFragment) }
 
                 adapter = (viewAdapter as MyAdapter).apply {
-                    add(viewModel.dataSet)
-
+                    add(viewModel.dataSet) // adds tom the sorted list
                     lastPosition = this@ConvertFragment.lastPosition
                     if (lastPosition != -1) smoothScrollToPosition(lastPosition)
-
-                    Log.e("last", "$lastPosition ")
+                    //Log.e("last", "$lastPosition ")
                 }
             }
             searchBar.findViewById<TextInputEditText>(R.id.searchEditText)
@@ -154,10 +151,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
     override fun radioButtonClicked(position: Int, text: String, unit: CharSequence) {
         lastPosition = position
-        Log.e(
-            "last",
-            "$position  $text  $positionKey  $whichButton  ${whichButton == R.id.bottom_button}"
-        )
         convertDialogInterface.apply {
             getOtherValues(position, positionKey)
             texts(text, unit)
@@ -206,11 +199,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
                 apply()
             }
         }
-    }
-
-    override fun onStart() {
-        Log.e("start", "start")
-        super.onStart()
     }
 
     override fun onDismiss(dialog: DialogInterface) {

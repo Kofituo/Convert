@@ -134,47 +134,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
         val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
-            // gets the array if its there
             //rethinking almost everything to make sure it works well always
             /**
-             * for all the checks
-             * [viewsMap] maps int to views
-             * the int values should never be outdated
-             * I'd use maps so everything would be easy
-             *
-             * */
-            /**
-             * for retrieving the original list
-             * the original list [view id (int): name of view (String)]
-             * it is used to update any outdated view id
-             * when a view id it wrong,it uses the name to update the map
-             * eg map = [123:"temperature"]
-             * when 123 is wrong (it's now 456)
-             * it refills the whole map again
-             */
-
-            /*val originalJsonMap = sharedPreferences.getString("originalMap", "")
-            if (originalJsonMap.isNeitherNullNorEmpty()) {
-                */
-            /**
-             * convert it back to the map
-             * it should have the form ["12903":"Temperature"]
-             *//*
-                originalMap = Json.parse(Deserialize, originalJsonMap)
-            } else {
-                originalMap = SparseArray(45)
-                for (i in viewArray) originalMap.append(i.id, i.name)
-            }*/
-
-            /*originalIdList = sharedPreferences.getIntegerArrayList("originalList", arrayListOf())
-            if (originalIdList.isEmpty()) {
-                for (i in 0 until originalMap.size())
-                    originalIdList.add(originalMap.keyAt(i))
-                Log.e("originl", "$originalIdList[5  ${originalIdList[5] == viewArray[5].id}")
-                putIntegerArrayList("originalList", originalIdList)
-            }*/
-            /**
-             * recently used would also be a map : int ->String
+             * recently used would also be a map : String -> Int
              * when some ids have changed it would get updated ...keeping the order intact
              * */
             sharedPreferences.getString("mRecentlyUsed", "").apply {
@@ -182,7 +144,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     if (this.isNeitherNullNorEmpty()) {
                         Json.parse(DeserializeMap, this).toMutableMap()
                     } else originalMap.apply { putString("mRecentlyUsed", toJson()) }
-                Log.e("rescent", "res  $mRecentlyUsed")
+                Log.e("recent", "res  $mRecentlyUsed")
             }
 
             sharedPreferences.getString("mSelectedOrder", "").apply {
@@ -198,28 +160,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     } else mapOf()
             }
             Log.e("select", "$mSelectedOrderArray ko")
-            //recentlyUsed = sharedPreferences.getIntegerArrayList("recentlyUsed", arrayListOf())
-            //sharedArray = sharedPreferences.getIntegerArrayList("selectedOrder", arrayListOf())
             descending = sharedPreferences.getBoolean("descending", false)
             recentlyUsedBool = sharedPreferences.getBoolean("recentlyUsedBoolean", false)
-            // does this check in case the ids have been changed or new views added
-            //val check: ArrayList<Int> = arrayListOf() not necessary
-            //for (i in viewArray) check.add(i.id)
-            // means the array is not there or has to be updated
-
-            /*if (recentlyUsed.isEmpty()) {
-                recentlyUsed.addAll(originalIdList)
-                putIntegerArrayList("recentlyUsed", recentlyUsed)
-            }*/
-            // creating the map
-            //sharedArray
-            // not so good
-            //for (i in viewIdArray.indices) viewSparseArray[viewIdArray[i]] = viewArray[i]
-//            for (i in originalIdList.indices) mapOfViews.append(originalIdList[i], viewArray[i])
-            /*if (sharedArray.isNotEmpty()) { //means sorting occurred
-                grid.sort(sortValue, sharedArray)
-                Log.e("hisd", "$sharedArray  ${sharedArray.size}  ")
-            }*/
             apply()
         }
         onCreateCalled = true

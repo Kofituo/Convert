@@ -88,7 +88,7 @@
                     android:inputType="text"
                     android:paddingStart="20dp"
                     android:letterSpacing="0.06"
-                    android:paddingEnd="50dp"
+                    android:paddingEnd="60dp"
                     android:textSize="18sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
