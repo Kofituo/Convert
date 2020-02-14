@@ -188,6 +188,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.Pressure -> Pressure(context).getList()
 
+            R.id.Speed -> Speed(context).getList()
+
             else -> mutableListOf()
         }
     }

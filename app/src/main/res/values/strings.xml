@@ -237,7 +237,6 @@
     <string name="pascal_unit">Pa</string>
     <string name="bar">Bar</string>
     <string name="psi">psi</string>
-    <string name="per">per</string>
     <string name="bar_unit">bar</string>
     <string name="atm">Atmosphere</string>
     <string name="atm_unit">atm</string>
@@ -257,6 +256,8 @@
     <string name="square_symbol">²</string>
     <string name="square">Square</string>
     <string name="cubic">Cubic</string>
+    <string name="per">per</string>
+    <string name="per_unit">/</string>
     <string name="cubic_unit">³</string>
 
     <!--for time-->

@@ -32,16 +32,15 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
         card = this@MyCardView
 
         animateFinal = AnimatorInflater.loadAnimator(context, R.animator.animation1_end)
-            .apply {
-                setTarget(this@MyCardView)
-            }
+            .apply { setTarget(this@MyCardView) }
 
         when (event.actionMasked) {
 
             MotionEvent.ACTION_DOWN -> {
                 // Apply animation
                 //Log.e("X","${this.y}")
-                AnimatorInflater.loadAnimator(context, R.animator.animation1_start)
+                AnimatorInflater
+                    .loadAnimator(context, R.animator.animation1_start)
                     .apply {
                         setTarget(this@MyCardView)
                         start()
@@ -55,16 +54,12 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
                 //Apply animation
                 cardY = this@MyCardView.y
 
-                if (longPress) {
-                    animateStart =
-                        AnimatorInflater.loadAnimator(context, R.animator.animation2).apply {
-                            setTarget(this@MyCardView)
-                            start()
-                            //longPress = false
-                        }
-                } else {
-                    animateFinal?.start()
-                }
+                if (longPress) animateStart =
+                    AnimatorInflater.loadAnimator(context, R.animator.animation2).apply {
+                        setTarget(this@MyCardView)
+                        start()
+                        //longPress = false
+                    } else animateFinal?.start()
             }
         }
         return super.onTouchEvent(event)
@@ -94,11 +89,6 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
     }
 
     fun updateArray() {
-        /*recentlyUsed.apply {//what if some ids have been changed???
-            remove(this@MyCardView.id)
-            add(0, this@MyCardView.id)
-        }*/
-
         mRecentlyUsed = (mapOf(this.name to this.id) + mRecentlyUsed).toMutableMap()
     }
 
@@ -111,5 +101,4 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
             context.startActivity(this)
         }
     }
-
 }

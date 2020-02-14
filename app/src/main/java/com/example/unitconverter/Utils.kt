@@ -66,7 +66,6 @@ object Utils {
                 string ?: throw Exception("string is surprisingly null")
             }
 
-
     fun String.removeCommas(decimalSeparator: Char): String? {
         if (this.isBlank()) return ""
         val checkString = StringBuilder()

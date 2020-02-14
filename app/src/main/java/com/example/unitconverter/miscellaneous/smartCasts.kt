@@ -5,7 +5,8 @@ package com.example.unitconverter.miscellaneous
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-//watch contracts are used
+//watch
+//contracts are used
 @UseExperimental(ExperimentalContracts::class)
 inline fun <T> T.isNotNull(): Boolean {
     contract {
