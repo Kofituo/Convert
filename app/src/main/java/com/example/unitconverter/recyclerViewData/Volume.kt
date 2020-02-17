@@ -61,6 +61,7 @@ class Volume(override val context: Context) : RecyclerDataInterface {
             add(R.string.us_fluid_ounce, R.string.us_fluid_ounce_unit)
             add(R.string.uk_fluid_ounce, R.string.uk_fluid_ounce_unit)
             add(R.string.quart, R.string.quart_unit)
+            add(R.string.uk_quart, R.string.uk_quart_unit)
         }
     }
 

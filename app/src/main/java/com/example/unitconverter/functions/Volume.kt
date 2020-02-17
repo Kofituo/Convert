@@ -10,8 +10,10 @@ class Volume(override val positions: ConvertActivity.Positions) : ConstantsAbstr
     override fun getText(): String =
         amongSquareMetre() ?: metreToLitre() ?: amongLitre() ?: metreLitreConversions()
         ?: inchConversions() ?: footConversions() ?: yardConversions() ?: usGallonConversions()
-        ?: impGallonConversions() ?: usPintConversions()
-        ?: ""
+        ?: impGallonConversions() ?: usPintConversions() ?: impPintConversions()
+        ?: barrelConversions() ?: fluidOunceConversions() ?: impFluidOunceConversions()
+        ?: quartConversion()
+        ?: throw Exception("top position = $topPosition  bottom position = $bottomPosition")//just in case i forgot one
 
 
     private fun amongSquareMetre(): String? {
@@ -119,6 +121,26 @@ class Volume(override val positions: ConvertActivity.Positions) : ConstantsAbstr
                     //to imp pint
                     ratio = metreToImpPint
                 }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to barrel
+                    ratio = metreToBarrel
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to fl oz
+                    ratio = metreToFlOz
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to imp fl oz
+                    ratio = metreToImpFlOz
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to quart
+                    ratio = metreToQuart
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = metreToImpQuart
+                }
                 val pow =
                     if (topPosition in 0..7 || bottomPosition in 0..7)
                         simplifyMultiplePrefixMetre()
@@ -157,6 +179,26 @@ class Volume(override val positions: ConvertActivity.Positions) : ConstantsAbstr
                     //to imp pint
                     ratio = inchToImpPint
                 }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to oil barrel
+                    ratio = inchToBarrel
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to fl oz
+                    ratio = inchToFlOz
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to imp fl oz
+                    ratio = inchToImpFlOz
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to us quart
+                    ratio = inchToQuart
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = inchToImpQuart
+                }
                 return basicFunction(inputString, pow)
             }
         }
@@ -186,6 +228,26 @@ class Volume(override val positions: ConvertActivity.Positions) : ConstantsAbstr
                     //to imp pint
                     ratio = feetToImpPint
                 }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to oil barrel
+                    ratio = footToBarrel
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to fl oz
+                    ratio = footToFlOz
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to imp fl oz
+                    ratio = footToImpFlOz
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to us quart
+                    ratio = footToQuart
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = footToImpQuart
+                }
                 return basicFunction(inputString, pow)
             }
         }
@@ -211,6 +273,26 @@ class Volume(override val positions: ConvertActivity.Positions) : ConstantsAbstr
                     //to imp pint
                     ratio = yardToImpPint
                 }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to barrel
+                    ratio = yardToBarrel
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to fl oz
+                    ratio = yardToFlOz
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to imp fl oz
+                    ratio = yardToImpFlOz
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to us quart
+                    ratio = yardToQuart
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = yardToImpQuart
+                }
                 return basicFunction(inputString, pow)
             }
         }
@@ -232,6 +314,26 @@ class Volume(override val positions: ConvertActivity.Positions) : ConstantsAbstr
                     //to imp pint
                     ratio = gallonToImpPint
                 }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to barrel
+                    ratio = gallonToBarrel
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to fl oz
+                    ratio = flOzToGallon
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to imp fl oz
+                    ratio = gallonToImpFlOz
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to us quart
+                    ratio = quartToGallon
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = gallonToImpQuart
+                }
                 return basicFunction(inputString, pow)
             }
         }
@@ -249,6 +351,26 @@ class Volume(override val positions: ConvertActivity.Positions) : ConstantsAbstr
                     //to imp pint
                     ratio = impGallonToImpPint
                 }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to barrel
+                    ratio = impGallonToBarrel
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to fl oz
+                    ratio = flOzToImpGallon
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to imp fluid ounce
+                    ratio = impFluidOunceToImpGallon
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to us quart
+                    ratio = quartToImpGallon
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = impQuartToImpGallon
+                }
                 return basicFunction(inputString, pow)
             }
         }
@@ -262,7 +384,131 @@ class Volume(override val positions: ConvertActivity.Positions) : ConstantsAbstr
                     //to imp pint
                     ratio = pintToImpPint
                 }
+                if (topPosition == 23 || bottomPosition == 23) {
+                    //to barrel
+                    ratio = usPintToBarrel
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to fl oz
+                    ratio = flOzToPint
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to imp fl oz
+                    ratio = pintToImpFlOz
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to us quart
+                    ratio = quartToPint
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = pintToImpQuart
+                }
                 return basicFunction(inputString, pow)
+            }
+        }
+        return null
+    }
+
+    private fun impPintConversions(): String? {
+        if (topPosition == 22 || bottomPosition == 22) {
+            Volume.apply {
+                if (topPosition == 23 || bottomPosition == 23) {
+                    ratio = impPintToBarrel
+                }
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to fl oz
+                    ratio = flOzToImpPint
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to imp fl oz
+                    ratio = impFluidOunceToImpPint
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to us quart
+                    ratio = quartToImpPint
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = impQuartToImpPint
+                }
+                return basicFunction(inputString, pow)
+            }
+        }
+        return null
+    }
+
+    private fun barrelConversions(): String? {
+        if (topPosition == 23 || bottomPosition == 23) {
+            Volume.apply {
+                if (topPosition == 24 || bottomPosition == 24) {
+                    //to fl oz
+                    ratio = flOzToBarrel
+                }
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to imp fl oz
+                    ratio = barrelToImpFlOz
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to quart
+                    ratio = quartToBarrel
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = barrelToImpQuart
+                }
+                return basicFunction(inputString, pow)
+            }
+        }
+        return null
+    }
+
+    private fun fluidOunceConversions(): String? {
+        if (topPosition == 24 || bottomPosition == 24) {
+            Volume.apply {
+                if (topPosition == 25 || bottomPosition == 25) {
+                    //to imp fl oz
+                    ratio = flOzToImpFlOz
+                }
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to us quart
+                    ratio = quartToFlOz
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = flOzToImpQuart
+                }
+                return basicFunction(inputString, pow)
+            }
+        }
+        return null
+    }
+
+    private fun impFluidOunceConversions(): String? {
+        if (topPosition == 25 || bottomPosition == 25) {
+            Volume.apply {
+                if (topPosition == 26 || bottomPosition == 26) {
+                    //to us quart
+                    ratio = quartToImpFlOz
+                }
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = impQuartToImpFlOz
+                }
+                return basicFunction(inputString, pow)
+            }
+        }
+        return null
+    }
+
+    private fun quartConversion(): String? {
+        if (topPosition == 26 || bottomPosition == 26) {
+            Volume.apply {
+                if (topPosition == 27 || bottomPosition == 27) {
+                    //to imp quart
+                    ratio = quartToImpQuart
+                    return basicFunction(inputString, pow)
+                }
             }
         }
         return null

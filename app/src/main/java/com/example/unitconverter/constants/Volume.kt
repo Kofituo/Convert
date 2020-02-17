@@ -64,10 +64,105 @@ object Volume : ConstantsInterface {
 
     val pintToImpPint: BigDecimal get() = metreToImpPint.divide(metreToPint, mathContext)
 
+    val gallonToBarrel: BigDecimal get() = BigDecimal(42)
 
+    val metreToBarrel: BigDecimal get() = gallonToBarrel.multiply(metreToGallon)
 
+    val inchToBarrel: BigDecimal get() = BigDecimal(9702)
 
+    val footToBarrel: BigDecimal get() = metreToBarrel.divide(metreToFoot, mathContext)
 
+    val yardToBarrel: BigDecimal get() = metreToBarrel.divide(metreToYard, mathContext)
+
+    val impGallonToBarrel: BigDecimal get() = metreToBarrel.divide(metreToImpGallon, mathContext)
+
+    val usPintToBarrel: BigDecimal get() = BigDecimal(336)
+
+    val impPintToBarrel: BigDecimal get() = metreToBarrel.divide(metreToImpPint, mathContext)
+
+    val flOzToPint: BigDecimal get() = inverseOf(BigDecimal(16))
+
+    val flOzToGallon: BigDecimal get() = inverseOf(BigDecimal(128))
+
+    val metreToFlOz: BigDecimal get() = flOzToPint.multiply(metreToPint)
+
+    val inchToFlOz: BigDecimal get() = metreToFlOz.divide(metreToInch, mathContext)
+
+    val footToFlOz: BigDecimal get() = metreToFlOz.divide(metreToFoot, mathContext)
+
+    val yardToFlOz: BigDecimal get() = metreToFlOz.divide(metreToYard, mathContext)
+
+    val flOzToImpGallon: BigDecimal get() = metreToFlOz.divide(metreToImpGallon, mathContext)
+
+    val flOzToImpPint: BigDecimal get() = metreToFlOz.divide(metreToImpPint, mathContext)
+
+    val flOzToBarrel: BigDecimal get() = inverseOf(BigDecimal(5376))
+
+    val impFluidOunceToImpPint: BigDecimal get() = inverseOf(BigDecimal(20))
+
+    val impFluidOunceToImpGallon: BigDecimal get() = inverseOf(BigDecimal(160))
+
+    val metreToImpFlOz: BigDecimal get() = impFluidOunceToImpPint.multiply(metreToImpPint)
+
+    val inchToImpFlOz: BigDecimal get() = metreToImpFlOz.divide(metreToInch, mathContext)
+
+    val footToImpFlOz: BigDecimal get() = metreToImpFlOz.divide(metreToFoot, mathContext)
+
+    val yardToImpFlOz: BigDecimal get() = metreToImpFlOz.divide(metreToYard, mathContext)
+
+    val gallonToImpFlOz: BigDecimal get() = metreToImpFlOz.divide(metreToGallon, mathContext)
+
+    val pintToImpFlOz: BigDecimal get() = metreToImpFlOz.divide(metreToPint, mathContext)
+
+    val barrelToImpFlOz: BigDecimal get() = metreToImpFlOz.divide(metreToBarrel, mathContext)
+
+    val flOzToImpFlOz: BigDecimal get() = metreToImpFlOz.divide(metreToFlOz, mathContext)
+
+    val quartToGallon: BigDecimal get() = BigDecimal("0.25")
+
+    val metreToQuart: BigDecimal get() = quartToGallon.multiply(metreToGallon)
+
+    val inchToQuart: BigDecimal get() = BigDecimal("57.75")
+
+    val footToQuart: BigDecimal get() = metreToQuart.divide(metreToFoot, mathContext)
+
+    val yardToQuart: BigDecimal get() = metreToQuart.divide(metreToYard, mathContext)
+
+    val quartToImpGallon: BigDecimal get() = metreToQuart.divide(metreToImpGallon, mathContext)
+
+    val quartToImpPint: BigDecimal get() = metreToQuart.divide(metreToImpPint, mathContext)
+
+    val quartToImpFlOz: BigDecimal get() = metreToQuart.divide(metreToImpFlOz, mathContext)
+
+    val quartToBarrel: BigDecimal get() = inverseOf(BigDecimal(168))
+
+    val quartToPint: BigDecimal get() = BigDecimal(2)
+
+    val quartToFlOz: BigDecimal get() = BigDecimal(32)
+
+    val impQuartToImpGallon: BigDecimal get() = BigDecimal("0.25")
+
+    val impQuartToImpPint: BigDecimal get() = BigDecimal(2)
+
+    val impQuartToImpFlOz: BigDecimal get() = BigDecimal(40)
+
+    val metreToImpQuart: BigDecimal get() = impQuartToImpPint.multiply(metreToImpPint)
+
+    val inchToImpQuart: BigDecimal get() = metreToImpQuart.divide(metreToInch, mathContext)
+
+    val footToImpQuart: BigDecimal get() = metreToImpQuart.divide(metreToFoot, mathContext)
+
+    val yardToImpQuart: BigDecimal get() = metreToImpQuart.divide(metreToYard, mathContext)
+
+    val gallonToImpQuart: BigDecimal get() = metreToImpQuart.divide(metreToGallon, mathContext)
+
+    val pintToImpQuart: BigDecimal get() = metreToImpQuart.divide(metreToPint, mathContext)
+
+    val barrelToImpQuart: BigDecimal get() = metreToImpQuart.divide(metreToBarrel, mathContext)
+
+    val flOzToImpQuart: BigDecimal get() = metreToImpQuart.divide(metreToFlOz, mathContext)
+
+    val quartToImpQuart: BigDecimal get() = metreToImpQuart.divide(metreToQuart, mathContext)
 
     fun metreToLitreMap() =
         SparseIntArray(8).apply {

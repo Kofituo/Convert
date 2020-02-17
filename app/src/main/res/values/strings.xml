@@ -201,8 +201,10 @@
     <string name="us_fluid_ounce_unit">US fl oz</string>
     <string name="uk_fluid_ounce">Imperial fluid ounce</string>
     <string name="uk_fluid_ounce_unit">imp fl oz</string>
-    <string name="quart">Quart</string>
-    <string name="quart_unit">qt</string>
+    <string name="quart">Quart (US)</string>
+    <string name="quart_unit">qt (US)</string>
+    <string name="uk_quart">Imperial quart</string>
+    <string name="uk_quart_unit">imp qt</string>
     <!--for angle-->
 
     <string name="degrees">Degrees</string>
