@@ -8,7 +8,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.example.unitconverter.AdditionItems.animateFinal
+import com.example.unitconverter.AdditionItems.animationEnd
 import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.popupWindow
 import com.example.unitconverter.R
@@ -28,7 +28,7 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) :
                 R.id.firstCont -> {
                     //Toast.makeText(app_context, "Convert clicked", Toast.LENGTH_SHORT).show()
                     GlobalScope.launch {
-                        animateFinal?.apply {
+                        animationEnd?.apply {
                             while (isRunning) continue
                         }
                         card?.apply {

@@ -3,6 +3,7 @@ package com.example.unitconverter
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.os.Handler
+import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import com.example.unitconverter.subclasses.MyCardView
@@ -12,7 +13,7 @@ object AdditionItems {
 
     lateinit var popupWindow: MyPopupWindow
     var animateStart: Animator? = null
-    var animateFinal: Animator? = null
+    var animationEnd: Animator? = null
     var orient = 0
     val isInitialized get() = this::popupWindow.isInitialized
     lateinit var motionHandler: Handler
@@ -44,8 +45,9 @@ object AdditionItems {
         animateStart?.apply {
             if (isRunning) {
                 end()
+                Log.e("y", "$cardY")
                 ObjectAnimator.ofFloat(card, View.Y, cardY).start()
-                animateFinal?.apply {
+                animationEnd?.apply {
                     duration = 200
                     start()
                 }

@@ -28,6 +28,7 @@ class Angle(override val context: Context) : RecyclerDataInterface {
             )
             add(R.string.quadrant, R.string.quadrant_unit)
             add(R.string.sextant, R.string.sextant_unit)
+            add(R.string.octant, R.string.octant_units)
         }
     }
 

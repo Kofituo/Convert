@@ -5,12 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.widget.TextView
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
-import com.example.unitconverter.AdditionItems.animateFinal
 import com.example.unitconverter.AdditionItems.animateStart
+import com.example.unitconverter.AdditionItems.animationEnd
 import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.cardY
 import com.example.unitconverter.AdditionItems.longPress
@@ -31,20 +32,24 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
     override fun onTouchEvent(event: MotionEvent): Boolean {
         card = this@MyCardView
 
-        animateFinal = AnimatorInflater.loadAnimator(context, R.animator.animation1_end)
-            .apply { setTarget(this@MyCardView) }
+        animationEnd =
+            AnimatorInflater
+                .loadAnimator(context, R.animator.animation1_end)
+                .apply { setTarget(this@MyCardView) }
 
         when (event.actionMasked) {
 
             MotionEvent.ACTION_DOWN -> {
                 // Apply animation
-                //Log.e("X","${this.y}")
+                cardY = this.y
+                Log.e("DOWN", "${this.y}")
                 AnimatorInflater
                     .loadAnimator(context, R.animator.animation1_start)
                     .apply {
                         setTarget(this@MyCardView)
                         start()
                     }
+
                 popupWindow = MyPopupWindow(context, this, R.layout.quick_actions)
                 popupWindow.determinePosition()
                 //Log.e("Y","${this.y} ${this.x}  ${this.top}  ${this.bottom}")
@@ -52,14 +57,15 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 //Apply animation
-                cardY = this@MyCardView.y
-
+                Log.e("X", "${this.y}")
                 if (longPress) animateStart =
-                    AnimatorInflater.loadAnimator(context, R.animator.animation2).apply {
-                        setTarget(this@MyCardView)
-                        start()
-                        //longPress = false
-                    } else animateFinal?.start()
+                    AnimatorInflater
+                        .loadAnimator(context, R.animator.animation2).apply {
+                            setTarget(this@MyCardView)
+                            start()
+                            //longPress = false
+                        }
+                else animationEnd?.start()
             }
         }
         return super.onTouchEvent(event)

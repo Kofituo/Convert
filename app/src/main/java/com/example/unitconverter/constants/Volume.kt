@@ -167,7 +167,6 @@ object Volume : ConstantsInterface {
     fun metreToLitreMap() =
         SparseIntArray(8).apply {
             append(8, -3)
-            CharArray(9).size
             append(9, 0)//kilo
             append(10, -1)//hecto
             append(11, -2)//deca

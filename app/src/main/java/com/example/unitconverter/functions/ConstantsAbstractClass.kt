@@ -5,8 +5,6 @@ import com.example.unitconverter.Utils.insertCommas
 import com.example.unitconverter.constants.ConstantsInterface
 import com.example.unitconverter.constants.Prefixes
 import java.math.BigDecimal
-import java.math.RoundingMode
-import java.text.DecimalFormatSymbols
 
 abstract class ConstantsAbstractClass : ConstantsInterface {
 
@@ -29,13 +27,22 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
             if (field != value) field = value
         }
 
+
+    /**
+     * Throws an exception
+     * */
+    @Suppress("FunctionName", "NOTHING_TO_INLINE")
+    inline fun TODO(): Nothing =
+        TODO("top position is $topPosition  bottom position is $bottomPosition")
+
+
     abstract val positions: Positions
 
-    val topPosition: Int get() = positions.topPosition
+    inline val topPosition: Int get() = positions.topPosition
 
-    val bottomPosition: Int get() = positions.bottomPosition
+    inline val bottomPosition: Int get() = positions.bottomPosition
 
-    val inputString get() = positions.input
+    inline val inputString get() = positions.input
 
     abstract fun getText(): String
 
@@ -47,12 +54,12 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
     private fun basicConversionFunction(x: String, pow: Int): BigDecimal =
         BigDecimal(x).multiply((ratio).pow(pow, mathContext))
 
-    fun basicFunction(x: String, pow: Int): String =
-        basicConversionFunction(x, pow).toStringWithCommas()
+    fun basicFunction(pow: Int): String =
+        basicConversionFunction(inputString, pow).toStringWithCommas()
 
-    fun forMultiplePrefixes(x: String, pow: Int): String {
+    fun forMultiplePrefixes(pow: Int): String {
         val scale = prefix() * -pow
-        return basicConversionFunction(x, pow)
+        return basicConversionFunction(inputString, pow)
             .scaleByPowerOfTen(scale).toStringWithCommas()
     }
 
@@ -129,14 +136,7 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
         }
     }
 
-    @Suppress("NOTHING_TO_INLINE")
-    inline fun BigDecimal.toStringWithCommas(): String =
-        if (this.setScale(20, RoundingMode.HALF_EVEN)
-                .compareTo(BigDecimal.ZERO) == 0
-        ) DecimalFormatSymbols().zeroDigit.toString()
-        else this
-            .stripTrailingZeros()
-            .insertCommas()
+    fun BigDecimal.toStringWithCommas(): String = stripTrailingZeros().insertCommas()
 
     private fun BigDecimal.quickMultiplication(other: BigDecimal) =
         if (other == BigDecimal.ONE) this else this.multiply(other)

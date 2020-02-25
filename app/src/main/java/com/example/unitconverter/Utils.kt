@@ -1,6 +1,7 @@
 package com.example.unitconverter
 
 import android.content.Context
+import android.content.res.Resources
 import android.text.InputFilter
 import android.util.SparseArray
 import android.util.TypedValue
@@ -32,7 +33,7 @@ object Utils {
             return mutableList
         }
 
-    internal fun Int.dpToInt(context: Context): Int = round(
+    fun Int.dpToInt(context: Context): Int = round(
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             this.toFloat(),
@@ -56,7 +57,7 @@ object Utils {
      * */
     val View.name: String
         get() =
-            if (id == -0x1) "no id"
+            if (id == -0x1) throw Resources.NotFoundException("Invalid ID '-1' $this")
             else {
                 var string = mutableMap[this.id]
                 if (string.isNull()) {

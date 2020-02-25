@@ -56,6 +56,7 @@ class Pressure(override val context: Context) : RecyclerDataInterface {
                         + getString(R.string.inch).toLowerCase(locale), getString(R.string.psi)
             )
             add(R.string.atm, R.string.atm_unit)
+            add(R.string.torr, R.string.torr)
         }
     }
 }

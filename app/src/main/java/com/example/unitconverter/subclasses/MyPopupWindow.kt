@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
 import androidx.constraintlayout.widget.ConstraintSet
-import com.example.unitconverter.AdditionItems.animateFinal
+import com.example.unitconverter.AdditionItems.animationEnd
 import com.example.unitconverter.AdditionItems.endAnimation
 import com.example.unitconverter.AdditionItems.longPress
 import com.example.unitconverter.AdditionItems.statusBarHeight
@@ -21,13 +21,10 @@ import com.example.unitconverter.Utils.app_bar_bottom
 import com.example.unitconverter.Utils.dpToInt
 import com.google.android.material.card.MaterialCardView
 
-
 /* popup which takes context for inflation
     anchor or view its attached to
 
  */
-
-
 class MyPopupWindow(private val context: Context, private val anchor: View, resInt: Int) :
     PopupWindow(context) {
 
@@ -60,7 +57,7 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
 
         setOnDismissListener {
             if (!endAnimation()) {
-                animateFinal?.start()
+                animationEnd?.start()
                 longPress = false
             }
         }

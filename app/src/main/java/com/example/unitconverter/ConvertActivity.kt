@@ -52,6 +52,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private lateinit var viewName: String
     lateinit var function: (Positions) -> String
 
+
     private val groupingSeparator
         get() =
             (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
@@ -74,9 +75,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
-
         val isRTL =
             TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
+
         if (!isRTL) {
             bottom_button.setTopPadding(-3) //converts it to dp
             top_button.setTopPadding(-3)
@@ -267,10 +268,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.Length -> lengthConversions()
 
-            R.id.Angle -> {
-            }
-            R.id.Pressure -> {
-            }
+            R.id.Angle -> angleConversions()
+
+            R.id.Pressure -> pressureConversions()
+
             R.id.Speed -> {
             }
             R.id.time -> {
@@ -332,6 +333,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    private fun angleConversions() {
+        function = {
+            Angle(it).getText()
+        }
+    }
+
     private fun lengthConversions() {
         function = {
             Length(it).getText()
@@ -347,6 +354,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private fun temperatureConversions() {
         function = {
             Temperature(it).getText()
+        }
+    }
+
+    private fun pressureConversions() {
+        function = {
+            Pressure(it).getText()
         }
     }
 
@@ -642,12 +655,15 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     } else bottomTextViewText.toString()
                 )
                 putBoolean("bottomIsSpans", bottomTextViewText is SpannedString)
+
                 putString(
                     "bottomEditTextText",
                     if (secondBox.hint.toString() != resources.getString(R.string.select_unit)) secondBox.hint.toString() else null
                 )
                 putInt("topPosition", positionArray["topPosition"]!!)
+
                 putInt("downPosition", positionArray["bottomPosition"]!!)
+
                 apply()
             }
         }

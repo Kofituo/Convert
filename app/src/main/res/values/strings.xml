@@ -217,14 +217,14 @@
     <string name="arc_minute_unit"> ′</string>
     <string name="arc_second">Arc second</string>
     <string name="arc_second_unit">″</string>
-    <string name="grad">Grad</string>
+    <string name="grad">Gradians</string>
     <string name="grad_unit">ᵍ</string>
     <string name="sextant">Sextant</string>
     <string name="quadrant">Quadrant</string>
     <string name="quadrant_unit">quad</string>
     <string name="sextant_unit">sext</string>
-    <string name="atm_barn">Barn</string>
-    <string name="atm_barn_unit">b</string>
+    <string name="octant">Octant</string>
+    <string name="octant_units">oct</string>
 
     <!--area-->
     <string name="hectare">Hectare</string>
@@ -233,6 +233,8 @@
     <string name="acre_unit">ac</string>
     <string name="are">Are</string>
     <string name="are_unit">a</string>
+    <string name="atm_barn">Barn</string>
+    <string name="atm_barn_unit">b</string>
 
     <!-- for pressure-->
     <string name="pascal">Pascal</string>
@@ -254,6 +256,7 @@
     </string>
     <string name="grams_force_per_square_centimetre_unit">gf/cm²</string>
     <string name="mercury_unit">Hg</string>
+    <string name="torr">Torr</string>
 
     <string name="square_symbol">²</string>
     <string name="square">Square</string>

@@ -23,18 +23,15 @@ class Temperature(override val positions: Positions) : ConstantsAbstractClass() 
                     fixedValue = celsiusToFahrenheitFixedValue
                     ratio = celsiusToFahrenheitRatio
                     //return complexConversionFunction(inputString, -pow)
-                }
-                if (topPosition == 2 || bottomPosition == 2) {
+                } else if (topPosition == 2 || bottomPosition == 2) {
                     // to kelvin
                     fixedValue = celsiusToKelvinFixedValue
                     //return complexConversionFunction(inputString, -pow)
-                }
-                if (topPosition == 3 || bottomPosition == 3) {
+                } else if (topPosition == 3 || bottomPosition == 3) {
                     // to newton
                     ratio = celsiusToNewtonRatio
                     //return complexConversionFunction(inputString, -pow)
-                }
-                if (topPosition == 4 || bottomPosition == 4) {
+                } else if (topPosition == 4 || bottomPosition == 4) {
                     // to delisle
                     /**
                      * Delisle
@@ -53,8 +50,7 @@ class Temperature(override val positions: Positions) : ConstantsAbstractClass() 
                     else hundred
                         .subtract(BigDecimal(inputString).multiply(celsiusToDelisleInverseRatio))
                         .toStringWithCommas()
-                }
-                if (topPosition == 5 || bottomPosition == 5) {
+                } else if (topPosition == 5 || bottomPosition == 5) {
                     // to Rankine
                     //like newton
                     ratio = celsiusToFahrenheitRatio //has the same value
@@ -65,17 +61,16 @@ class Temperature(override val positions: Positions) : ConstantsAbstractClass() 
                             -pow
                         )
                     else fixedValue = celsiusToRankineFixedValue
-                }
-                if (topPosition == 6 || bottomPosition == 6) {
+                } else if (topPosition == 6 || bottomPosition == 6) {
                     ratio = celsiusToRomerRatio
                     fixedValue = celsiusToRomerFixedValue
 
-                }
-                if (topPosition == 7 || bottomPosition == 7) {
+                } else if (topPosition == 7 || bottomPosition == 7) {
                     // to Reaumur
                     ratio = celsiusToReaumur
                     //return complexConversionFunction(inputString, -pow)
-                }
+                } else TODO()
+
                 return complexConversionFunction(inputString, -pow)
             }
         }
@@ -89,32 +84,28 @@ class Temperature(override val positions: Positions) : ConstantsAbstractClass() 
                     // to kelvin
                     fixedValue = fahrenheitToKelvinFixedValue
                     ratio = celsiusToFahrenheitRatio
-                }
-                if (topPosition == 3 || bottomPosition == 3) {
+                } else if (topPosition == 3 || bottomPosition == 3) {
                     //to newton
                     ratio = fahrenheitToNewtonRatio
                     fixedValue = celsiusToFahrenheitFixedValue
-                }
-                if (topPosition == 4 || bottomPosition == 4) {
+                } else if (topPosition == 4 || bottomPosition == 4) {
                     // to delisle
                     ratio = fahrenheitToDelisleRatio
                     return someDelisleConversions(pow, BigDecimal(212))
-                }
-                if (topPosition == 5 || bottomPosition == 5) {
+                } else if (topPosition == 5 || bottomPosition == 5) {
                     // to rankine
                     fixedValue = fahrenheitToKelvinFixedValue
-                }
-                if (topPosition == 6 || bottomPosition == 6) {
+                } else if (topPosition == 6 || bottomPosition == 6) {
                     //to romer
                     fixedValue = celsiusToFahrenheitFixedValue
                     ratio = fahrenheitToRomerRatio
                     return someRomerConversions(inputString, -pow)
-                }
-                if (topPosition == 7 || bottomPosition == 7) {
+                } else if (topPosition == 7 || bottomPosition == 7) {
                     // to reaumur
                     fixedValue = celsiusToFahrenheitFixedValue
                     ratio = fahrenheitToReaumurRatio
-                }
+                } else TODO()
+
                 return complexConversionFunction(inputString, pow)
             }
         }
@@ -128,27 +119,24 @@ class Temperature(override val positions: Positions) : ConstantsAbstractClass() 
                     //to newton
                     fixedValue = celsiusToKelvinFixedValue
                     ratio = celsiusToNewtonRatio.pow(-1, mathContext)
-                }
-                if (topPosition == 4 || bottomPosition == 4) {
+                } else if (topPosition == 4 || bottomPosition == 4) {
                     //to delisle
                     ratio = celsiusToDelisleInverseRatio
                     return someDelisleConversions(pow, kelvinToDelisleFixedValue)
-                }
-                if (topPosition == 5 || bottomPosition == 5) {
+                } else if (topPosition == 5 || bottomPosition == 5) {
                     //to rankine
                     ratio = celsiusToFahrenheitRatio.pow(-1, mathContext)
-                }
-                if (topPosition == 6 || bottomPosition == 6) {
+                } else if (topPosition == 6 || bottomPosition == 6) {
                     //to romer
                     ratio = celsiusToRomerRatio
                     fixedValue = celsiusToKelvinFixedValue
                     return someRomerConversions(inputString, -pow)
-                }
-                if (topPosition == 7 || bottomPosition == 7) {
+                } else if (topPosition == 7 || bottomPosition == 7) {
                     // to reaumur
                     fixedValue = celsiusToKelvinFixedValue
                     ratio = celsiusToReaumur.pow(-1, mathContext)
-                }
+                } else TODO()
+
                 return complexConversionFunction(inputString, pow)
             }
         }
