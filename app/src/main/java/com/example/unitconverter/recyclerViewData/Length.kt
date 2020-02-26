@@ -5,8 +5,7 @@ import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
 import java.util.*
 
-class Length(override val context: Context) : RecyclerDataInterface {
-    override var start: Int = 0
+class Length(override val context: Context) : RecyclerDataInterface() {
 
     override fun getList(): MutableList<RecyclerDataClass> {
         return mutableListOf<RecyclerDataClass>().apply {

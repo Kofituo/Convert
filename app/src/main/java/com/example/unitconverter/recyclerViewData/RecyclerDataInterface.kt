@@ -5,7 +5,8 @@ import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
 import java.util.*
 
-interface RecyclerDataInterface {
+@Suppress("MemberVisibilityCanBePrivate")
+abstract class RecyclerDataInterface {
     val locale: Locale get() = Locale.getDefault()
 
     val yotta get() = getString(R.string.yotta)
@@ -51,13 +52,13 @@ interface RecyclerDataInterface {
     val squareSymbol get() = getString(R.string.square_symbol)
     val square get() = getString(R.string.square)
     //
-    val context: Context
+    abstract val context: Context
 
-    fun getList(): MutableList<RecyclerDataClass>
+    abstract fun getList(): MutableList<RecyclerDataClass>
 
     fun getString(stringId: Int) = context.resources.getString(stringId)
 
-    var start: Int
+    var start: Int = 0
 
     fun massPrefixes(quantity: String = "", unit: String = ""): MutableList<RecyclerDataClass> {
         return mutableListOf<RecyclerDataClass>().apply {
@@ -85,4 +86,7 @@ interface RecyclerDataInterface {
 
     fun MutableList<RecyclerDataClass>.add(quantity: String, unit: CharSequence) =
         add(RecyclerDataClass(quantity, unit, start++))
+
+    inline fun buildMutableList(block: MutableList<RecyclerDataClass>.() -> Unit) =
+        mutableListOf<RecyclerDataClass>().apply(block)
 }

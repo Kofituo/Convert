@@ -57,7 +57,6 @@ class MyAdapter(
         }
     }
 
-
     // rest of the class
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view =
@@ -105,7 +104,6 @@ class MyAdapter(
     fun setOnRadioButtonsClickListener(listener: OnRadioButtonsClickListener) {
         this.listener = listener
     }
-
 
     private val mSortedList =
         SortedList(RecyclerDataClass::class.java,

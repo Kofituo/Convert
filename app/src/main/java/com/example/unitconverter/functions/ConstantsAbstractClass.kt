@@ -33,8 +33,7 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
      * */
     @Suppress("FunctionName", "NOTHING_TO_INLINE")
     inline fun TODO(): Nothing =
-        TODO("top position is $topPosition  bottom position is $bottomPosition")
-
+        TODO("class: ${this.javaClass.simpleName} top position is $topPosition bottom position is $bottomPosition")
 
     abstract val positions: Positions
 

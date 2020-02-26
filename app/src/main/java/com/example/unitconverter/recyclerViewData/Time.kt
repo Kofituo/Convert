@@ -4,8 +4,7 @@ import android.content.Context
 import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
 
-class Time(override val context: Context) : RecyclerDataInterface {
-    override var start = 0
+class Time(override val context: Context) : RecyclerDataInterface() {
 
     override fun getList(): MutableList<RecyclerDataClass> {
         return mutableListOf<RecyclerDataClass>().apply {

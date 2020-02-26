@@ -1,5 +1,6 @@
 package com.example.unitconverter.subclasses
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.unitconverter.RecyclerDataClass
 
@@ -11,6 +12,7 @@ class ConvertViewModel : ViewModel() {
             if (field.isEmpty()) {
                 field = value
             }
+            Log.e("value", "$value  ${value.size}")
         }
     var whichButton = -1
 }

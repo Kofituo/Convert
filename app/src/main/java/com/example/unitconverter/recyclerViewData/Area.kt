@@ -5,9 +5,7 @@ import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
 import java.util.*
 
-class Area(override val context: Context) : RecyclerDataInterface {
-
-    override var start = 0
+class Area(override val context: Context) : RecyclerDataInterface() {
 
     override fun getList(): MutableList<RecyclerDataClass> {
         return mutableListOf<RecyclerDataClass>().apply {

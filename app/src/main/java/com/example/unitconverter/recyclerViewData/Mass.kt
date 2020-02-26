@@ -3,18 +3,15 @@ package com.example.unitconverter.recyclerViewData
 import android.content.Context
 import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
-import java.util.*
 
-class Mass(override val context: Context) : RecyclerDataInterface {
-
-    override var start: Int = 0
+class Mass(override val context: Context) : RecyclerDataInterface() {
 
     override fun getList(): MutableList<RecyclerDataClass> {
         return mutableListOf<RecyclerDataClass>().apply {
             add(R.string.gram, R.string.gram_unit)
             addAll(
                 massPrefixes(
-                    getString(R.string.gram).toLowerCase(Locale.getDefault()),
+                    getString(R.string.gram).toLowerCase(locale),
                     getString(R.string.gram_unit)
                 )
             )

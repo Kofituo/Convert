@@ -265,6 +265,9 @@
     <string name="per_unit">/</string>
     <string name="cubic_unit">³</string>
 
+    <string name="knot">Knot</string>
+    <string name="speed_of_light">Speed of light</string>
+    <string name="speed_of_light_unit">𝑐</string>
     <!--for time-->
     <string name="minute">Minute</string>
     <string name="seconds">Second</string>

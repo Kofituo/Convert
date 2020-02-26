@@ -200,4 +200,11 @@ object Utils {
 
         return reversedMap
     }
+
+    @Suppress("NOTHING_TO_INLINE")
+    inline fun StringBuilder.appendWithSpace(string: String): StringBuilder {
+        append(string)
+        append(" ")
+        return this
+    }
 }
