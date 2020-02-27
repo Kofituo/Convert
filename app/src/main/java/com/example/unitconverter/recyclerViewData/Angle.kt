@@ -6,7 +6,7 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import com.example.unitconverter.R
 
-class Angle(override val context: Context) : RecyclerDataInterface() {
+class Angle(override val context: Context) : RecyclerDataAbstractClass() {
 
     override fun getList() = buildMutableList {
 

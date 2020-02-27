@@ -43,13 +43,17 @@ class SearchTextChangeListener(
         dataSet: MutableList<RecyclerDataClass>,
         searchText: String
     ): MutableList<RecyclerDataClass> {
+        if (searchText.isBlank()) return dataSet //fast return
+
         val locale = Locale.getDefault()
         val mainText = searchText.trim().toLowerCase(locale)
         return mutableListOf<RecyclerDataClass>().apply {
             for (i in dataSet) {
-                val text = i.quantity.toLowerCase(locale)
-                val unit = (i.correspondingUnit.toString()).toLowerCase(locale)
-                if (text.contains(mainText) || unit.contains(mainText)) add(i)
+                val text = i.quantity
+                val unit = i.correspondingUnit
+                if (text.contains(mainText, ignoreCase = true) ||
+                    unit.contains(mainText, ignoreCase = true)
+                ) add(i)
             }
         }
     }

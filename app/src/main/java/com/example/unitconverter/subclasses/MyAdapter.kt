@@ -25,7 +25,7 @@ class MyAdapter(
 
     private lateinit var listener: OnRadioButtonsClickListener
 
-    /** view holder class **/
+    /** View holder class **/
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var radioButton: MyRadioButton
         var radioTextView: TextView
@@ -91,7 +91,8 @@ class MyAdapter(
             //its in reverse so the indexing isn't affected
             //if it were 0 to size when we remove 0 1 now becomes original 2 and so on
             for (i in size() - 1 downTo 0)
-                if (!dataSet.contains(get(i))) mSortedList.remove(get(i))
+                if (!dataSet.contains(this@apply[i])) this.remove(this@apply[i])
+
             addAll(dataSet)
             endBatchedUpdates()
         }

@@ -6,7 +6,7 @@ import com.example.unitconverter.RecyclerDataClass
 import java.util.*
 
 @Suppress("MemberVisibilityCanBePrivate")
-abstract class RecyclerDataInterface {
+abstract class RecyclerDataAbstractClass {
     val locale: Locale get() = Locale.getDefault()
 
     val yotta get() = getString(R.string.yotta)

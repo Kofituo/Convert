@@ -3,7 +3,7 @@ package com.example.unitconverter.recyclerViewData
 import android.content.Context
 import com.example.unitconverter.RecyclerDataClass
 
-class Prefix(override val context: Context) : RecyclerDataInterface() {
+class Prefix(override val context: Context) : RecyclerDataAbstractClass() {
 
     override fun getList(): MutableList<RecyclerDataClass> {
         return mutableListOf<RecyclerDataClass>().apply {

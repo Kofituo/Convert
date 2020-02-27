@@ -511,13 +511,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     //could have used reflection
     private inline fun callBack(f: (Positions) -> String, x: String): String {
-        return if (x.isEmpty()) "" else {
+        return if (x.isEmpty()) ""
+        else {
             val getPosition = getPositions()
             if (getPosition.isNull()) x.insertCommas()
             else if (!getPosition) ""
-            else {
-                f(Positions(topPosition, bottomPosition, x))
-            }
+            else f(Positions(topPosition, bottomPosition, x))
         }
     }
 

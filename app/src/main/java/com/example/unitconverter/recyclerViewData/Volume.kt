@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
 
-class Volume(override val context: Context) : RecyclerDataInterface() {
+class Volume(override val context: Context) : RecyclerDataAbstractClass() {
 
     override fun getList(): MutableList<RecyclerDataClass> {
         return mutableListOf<RecyclerDataClass>().apply {
@@ -67,6 +67,7 @@ class Volume(override val context: Context) : RecyclerDataInterface() {
     private fun MutableList<RecyclerDataClass>.cubicAdd(quantity: Int, unit: Int) =
         add("$cubic ${getString(quantity).toLowerCase(locale)}", getString(unit) + cubicUnit)
 
-    private inline val cubic get() = getString(R.string.cubic)
-    private inline val cubicUnit get() = getString(R.string.cubic_unit)
+    // gets assigned once
+    private val cubic = getString(R.string.cubic)
+    private val cubicUnit = getString(R.string.cubic_unit)
 }

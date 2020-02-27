@@ -2,10 +2,9 @@ package com.example.unitconverter.recyclerViewData
 
 import android.content.Context
 import com.example.unitconverter.R
-import com.example.unitconverter.RecyclerDataClass
 import com.example.unitconverter.Utils.appendWithSpace
 
-class Speed(override val context: Context) : RecyclerDataInterface() {
+class Speed(override val context: Context) : RecyclerDataAbstractClass() {
 
     private val per = getString(R.string.per)
     private val perUnit = getString(R.string.per_unit)
@@ -18,7 +17,7 @@ class Speed(override val context: Context) : RecyclerDataInterface() {
     private val metre = getString(R.string.metre).toLowerCase(locale)
     private val metreUnit = getString(R.string.metre_unit)
 
-    override fun getList() = mutableListOf<RecyclerDataClass>().apply {
+    override fun getList() = buildMutableList {
 
         add(
             buildString {
