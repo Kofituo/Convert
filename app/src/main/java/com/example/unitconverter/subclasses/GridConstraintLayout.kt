@@ -27,9 +27,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
     private var guideLine: GuideLines = GuideLines(-1, -1, -1)
 
     override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
-
         child as View
-
         guideLine = GuideLines(
             if (child.id == R.id.leftGuide) R.id.leftGuide else guideLine.left,
             if (child.id == R.id.rightGuide) R.id.rightGuide else guideLine.right,
@@ -39,7 +37,6 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             originalMap[child.name] = child.id
             viewsMap.append(child.id, child)
         }
-
         super.addView(child, params)
     }
 

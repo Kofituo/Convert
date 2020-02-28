@@ -1,7 +1,6 @@
 package com.example.unitconverter
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -33,9 +32,11 @@ import com.example.unitconverter.Utils.lengthFilter
 import com.example.unitconverter.Utils.minusSign
 import com.example.unitconverter.Utils.removeCommas
 import com.example.unitconverter.Utils.temperatureFilters
+import com.example.unitconverter.builders.buildIntent
 import com.example.unitconverter.functions.*
 import com.example.unitconverter.miscellaneous.isNull
 import com.example.unitconverter.subclasses.ConvertViewModel
+import com.example.unitconverter.subclasses.Positions
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_convert.*
 import java.text.DecimalFormat
@@ -252,8 +253,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private var reverse = false
 
-    data class Positions(val topPosition: Int, val bottomPosition: Int, val input: String)
-
     private fun whichView() {
         when (viewId) {
             R.id.prefixes -> prefixConversions()
@@ -272,8 +271,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.Pressure -> pressureConversions()
 
-            R.id.Speed -> {
-            }
+            R.id.Speed -> speedConversions()
+
             R.id.time -> {
             }
             R.id.fuelEconomy -> {
@@ -363,6 +362,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    private fun speedConversions() {
+        function = {
+            Speed(it).getText()
+        }
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -375,7 +380,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 true
             }
             R.id.prefixes -> {
-                Intent(this, ConvertActivity::class.java).apply {
+                buildIntent(this, ConvertActivity::class.java) {
                     putExtra(TextMessage, "Prefix")
                     putExtra(ViewIdMessage, R.id.prefixes)
                     startActivity(this)
@@ -499,7 +504,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     private fun View.setTopPadding(padding: Int) {
-        this.apply {
+        apply {
             setPadding(
                 padding.dpToInt(this@ConvertActivity),
                 paddingTop,

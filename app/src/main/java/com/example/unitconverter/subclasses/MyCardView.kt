@@ -21,6 +21,8 @@ import com.example.unitconverter.AdditionItems.popupWindow
 import com.example.unitconverter.ConvertActivity
 import com.example.unitconverter.R
 import com.example.unitconverter.Utils.name
+import com.example.unitconverter.builders.buildIntent
+import com.example.unitconverter.builders.buildMutableMap
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -95,11 +97,14 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
     }
 
     fun updateArray() {
-        mRecentlyUsed = (mapOf(this.name to this.id) + mRecentlyUsed).toMutableMap()
+        mRecentlyUsed = buildMutableMap {
+            put(this@MyCardView.name, id)
+            putAll(mRecentlyUsed)
+        }
     }
 
     fun startActivity() {
-        Intent(context, ConvertActivity::class.java).apply {
+        buildIntent(context, ConvertActivity::class.java) {
             val textViewText = (this@MyCardView.getChildAt(0) as TextView).text
             putExtra(TextMessage, textViewText)
             putExtra(ViewIdMessage, this@MyCardView.id)

@@ -17,7 +17,7 @@ class Speed(override val context: Context) : RecyclerDataAbstractClass() {
     private val metre = getString(R.string.metre).toLowerCase(locale)
     private val metreUnit = getString(R.string.metre_unit)
 
-    override fun getList() = buildMutableList {
+    override fun getList() = buildRecyclerList {
 
         add(
             buildString {
@@ -85,6 +85,17 @@ class Speed(override val context: Context) : RecyclerDataAbstractClass() {
                 append(getString(R.string.mile_unit))
                 append(perUnit)
                 append(secondsUnit)
+            }
+        )
+        add(
+            buildString {
+                appendWithSpace(getString(R.string.metre))
+                appendWithSpace(per)
+                append(minute)
+            }, buildString {
+                append(metreUnit)
+                append(perUnit)
+                append(minuteUnit)
             }
         )
         add(

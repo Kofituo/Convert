@@ -1,9 +1,9 @@
 package com.example.unitconverter.functions
 
-import com.example.unitconverter.ConvertActivity
 import com.example.unitconverter.constants.Angle
+import com.example.unitconverter.subclasses.Positions
 
-class Angle(override val positions: ConvertActivity.Positions) : ConstantsAbstractClass() {
+class Angle(override val positions: Positions) : ConstantsAbstractClass() {
 
     private inline val pow get() = swapConversions()
 

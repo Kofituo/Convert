@@ -33,6 +33,7 @@ import com.example.unitconverter.Utils.name
 import com.example.unitconverter.Utils.reversed
 import com.example.unitconverter.Utils.toJson
 import com.example.unitconverter.Utils.values
+import com.example.unitconverter.builders.buildIntent
 import com.example.unitconverter.miscellaneous.DeserializeMap
 import com.example.unitconverter.miscellaneous.isNeitherNullNorEmpty
 import com.example.unitconverter.subclasses.ConvertViewModel
@@ -317,7 +318,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 true
             }
             R.id.prefixes -> {
-                Intent(this, ConvertActivity::class.java).apply {
+                buildIntent(this, ConvertActivity::class.java) {
                     putExtra(TextMessage, "Prefix")
                     putExtra(ViewIdMessage, R.id.prefixes)
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP

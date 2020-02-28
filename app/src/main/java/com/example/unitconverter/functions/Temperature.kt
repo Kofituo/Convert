@@ -1,7 +1,7 @@
 package com.example.unitconverter.functions
 
-import com.example.unitconverter.ConvertActivity.Positions
 import com.example.unitconverter.constants.Temperature
+import com.example.unitconverter.subclasses.Positions
 import java.math.BigDecimal
 
 class Temperature(override val positions: Positions) : ConstantsAbstractClass() {

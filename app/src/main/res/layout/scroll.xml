@@ -5,8 +5,8 @@
     android:id="@+id/grid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layoutAnimation="@anim/fall_down_layout_animation"
     android:background="@drawable/rounded_front"
+    android:layoutAnimation="@anim/fall_down_layout_animation"
     android:paddingTop="5dp"
     android:splitMotionEvents="false">
 

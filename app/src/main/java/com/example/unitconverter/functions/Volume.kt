@@ -1,9 +1,9 @@
 package com.example.unitconverter.functions
 
-import com.example.unitconverter.ConvertActivity
 import com.example.unitconverter.constants.Volume
+import com.example.unitconverter.subclasses.Positions
 
-class Volume(override val positions: ConvertActivity.Positions) : ConstantsAbstractClass() {
+class Volume(override val positions: Positions) : ConstantsAbstractClass() {
 
     private inline val pow get() = swapConversions()
 

@@ -98,9 +98,8 @@ open class SeparateThousands(
             if (s.length > 2) {
                 if (s[0] == zeroDigit && s[1] == groupingSeparator)
                     s.delete(0, 2) // no 0,264.554715
-                val f = StringBuilder(s).lastIndex
-
-                for (x in 0..f) {
+                val index = s.lastIndex
+                for (x in 0..index) {
                     if (s[0] == decimalSeparator) {
                         s.insert(0, zeroDigit.toString())
                         break

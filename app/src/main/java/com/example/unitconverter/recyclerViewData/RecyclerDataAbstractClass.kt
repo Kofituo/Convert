@@ -3,6 +3,7 @@ package com.example.unitconverter.recyclerViewData
 import android.content.Context
 import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
+import com.example.unitconverter.builders.buildMutableList
 import java.util.*
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -87,6 +88,6 @@ abstract class RecyclerDataAbstractClass {
     fun MutableList<RecyclerDataClass>.add(quantity: String, unit: CharSequence) =
         add(RecyclerDataClass(quantity, unit, start++))
 
-    inline fun buildMutableList(block: MutableList<RecyclerDataClass>.() -> Unit) =
-        mutableListOf<RecyclerDataClass>().apply(block)
+    inline fun buildRecyclerList(block: MutableList<RecyclerDataClass>.() -> Unit) =
+        buildMutableList(block)
 }

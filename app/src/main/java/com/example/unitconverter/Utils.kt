@@ -7,9 +7,10 @@ import android.util.SparseArray
 import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
+import com.example.unitconverter.builders.buildMutableList
+import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.miscellaneous.isNeitherNullNorEmpty
 import com.example.unitconverter.miscellaneous.isNotNull
-import com.example.unitconverter.miscellaneous.isNull
 import com.google.android.material.textfield.TextInputEditText
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -25,13 +26,12 @@ object Utils {
             (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.minusSign
 
     val <V>SparseArray<V>.values: MutableList<V>
-        get() {
-            val mutableList = mutableListOf<V>()
-            this.forEach { _, value ->
-                mutableList.add(value)
+        get() =
+            buildMutableList {
+                this@values.forEach { _, value ->
+                    add(value)
+                }
             }
-            return mutableList
-        }
 
     fun Int.dpToInt(context: Context): Int = round(
         TypedValue.applyDimension(
@@ -46,29 +46,25 @@ object Utils {
     }*/
 
     /**
-     * map which holds view ids and view names
+     * A map which holds view ids and view names
      * Used to <br>quickly</br> get name of views instead of using
      * resources.getResourceEntryName(view.id)
      * */
     private val mutableMap = mutableMapOf<Int, String>()
     /**
-     * used to get name from id
-     * fist checks from a map is its there
+     * Used to get name from id
+     * First checks from a map is its there //for fast access
      * */
     val View.name: String
         get() =
             if (id == -0x1) throw Resources.NotFoundException("Invalid ID '-1' $this")
-            else {
-                var string = mutableMap[this.id]
-                if (string.isNull()) {
-                    string = resources.getResourceEntryName(this.id)
-                    mutableMap[this.id] = string
-                }
-                string ?: throw Exception("string is surprisingly null")
-            }
+            else mutableMap[this.id]
+                ?: resources.getResourceEntryName(this.id) //returns a string
+                    .apply { mutableMap[this@name.id] = this } //updates the map
 
     fun String.removeCommas(decimalSeparator: Char): String? {
         if (this.isBlank()) return ""
+
         val checkString = StringBuilder()
         when {
             this.startsWith(decimalSeparator) ->
@@ -118,7 +114,6 @@ object Utils {
             }
             stringBuilder
         }
-        //val k = InputFilter { source, start, end, dest, dstart, dend ->  }
         return arrayOf(filter, lengthFilter())
     }
 
@@ -132,14 +127,14 @@ object Utils {
             val stringBuilder = StringBuilder(end - start)
             var count = 0
             for (i in start until end) {
+                val text = editText.text
+                val editTextSelectionStart = editText.selectionStart
+                if (text.isNotNull() &&
+                    text.indexOf(minusSign) == editTextSelectionStart
+                ) continue // prevent things like 4-5.0
 
                 if (source[i] == minusSign) {
-                    val text = editText.text
-
                     if (i != 0 || text.isNeitherNullNorEmpty()) continue
-
-                    val editTextSelectionStart = editText.selectionStart
-
                     if (
                         editTextSelectionStart != editText.selectionEnd ||
                         editTextSelectionStart != 0
@@ -157,7 +152,6 @@ object Utils {
                         count++
                         if (count >= 2) continue
                         if (source.length > 1 && editText.isFocused) {
-                            val text = editText.text
                             if (text.isNotNull()
                                 && text.contains(fullStop)
                             ) continue
@@ -194,11 +188,10 @@ object Utils {
         if (size < 2) return toMutableMap()
         val reverseValue = values.reversed().iterator()
         val reverseKeys = keys.reversed().iterator()
-        val reversedMap = mutableMapOf<K, V>()
-        for (i in 0 until size)
-            reversedMap[reverseKeys.next()] = reverseValue.next()
-
-        return reversedMap
+        return buildMutableMap {
+            for (i in 0 until size)
+                this@buildMutableMap[reverseKeys.next()] = reverseValue.next()
+        }
     }
 
     @Suppress("NOTHING_TO_INLINE")

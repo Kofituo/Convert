@@ -1,9 +1,9 @@
 package com.example.unitconverter.functions
 
-import com.example.unitconverter.ConvertActivity
 import com.example.unitconverter.constants.Length
+import com.example.unitconverter.subclasses.Positions
 
-class Length(override val positions: ConvertActivity.Positions) : ConstantsAbstractClass() {
+class Length(override val positions: Positions) : ConstantsAbstractClass() {
 
     override fun getText(): String =
         amongMetre() ?: metreConversions() ?: footConversions() ?: inchConversions()

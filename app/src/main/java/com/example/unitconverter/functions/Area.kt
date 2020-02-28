@@ -1,7 +1,7 @@
 package com.example.unitconverter.functions
 
-import com.example.unitconverter.ConvertActivity.Positions
 import com.example.unitconverter.constants.Area
+import com.example.unitconverter.subclasses.Positions
 
 class Area(override val positions: Positions) : ConstantsAbstractClass() {
 
