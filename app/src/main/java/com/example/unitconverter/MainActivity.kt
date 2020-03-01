@@ -34,7 +34,7 @@ import com.example.unitconverter.Utils.reversed
 import com.example.unitconverter.Utils.toJson
 import com.example.unitconverter.Utils.values
 import com.example.unitconverter.builders.buildIntent
-import com.example.unitconverter.miscellaneous.DeserializeMap
+import com.example.unitconverter.miscellaneous.DeserializeStringIntMap
 import com.example.unitconverter.miscellaneous.isNeitherNullNorEmpty
 import com.example.unitconverter.subclasses.ConvertViewModel
 import kotlinx.android.synthetic.main.front_page_activity.*
@@ -83,21 +83,17 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             "${dataStorage.id} ${resources.displayMetrics.widthPixels}  ${resources.displayMetrics.density}"
         )
         val rect = Rect()
-
         window?.decorView?.apply {
             post {
                 getWindowVisibleDisplayFrame(rect)
                 statusBarHeight = rect.top
-
                 if (Build.VERSION.SDK_INT > 22) systemUiVisibility =
                     systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
 
-        Toast.makeText(this, "hi bro ", Toast.LENGTH_LONG).show()
         val viewModel = ViewModelProvider(this@MainActivity)[ConvertViewModel::class.java]
         motion?.apply {
-
             motionHandler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
                     when (msg.what) {
@@ -106,10 +102,12 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                                 if (progress == 1F || progress == 0f) {
                                     false
                                 } else {
-                                    scrollable.dispatchTouchEvent(motionEventDown)
-                                    scrollable.dispatchTouchEvent(motionEventMove)
-                                    scrollable.dispatchTouchEvent(motionEventMove)
-                                    scrollable.dispatchTouchEvent(motionEventUp)
+                                    scrollable.apply {
+                                        dispatchTouchEvent(motionEventDown)
+                                        dispatchTouchEvent(motionEventMove)
+                                        dispatchTouchEvent(motionEventMove)
+                                        dispatchTouchEvent(motionEventUp)
+                                    }
                                     true
                                 }
                             return
@@ -143,7 +141,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             sharedPreferences.getString("mRecentlyUsed", "").apply {
                 mRecentlyUsed =
                     if (this.isNeitherNullNorEmpty()) {
-                        Json.parse(DeserializeMap, this).toMutableMap()
+                        Json.parse(DeserializeStringIntMap, this).toMutableMap()
                     } else originalMap.apply { putString("mRecentlyUsed", toJson()) }
                 Log.e("recent", "res  $mRecentlyUsed")
             }
@@ -155,7 +153,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         //so we have to keep it like that
                         Log.e("this", "$this ")
                         val selectedOrder =
-                            Json.parse(DeserializeMap, this)// as ArrayMap<String, Int>
+                            Json.parse(DeserializeStringIntMap, this)// as ArrayMap<String, Int>
                         grid.sort(sortValue, selectedOrder)
                         selectedOrder
                     } else mapOf()
@@ -264,7 +262,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         Toast.makeText(this, "well", Toast.LENGTH_SHORT).show()
 
     private fun myConfiguration(orientation: Int) {
-
         orient =
             if (orientation == Configuration.ORIENTATION_PORTRAIT)
                 Configuration.ORIENTATION_PORTRAIT
@@ -331,7 +328,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     }
 
-
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         app_bar_bottom = app_bar.bottom - app_bar.top
     }
@@ -341,4 +337,3 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         if (isInitialized) popupWindow.dismiss()
     }
 }
-

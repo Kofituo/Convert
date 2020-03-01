@@ -1,7 +1,6 @@
 package com.example.unitconverter.functions
 
 import com.example.unitconverter.Utils.insertCommas
-import com.example.unitconverter.builders.operate
 import com.example.unitconverter.constants.ConstantsInterface
 import com.example.unitconverter.constants.Prefixes
 import com.example.unitconverter.subclasses.Positions
@@ -27,7 +26,6 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
         set(value) {
             if (field != value) field = value
         }
-
 
     /**
      * Throws an exception
@@ -102,22 +100,20 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
          * the ratio is still the same
          */
         return if (pow == 1) {
-            BigDecimal(x).operate {
-                quickMultiplication(ratio)
-                add(fixedValue)
-                toStringWithCommas()
-            }
+            BigDecimal(x)
+                .quickMultiplication(ratio)
+                .add(fixedValue)
+                .toStringWithCommas()
+
         }
         /**
          * for second case 2 (0°F − 32) × 5/9
          * ratio is inverse of itself
          */
         else {
-            BigDecimal(x).operate {
-                subtract(fixedValue)
-                quickMultiplication(ratio.pow(-1, mathContext))
-                toStringWithCommas()
-            }
+            BigDecimal(x).subtract(fixedValue)
+                .quickMultiplication(ratio.pow(-1, mathContext))
+                .toStringWithCommas()
         }
     }
 
@@ -125,19 +121,17 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
     fun complexConversionFunction(bigDecimal: BigDecimal, pow: Int): String {
         // same as previous function but uses bigDecimal directly
         return if (pow == 1) {
-            bigDecimal.operate {
-                quickMultiplication(ratio)
-                add(fixedValue)
-                toStringWithCommas()
-            }
+            bigDecimal
+                .quickMultiplication(ratio)
+                .add(fixedValue)
+                .toStringWithCommas()
 
         } //for now else is'nt used
         else {
-            bigDecimal.operate {
-                subtract(fixedValue)
-                quickMultiplication(ratio.pow(-1, mathContext))
-                toStringWithCommas()
-            }
+            bigDecimal
+                .subtract(fixedValue)
+                .quickMultiplication(ratio.pow(-1, mathContext))
+                .toStringWithCommas()
         }
     }
 
@@ -145,5 +139,4 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
 
     private fun BigDecimal.quickMultiplication(other: BigDecimal) =
         if (other == BigDecimal.ONE) this else this.multiply(other)
-
 }

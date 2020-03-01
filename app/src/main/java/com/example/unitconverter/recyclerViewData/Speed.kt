@@ -188,15 +188,7 @@ class Speed(override val context: Context) : RecyclerDataAbstractClass() {
             }
         )
         add(
-            buildString {
-                appendWithSpace(getString(R.string.knot))
-                appendWithSpace(per)
-                append(seconds)
-            }, buildString {
-                append(getString(R.string.knot).toLowerCase(locale))
-                append(perUnit)
-                append(secondsUnit)
-            }
+            getString(R.string.knot), getString(R.string.knot).toLowerCase(locale)
         )
         add(R.string.speed_of_light, R.string.speed_of_light_unit)
     }

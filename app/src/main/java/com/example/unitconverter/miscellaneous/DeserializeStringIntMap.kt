@@ -10,7 +10,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.content
 import kotlinx.serialization.withName
 
-object DeserializeMap : DeserializationStrategy<Map<String, Int>> {
+object DeserializeStringIntMap : DeserializationStrategy<Map<String, Int>> {
     override val descriptor: SerialDescriptor
         get() = StringDescriptor.withName("Kofi")
 

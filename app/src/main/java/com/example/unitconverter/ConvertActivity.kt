@@ -273,8 +273,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.Speed -> speedConversions()
 
-            R.id.time -> {
-            }
+            R.id.time -> timeConversions()
+
             R.id.fuelEconomy -> {
             }
             R.id.dataStorage -> {
@@ -368,6 +368,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    private fun timeConversions() {
+        function = {
+            Time(it).getText()
+        }
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

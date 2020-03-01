@@ -19,6 +19,7 @@ import com.example.unitconverter.AdditionItems.statusBarHeight
 import com.example.unitconverter.R
 import com.example.unitconverter.Utils.app_bar_bottom
 import com.example.unitconverter.Utils.dpToInt
+import com.example.unitconverter.builders.buildConstraintSet
 import com.google.android.material.card.MaterialCardView
 
 /* popup which takes context for inflation
@@ -67,7 +68,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
 
     private fun settingConstraint(constraintLayout: View) {
         constraintLayout as ConstraintLayout
-        val constraintSet = ConstraintSet()
 
         val arrowImageView = constraintLayout.findViewById<ImageView>(R.id.arrow)
 
@@ -85,7 +85,7 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
 
         arrowImageView.setBackgroundResource(R.drawable.ic_arrow_drop_up_black_24dp)
 
-        constraintSet.apply {
+        buildConstraintSet {
             clone(constraintLayout)
             // clear top constraint of arrow icon
             clear(R.id.arrow, ConstraintSet.TOP)

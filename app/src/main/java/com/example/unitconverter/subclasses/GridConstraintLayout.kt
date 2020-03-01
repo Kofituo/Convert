@@ -17,6 +17,7 @@ import com.example.unitconverter.AdditionItems.viewsMap
 import com.example.unitconverter.R
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.name
+import com.example.unitconverter.builders.buildConstraintSet
 import com.example.unitconverter.miscellaneous.isNotNull
 
 class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null) :
@@ -79,9 +80,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             }
             array.add(viewId)
         }
-
-        val constraintSet = ConstraintSet()
-        constraintSet.apply {
+        buildConstraintSet {
             clone(this@GridConstraintLayout)
             for (i in 0 until array.size) {
                 val modulo = i % number
@@ -99,7 +98,6 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                             topView
                         )
                         setHorizontalChainStyle(mainView, ConstraintSet.CHAIN_SPREAD_INSIDE)
-
                     }
                     number - 1 -> {
                         //means its the thr right
@@ -128,10 +126,9 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             transitionArray.shuffle()*/
 
             TransitionManager
-                .beginDelayedTransition(this@GridConstraintLayout, ChangeBounds()
-                    .apply {
-                        interpolator = AccelerateInterpolator(0.057f)
-                    })
+                .beginDelayedTransition(this@GridConstraintLayout,
+                    ChangeBounds().apply { interpolator = AccelerateInterpolator(0.057f) }
+                )
             applyTo(this@GridConstraintLayout)
         }
         for (i in array.indices) {
@@ -146,75 +143,6 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
         }
         Log.e("fin", "${System.currentTimeMillis() - o}")
     }
-
-    /*fun sort(number: Int, viewIdArray: ArrayList<Int>) {
-        val o = System.currentTimeMillis()
-        val constraintSet = ConstraintSet()
-        constraintSet.apply {
-            clone(this@GridConstraintLayout)
-            for (i in 0 until viewIdArray.size) {
-                val modulo = i % number
-                val topViewIndex = i - number
-                val topView = if (topViewIndex >= 0) viewIdArray[topViewIndex] else guideLine.top
-                val mainView = viewIdArray[i]
-                when (modulo) {
-                    0 -> {
-                        //it means its at the left
-                        constraintSetting(
-                            this,
-                            guideLine.left,
-                            mainView,
-                            viewIdArray[i + 1],
-                            topView
-                        )
-                        setHorizontalChainStyle(mainView, ConstraintSet.CHAIN_SPREAD_INSIDE)
-
-                    }
-                    number - 1 -> {
-                        //means its the thr right
-                        constraintSetting(
-                            this,
-                            viewIdArray[i - 1],
-                            mainView,
-                            guideLine.right,
-                            topView
-                        )
-                    }
-                    else -> {
-                        //means its in the middle
-                        constraintSetting(
-                            this,
-                            viewIdArray[i - 1],
-                            mainView,
-                            viewIdArray[i + 1],
-                            topView
-                        )
-                    }
-                }
-            }
-            *//* Looks cool but no
-            val transitionArray = arrayListOf<Interpolator>(AccelerateInterpolator(0.05f),AccelerateDecelerateInterpolator())
-            transitionArray.shuffle()*//*
-            TransitionManager
-                .beginDelayedTransition(this@GridConstraintLayout, ChangeBounds()
-                    .apply {
-                        interpolator = AccelerateInterpolator(0.057f)
-                    })
-            applyTo(this@GridConstraintLayout)
-        }
-        for (i in viewIdArray.indices) {
-            val view =
-                viewsMap[viewIdArray[i]] as View // throws an exception means something's wrong
-
-            view.apply {
-                val params = layoutParams as MarginLayoutParams
-                params.topMargin = if (i < number) 0 else 15.dpToInt()
-                requestLayout()
-            }
-        }
-        Log.e("fin1", "${System.currentTimeMillis() - o}")
-    }*/
-
 
     private fun ConstraintSet.constrainTopToBottom(firstView: Int, secondView: Int) =
         this.connect(firstView, ConstraintSet.TOP, secondView, ConstraintSet.BOTTOM, 0)

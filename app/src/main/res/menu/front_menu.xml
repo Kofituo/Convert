@@ -13,17 +13,19 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/prefixes"
+        android:title="@string/prefixes"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/sort"
         android:icon="@drawable/ic_sort_black_24dp"
         android:title="@string/sort"
         app:showAsAction="never" />
 
-    <item android:title="@string/prefixes"
-        app:showAsAction="never"
-        android:id="@+id/prefixes"/>
-
-    <item android:title="@string/settings"
+    <item
         android:id="@+id/settings"
-        app:showAsAction="never"
-        android:icon="@drawable/ic_settings_black_24dp"/>
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="@string/settings"
+        app:showAsAction="never" />
 </menu>
