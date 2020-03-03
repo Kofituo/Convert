@@ -1,6 +1,6 @@
 package com.example.unitconverter.constants
 
-import android.util.SparseIntArray
+import com.example.unitconverter.builders.buildSparseIntArray
 import java.math.BigDecimal
 
 object Mass : ConstantsInterface {
@@ -327,24 +327,23 @@ object Mass : ConstantsInterface {
     val solarMassToPlanckMass: BigDecimal
         get() = solarMassToAmu.divide(planckMassToAmu.pow(-1, mathContext), mathContext)
 
-    fun buildPrefixMass(): SparseIntArray =
-        SparseIntArray(17).apply {
-            append(0, 0)
-            append(1, 18)//exa
-            append(2, 15)//peta
-            append(3, 12)//tera
-            append(4, 9)//giga
-            append(5, 6)//mega
-            append(6, 3)//kilo
-            append(7, 2)//hecto
-            append(8, 1)//deca
-            append(9, -1)//deci
-            append(10, -2)//centi
-            append(11, -3)//milli
-            append(12, -6)//micro
-            append(13, -9)//nano
-            append(14, -12)//pico
-            append(15, -15)//femto
-            append(16, -18)//atto
-        }
+    fun buildPrefixMass() = buildSparseIntArray(17) {
+        append(0, 0)
+        append(1, 18)//exa
+        append(2, 15)//peta
+        append(3, 12)//tera
+        append(4, 9)//giga
+        append(5, 6)//mega
+        append(6, 3)//kilo
+        append(7, 2)//hecto
+        append(8, 1)//deca
+        append(9, -1)//deci
+        append(10, -2)//centi
+        append(11, -3)//milli
+        append(12, -6)//micro
+        append(13, -9)//nano
+        append(14, -12)//pico
+        append(15, -15)//femto
+        append(16, -18)//atto
+    }
 }

@@ -32,6 +32,7 @@ import com.example.unitconverter.Utils.lengthFilter
 import com.example.unitconverter.Utils.minusSign
 import com.example.unitconverter.Utils.removeCommas
 import com.example.unitconverter.Utils.temperatureFilters
+import com.example.unitconverter.builders.buildConstraintSet
 import com.example.unitconverter.builders.buildIntent
 import com.example.unitconverter.functions.*
 import com.example.unitconverter.miscellaneous.isNull
@@ -216,7 +217,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             editTextNotInFocusWatcher = firstWatcher
         }
         val initialReverse = if (reverse) 1 else 0
-        // keep the text in focused edit text constant
+        // keep the edit text in focus text's constant
+
         editTextInFocus.apply {
             //initial text
             val initialText = Editable.Factory.getInstance().newEditable(text)
@@ -407,13 +409,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     private fun swap() {
-        val constraintSet = ConstraintSet()
         val firstBox = if (swap) R.id.secondBox else R.id.firstBox
         val secondBox = if (swap) R.id.firstBox else R.id.secondBox
         val topButton = if (swap) R.id.bottom_button else R.id.top_button
         val bottomButton = if (swap) R.id.top_button else R.id.bottom_button
 
-        constraintSet.apply {
+        buildConstraintSet {
             clone(convert_inner)
             // for the first box
             //clear(R.id.firstBox,ConstraintSet.TOP)

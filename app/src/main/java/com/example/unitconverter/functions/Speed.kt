@@ -1,6 +1,8 @@
 package com.example.unitconverter.functions
 
 import com.example.unitconverter.constants.Speed
+import com.example.unitconverter.constants.Time.secondsToHours
+import com.example.unitconverter.constants.Time.secondsToMinutes
 import com.example.unitconverter.subclasses.Positions
 
 class Speed(override val positions: Positions) : ConstantsAbstractClass() {

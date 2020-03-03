@@ -2,6 +2,8 @@ package com.example.unitconverter.constants
 
 import com.example.unitconverter.builders.buildSparseIntArray
 import com.example.unitconverter.constants.Length.footToMetre
+import com.example.unitconverter.constants.Time.secondsToHours
+import com.example.unitconverter.constants.Time.secondsToMinutes
 import java.math.BigDecimal
 
 object Speed : ConstantsInterface {
@@ -9,10 +11,6 @@ object Speed : ConstantsInterface {
     val metrePerSecondToKmPerSecond: BigDecimal get() = inverseOf(BigDecimal("3.6"))
 
     val metrePerSecondToMiPerSecond get() = inverseOf(Length.metreToMile)
-
-    val secondsToHours: BigDecimal get() = BigDecimal(3600)
-
-    val secondsToMinutes: BigDecimal get() = BigDecimal(60)
 
     val kmpHToMiPerHour: BigDecimal
         get() = Length.metreToMile.scaleByPowerOfTen(-3).multiply(secondsToHours)
