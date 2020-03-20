@@ -36,7 +36,7 @@ object Utils {
     fun Int.dpToInt(context: Context): Int = round(
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
-            this.toFloat(),
+            toFloat(),
             context.resources.displayMetrics
         )
     ).toInt()

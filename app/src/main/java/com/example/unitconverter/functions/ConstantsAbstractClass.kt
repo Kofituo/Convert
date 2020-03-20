@@ -28,6 +28,11 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
         }
 
     /**
+     * basicFunction(swapConversions())
+     * */
+    inline val result get() = basicFunction(swapConversions())
+
+    /**
      * Throws an exception
      * */
     @Suppress("FunctionName", "NOTHING_TO_INLINE")

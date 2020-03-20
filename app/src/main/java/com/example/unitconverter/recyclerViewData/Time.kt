@@ -27,7 +27,7 @@ class Time(override val context: Context) : RecyclerDataAbstractClass() {
             add(R.string.decade, R.string.decade_unit)
             add(R.string.century, R.string.century_unit)
             add(R.string.millennium, R.string.millennium_unit)
-            add(R.string.eon, R.string.eon)
+            add(R.string.planck_time, R.string.planck_time_unit)
             add(R.string.svedberg, R.string.svedberg_unit)
         }
     }

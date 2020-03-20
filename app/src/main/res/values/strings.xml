@@ -296,8 +296,7 @@
     <string name="century_unit">c</string>
     <string name="millennium">Millennium</string>
     <string name="millennium_unit">mil</string>
-    <string name="eon">Eon</string>
     <string name="planck_time">Planck time</string>
-    <string name="planck_time_unit">t</string>
+    <string name="planck_time_unit">t𝑝</string>
 
 </resources>
