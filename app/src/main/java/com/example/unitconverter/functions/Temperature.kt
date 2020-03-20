@@ -1,5 +1,9 @@
 package com.example.unitconverter.functions
 
+import com.example.unitconverter.constants.BigDecimalsAddOns.divide
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
+import com.example.unitconverter.constants.BigDecimalsAddOns.minus
+import com.example.unitconverter.constants.BigDecimalsAddOns.plus
 import com.example.unitconverter.constants.Temperature
 import com.example.unitconverter.subclasses.Positions
 import java.math.BigDecimal

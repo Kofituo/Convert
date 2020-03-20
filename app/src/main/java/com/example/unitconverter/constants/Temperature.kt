@@ -1,8 +1,10 @@
 package com.example.unitconverter.constants
 
+import com.example.unitconverter.constants.BigDecimalsAddOns.divide
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
 import java.math.BigDecimal
 
-object Temperature : ConstantsInterface {
+object Temperature {
 
     val delisleToRomerRatio: BigDecimal get() = BigDecimal(7).divide(20)
 

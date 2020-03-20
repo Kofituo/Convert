@@ -1,12 +1,16 @@
 package com.example.unitconverter.constants
 
 import com.example.unitconverter.builders.buildSparseIntArray
+import com.example.unitconverter.constants.BigDecimalsAddOns.divide
+import com.example.unitconverter.constants.BigDecimalsAddOns.inverseOf
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
+import com.example.unitconverter.constants.BigDecimalsAddOns.multiply
 import com.example.unitconverter.constants.Length.footToMetre
 import com.example.unitconverter.constants.Time.secondsToHours
 import com.example.unitconverter.constants.Time.secondsToMinutes
 import java.math.BigDecimal
 
-object Speed : ConstantsInterface {
+object Speed {
 
     val metrePerSecondToKmPerSecond: BigDecimal get() = inverseOf(BigDecimal("3.6"))
 

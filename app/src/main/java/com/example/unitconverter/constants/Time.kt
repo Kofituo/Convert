@@ -1,8 +1,11 @@
 package com.example.unitconverter.constants
 
+import com.example.unitconverter.constants.BigDecimalsAddOns.divide
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
+import com.example.unitconverter.constants.BigDecimalsAddOns.multiply
 import java.math.BigDecimal
 
-object Time : ConstantsInterface {
+object Time {
     val secondsToMinutes: BigDecimal get() = BigDecimal(60)
 
     val secondsToHours: BigDecimal get() = BigDecimal(3600)

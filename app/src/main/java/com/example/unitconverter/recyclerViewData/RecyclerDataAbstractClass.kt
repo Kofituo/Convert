@@ -8,60 +8,63 @@ import java.util.*
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class RecyclerDataAbstractClass {
-    val locale: Locale get() = Locale.getDefault()
+    protected val locale: Locale get() = Locale.getDefault()
 
-    val yotta get() = getString(R.string.yotta)
-    val zetta get() = getString(R.string.zetta)
-    val zepto get() = getString(R.string.zepto)
-    val yocto get() = getString(R.string.yocto)
-    val exa get() = getString(R.string.exa)
-    val peta get() = getString(R.string.peta)
-    val tera get() = getString(R.string.tera)
-    val giga get() = getString(R.string.giga)
-    val mega get() = getString(R.string.mega)
-    val kilo get() = getString(R.string.kilo)
-    val hecto get() = getString(R.string.hecto)
-    val deca get() = getString(R.string.deca)
-    val deci get() = getString(R.string.deci)
-    val centi get() = getString(R.string.centi)
-    val milli get() = getString(R.string.milli)
-    val micro get() = getString(R.string.micro)
-    val nano get() = getString(R.string.nano)
-    val pico get() = getString(R.string.pico)
-    val femto get() = getString(R.string.femto)
-    val atto get() = getString(R.string.atto)
-    val exaSymbol get() = getString(R.string.exa_symbol)
-    val petaSymbol get() = getString(R.string.peta_symbol)
-    val teraSymbol get() = getString(R.string.tera_symbol)
-    val gigaSymbol get() = getString(R.string.giga_symbol)
-    val megaSymbol get() = getString(R.string.mega_symbol)
-    val kiloSymbol get() = getString(R.string.kilo_symbol)
-    val hectoSymbol get() = getString(R.string.hecto_symbol)
-    val decaSymbol get() = getString(R.string.deca_symbol)
-    val deciSymbol get() = getString(R.string.deci_symbol)
-    val centiSymbol get() = getString(R.string.centi_symbol)
-    val milliSymbol get() = getString(R.string.milli_symbol)
-    val microSymbol get() = getString(R.string.micro_symbol)
-    val nanoSymbol get() = getString(R.string.nano_symbol)
-    val picoSymbol get() = getString(R.string.pico_symbol)
-    val femtoSymbol get() = getString(R.string.femto_symbol)
-    val attoSymbol get() = getString(R.string.atto_symbol)
-    val yottaSymbol get() = getString(R.string.yotta_symbol)
-    val zettaSymbol get() = getString(R.string.zetta_symbol)
-    val zeptoSymbol get() = getString(R.string.zepto_symbol)
-    val yoctoSymbol get() = getString(R.string.yocto_symbol)
-    val squareSymbol get() = getString(R.string.square_symbol)
-    val square get() = getString(R.string.square)
+    protected val yotta get() = getString(R.string.yotta)
+    protected val zetta get() = getString(R.string.zetta)
+    protected val zepto get() = getString(R.string.zepto)
+    protected val yocto get() = getString(R.string.yocto)
+    protected val exa get() = getString(R.string.exa)
+    protected val peta get() = getString(R.string.peta)
+    protected val tera get() = getString(R.string.tera)
+    protected val giga get() = getString(R.string.giga)
+    protected val mega get() = getString(R.string.mega)
+    protected val kilo get() = getString(R.string.kilo)
+    protected val hecto get() = getString(R.string.hecto)
+    protected val deca get() = getString(R.string.deca)
+    protected val deci get() = getString(R.string.deci)
+    protected val centi get() = getString(R.string.centi)
+    protected val milli get() = getString(R.string.milli)
+    protected val micro get() = getString(R.string.micro)
+    protected val nano get() = getString(R.string.nano)
+    protected val pico get() = getString(R.string.pico)
+    protected val femto get() = getString(R.string.femto)
+    protected val atto get() = getString(R.string.atto)
+    protected val exaSymbol get() = getString(R.string.exa_symbol)
+    protected val petaSymbol get() = getString(R.string.peta_symbol)
+    protected val teraSymbol get() = getString(R.string.tera_symbol)
+    protected val gigaSymbol get() = getString(R.string.giga_symbol)
+    protected val megaSymbol get() = getString(R.string.mega_symbol)
+    protected val kiloSymbol get() = getString(R.string.kilo_symbol)
+    protected val hectoSymbol get() = getString(R.string.hecto_symbol)
+    protected val decaSymbol get() = getString(R.string.deca_symbol)
+    protected val deciSymbol get() = getString(R.string.deci_symbol)
+    protected val centiSymbol get() = getString(R.string.centi_symbol)
+    protected val milliSymbol get() = getString(R.string.milli_symbol)
+    protected val microSymbol get() = getString(R.string.micro_symbol)
+    protected val nanoSymbol get() = getString(R.string.nano_symbol)
+    protected val picoSymbol get() = getString(R.string.pico_symbol)
+    protected val femtoSymbol get() = getString(R.string.femto_symbol)
+    protected val attoSymbol get() = getString(R.string.atto_symbol)
+    protected val yottaSymbol get() = getString(R.string.yotta_symbol)
+    protected val zettaSymbol get() = getString(R.string.zetta_symbol)
+    protected val zeptoSymbol get() = getString(R.string.zepto_symbol)
+    protected val yoctoSymbol get() = getString(R.string.yocto_symbol)
+    protected val squareSymbol get() = getString(R.string.square_symbol)
+    protected val square get() = getString(R.string.square)
     //
-    abstract val context: Context
+    protected abstract val context: Context
 
     abstract fun getList(): MutableList<RecyclerDataClass>
 
-    fun getString(stringId: Int) = context.resources.getString(stringId)
+    protected fun getString(stringId: Int) = context.resources.getString(stringId)
 
-    var start: Int = 0
+    protected var start: Int = 0
 
-    fun massPrefixes(quantity: String = "", unit: String = ""): MutableList<RecyclerDataClass> {
+    protected fun massPrefixes(
+        quantity: String = "",
+        unit: String = ""
+    ): MutableList<RecyclerDataClass> {
         return mutableListOf<RecyclerDataClass>().apply {
             add(exa + quantity, exaSymbol + unit)
             add(peta + quantity, petaSymbol + unit)
@@ -82,12 +85,12 @@ abstract class RecyclerDataAbstractClass {
         }
     }
 
-    fun MutableList<RecyclerDataClass>.add(quantity: Int, unit: Int) =
+    protected fun MutableList<RecyclerDataClass>.add(quantity: Int, unit: Int) =
         add(RecyclerDataClass(getString(quantity), getString(unit), start++))
 
-    fun MutableList<RecyclerDataClass>.add(quantity: String, unit: CharSequence) =
+    protected fun MutableList<RecyclerDataClass>.add(quantity: String, unit: CharSequence) =
         add(RecyclerDataClass(quantity, unit, start++))
 
-    inline fun buildRecyclerList(block: MutableList<RecyclerDataClass>.() -> Unit) =
+    protected inline fun buildRecyclerList(block: MutableList<RecyclerDataClass>.() -> Unit) =
         buildMutableList(block)
 }

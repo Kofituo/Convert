@@ -1,9 +1,12 @@
 package com.example.unitconverter.constants
 
-import java.io.Serializable
+import com.example.unitconverter.constants.BigDecimalsAddOns.divide
+import com.example.unitconverter.constants.BigDecimalsAddOns.inverseOf
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
+import com.example.unitconverter.constants.BigDecimalsAddOns.multiply
 import java.math.BigDecimal
 
-object Angle : ConstantsInterface, Serializable {
+object Angle {
 
     private inline val PI: BigDecimal get() = BigDecimal("3.14159265358979323846264338327950288")
 

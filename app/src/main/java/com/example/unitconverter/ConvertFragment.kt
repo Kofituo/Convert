@@ -36,8 +36,10 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewModel: ConvertViewModel
+
     //Prefixes and their units
     private lateinit var sharedPreferences: SharedPreferences
+
     //
     private var isPrefix = false
     private var viewId: Int = -1
@@ -167,7 +169,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     }
 
     private fun whichView(id: Int): MutableList<RecyclerDataClass> {
-        val context = context as Context
+        val context = context!!
         return when (id) {
 
             R.id.Mass -> Mass(context).getList()
@@ -189,6 +191,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             R.id.Pressure -> Pressure(context).getList()
 
             R.id.Speed -> Speed(context).getList()
+
+            R.id.fuelEconomy -> FuelEconomy(context).getList()
 
             else -> mutableListOf()
         }

@@ -277,8 +277,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.time -> timeConversions()
 
-            R.id.fuelEconomy -> {
-            }
+            R.id.fuelEconomy -> fuelEconomyConversions()
+
             R.id.dataStorage -> {
             }
             R.id.concentration -> {
@@ -337,6 +337,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private fun angleConversions() {
         function = {
             Angle(it).getText()
+        }
+    }
+
+    private fun fuelEconomyConversions() {
+        function = {
+            FuelEconomy(it).getText()
         }
     }
 

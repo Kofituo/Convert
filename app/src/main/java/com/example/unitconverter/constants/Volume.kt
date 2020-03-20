@@ -1,13 +1,15 @@
 package com.example.unitconverter.constants
 
 import android.util.SparseIntArray
+import com.example.unitconverter.constants.BigDecimalsAddOns.inverseOf
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
 import com.example.unitconverter.constants.Length.footToMetre
 import com.example.unitconverter.constants.Length.inchToMetre
 import com.example.unitconverter.constants.Length.metresToYard
 import com.example.unitconverter.constants.Length.yardToFeet
 import java.math.BigDecimal
 
-object Volume : ConstantsInterface {
+object Volume {
     val metreToInch get() = inchToMetre.cubed()
 
     val metreToFoot get() = footToMetre.cubed()

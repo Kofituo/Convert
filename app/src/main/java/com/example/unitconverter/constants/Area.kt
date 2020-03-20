@@ -1,6 +1,8 @@
 package com.example.unitconverter.constants
 
 import android.util.SparseIntArray
+import com.example.unitconverter.constants.BigDecimalsAddOns.inverseOf
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
 import com.example.unitconverter.constants.Length.chainToFeet
 import com.example.unitconverter.constants.Length.chainToMetre
 import com.example.unitconverter.constants.Length.chainToNauticalLeague
@@ -21,7 +23,7 @@ import com.example.unitconverter.constants.Length.nauticalMileToMile
 import com.example.unitconverter.constants.Length.nauticalMileToYard
 import java.math.BigDecimal
 
-object Area : ConstantsInterface {
+object Area {
 
     val footToInch: BigDecimal get() = inverseOf(BigDecimal(144))
 

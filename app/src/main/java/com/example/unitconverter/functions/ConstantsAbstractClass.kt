@@ -1,28 +1,28 @@
 package com.example.unitconverter.functions
 
 import com.example.unitconverter.Utils.insertCommas
-import com.example.unitconverter.constants.ConstantsInterface
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
 import com.example.unitconverter.constants.Prefixes
 import com.example.unitconverter.subclasses.Positions
 import java.math.BigDecimal
 
-abstract class ConstantsAbstractClass : ConstantsInterface {
+abstract class ConstantsAbstractClass {
 
-    var top: Int = 0x00
+    protected var top: Int = 0x00
         set(value) {
             if (field != value) field = value
         }
-    var bottom = 0x000
-        set(value) {
-            if (field != value) field = value
-        }
-
-    var ratio: BigDecimal = BigDecimal.ONE
+    protected var bottom = 0x000
         set(value) {
             if (field != value) field = value
         }
 
-    var fixedValue: BigDecimal = BigDecimal.ZERO
+    protected var ratio: BigDecimal = BigDecimal.ONE
+        set(value) {
+            if (field != value) field = value
+        }
+
+    protected var fixedValue: BigDecimal = BigDecimal.ZERO
         set(value) {
             if (field != value) field = value
         }
@@ -30,26 +30,26 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
     /**
      * basicFunction(swapConversions())
      * */
-    inline val result get() = basicFunction(swapConversions())
+    protected inline val result get() = basicFunction(swapConversions())
 
     /**
      * Throws an exception
      * */
     @Suppress("FunctionName", "NOTHING_TO_INLINE")
-    inline fun TODO(): Nothing =
+    protected inline fun TODO(): Nothing =
         TODO("class: ${this.javaClass.simpleName} top position is $topPosition bottom position is $bottomPosition")
 
     abstract val positions: Positions
 
-    inline val topPosition: Int get() = positions.topPosition
+    protected inline val topPosition: Int get() = positions.topPosition
 
-    inline val bottomPosition: Int get() = positions.bottomPosition
+    protected inline val bottomPosition: Int get() = positions.bottomPosition
 
-    inline val inputString get() = positions.input
+    protected inline val inputString get() = positions.input
 
     abstract fun getText(): String
 
-    fun swapConversions() = if (topPosition > bottomPosition) 1 else -1
+    protected fun swapConversions() = if (topPosition > bottomPosition) 1 else -1
 
     private fun prefix(): Int =
         Prefixes.prefix(top, bottom)
@@ -57,16 +57,16 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
     private fun basicConversionFunction(x: String, pow: Int): BigDecimal =
         BigDecimal(x).multiply((ratio).pow(pow, mathContext))
 
-    fun basicFunction(pow: Int): String =
+    protected fun basicFunction(pow: Int): String =
         basicConversionFunction(inputString, pow).toStringWithCommas()
 
-    fun forMultiplePrefixes(pow: Int): String {
+    protected fun forMultiplePrefixes(pow: Int): String {
         val scale = prefix() * -pow
         return basicConversionFunction(inputString, pow)
             .scaleByPowerOfTen(scale).toStringWithCommas()
     }
 
-    fun prefixMultiplication(x: String): String =
+    protected fun prefixMultiplication(x: String): String =
         Prefixes.internalPrefixMultiplication(x, prefix())
 
     /**
@@ -99,7 +99,7 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
      *
      */
 
-    fun complexConversionFunction(x: String, pow: Int): String {
+    protected fun complexConversionFunction(x: String, pow: Int): String {
         /** for case 1 (0°C × 9/5) + 32 = F
          * x is value to convert
          * the ratio is still the same
@@ -109,7 +109,6 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
                 .quickMultiplication(ratio)
                 .add(fixedValue)
                 .toStringWithCommas()
-
         }
         /**
          * for second case 2 (0°F − 32) × 5/9
@@ -123,14 +122,13 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
     }
 
     //
-    fun complexConversionFunction(bigDecimal: BigDecimal, pow: Int): String {
+    protected fun complexConversionFunction(bigDecimal: BigDecimal, pow: Int): String {
         // same as previous function but uses bigDecimal directly
         return if (pow == 1) {
             bigDecimal
                 .quickMultiplication(ratio)
                 .add(fixedValue)
                 .toStringWithCommas()
-
         } //for now else is'nt used
         else {
             bigDecimal
@@ -140,7 +138,7 @@ abstract class ConstantsAbstractClass : ConstantsInterface {
         }
     }
 
-    fun BigDecimal.toStringWithCommas(): String = stripTrailingZeros().insertCommas()
+    protected fun BigDecimal.toStringWithCommas(): String = stripTrailingZeros().insertCommas()
 
     private fun BigDecimal.quickMultiplication(other: BigDecimal) =
         if (other == BigDecimal.ONE) this else this.multiply(other)

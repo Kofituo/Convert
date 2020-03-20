@@ -299,4 +299,12 @@
     <string name="planck_time">Planck time</string>
     <string name="planck_time_unit">t𝑝</string>
 
+    <!--fuel economy-->
+    <string name="gallon_us">gallon (US)</string>
+    <string name="gallon_unit">g</string>
+    <string name="mpg">mpg</string>
+    <string name="gallon_uk">gallon (UK)</string>
+    <string name="us_bracket">(US)</string>
+    <string name="uk_bracket">(UK)</string>
+
 </resources>

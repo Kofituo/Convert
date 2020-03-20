@@ -3,7 +3,7 @@ package com.example.unitconverter.constants
 import java.math.BigDecimal
 import java.math.MathContext
 
-interface ConstantsInterface {
+object BigDecimalsAddOns {
     val mathContext get() = MathContext(30)
 
     fun BigDecimal.divide(int: Int): BigDecimal = this.divide(BigDecimal(int))

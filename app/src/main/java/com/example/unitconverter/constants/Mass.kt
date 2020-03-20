@@ -1,9 +1,12 @@
 package com.example.unitconverter.constants
 
 import com.example.unitconverter.builders.buildSparseIntArray
+import com.example.unitconverter.constants.BigDecimalsAddOns.divide
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
+import com.example.unitconverter.constants.BigDecimalsAddOns.multiply
 import java.math.BigDecimal
 
-object Mass : ConstantsInterface {
+object Mass {
 
     private fun BigDecimal.toMetricTon(): BigDecimal =
         this.scaleByPowerOfTen(-3)

@@ -1,9 +1,13 @@
 package com.example.unitconverter.constants
 
 import android.util.SparseIntArray
+import com.example.unitconverter.constants.BigDecimalsAddOns.divide
+import com.example.unitconverter.constants.BigDecimalsAddOns.inverseOf
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
+import com.example.unitconverter.constants.BigDecimalsAddOns.multiply
 import java.math.BigDecimal
 
-object Length : ConstantsInterface {
+object Length {
 
     val footToInch: BigDecimal get() = BigDecimal(12)
 
