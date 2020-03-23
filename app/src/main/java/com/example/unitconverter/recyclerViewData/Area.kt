@@ -7,8 +7,8 @@ import java.util.*
 
 class Area(override val context: Context) : RecyclerDataAbstractClass() {
 
-    override fun getList(): MutableList<RecyclerDataClass> {
-        return mutableListOf<RecyclerDataClass>().apply {
+    override fun getList() =
+        buildRecyclerList(19) {
 
             squareAdd(R.string.metre, R.string.metre_unit)
             val quantity = getString(R.string.metre).toLowerCase(locale)
@@ -53,7 +53,6 @@ class Area(override val context: Context) : RecyclerDataAbstractClass() {
             add(R.string.are, R.string.are_unit)
             add(R.string.atm_barn, R.string.atm_barn_unit)
         }
-    }
 
     private fun MutableList<RecyclerDataClass>.squareAdd(quantity: Int, unit: Int) =
         add(

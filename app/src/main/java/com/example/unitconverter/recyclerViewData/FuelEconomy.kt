@@ -21,10 +21,10 @@ class FuelEconomy(override val context: Context) : RecyclerDataAbstractClass() {
     private val inch = getString(R.string.inch)
     private val inchUnit = getString(R.string.inch_unit)
     private val usGallon = getString(R.string.gallon_us)
-    private val ukGallon = getString(R.string.gallon_uk)
+    private val ukGallon = getString(R.string.uk_gallon_unit)
     private val gallonUnit = getString(R.string.gallon_unit)
 
-    override fun getList() = buildRecyclerList {
+    override fun getList() = buildRecyclerList(21) {
         add(
             buildString {
                 appendWithSpace(metreU)
@@ -261,39 +261,21 @@ class FuelEconomy(override val context: Context) : RecyclerDataAbstractClass() {
                 append(gallonUnit)
             }
         )
-        NumberFormat.getNumberInstance().apply {
-            val hundred = format(100)
-            val twenty = format(20)
-            add(
-                buildString {
-                    appendWithSpace(getString(R.string.litre))
-                    appendWithSpace(per)
-                    appendWithSpace(hundred)
-                    append(kiloSymbol)
-                    append(metreUnit)
-                }, buildString {
-                    append(litreUnit)
-                    append(perUnit)
-                    append(hundred)
-                    append(kiloSymbol)
-                    append(metreUnit)
-                }
-            )
-            add(
-                buildString {
-                    appendWithSpace(getString(R.string.litre))
-                    appendWithSpace(per)
-                    appendWithSpace(twenty)
-                    append(kiloSymbol)
-                    append(metreUnit)
-                }, buildString {
-                    append(litreUnit)
-                    append(perUnit)
-                    append(twenty)
-                    append(kiloSymbol)
-                    append(metreUnit)
-                }
-            )
-        }
+        val hundred = NumberFormat.getNumberInstance().format(100)
+        add(
+            buildString {
+                appendWithSpace(getString(R.string.litre))
+                appendWithSpace(per)
+                appendWithSpace(hundred)
+                append(kiloSymbol)
+                append(metreUnit)
+            }, buildString {
+                append(litreUnit)
+                append(perUnit)
+                append(hundred)
+                append(kiloSymbol)
+                append(metreUnit)
+            }
+        )
     }
 }

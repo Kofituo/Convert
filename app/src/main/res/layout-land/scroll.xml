@@ -353,7 +353,7 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@id/concentration"
+        app:layout_constraintEnd_toStartOf="@id/electric_current"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/Angle"
@@ -377,7 +377,7 @@
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/concentration"
+        android:id="@+id/electric_current"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
@@ -397,11 +397,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_margin="5dp"
-            android:drawableTop="@drawable/ic_agitator"
+            android:drawableTop="@drawable/ic_lab"
             android:drawablePadding="2dp"
             android:fontFamily="@font/roboto_slab"
             android:lineSpacingMultiplier="0.88"
-            android:text="@string/concentration"
+            android:text="@string/electric_current"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -419,8 +419,8 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@id/cooking"
-        app:layout_constraintStart_toEndOf="@id/concentration"
+        app:layout_constraintEnd_toStartOf="@id/Illuminance"
+        app:layout_constraintStart_toEndOf="@id/electric_current"
         app:layout_constraintTop_toBottomOf="@id/Speed"
         app:layout_constraintWidth_percent="0.185">
 
@@ -442,7 +442,7 @@
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/cooking"
+        android:id="@+id/Illuminance"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
@@ -462,10 +462,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_margin="10dp"
-            android:drawableTop="@drawable/ic_cooking"
+            android:drawableTop="@drawable/ic_light_bulb_illuminance"
             android:drawablePadding="9dp"
             android:fontFamily="@font/roboto_slab"
-            android:text="@string/cooking"
+            android:text="@string/illuminance"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -484,7 +484,7 @@
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
-        app:layout_constraintStart_toEndOf="@id/cooking"
+        app:layout_constraintStart_toEndOf="@id/Illuminance"
         app:layout_constraintTop_toBottomOf="@id/fuelEconomy"
         app:layout_constraintWidth_percent="0.185">
 
@@ -547,7 +547,7 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/Angular_Velocity"
         app:layout_constraintStart_toEndOf="@id/Currency"
-        app:layout_constraintTop_toBottomOf="@id/concentration"
+        app:layout_constraintTop_toBottomOf="@id/electric_current"
         app:layout_constraintWidth_percent="0.185">
 
         <TextView
@@ -613,7 +613,7 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/sound"
         app:layout_constraintStart_toEndOf="@id/Angular_Velocity"
-        app:layout_constraintTop_toBottomOf="@id/cooking"
+        app:layout_constraintTop_toBottomOf="@id/Illuminance"
         app:layout_constraintWidth_percent="0.185">
 
         <TextView
@@ -735,7 +735,7 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@id/Illuminance"
+        app:layout_constraintEnd_toStartOf="@id/cooking"
         app:layout_constraintStart_toEndOf="@id/radioactivity"
         app:layout_constraintTop_toBottomOf="@id/Angular_Velocity"
         app:layout_constraintWidth_percent="0.185">
@@ -755,7 +755,7 @@
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/Illuminance"
+        android:id="@+id/cooking"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
@@ -775,11 +775,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_margin="10dp"
-            android:drawableTop="@drawable/ic_light_bulb_illuminance"
+            android:drawableTop="@drawable/ic_cooking"
             android:drawablePadding="6dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center|bottom"
-            android:text="@string/illuminance"
+            android:text="@string/cooking"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="13sp" />
@@ -797,7 +797,7 @@
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/rightGuide"
-        app:layout_constraintStart_toEndOf="@id/Illuminance"
+        app:layout_constraintStart_toEndOf="@id/cooking"
         app:layout_constraintTop_toBottomOf="@id/sound"
         app:layout_constraintWidth_percent="0.185">
 

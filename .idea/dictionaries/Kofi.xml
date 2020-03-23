@@ -2,11 +2,19 @@
   <dictionary name="Kofi">
     <words>
       <w>delisle</w>
+      <w>exbi</w>
+      <w>gibi</w>
       <w>gradians</w>
+      <w>kibi</w>
       <w>kofi</w>
+      <w>mebi</w>
+      <w>pebi</w>
       <w>reaumur</w>
       <w>romer</w>
       <w>svedberg</w>
+      <w>tebi</w>
+      <w>yobi</w>
+      <w>zebi</w>
     </words>
   </dictionary>
 </component>

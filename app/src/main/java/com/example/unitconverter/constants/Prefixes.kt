@@ -2,8 +2,8 @@ package com.example.unitconverter.constants
 
 import android.util.SparseIntArray
 import com.example.unitconverter.Utils.insertCommas
+import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
 import java.math.BigDecimal
-import java.math.MathContext
 
 object Prefixes {
     // 1 to 24 for positive 1 to 24
@@ -11,7 +11,7 @@ object Prefixes {
     var top = 0
     var bottom = 0
     fun buildPrefix(): SparseIntArray =
-        SparseIntArray(31).apply {
+        SparseIntArray(20).apply {
             append(0, 24)//yotta
             append(1, 21)//zetta
             append(2, 18)//exa
@@ -36,11 +36,11 @@ object Prefixes {
 
     fun prefix(top: Int, bottom: Int): Int = top - bottom
 
-    fun internalPrefixMultiplication(x: String, pow: Int): String {
-        if (x.isEmpty()) return ""
-        val h = BigDecimal(x).times((BigDecimal.TEN).pow(pow, MathContext(30)))
-        return h.stripTrailingZeros().insertCommas()
-    }
+    fun internalPrefixMultiplication(x: String, pow: Int): String =
+        BigDecimal(x)
+            .times((BigDecimal.TEN).pow(pow, mathContext))
+            .stripTrailingZeros()
+            .insertCommas()
 
     fun prefixMultiplication(x: String) =
         internalPrefixMultiplication(x, prefix(top, bottom))

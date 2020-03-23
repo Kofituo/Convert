@@ -30,7 +30,7 @@
     <string name="use_default">Use default</string>
     <string name="descending">Descending</string>
     <string name="favourites">Add to favourites</string>
-    <string name="concentration">Solute Concentration</string>
+    <string name="electric_current">Electric Current</string>
     <string name="menu_button">Menu</string>
     <string name="arrow">Arrow</string>
     <string name="info">Convert\ninfo</string>
@@ -303,8 +303,29 @@
     <string name="gallon_us">gallon (US)</string>
     <string name="gallon_unit">g</string>
     <string name="mpg">mpg</string>
-    <string name="gallon_uk">gallon (UK)</string>
     <string name="us_bracket">(US)</string>
     <string name="uk_bracket">(UK)</string>
 
+    <!--data storage-->
+    <string name="bit">Bit</string>
+    <string name="_byte">Byte</string>
+    <string name="byte_unit">B</string>
+    <string name="nibble">Nibble</string>
+    <string name="nibble_unit">nib</string>
+    <string name="kibi">Kibi</string>
+    <string name="mebi">Mebi</string>
+    <string name="gibi">Gibi</string>
+    <string name="tebi">Tebi</string>
+    <string name="pebi">Pebi</string>
+    <string name="exbi">Exbi</string>
+    <string name="zebi">Zebi</string>
+    <string name="yobi">Yobi</string>
+    <string name="kibi_unit">Ki</string>
+    <string name="mebi_unit">Mi</string>
+    <string name="gibi_unit">Gi</string>
+    <string name="tebi_unit">Ti</string>
+    <string name="pebi_unit">Pi</string>
+    <string name="exbi_unit">Ei</string>
+    <string name="zebi_unit">Zi</string>
+    <string name="yobi_unit">Yi</string>
 </resources>

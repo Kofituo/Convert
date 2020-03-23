@@ -1,17 +1,15 @@
 package com.example.unitconverter.recyclerViewData
 
 import android.content.Context
-import com.example.unitconverter.RecyclerDataClass
 
 class Prefix(override val context: Context) : RecyclerDataAbstractClass() {
 
-    override fun getList(): MutableList<RecyclerDataClass> {
-        return mutableListOf<RecyclerDataClass>().apply {
+    override fun getList() =
+        buildRecyclerList(20) {
             add(yotta, yottaSymbol)
             add(zetta, zettaSymbol)
             addAll(massPrefixes())
             add(zepto, zeptoSymbol)
             add(yocto, yoctoSymbol)
         }
-    }
 }

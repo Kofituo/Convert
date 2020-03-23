@@ -8,8 +8,7 @@ import com.example.unitconverter.R
 
 class Angle(override val context: Context) : RecyclerDataAbstractClass() {
 
-    override fun getList() = buildRecyclerList {
-
+    override fun getList() = buildRecyclerList(9) {
         add(R.string.degrees, R.string.degrees_unit)
         add(R.string.radians, R.string.radians_unit)
         add(R.string.grad, R.string.grad_unit)

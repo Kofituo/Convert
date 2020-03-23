@@ -7,16 +7,27 @@ import androidx.constraintlayout.widget.ConstraintSet
 
 /* Collection builders*/
 /**
- * Creates a new mutable list of [T] and applies [block] to it
+ * Creates a new mutable list of [T] and applies [block] to it with an initial [capacity]
  * */
-inline fun <T> buildMutableList(block: MutableList<T>.() -> Unit) =
-    mutableListOf<T>().apply(block)
+inline fun <T> buildMutableList(capacity: Int, block: MutableList<T>.() -> Unit): MutableList<T> =
+    ArrayList<T>(capacity).apply(block)
+
+/*
+ *Creates new mutable map<[K],[V]> and applies [action] to it
+ * For use with maps with keys less than 16
+ * */
+/*
+inline fun <K, V> buildMutableMap(action: MutableMap<K, V>.() -> Unit): MutableMap<K, V> =
+    mutableMapOf<K, V>().apply(action)
+*/
 
 /**
- * Creates new mutable map<[K],[V]> and applies [action] to it
+ * Creates new mutable map<[K],[V]> and applies [action] to it.
+ *
+ * Default [capacity] = 30
  * */
-inline fun <K, V> buildMutableMap(action: MutableMap<K, V>.() -> Unit) =
-    mutableMapOf<K, V>().apply(action)
+inline fun <K, V> buildMutableMap(capacity: Int = 30, action: MutableMap<K, V>.() -> Unit) =
+    LinkedHashMap<K, V>(capacity).apply(action)
 
 /*End of collection builders*/
 

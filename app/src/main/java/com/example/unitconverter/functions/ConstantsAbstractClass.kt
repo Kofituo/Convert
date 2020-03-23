@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.example.unitconverter.functions
 
 import com.example.unitconverter.Utils.insertCommas
@@ -35,11 +37,26 @@ abstract class ConstantsAbstractClass {
     /**
      * Throws an exception
      * */
-    @Suppress("FunctionName", "NOTHING_TO_INLINE")
+    @Suppress("FunctionName")
     protected inline fun TODO(): Nothing =
         TODO("class: ${this.javaClass.simpleName} top position is $topPosition bottom position is $bottomPosition")
 
-    abstract val positions: Positions
+    /**
+     * [topPosition] == [int] || [bottomPosition] == [int]
+     * */
+    protected inline fun assertOrInt(int: Int) = topPosition == int || bottomPosition == int
+
+    /** [topPosition] in [range] && [bottomPosition] in [range]
+     * */
+    protected inline fun assertAndRange(range: IntRange) =
+        topPosition in range && bottomPosition in range
+
+    /** [topPosition] in [range] || [bottomPosition] in [range]
+     * */
+    protected inline fun assertOrRange(range: IntRange) =
+        topPosition in range || bottomPosition in range
+
+    protected abstract val positions: Positions
 
     protected inline val topPosition: Int get() = positions.topPosition
 
@@ -51,7 +68,7 @@ abstract class ConstantsAbstractClass {
 
     protected fun swapConversions() = if (topPosition > bottomPosition) 1 else -1
 
-    private fun prefix(): Int =
+    protected fun prefix(): Int =
         Prefixes.prefix(top, bottom)
 
     private fun basicConversionFunction(x: String, pow: Int): BigDecimal =

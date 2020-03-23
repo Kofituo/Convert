@@ -18,19 +18,19 @@ object AdditionItems {
     val isInitialized get() = this::popupWindow.isInitialized
     lateinit var motionHandler: Handler
     var statusBarHeight = 0
+
     /**
      * To prevent find view by id.
      * */
-    var viewsMap: SparseArray<View> = SparseArray()
-    var originalMap = mutableMapOf<String, Int>()
+    var viewsMap: SparseArray<View> = SparseArray(30)
+
+    var originalMap = LinkedHashMap<String, Int>(30)
 
     /**Map which keeps track of opened activities
      * in descending order (last open is the first in the map)
      * */
     lateinit var mRecentlyUsed: MutableMap<String, Int>
-    /**
-     * viewArray is always updated
-     * */
+
     //var viewArray: ArrayList<View> = arrayListOf()
     var card: MyCardView? = null
     var cardY: Float = 1f

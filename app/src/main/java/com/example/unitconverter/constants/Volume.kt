@@ -38,7 +38,8 @@ object Volume {
 
     val yardToImpGallon: BigDecimal get() = metreToImpGallon.divide(metreToYard, mathContext)
 
-    val gallonToImpGallon: BigDecimal get() = metreToImpGallon.divide(metreToGallon, mathContext)
+    inline val gallonToImpGallon: BigDecimal
+        get() = BigDecimal("4.54609").divide(BigDecimal("3.785411784"), mathContext)
 
     val metreToPint: BigDecimal get() = BigDecimal("473.176473").scaleByPowerOfTen(-6)
 

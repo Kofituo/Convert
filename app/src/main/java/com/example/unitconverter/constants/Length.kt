@@ -11,17 +11,17 @@ object Length {
 
     val footToInch: BigDecimal get() = BigDecimal(12)
 
-    val footToMetre: BigDecimal get() = BigDecimal(3048).scaleByPowerOfTen(-4)
+    inline val footToMetre: BigDecimal get() = BigDecimal(3048).scaleByPowerOfTen(-4)
 
     val inchToYard: BigDecimal get() = BigDecimal(36)
 
-    val inchToMetre: BigDecimal get() = footToMetre.divide(footToInch)
+    val inchToMetre: BigDecimal get() = BigDecimal("0.0254")
 
-    val metreToMile: BigDecimal get() = BigDecimal("1609.344")
+    inline val metreToMile: BigDecimal get() = BigDecimal("1609.344")
 
-    val footToMile: BigDecimal get() = BigDecimal(5280)
+    inline val footToMile: BigDecimal get() = BigDecimal(5280)
 
-    val inchToMile: BigDecimal get() = BigDecimal(63360)
+    inline val inchToMile: BigDecimal get() = BigDecimal(63360)
 
     val mileToYard: BigDecimal get() = inverseOf(BigDecimal(1760))
 
@@ -29,7 +29,7 @@ object Length {
 
     val metresToYard: BigDecimal get() = BigDecimal("0.9144")
 
-    val metreToNauticalMile: BigDecimal get() = BigDecimal(1852)
+    inline val metreToNauticalMile: BigDecimal get() = BigDecimal(1852)
 
     val nauticalMileToFoot: BigDecimal get() = metreToNauticalMile.divide(footToMetre, mathContext)
 

@@ -52,6 +52,7 @@ abstract class RecyclerDataAbstractClass {
     protected val yoctoSymbol get() = getString(R.string.yocto_symbol)
     protected val squareSymbol get() = getString(R.string.square_symbol)
     protected val square get() = getString(R.string.square)
+
     //
     protected abstract val context: Context
 
@@ -61,11 +62,8 @@ abstract class RecyclerDataAbstractClass {
 
     protected var start: Int = 0
 
-    protected fun massPrefixes(
-        quantity: String = "",
-        unit: String = ""
-    ): MutableList<RecyclerDataClass> {
-        return mutableListOf<RecyclerDataClass>().apply {
+    protected fun massPrefixes(quantity: String = "", unit: String = "") =
+        buildRecyclerList(16) {
             add(exa + quantity, exaSymbol + unit)
             add(peta + quantity, petaSymbol + unit)
             add(tera + quantity, teraSymbol + unit)
@@ -83,7 +81,6 @@ abstract class RecyclerDataAbstractClass {
             add(femto + quantity, femtoSymbol + unit)
             add(atto + quantity, attoSymbol + unit)
         }
-    }
 
     protected fun MutableList<RecyclerDataClass>.add(quantity: Int, unit: Int) =
         add(RecyclerDataClass(getString(quantity), getString(unit), start++))
@@ -91,6 +88,8 @@ abstract class RecyclerDataAbstractClass {
     protected fun MutableList<RecyclerDataClass>.add(quantity: String, unit: CharSequence) =
         add(RecyclerDataClass(quantity, unit, start++))
 
-    protected inline fun buildRecyclerList(block: MutableList<RecyclerDataClass>.() -> Unit) =
-        buildMutableList(block)
+    protected inline fun buildRecyclerList(
+        capacity: Int,
+        block: MutableList<RecyclerDataClass>.() -> Unit
+    ) = buildMutableList(capacity, block)
 }

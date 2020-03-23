@@ -27,7 +27,7 @@ object Utils {
 
     val <V>SparseArray<V>.values: MutableList<V>
         get() =
-            buildMutableList {
+            buildMutableList(30) {
                 this@values.forEach { _, value ->
                     add(value)
                 }
@@ -51,6 +51,7 @@ object Utils {
      * resources.getResourceEntryName(view.id)
      * */
     private val mutableMap = mutableMapOf<Int, String>()
+
     /**
      * Used to get name from id
      * First checks from a map is its there //for fast access

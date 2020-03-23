@@ -194,6 +194,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.fuelEconomy -> FuelEconomy(context).getList()
 
+            R.id.dataStorage -> DataStorage(context).getList()
+
             else -> mutableListOf()
         }
     }

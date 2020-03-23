@@ -4,7 +4,7 @@ import java.math.BigDecimal
 import java.math.MathContext
 
 object BigDecimalsAddOns {
-    val mathContext get() = MathContext(30)
+    val mathContext by lazy(LazyThreadSafetyMode.NONE) { MathContext(30) }
 
     fun BigDecimal.divide(int: Int): BigDecimal = this.divide(BigDecimal(int))
 

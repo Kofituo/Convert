@@ -279,13 +279,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.fuelEconomy -> fuelEconomyConversions()
 
-            R.id.dataStorage -> {
-            }
-            R.id.concentration -> {
+            R.id.dataStorage -> dataStorageConversion()
+
+            R.id.electric_current -> {
             }
             R.id.luminance -> {
             }
-            R.id.cooking -> {
+            R.id.Illuminance -> {
             }
             R.id.capacitance -> {
             }
@@ -305,7 +305,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
             R.id.resolution -> {
             }
-            R.id.Illuminance -> {
+            R.id.cooking -> {
             }
             R.id.inductance -> {
             }
@@ -379,6 +379,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private fun timeConversions() {
         function = {
             Time(it).getText()
+        }
+    }
+
+    private fun dataStorageConversion() {
+        function = {
+            DataStorage(it).apply { firstInFocus = firstBoolean }.getText()
         }
     }
 
@@ -626,9 +632,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT).trim()
                     else this
             }
-            secondBox.hint = bottomEditTextText?.let {
-                it
-            } ?: resources.getString(R.string.select_unit)
+            secondBox.hint = bottomEditTextText ?: resources.getString(R.string.select_unit)
             firstBox.hint = topEditTextText?.let {
                 Log.e("s1", it)
                 it

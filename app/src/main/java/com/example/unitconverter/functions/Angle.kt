@@ -19,35 +19,29 @@ class Angle(override val positions: Positions) : ConstantsAbstractClass() {
                 if (topPosition == 1 || bottomPosition == 1) {
                     //to radians
                     ratio = degreesToRadians
-                }
-                if (topPosition == 2 || bottomPosition == 2) {
+                } else if (topPosition == 2 || bottomPosition == 2) {
                     //to gradians
                     ratio = degreesToGradians
-                }
-                if (topPosition == 3 || bottomPosition == 3) {
+                } else if (topPosition == 3 || bottomPosition == 3) {
                     //to revolution
                     ratio = degreesToRevolution
-                }
-                if (topPosition == 4 || bottomPosition == 4) {
+                } else if (topPosition == 4 || bottomPosition == 4) {
                     //to minute
                     ratio = degreesToMinute
-                }
-                if (topPosition == 5 || bottomPosition == 5) {
+                } else if (topPosition == 5 || bottomPosition == 5) {
                     //to seconds
                     ratio = degreeToSeconds
-                }
-                if (topPosition == 6 || bottomPosition == 6) {
+                } else if (topPosition == 6 || bottomPosition == 6) {
                     //to quadrant
                     ratio = degreesToQuadrant
-                }
-                if (topPosition == 7 || bottomPosition == 7) {
+                } else if (topPosition == 7 || bottomPosition == 7) {
                     //to sextant
                     ratio = degreesToSextant
-                }
-                if (topPosition == 8 || bottomPosition == 8) {
+                } else if (topPosition == 8 || bottomPosition == 8) {
                     //to octant
                     ratio = degreesToOctant
-                }
+                } else TODO()
+
                 return basicFunction(pow)
             }
         }
