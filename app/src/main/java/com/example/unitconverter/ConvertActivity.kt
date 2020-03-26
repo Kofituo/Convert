@@ -27,6 +27,7 @@ import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.filters
+import com.example.unitconverter.Utils.forEachIndexed
 import com.example.unitconverter.Utils.insertCommas
 import com.example.unitconverter.Utils.lengthFilter
 import com.example.unitconverter.Utils.minusSign
@@ -34,6 +35,7 @@ import com.example.unitconverter.Utils.removeCommas
 import com.example.unitconverter.Utils.temperatureFilters
 import com.example.unitconverter.builders.buildConstraintSet
 import com.example.unitconverter.builders.buildIntent
+import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.functions.*
 import com.example.unitconverter.miscellaneous.isNull
 import com.example.unitconverter.subclasses.ConvertViewModel
@@ -384,7 +386,29 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private fun dataStorageConversion() {
         function = {
-            DataStorage(it).apply { firstInFocus = firstBoolean }.getText()
+            DataStorage(it).apply { map = dataStorageMap }.getText()
+        }
+    }
+
+    //to prevent unwanted initializations
+    private val dataStorageMap by lazy(LazyThreadSafetyMode.NONE) {
+        buildMutableMap<Int, Int>(35) {
+            put(0, 0) //bits
+            (27..34).forEachIndexed(1) { index, item -> // metric bits prefixes
+                put(item, index)
+                Log.e("size", "item $item  index $index")
+            }
+            (3..10).forEachIndexed(size) { index, item -> //other bits prefixes
+                put(item, index)
+            }
+            put(1, size)//nibble
+            put(2, size) // bytes
+            (19..26).forEachIndexed(size) { index, item ->
+                put(item, index)
+            }
+            (11..18).forEachIndexed(size) { index, item ->
+                put(item, index)
+            }
         }
     }
 

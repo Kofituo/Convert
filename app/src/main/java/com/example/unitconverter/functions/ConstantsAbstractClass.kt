@@ -2,6 +2,7 @@
 
 package com.example.unitconverter.functions
 
+import android.util.SparseIntArray
 import com.example.unitconverter.Utils.insertCommas
 import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
 import com.example.unitconverter.constants.Prefixes
@@ -44,17 +45,37 @@ abstract class ConstantsAbstractClass {
     /**
      * [topPosition] == [int] || [bottomPosition] == [int]
      * */
-    protected inline fun assertOrInt(int: Int) = topPosition == int || bottomPosition == int
+    protected inline fun intAssertOr(int: Int) = topPosition == int || bottomPosition == int
 
     /** [topPosition] in [range] && [bottomPosition] in [range]
      * */
-    protected inline fun assertAndRange(range: IntRange) =
+    protected inline fun rangeAssertAnd(range: IntRange) =
         topPosition in range && bottomPosition in range
 
     /** [topPosition] in [range] || [bottomPosition] in [range]
      * */
-    protected inline fun assertOrRange(range: IntRange) =
+    protected inline fun rangeAssertOr(range: IntRange) =
         topPosition in range || bottomPosition in range
+
+    protected inline fun innerMultiplePrefix(sparseIntArray: SparseIntArray) {
+        sparseIntArray.also {
+            //to prevent double calling
+            val temp = it[topPosition, -200]
+            //which one is not kilogram??
+            val whichOne =
+                if (temp == -200) it[bottomPosition] else temp
+            top = whichOne
+            bottom = 0
+        }
+    }
+
+    protected inline fun innerAmongPrefix(sparseIntArray: SparseIntArray): String {
+        sparseIntArray.also {
+            top = it[topPosition]
+            bottom = it[bottomPosition]
+        }
+        return prefixMultiplication(inputString)
+    }
 
     protected abstract val positions: Positions
 
@@ -72,7 +93,7 @@ abstract class ConstantsAbstractClass {
         Prefixes.prefix(top, bottom)
 
     private fun basicConversionFunction(x: String, pow: Int): BigDecimal =
-        BigDecimal(x).multiply((ratio).pow(pow, mathContext))
+        BigDecimal(x).multiply(ratio.pow(pow, mathContext))
 
     protected fun basicFunction(pow: Int): String =
         basicConversionFunction(inputString, pow).toStringWithCommas()

@@ -201,4 +201,15 @@ object Utils {
         append(" ")
         return this
     }
+
+    /**
+     * Performs the given [action] on each element, providing sequential index with the element.
+     * @param [action] function that takes the index of an element and the element itself
+     * and performs the desired action on the element.
+     */
+
+    inline fun IntRange.forEachIndexed(start: Int, action: (index: Int, Int) -> Unit): Unit {
+        var index = start
+        for (item in this) action(index++, item)
+    }
 }
