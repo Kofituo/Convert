@@ -10,6 +10,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.miscellaneous.SearchTextChangeListener
+import com.example.unitconverter.miscellaneous.layoutParams
 import com.example.unitconverter.recyclerViewData.*
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.MyAdapter
@@ -34,7 +36,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private lateinit var searchBar: TextInputLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewManager: RecyclerView.LayoutManager
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewModel: ConvertViewModel
 
     //Prefixes and their units
@@ -71,20 +72,14 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             viewName = getString("viewName", "")
             whichButton = getInt("whichButton")
         }
-
         string = if (whichButton == R.id.top_button) "topButton" else "bottomButton"
-
         positionKey = string.substringBefore("B") + "Position"
-
         isPrefix = viewId == R.id.prefixes
-
         activity?.run {
             viewModel = ViewModelProvider(this)[ConvertViewModel::class.java]
             sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
         }
-
         viewModel.dataSet = whichView(viewId)
-
         lastPosition = sharedPreferences.getInt(string, -1)
     }
 
@@ -99,22 +94,20 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             dialog.setContentView(this)
             cancelButton = findViewById(R.id.cancel_button)
             searchBar = findViewById(R.id.search_bar)
-            val params = layoutParams
-            params.width =
-                if (isPortrait) (screenWidth / 8) * 7 else round(screenWidth / 1.6).toInt()
-
-            params.height =
-                if (isPortrait) round(screenHeight * 0.92).toInt() else ViewGroup.LayoutParams.WRAP_CONTENT
-            layoutParams = params
-            recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
+            layoutParams<ViewGroup.LayoutParams> {
+                width =
+                    if (isPortrait) (screenWidth / 8) * 7
+                    else round(screenWidth / 1.6).toInt()
+                height =
+                    if (isPortrait) round(screenHeight * 0.92).toInt()
+                    else ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+            recyclerView = recyclerView {
                 setHasFixedSize(true)
                 viewManager = LinearLayoutManager(context)
                 layoutManager = viewManager
-                this@ConvertFragment.viewAdapter = // add comparator to params
-                    MyAdapter(viewModel.dataSet, viewModel.randomInt, comparator)
-                        .apply { setOnRadioButtonsClickListener(this@ConvertFragment) }
-
-                adapter = (viewAdapter as MyAdapter).apply {
+                adapter = adapter(viewModel.dataSet, viewModel.randomInt, comparator) {
+                    setOnRadioButtonsClickListener(this@ConvertFragment)
                     add(viewModel.dataSet) // adds tom the sorted list
                     lastPosition = this@ConvertFragment.lastPosition
                     if (lastPosition != -1) smoothScrollToPosition(lastPosition)
@@ -132,10 +125,19 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         }
 
         setDialogColors(viewModel.randomInt)
-        Log.e("time", "${System.nanoTime() - start}")
+        Log.e("time", "${(System.nanoTime() - start) / 1000_000.0}") //to get it in milli seconds
         return dialog
     }
 
+    private inline fun View.recyclerView(block: RecyclerView.() -> Unit) =
+        findViewById<RecyclerView>(R.id.recycler_view).apply(block)
+
+    private inline fun adapter(
+        dataSet: MutableList<RecyclerDataClass>,
+        colorInt: Int,
+        comparator: Comparator<RecyclerDataClass>,
+        block: MyAdapter.() -> Unit
+    ) = MyAdapter(dataSet, colorInt, comparator).apply(block)
 
     private fun setDialogColors(colorInt: Int) {
         searchBar.boxStrokeColor = colorInt
@@ -151,7 +153,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         }
     }
 
-    override fun radioButtonClicked(position: Int, text: String, unit: CharSequence) {
+    override fun radioButtonClicked(position: Int, text: CharSequence, unit: CharSequence) {
         lastPosition = position
         convertDialogInterface.apply {
             getOtherValues(position, positionKey)
@@ -196,6 +198,10 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.dataStorage -> DataStorage(context).getList()
 
+            R.id.electric_current -> ElectricCurrent(context).getList()
+
+            R.id.luminance -> Luminance(context).getList()
+
             else -> mutableListOf()
         }
     }
@@ -215,7 +221,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     }
 
     interface ConvertDialogInterface {
-        fun texts(text: String, unit: CharSequence)
+        fun texts(text: CharSequence, unit: CharSequence)
         fun getOtherValues(position: Int, positionKey: String)
     }
 }

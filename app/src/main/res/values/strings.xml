@@ -328,4 +328,23 @@
     <string name="exbi_unit">Ei</string>
     <string name="zebi_unit">Zi</string>
     <string name="yobi_unit">Yi</string>
+
+    <!--electric current-->
+    <string name="amp">Ampere</string>
+    <string name="amp_unit">A</string>
+    <string name="abAmp">Abampere [Biot, CGS unit]</string>
+    <string name="abAmp_unit">abA</string>
+
+    <!--luminance-->
+    <string name="candela">Candela</string>
+    <string name="candela_unit">cd</string>
+    <string name="stilb">Stilb [CGS unit]</string>
+    <string name="stilb_unit">sb</string>
+    <string name="apostilb">Apostilb</string>
+    <string name="apostilb_unit">asb</string>
+    <string name="lambert">Lambert</string>
+    <string name="lambert_unit">L</string>
+    <string name="foot_lambert">Foot-lambert</string>
+    <string name="foot_lambert_unit">fL</string>
+    <string name="nit">Nit</string>
 </resources>

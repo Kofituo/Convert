@@ -21,14 +21,16 @@ class MyAdapter(
 ) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     var lastPosition: Int = -1
+
+    /**If true use the filtered data set else use the original one*/
     var boolean = false
 
     private lateinit var listener: OnRadioButtonsClickListener
 
     /** View holder class **/
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var radioButton: MyRadioButton
-        var radioTextView: TextView
+        val radioButton: MyRadioButton
+        val radioTextView: TextView
 
         init {
             val isRTL =
@@ -37,11 +39,9 @@ class MyAdapter(
             view.apply {
                 radioButton = findViewById(R.id.radioButtons)
                 radioTextView = findViewById<TextView>(R.id.radioText).apply {
-                    if (isRTL) {
-                        val params = layoutParams as ViewGroup.MarginLayoutParams
-                        params.marginEnd = 30.dpToInt(context)
-                        layoutParams = params
-                    }
+                    if (isRTL)
+                        (layoutParams as ViewGroup.MarginLayoutParams)
+                            .marginEnd = 20.dpToInt(context)
                 }
             }
             radioButton.setOnClickListener {
@@ -50,7 +50,7 @@ class MyAdapter(
                 notifyItemRangeChanged(0, itemCount)
                 listener.radioButtonClicked(
                     radioButton.myId,
-                    radioButton.text.toString(),
+                    radioButton.text,
                     radioTextView.text
                 )
             }
@@ -91,15 +91,15 @@ class MyAdapter(
             //its in reverse so the indexing isn't affected
             //if it were 0 to size when we remove 0 1 now becomes original 2 and so on
             for (i in size() - 1 downTo 0)
-                if (!dataSet.contains(this@apply[i])) this.remove(this@apply[i])
-
+                if (!dataSet.contains(this[i]))
+                    this.remove(this[i])
             addAll(dataSet)
             endBatchedUpdates()
         }
     }
 
     interface OnRadioButtonsClickListener {
-        fun radioButtonClicked(position: Int, text: String, unit: CharSequence)
+        fun radioButtonClicked(position: Int, text: CharSequence, unit: CharSequence)
     }
 
     fun setOnRadioButtonsClickListener(listener: OnRadioButtonsClickListener) {

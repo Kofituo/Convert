@@ -12,7 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.*
+import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -223,7 +223,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
          * called when from convert activity
          * */
         if (recentlyUsedBool && !onCreateCalled && mRecentlyUsed.values != originalMap.values) {
-            //Log.e("res","res  $descending")
+            Log.e("res", "res  $descending $mRecentlyUsed ${mRecentlyUsed.reversed()}")
             if (descending) grid.sort(sortValue, mRecentlyUsed)
             //since the problem of different ids is corrected right from onCreate
             //it's safe to do the following
@@ -241,7 +241,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             Log.e("json","${mRecentlyUsed.toJson()} " )*/
             Log.e(
                 "resce",
-                "${mSelectedOrderArray.toJson()} AAAA${mRecentlyUsed.reversed().toJson()} BBBB ${mRecentlyUsed.toJson()}"
+                "${mSelectedOrderArray.toJson()} AAAA${mRecentlyUsed.reversed()
+                    .toJson()} BBBB ${mRecentlyUsed.toJson()}"
             )
             putString("mRecentlyUsed", mRecentlyUsed.toJson())
             val arrayHasChanged = mRecentlyUsed.values != originalMap.values
@@ -267,6 +268,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 Configuration.ORIENTATION_PORTRAIT
             else Configuration.ORIENTATION_LANDSCAPE
     }
+/*
 
     // create full screen mode
     fun showBars() {
@@ -281,6 +283,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     SYSTEM_UI_FLAG_IMMERSIVE or
                     SYSTEM_UI_FLAG_HIDE_NAVIGATION
     }
+*/
 
     /*
     private var mVelocityTracker: VelocityTracker? = null
@@ -315,7 +318,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 true
             }
             R.id.prefixes -> {
-                buildIntent(this, ConvertActivity::class.java) {
+                buildIntent<ConvertActivity>(this) {
                     putExtra(TextMessage, "Prefix")
                     putExtra(ViewIdMessage, R.id.prefixes)
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP

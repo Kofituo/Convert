@@ -104,7 +104,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
     }
 
     fun startActivity() {
-        buildIntent(context, ConvertActivity::class.java) {
+        buildIntent<ConvertActivity>(context) {
             val textViewText = (this@MyCardView.getChildAt(0) as TextView).text
             putExtra(TextMessage, textViewText)
             putExtra(ViewIdMessage, this@MyCardView.id)

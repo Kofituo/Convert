@@ -13,10 +13,7 @@ import android.text.SpannedString
 import android.text.TextUtils
 import android.util.ArrayMap
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
@@ -37,7 +34,9 @@ import com.example.unitconverter.builders.buildConstraintSet
 import com.example.unitconverter.builders.buildIntent
 import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.functions.*
+import com.example.unitconverter.miscellaneous.colors
 import com.example.unitconverter.miscellaneous.isNull
+import com.example.unitconverter.miscellaneous.layoutParams
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.Positions
 import com.google.android.material.textfield.TextInputEditText
@@ -55,7 +54,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private val bundle = Bundle()
     private lateinit var viewName: String
     lateinit var function: (Positions) -> String
-
 
     private val groupingSeparator
         get() =
@@ -113,17 +111,16 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
         getLastConversions()
 
-        viewModel = ViewModelProvider(this)[ConvertViewModel::class.java] // for the view model
-            .apply {
-                settingColours(randomInt)
-                randomInt = randomColor
-            }
+        viewModel = viewModel {
+            settingColours(randomInt)
+            randomInt = randomColor
+        }
 
         whichView()
         getTextWhileTyping()
         top_button.setOnClickListener {
             if (!dialog.isAdded)
-                dialog.apply {
+                dialog {
                     bundle.putInt("whichButton", it.id)
                     viewModel.whichButton = it.id
                     arguments = bundle
@@ -132,7 +129,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
         bottom_button.setOnClickListener {
             if (!dialog.isAdded)
-                dialog.apply {
+                dialog {
                     bundle.putInt("whichButton", it.id)
                     viewModel.whichButton = it.id
                     arguments = bundle
@@ -140,6 +137,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 }
         }
     }
+
+    private inline fun dialog(block: ConvertFragment.() -> Unit) =
+        dialog.apply(block)
+
+    private inline fun viewModel(block: ConvertViewModel.() -> Unit) =
+        ViewModelProvider(this)[ConvertViewModel::class.java] // for the view model
+            .apply(block)
 
     private lateinit var firstWatcher: CommonWatcher
     private lateinit var secondCommonWatcher: CommonWatcher
@@ -159,17 +163,17 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         setFilters(secondEditText)
     }
 
-    override fun texts(text: String, unit: CharSequence) {
+    override fun texts(text: CharSequence, unit: CharSequence) {
         val whichButton = viewModel.whichButton
         if (whichButton == R.id.top_button) {
             if (firstBox.hint != text) {
                 firstBox.hint = text
                 topTextView.apply {
                     this.text = unit
-                    val params = layoutParams as ViewGroup.LayoutParams
-                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    layoutParams = params
+                    layoutParams<ViewGroup.LayoutParams> {
+                        width = ViewGroup.LayoutParams.WRAP_CONTENT
+                        height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
                 }
             }
         } else {
@@ -177,13 +181,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 secondBox.hint = text
                 bottomTextView.apply {
                     this.text = if (unit is SpannedString) unit else unit
-                    val params = layoutParams as ViewGroup.LayoutParams
-                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    layoutParams = params
+                    layoutParams<ViewGroup.LayoutParams> {
+                        width = ViewGroup.LayoutParams.WRAP_CONTENT
+                        height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
                 }
             }
-
         }
     }
 
@@ -283,10 +286,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.dataStorage -> dataStorageConversion()
 
-            R.id.electric_current -> {
-            }
-            R.id.luminance -> {
-            }
+            R.id.electric_current -> currentConversions()
+
+            R.id.luminance -> luminanceConversions()
+
             R.id.Illuminance -> {
             }
             R.id.capacitance -> {
@@ -386,12 +389,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private fun dataStorageConversion() {
         function = {
-            DataStorage(it).apply { map = dataStorageMap }.getText()
+            Log.e("called", "called")
+            DataStorage(it).apply { lazyMap = dataStorageMap }.getText()
         }
     }
 
     //to prevent unwanted initializations
-    private val dataStorageMap by lazy(LazyThreadSafetyMode.NONE) {
+    private val dataStorageMap = lazy(LazyThreadSafetyMode.NONE) {
         buildMutableMap<Int, Int>(35) {
             put(0, 0) //bits
             (27..34).forEachIndexed(1) { index, item -> // metric bits prefixes
@@ -412,6 +416,33 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    private fun currentConversions() {
+        function = {
+            ElectricCurrent(it).getText()
+        }
+    }
+
+    private fun luminanceConversions() {
+        function = {
+            Luminance(it).apply { lazyMap = luminanceMap }.getText()
+        }
+    }
+
+    private val luminanceMap = lazy(LazyThreadSafetyMode.NONE) {
+        buildMutableMap<Int, Int>(20) {
+            (0..7).forEachIndexed { index, item ->
+                put(item, index)
+                Log.e("itemr", "($item  $index}")
+            }
+            (13..19).forEachIndexed(size) { index, item ->
+                put(item, index)
+            }
+            (8..12).forEachIndexed(size) { index, item ->
+                put(item, index)
+            }
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -423,7 +454,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 true
             }
             R.id.prefixes -> {
-                buildIntent(this, ConvertActivity::class.java) {
+                buildIntent<ConvertActivity>(this) {
                     putExtra(TextMessage, "Prefix")
                     putExtra(ViewIdMessage, R.id.prefixes)
                     startActivity(this)
@@ -491,34 +522,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     private fun settingColours(colorInt: Int) {
-        val colourArray = listOf(
-            "#29B6F6", "#FFD54F", "#DCE775",
-            "#D4E157", "#E1BEE7", "#E57373",
-            "#EF5350", "#66BB6A", "#FFA726",
-            "#5C6BC0", "#FFCA28", "#9CCC65",
-            "#FFCCBC", "#7986CB", "#42A5F5",
-            "#26A69A", "#03A9F4", "#00BCD4",
-            "#F06292", "#FF8A65", "#FFB74D",
-            "#26C6DA", "#4CAF50", "#FFC107",
-            "#FFCDD2", "#4FC3F7", "#4DB6AC",
-            "#FF7043", "#64B5F6", "#F8BBD0",
-            "#AED581", "#FF5722", "#43A047",
-            "#EC407A", "#81C784", "#4DD0E1",
-            "#FFE0B2", "#7E57C2", "#9575CD",
-            "#C5CAE9", "#BA68C8", "#F44336",
-            "#a0793d", "#2196F3", "#c8a165",
-            "#DCB579", "#ffa54f", "#cd8500",
-            "#b2beb5", "#b2beb5", "#77DD9911",
-            "#77DD99", "#7d9182", "#FED766",
-            "#F6ABB6", "#EEC9D2", "#FE8A71",
-            "#F6CD61", "#FEB2A8", "#7BC043",
-            "#DFA290", "#88D8B0", "#BE9B7B",
-            "#DCEDC1", "#00B159", "#FF77AA",
-            "#696969"
-        )
         //randomly get colour
-        randomColor = if (colorInt == 0) Color.parseColor(colourArray.random()) else colorInt
-        window?.apply {
+        randomColor = if (colorInt == 0) Color.parseColor(colors.random()) else colorInt
+        window {
             statusBarColor = randomColor
             decorView.apply {
                 post {
@@ -544,6 +550,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
         }
     }
+
+    private inline fun window(block: Window.() -> Unit) = window?.apply(block)
 
     private fun View.setTopPadding(padding: Int) {
         apply {
@@ -632,24 +640,18 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private lateinit var sharedPreferences: SharedPreferences
 
     private fun getLastConversions() {
-        val topEditTextText: String?
-        val bottomEditTextText: String?
-        val topPosition: Int
-        val bottomPosition: Int
         sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
-
-        sharedPreferences.apply {
-            topEditTextText = getString("topEditTextText", null)
-            bottomEditTextText = getString("bottomEditTextText", null)
-            getString("topTextViewText", null).apply {
+        sharedPreferences {
+            val topEditTextText = getString("topEditTextText", null)
+            val bottomEditTextText = getString("bottomEditTextText", null)
+            getStringOrNull("topTextViewText") {
                 topTextView.text =
                     if (getBoolean("topIsSpans", false))
                         if (Build.VERSION.SDK_INT < 24) Html.fromHtml(this).trim()
                         else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT).trim()
                     else this
             }
-
-            getString("bottomTextViewText", null).apply {
+            getStringOrNull("bottomTextViewText") {
                 bottomTextView.text =
                     if (getBoolean("bottomIsSpans", false))
                         if (Build.VERSION.SDK_INT < 24) Html.fromHtml(this).trim()
@@ -663,8 +665,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             } ?: resources.getString(R.string.select_unit)
 
             //get last positions
-            topPosition = getInt("topPosition", -1)
-            bottomPosition = getInt("downPosition", -1)
+            val topPosition = getInt("topPosition", -1)
+            val bottomPosition = getInt("downPosition", -1)
             positionArray.apply {
                 put("topPosition", topPosition)
                 put("bottomPosition", bottomPosition)
@@ -673,46 +675,59 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     private fun saveData() {
-        sharedPreferences.apply {
-            with(edit()) {
-                putString(
-                    "topEditTextText",
-                    if (firstBox.hint.toString() != resources.getString(R.string.select_unit)) firstBox.hint.toString() else null
-                )
-                val topTextViewText = topTextView.text
-
-                putString(
-                    "topTextViewText",
-                    if (topTextViewText is SpannedString) {
-                        if (Build.VERSION.SDK_INT < 24) Html.toHtml(topTextViewText)
-                        else Html.toHtml(topTextViewText, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
-                    } else topTextViewText.toString()
-                )
-                putBoolean("topIsSpans", topTextViewText is SpannedString)
-
-                val bottomTextViewText = bottomTextView.text
-                putString(
-                    "bottomTextViewText",
-                    if (bottomTextViewText is SpannedString) {
-                        if (Build.VERSION.SDK_INT < 24) Html.toHtml(bottomTextViewText)
-                        else
-                            Html.toHtml(bottomTextViewText, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
-                    } else bottomTextViewText.toString()
-                )
-                putBoolean("bottomIsSpans", bottomTextViewText is SpannedString)
-
-                putString(
-                    "bottomEditTextText",
-                    if (secondBox.hint.toString() != resources.getString(R.string.select_unit)) secondBox.hint.toString() else null
-                )
-                putInt("topPosition", positionArray["topPosition"]!!)
-
-                putInt("downPosition", positionArray["bottomPosition"]!!)
-
-                apply()
-            }
+        editPreferences {
+            putString(
+                "topEditTextText",
+                firstBox.hint.toString().let {
+                    if (it != resources.getString(R.string.select_unit)) it
+                    else null
+                }
+                //if (firstBox.hint.toString() !=) firstBox.hint.toString() else null
+            )
+            val topTextViewText = topTextView.text
+            putString(
+                "topTextViewText",
+                if (topTextViewText is SpannedString) {
+                    if (Build.VERSION.SDK_INT < 24) Html.toHtml(topTextViewText)
+                    else Html.toHtml(topTextViewText, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
+                } else topTextViewText.toString()
+            )
+            putBoolean("topIsSpans", topTextViewText is SpannedString)
+            val bottomTextViewText = bottomTextView.text
+            putString(
+                "bottomTextViewText",
+                if (bottomTextViewText is SpannedString) {
+                    if (Build.VERSION.SDK_INT < 24) Html.toHtml(bottomTextViewText)
+                    else
+                        Html.toHtml(bottomTextViewText, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
+                } else bottomTextViewText.toString()
+            )
+            putBoolean("bottomIsSpans", bottomTextViewText is SpannedString)
+            putString(
+                "bottomEditTextText",
+                secondBox.hint.toString().let {
+                    if (it != resources.getString(R.string.select_unit)) it
+                    else null
+                }
+                //if (secondBox.hint.toString() != resources.getString(R.string.select_unit)) secondBox.hint.toString() else null
+            )
+            putInt("topPosition", positionArray["topPosition"]!!)
+            putInt("downPosition", positionArray["bottomPosition"]!!)
+            apply()
         }
     }
+
+    private inline fun sharedPreferences(block: SharedPreferences.() -> Unit): SharedPreferences =
+        sharedPreferences.apply(block)
+
+    private inline fun editPreferences(block: SharedPreferences.Editor.() -> Unit) =
+        sharedPreferences.edit().apply(block)
+
+    private inline fun SharedPreferences.getStringOrNull(
+        string: String,
+        block: String?.() -> Unit
+    ) =
+        getString(string, null).apply(block)
 
     override fun onPause() {
         super.onPause()

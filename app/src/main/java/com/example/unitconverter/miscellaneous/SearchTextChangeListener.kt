@@ -4,25 +4,28 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.RecyclerDataClass
+import com.example.unitconverter.builders.buildMutableList
 import com.example.unitconverter.subclasses.MyAdapter
-import java.util.*
 
 class SearchTextChangeListener(
     private val recyclerView: RecyclerView,
     private val adapter: MyAdapter,
     private val dataSet: MutableList<RecyclerDataClass>
 ) : TextWatcher {
-
+    /**
+     * If true means it has informed the recycler view to use the filtered data set
+     * */
     private var called = false
+
     override fun afterTextChanged(s: Editable) {
-        val filteredList = filter(dataSet, s.toString())
+        val filteredList = filter(dataSet, s)
         adapter.replaceAll(filteredList) // so the list would be updated to work with item count
         /**
          * scroll to the selected position if there's no text
          * else scroll to the first position
          */
         if (s.isEmpty()) {
-            adapter.boolean = false
+            adapter.boolean = false //tells the recycler view to use the original list
             called = false
             adapter.notifyItemRangeChanged(0, adapter.itemCount)
             if (adapter.lastPosition != -1)
@@ -32,7 +35,11 @@ class SearchTextChangeListener(
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        /**
+         * It informs the recycler view to use the filtered data set
+         * */
         adapter.boolean = true
+        //inform the recycler view to use the filtered collection
         if (!called) adapter.notifyItemRangeChanged(0, adapter.itemCount)
         called = true
     }
@@ -41,13 +48,12 @@ class SearchTextChangeListener(
 
     private fun filter(
         dataSet: MutableList<RecyclerDataClass>,
-        searchText: String
+        searchText: CharSequence
     ): MutableList<RecyclerDataClass> {
         if (searchText.isBlank()) return dataSet //fast return
+        val mainText = searchText.trim()
 
-        val locale = Locale.getDefault()
-        val mainText = searchText.trim().toLowerCase(locale)
-        return mutableListOf<RecyclerDataClass>().apply {
+        return buildMutableList {
             for (i in dataSet) {
                 val text = i.quantity
                 val unit = i.correspondingUnit

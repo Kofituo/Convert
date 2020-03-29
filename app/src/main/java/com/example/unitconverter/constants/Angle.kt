@@ -8,7 +8,7 @@ import java.math.BigDecimal
 
 object Angle {
 
-    private inline val PI: BigDecimal get() = BigDecimal("3.14159265358979323846264338327950288")
+    inline val PI: BigDecimal get() = BigDecimal("3.14159265358979323846264338327950288")
 
     val degreesToRadians: BigDecimal get() = BigDecimal(180).divide(PI, mathContext)
 

@@ -12,6 +12,12 @@ import androidx.constraintlayout.widget.ConstraintSet
 inline fun <T> buildMutableList(capacity: Int, block: MutableList<T>.() -> Unit): MutableList<T> =
     ArrayList<T>(capacity).apply(block)
 
+/**
+ * Creates a new mutable list of [T] and applies [block] to it with an initial capacity of 10
+ * */
+inline fun <T> buildMutableList(block: MutableList<T>.() -> Unit): MutableList<T> =
+    mutableListOf<T>().apply(block)
+
 /*
  *Creates new mutable map<[K],[V]> and applies [action] to it
  * For use with maps with keys less than 16
@@ -35,8 +41,8 @@ inline fun <K, V> buildMutableMap(capacity: Int = 30, action: MutableMap<K, V>.(
 /**
  * Creates a new [Intent] and applies [block] to it
  * */
-inline fun <T> buildIntent(context: Context, clazz: Class<T>, block: Intent.() -> Unit) =
-    Intent(context, clazz).apply(block)
+inline fun <reified T> buildIntent(context: Context, block: Intent.() -> Unit) =
+    Intent(context, T::class.java).apply(block)
 
 /*Constraint set*/
 /**

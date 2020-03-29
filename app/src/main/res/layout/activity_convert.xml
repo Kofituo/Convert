@@ -5,7 +5,7 @@
     android:id="@+id/convert_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffff66"
+    android:background="#363636 "
     app:layoutDescription="@xml/convert_scene"
     app:motionProgress="1"
     tools:context=".ConvertActivity">

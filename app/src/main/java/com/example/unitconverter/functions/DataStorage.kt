@@ -11,10 +11,12 @@ import kotlin.math.absoluteValue
 
 class DataStorage(override val positions: Positions) : ConstantsAbstractClass() {
 
-    override fun getText() =
-        amongBit() ?: bitsConversions() ?: amongByte() ?: nibbleConversions() ?: bytesConversions()
+    override fun getText(): String {
+        return amongBit() ?: bitsConversions() ?: amongByte() ?: nibbleConversions()
+        ?: bytesConversions()
         ?: amongBiBits() ?: amongBiBytes() ?: biBitConversion()
         ?: TODO()
+    }
 
     /**
      * ReOrdering of the map
@@ -25,7 +27,9 @@ class DataStorage(override val positions: Positions) : ConstantsAbstractClass() 
      *
      * bytes, metric prefixes of bytes (kilo,mega,etc),other prefixes (kibi,mebi)
      * */
-    lateinit var map: Map<Int, Int>
+    private inline val map get() = lazyMap.value
+
+    lateinit var lazyMap: Lazy<Map<Int, Int>> // lazy initialization
 
     private fun amongBit(): String? {
         if (wideRangeAssertAnd(0, 27..34))
@@ -59,7 +63,9 @@ class DataStorage(override val positions: Positions) : ConstantsAbstractClass() 
     private fun amongBiBytes(): String? = amongBi(11..18)
 
     private inline val pow
-        get() = if (map.getValue(topPosition) < map.getValue(bottomPosition)) -1 else 1
+        get() = map.let {
+            if (it.getValue(topPosition) < it.getValue(bottomPosition)) -1 else 1
+        }
 
     private fun bitsPrefix() = {
         amongBit {
@@ -125,7 +131,9 @@ class DataStorage(override val positions: Positions) : ConstantsAbstractClass() 
             top = 0
             bottom = whichOne
         }
-        return if (map.getValue(topPosition) < map.getValue(bottomPosition)) -1 else 1
+        return map.let {
+            if (it.getValue(topPosition) < it.getValue(bottomPosition)) -1 else 1
+        }
     }
 
     private fun nibbleConversions(): String? {

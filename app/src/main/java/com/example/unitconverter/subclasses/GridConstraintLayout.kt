@@ -19,6 +19,7 @@ import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.name
 import com.example.unitconverter.builders.buildConstraintSet
 import com.example.unitconverter.miscellaneous.isNotNull
+import com.example.unitconverter.miscellaneous.layoutParams
 
 class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null) :
     ConstraintLayout(context, attributeSet) {
@@ -135,10 +136,8 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             //viewSparseArray int -> View
             //view can never be null
             val view = viewsMap[array[i]] as View //to throws an exception means problem
-            view.apply {
-                val params = layoutParams as MarginLayoutParams
-                params.topMargin = if (i < number) 0 else 15.dpToInt()
-                requestLayout()
+            view.layoutParams<MarginLayoutParams> {
+                topMargin = if (i < number) 0 else 15.dpToInt()
             }
         }
         Log.e("fin", "${System.currentTimeMillis() - o}")

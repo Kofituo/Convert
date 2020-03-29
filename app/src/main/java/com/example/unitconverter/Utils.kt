@@ -8,13 +8,13 @@ import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
 import com.example.unitconverter.builders.buildMutableList
-import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.miscellaneous.isNeitherNullNorEmpty
 import com.example.unitconverter.miscellaneous.isNotNull
 import com.google.android.material.textfield.TextInputEditText
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.LinkedHashMap
 import kotlin.math.round
 
 object Utils {
@@ -65,7 +65,6 @@ object Utils {
 
     fun String.removeCommas(decimalSeparator: Char): String? {
         if (this.isBlank()) return ""
-
         val checkString = StringBuilder()
         when {
             this.startsWith(decimalSeparator) ->
@@ -185,15 +184,10 @@ object Utils {
      * Returns are new [MutableMap] where the key / values are reversed.
      * i.e. the last pair becomes the first pair
      * */
-    fun <K, V> Map<K, V>.reversed(): MutableMap<K, V> {
-        if (size < 2) return toMutableMap()
-        val reverseValue = values.reversed().iterator()
-        val reverseKeys = keys.reversed().iterator()
-        return buildMutableMap {
-            for (i in 0 until size)
-                this@buildMutableMap[reverseKeys.next()] = reverseValue.next()
-        }
-    }
+    fun <K, V> Map<K, V>.reversed() =
+        if (size < 2) toMutableMap() // fast return
+        else LinkedHashMap(toList().reversed().toMap())
+
 
     @Suppress("NOTHING_TO_INLINE")
     inline fun StringBuilder.appendWithSpace(string: String): StringBuilder {
@@ -208,7 +202,7 @@ object Utils {
      * and performs the desired action on the element.
      */
 
-    inline fun IntRange.forEachIndexed(start: Int, action: (index: Int, Int) -> Unit): Unit {
+    inline fun IntRange.forEachIndexed(start: Int, action: (index: Int, Int) -> Unit) {
         var index = start
         for (item in this) action(index++, item)
     }
