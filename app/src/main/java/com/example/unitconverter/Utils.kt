@@ -20,7 +20,6 @@ import kotlin.math.round
 object Utils {
 
     var app_bar_bottom = 0
-
     val minusSign
         get() =
             (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.minusSign
@@ -32,6 +31,10 @@ object Utils {
                     add(value)
                 }
             }
+
+
+    inline fun <V> SparseArray<V>.values(action: MutableList<V>.() -> Unit) =
+        values.apply(action)
 
     fun Int.dpToInt(context: Context): Int = round(
         TypedValue.applyDimension(
@@ -109,6 +112,8 @@ object Utils {
                             ) continue
                         }
                     }
+                    if (source[0] == comma && editText.text.isNullOrEmpty())
+                        continue //to prevent unparseable number ,
                     stringBuilder.append(source[i])
                 }
             }
@@ -136,13 +141,14 @@ object Utils {
                 if (source[i] == minusSign) {
                     if (i != 0 || text.isNeitherNullNorEmpty()) continue
                     if (
-                        editTextSelectionStart != editText.selectionEnd ||
-                        editTextSelectionStart != 0
+                        editTextSelectionStart != 0 ||
+                        editTextSelectionStart != editText.selectionEnd
                     ) continue
 
                     if (text.isNotNull() && text.indexOf(minusSign) != -1) continue
                     stringBuilder.append(source[i])
                 }
+                if (text.isNullOrEmpty() && source[0] == comma) continue //to prevent unparseable number ,
                 if (source[i].isDigit() ||
                     source[i] == comma ||
                     source[i] == fullStop
@@ -186,8 +192,9 @@ object Utils {
      * */
     fun <K, V> Map<K, V>.reversed() =
         if (size < 2) toMutableMap() // fast return
-        else LinkedHashMap(toList().reversed().toMap())
-
+        else toList().reversed().run {
+            toMap(LinkedHashMap(size))
+        }
 
     @Suppress("NOTHING_TO_INLINE")
     inline fun StringBuilder.appendWithSpace(string: String): StringBuilder {

@@ -20,6 +20,7 @@ import com.example.unitconverter.R
 import com.example.unitconverter.Utils.app_bar_bottom
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.builders.buildConstraintSet
+import com.example.unitconverter.miscellaneous.layoutParams
 import com.google.android.material.card.MaterialCardView
 
 /* popup which takes context for inflation
@@ -76,13 +77,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         val secondConstraintLayout =
             constraintLayout.findViewById<ConstraintLayout>(R.id.secondCont)
 
-        val arrowViewParameters = arrowImageView.layoutParams as ViewGroup.MarginLayoutParams
-
-        val firstConstraintLayoutParameters =
-            firstConstraintLayout.layoutParams as ViewGroup.MarginLayoutParams
-        val secondConstraintLayoutParameters =
-            secondConstraintLayout.layoutParams as ViewGroup.MarginLayoutParams
-
         arrowImageView.setBackgroundResource(R.drawable.ic_arrow_drop_up_black_24dp)
 
         buildConstraintSet {
@@ -130,21 +124,23 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
 
             applyTo(constraintLayout)
         }
-        firstConstraintLayoutParameters.topMargin = 13.dpToInt()
-        //apply starts here
-        secondConstraintLayoutParameters.apply {
+        firstConstraintLayout.layoutParams<ViewGroup.MarginLayoutParams> {
+            topMargin = 13.dpToInt()
+        }
+
+        secondConstraintLayout.layoutParams<ViewGroup.MarginLayoutParams> {
             bottomMargin = 0
             topMargin = 3.dpToInt()
         }
 
-        arrowViewParameters.apply {
+        arrowImageView.layoutParams<ViewGroup.MarginLayoutParams> {
             bottomMargin = 96.dpToInt()
             topMargin = 0
         }
         //updating margin changes
-        firstConstraintLayout.requestLayout()
-        secondConstraintLayout.requestLayout()
-        arrowImageView.requestLayout()
+        //firstConstraintLayout.requestLayout()
+        //secondConstraintLayout.requestLayout()
+        //arrowImageView.requestLayout()
     }
 
     private fun setQuickActonView(resInt: Int) {

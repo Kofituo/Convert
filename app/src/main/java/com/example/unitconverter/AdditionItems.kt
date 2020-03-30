@@ -26,7 +26,8 @@ object AdditionItems {
 
     var originalMap = LinkedHashMap<String, Int>(30)
 
-    /**Map which keeps track of opened activities
+    /**
+     * Map which keeps track of opened activities
      * in descending order (last open is the first in the map)
      * */
     lateinit var mRecentlyUsed: MutableMap<String, Int>

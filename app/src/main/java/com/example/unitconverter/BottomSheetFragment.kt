@@ -12,6 +12,9 @@ import android.widget.RadioGroup
 import androidx.fragment.app.DialogFragment
 import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.Utils.dpToInt
+import com.example.unitconverter.miscellaneous.editPreferences
+import com.example.unitconverter.miscellaneous.get
+import com.example.unitconverter.miscellaneous.put
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlin.math.round
@@ -67,8 +70,9 @@ class BottomSheetFragment : DialogFragment() {
             secondGroup.setStates(state = !isChecked)
             checked = isChecked
         }
-        val useDefaultBoolean = sharedPreferences.getBoolean("useDefault", false)
-        if (useDefaultBoolean) useDefault.isChecked = true
+        sharedPreferences.get<Boolean>("useDefault") {
+            if (this!!) useDefault.isChecked = true
+        }
         // get original values
         val originalFirstSelection = firstGroup.checkedRadioButtonId
 
@@ -106,10 +110,19 @@ class BottomSheetFragment : DialogFragment() {
             Context.MODE_PRIVATE
         ) ?: return
 
-        with(sharedPreferences.edit()) {
-            putInt("firstSelection", firstGroup.checkedRadioButtonId)
-            putInt("secondSelection", secondGroup.checkedRadioButtonId)
-            putBoolean("useDefault", useDefault.isChecked)
+        editPreferences(sharedPreferences) {
+            put<Int> {
+                key = "firstSelection"
+                value = firstGroup.checkedRadioButtonId
+            }
+            put<Int> {
+                key = "secondSelection"
+                value = secondGroup.checkedRadioButtonId
+            }
+            put<Boolean> {
+                key = "useDefault"
+                value = useDefault.isChecked
+            }
             apply()
         }
     }

@@ -1,6 +1,7 @@
 package com.example.unitconverter.subclasses
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -17,6 +18,7 @@ import com.example.unitconverter.AdditionItems.viewsMap
 import com.example.unitconverter.R
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.name
+import com.example.unitconverter.builders.arrayListOf
 import com.example.unitconverter.builders.buildConstraintSet
 import com.example.unitconverter.miscellaneous.isNotNull
 import com.example.unitconverter.miscellaneous.layoutParams
@@ -24,7 +26,7 @@ import com.example.unitconverter.miscellaneous.layoutParams
 class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null) :
     ConstraintLayout(context, attributeSet) {
 
-    data class GuideLines(val left: Int, val right: Int, val top: Int)
+    private data class GuideLines(val left: Int, val right: Int, val top: Int)
 
     private var guideLine: GuideLines = GuideLines(-1, -1, -1)
 
@@ -56,10 +58,14 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
         }
     }
 
+    private inline val sortValue
+        get() =
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 3 else 5
 
-    fun sort(number: Int, map: Map<String, Int>) {
+    fun sort(map: Map<String, Int>) {
+        val number = sortValue //gets value ones per function call
         val o = System.currentTimeMillis()
-        val array = arrayListOf<Int>()
+        val viewIds = arrayListOf<Int>(capacity = map.size)
 
         for ((viewName, viewId) in map) {
             /**
@@ -75,19 +81,19 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                 Log.e("well", "${mRecentlyUsed[viewName] != id}")
                 if (mRecentlyUsed[viewName] != id && id.isNotNull()) mRecentlyUsed[viewName] = id
 
-                if (id.isNotNull()) array.add(id)//adds the correct id
+                if (id.isNotNull()) viewIds.add(id)//adds the correct id
                 Log.e("called", "$viewId  $id")
                 continue
             }
-            array.add(viewId)
+            viewIds.add(viewId)
         }
         buildConstraintSet {
             clone(this@GridConstraintLayout)
-            for (i in 0 until array.size) {
+            for (i in 0 until viewIds.size) {
                 val modulo = i % number
                 val topViewIndex = i - number
-                val topView = if (topViewIndex >= 0) array[topViewIndex] else guideLine.top
-                val mainView = array[i]
+                val topView = if (topViewIndex >= 0) viewIds[topViewIndex] else guideLine.top
+                val mainView = viewIds[i]
                 when (modulo) {
                     0 -> {
                         //it means its at the left
@@ -95,7 +101,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                             this,
                             guideLine.left,
                             mainView,
-                            array[i + 1],
+                            viewIds[i + 1],
                             topView
                         )
                         setHorizontalChainStyle(mainView, ConstraintSet.CHAIN_SPREAD_INSIDE)
@@ -104,7 +110,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                         //means its the thr right
                         constraintSetting(
                             this,
-                            array[i - 1],
+                            viewIds[i - 1],
                             mainView,
                             guideLine.right,
                             topView
@@ -114,9 +120,9 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                         //means its in the middle
                         constraintSetting(
                             this,
-                            array[i - 1],
+                            viewIds[i - 1],
                             mainView,
-                            array[i + 1],
+                            viewIds[i + 1],
                             topView
                         )
                     }
@@ -132,10 +138,10 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                 )
             applyTo(this@GridConstraintLayout)
         }
-        for (i in array.indices) {
+        for (i in viewIds.indices) {
             //viewSparseArray int -> View
             //view can never be null
-            val view = viewsMap[array[i]] as View //to throws an exception means problem
+            val view = viewsMap[viewIds[i]] as View //to throws an exception means problem
             view.layoutParams<MarginLayoutParams> {
                 topMargin = if (i < number) 0 else 15.dpToInt()
             }

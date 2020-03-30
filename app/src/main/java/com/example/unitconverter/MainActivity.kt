@@ -3,6 +3,7 @@ package com.example.unitconverter
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
@@ -11,9 +12,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
-import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.unitconverter.AdditionItems.TextMessage
@@ -34,9 +33,9 @@ import com.example.unitconverter.Utils.reversed
 import com.example.unitconverter.Utils.toJson
 import com.example.unitconverter.Utils.values
 import com.example.unitconverter.builders.buildIntent
-import com.example.unitconverter.miscellaneous.DeserializeStringIntMap
-import com.example.unitconverter.miscellaneous.isNeitherNullNorEmpty
+import com.example.unitconverter.miscellaneous.*
 import com.example.unitconverter.subclasses.ConvertViewModel
+import com.example.unitconverter.subclasses.MyMotionLayout
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.GlobalScope
@@ -62,10 +61,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private val motionEventMove: MotionEvent =
         MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_MOVE, xPoint, yPoint, metaState)
 
-    private var sortValue = -1
-
     private var h = 0
     private var w = 0
+
+    private lateinit var sharedPreferences: SharedPreferences
 
     private lateinit var mSelectedOrderArray: Map<String, Int>
 
@@ -76,6 +75,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         supportActionBar?.setDisplayShowTitleEnabled(false)
         myConfiguration(this.resources.configuration.orientation)
         window.statusBarColor = Color.parseColor("#4DD0E1")
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         h = resources.displayMetrics.heightPixels / 2
         w = resources.displayMetrics.widthPixels / 2
         Log.e(
@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
 
         val viewModel = ViewModelProvider(this@MainActivity)[ConvertViewModel::class.java]
-        motion?.apply {
+        motion {
             motionHandler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
                     when (msg.what) {
@@ -128,84 +128,93 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             progress = viewModel.motionProgress
         }
         viewModel.motionProgress = 1f
-        sortValue =
-            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 3 else 5
 
-        val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
-        with(sharedPreferences.edit()) {
-            //rethinking almost everything to make sure it works well always
-            /**
-             * recently used would also be a map : String -> Int
-             * when some ids have changed it would get updated ...keeping the order intact
-             * */
-            sharedPreferences.getString("mRecentlyUsed", "").apply {
-                mRecentlyUsed =
-                    if (this.isNeitherNullNorEmpty()) {
-                        Json.parse(DeserializeStringIntMap, this).toMutableMap()
-                    } else originalMap.apply { putString("mRecentlyUsed", toJson()) }
-                Log.e("recent", "res  $mRecentlyUsed")
+        sharedPreferences {
+            editPreferences {
+                //rethinking almost everything to make sure it works well always
+                /**
+                 * recently used would also be a map : String -> Int
+                 * when some ids have changed it would get updated ...keeping the order intact
+                 * */
+                get<String>("mRecentlyUsed") {
+                    mRecentlyUsed =
+                        if (this.isNeitherNullNorEmpty()) {
+                            Json.parse(DeserializeStringIntMap, this)
+                        } else originalMap.apply {
+                            put<String> {
+                                key = "mRecentlyUsed"
+                                value = toJson()
+                            }
+                        }
+                    Log.e("recent", "res  $mRecentlyUsed")
+                }
+                get<String>("mSelectedOrder") {
+                    mSelectedOrderArray =
+                        if (this.isNeitherNullNorEmpty()) {
+                            //sorting occurred
+                            //so we have to keep it like that
+                            Log.e("this", "$this ")
+                            val selectedOrder =
+                                Json.parse(DeserializeStringIntMap, this)// as ArrayMap<String, Int>
+                            grid.sort(selectedOrder)
+                            selectedOrder
+                        } else mapOf()
+                }
+                Log.e("select", "$mSelectedOrderArray ko")
+                descending = get("descending")!!
+                recentlyUsedBool = get("recentlyUsedBoolean")!!
+                apply()
             }
-
-            sharedPreferences.getString("mSelectedOrder", "").apply {
-                mSelectedOrderArray =
-                    if (this.isNeitherNullNorEmpty()) {
-                        //sorting occurred
-                        //so we have to keep it like that
-                        Log.e("this", "$this ")
-                        val selectedOrder =
-                            Json.parse(DeserializeStringIntMap, this)// as ArrayMap<String, Int>
-                        grid.sort(sortValue, selectedOrder)
-                        selectedOrder
-                    } else mapOf()
-            }
-            Log.e("select", "$mSelectedOrderArray ko")
-            descending = sharedPreferences.getBoolean("descending", false)
-            recentlyUsedBool = sharedPreferences.getBoolean("recentlyUsedBoolean", false)
-            apply()
         }
         onCreateCalled = true
     }
 
+    private inline fun motion(block: MyMotionLayout.() -> Unit) =
+        motion?.apply(block)
+
     override fun selection(firstSelection: Int, secondSelection: Int) {
-        recentlyUsedBool = false
-        var temporalMap = mutableMapOf<String, Int>()
+        recentlyUsedBool = false /// reset the value
+        val temporalMap = LinkedHashMap<String, Int>(30)
         if (firstSelection == -1) {
             // use default
-            grid.sort(sortValue, originalMap)
+            grid.sort(originalMap)
+
             mSelectedOrderArray = originalMap
             Log.e("1", "1")
             return
         }
         descending = secondSelection == R.id.descending
         Log.e("des", "$descending  $secondSelection  ${R.id.descending}")
-        if (firstSelection == R.id.titleButton) {
-            //sort by title
-            val newArray =
-                viewsMap.values.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
-            for (i in
-            if (descending) newArray.reversed()
-            else newArray
-            ) temporalMap[i.name] = i.id
-            Log.e("2", "2  $temporalMap  $newArray  ")
 
-        } else {
+        if (firstSelection == R.id.titleButton)
+        //sort by title
+            viewsMap.values {
+                sortWith(
+                    if (descending) compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    else compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                )
+                for (i in this)
+                    temporalMap[i.name] = i.id
+                Log.e("2", "2  $temporalMap  $this  ")
+            }
+        else {
             recentlyUsedBool = true
             Log.e(
                 "-90",
                 "-0 $descending  ${mRecentlyUsed == originalMap}  ${mRecentlyUsed.values == originalMap.values}"
             )
             Log.e("ori", "$mRecentlyUsed pp  $originalMap")
-            temporalMap =
+            temporalMap.putAll(
                 if (descending || mRecentlyUsed.values == originalMap.values)
-                    mRecentlyUsed.toMutableMap()
-                else {
-                    mRecentlyUsed.reversed()
-                }
+                    mRecentlyUsed
+                else mRecentlyUsed.reversed()
+            )
             Log.e("3", "3  $temporalMap ")
         }
-        grid.sort(sortValue, temporalMap)
-        mSelectedOrderArray = temporalMap.toMutableMap()
-        //bufferArray.clear()
+        temporalMap.also {
+            grid.sort(it)
+            mSelectedOrderArray = it
+        }
     }
 
     private var descending = false
@@ -223,44 +232,52 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
          * called when from convert activity
          * */
         if (recentlyUsedBool && !onCreateCalled && mRecentlyUsed.values != originalMap.values) {
-            Log.e("res", "res  $descending $mRecentlyUsed ${mRecentlyUsed.reversed()}")
-            if (descending) grid.sort(sortValue, mRecentlyUsed)
+            Log.e("res", "res  $descending  ${mRecentlyUsed.reversed()}")
+            if (descending)
+                grid.sort(mRecentlyUsed)
             //since the problem of different ids is corrected right from onCreate
             //it's safe to do the following
-            else grid.sort(sortValue, mRecentlyUsed.reversed())
+            else grid.sort(mRecentlyUsed.reversed())
         }
         onCreateCalled = false
     }
 
     override fun onPause() {
         super.onPause()
-        val sharedPreferences = getPreferences(Context.MODE_PRIVATE)
-        with(sharedPreferences.edit()) {
+        editPreferences {
             //putIntegerArrayList("recentlyUsed", recentlyUsed)
             /*Log.e("pause","$descending  $onCreateCalled  $recentlyUsedBool")
-            Log.e("json","${mRecentlyUsed.toJson()} " )*/
+        Log.e("json","${mRecentlyUsed.toJson()} " )*/
             Log.e(
                 "resce",
                 "${mSelectedOrderArray.toJson()} AAAA${mRecentlyUsed.reversed()
                     .toJson()} BBBB ${mRecentlyUsed.toJson()}"
             )
-            putString("mRecentlyUsed", mRecentlyUsed.toJson())
+            val recentlyUsed = mRecentlyUsed.toJson()
+            put<String> {
+                key = "mRecentlyUsed"
+                value = recentlyUsed
+            }
             val arrayHasChanged = mRecentlyUsed.values != originalMap.values
-            putString(
-                "mSelectedOrder", if (arrayHasChanged && recentlyUsedBool) {
-                    if (descending) mRecentlyUsed.toJson()
+            put<String> {
+                key = "mSelectedOrder"
+                value = if (arrayHasChanged && recentlyUsedBool) {
+                    if (descending) recentlyUsed
                     else mRecentlyUsed.reversed().toJson()
-
                 } else mSelectedOrderArray.toJson()
-            )
-            putBoolean("descending", descending)
-            putBoolean("recentlyUsedBoolean", recentlyUsedBool)
+            }
+            put<Boolean> {
+                key = "descending"
+                value = descending
+            }
+            put<Boolean> {
+                key = "recentlyUsedBoolean"
+                value = recentlyUsedBool
+            }
             apply()
         }
     }
 
-    fun test(v: View) =
-        Toast.makeText(this, "well", Toast.LENGTH_SHORT).show()
 
     private fun myConfiguration(orientation: Int) {
         orient =
@@ -268,7 +285,16 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 Configuration.ORIENTATION_PORTRAIT
             else Configuration.ORIENTATION_LANDSCAPE
     }
+
+    private inline fun editPreferences(block: SharedPreferences.Editor.() -> Unit) =
+        editPreferences(sharedPreferences, block)
+
+    private inline fun sharedPreferences(block: SharedPreferences.() -> Unit) =
+        sharedPreferences(sharedPreferences, block)
 /*
+
+    fun test(v: View) =
+        Toast.makeText(this, "well", Toast.LENGTH_SHORT).show()
 
     // create full screen mode
     fun showBars() {
@@ -285,10 +311,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 */
 
-    /*
-    private var mVelocityTracker: VelocityTracker? = null
-    private var callAgain = 2
-     */
+/*
+private var mVelocityTracker: VelocityTracker? = null
+private var callAgain = 2
+ */
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
 

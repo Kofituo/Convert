@@ -7,7 +7,7 @@ import kotlin.contracts.contract
 
 //watch
 //contracts are used
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 inline fun <T> T.isNotNull(): Boolean {
     contract {
         returns(true) implies (this@isNotNull != null)
@@ -15,7 +15,7 @@ inline fun <T> T.isNotNull(): Boolean {
     return this != null
 }
 
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 inline fun <T> T.isNull(): Boolean {
     contract {
         returns(false) implies (this@isNull != null)
@@ -23,7 +23,7 @@ inline fun <T> T.isNull(): Boolean {
     return this == null
 }
 
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 inline fun CharSequence?.isNeitherNullNorEmpty(): Boolean {
     contract {
         returns(true) implies (this@isNeitherNullNorEmpty != null)

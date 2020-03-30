@@ -17,8 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.AdditionItems.pkgName
-import com.example.unitconverter.miscellaneous.SearchTextChangeListener
-import com.example.unitconverter.miscellaneous.layoutParams
+import com.example.unitconverter.miscellaneous.*
 import com.example.unitconverter.recyclerViewData.*
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.MyAdapter
@@ -80,7 +79,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
         }
         viewModel.dataSet = whichView(viewId)
-        lastPosition = sharedPreferences.getInt(string, -1)
+        lastPosition = sharedPreferences.get<Int>(string)!!
     }
 
     @SuppressLint("InflateParams")
@@ -207,11 +206,12 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     }
 
     private fun saveData() {
-        sharedPreferences.apply {
-            with(edit()) {
-                putInt(string, lastPosition)
-                apply()
+        editPreferences(sharedPreferences) {
+            put<Int> {
+                key = string
+                value = lastPosition
             }
+            apply()
         }
     }
 

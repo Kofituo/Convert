@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.example.unitconverter.builders
 
 import android.content.Context
@@ -18,6 +20,10 @@ inline fun <T> buildMutableList(capacity: Int, block: MutableList<T>.() -> Unit)
 inline fun <T> buildMutableList(block: MutableList<T>.() -> Unit): MutableList<T> =
     mutableListOf<T>().apply(block)
 
+/**
+ * Creates new [ArrayList] with initial [capacity]
+ * */
+inline fun <T> arrayListOf(capacity: Int): ArrayList<T> = ArrayList(capacity)
 /*
  *Creates new mutable map<[K],[V]> and applies [action] to it
  * For use with maps with keys less than 16

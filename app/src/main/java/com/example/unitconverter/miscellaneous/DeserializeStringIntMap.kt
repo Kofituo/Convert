@@ -10,20 +10,22 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.content
 import kotlinx.serialization.withName
 
-object DeserializeStringIntMap : DeserializationStrategy<Map<String, Int>> {
+object DeserializeStringIntMap : DeserializationStrategy<MutableMap<String, Int>> {
     override val descriptor: SerialDescriptor
         get() = StringDescriptor.withName("Kofi")
 
-    override fun deserialize(decoder: Decoder): Map<String, Int> {
+    override fun deserialize(decoder: Decoder): MutableMap<String, Int> {
         val input = decoder as JsonInput
         val array = input.decodeJson() as JsonArray
         return array.map {
             it as JsonObject
             val first = it.keys.first()
             first to it[first]!!.content.toInt()
-        }.toMap()
+        }.run {
+            toMap(LinkedHashMap(size))
+        }
     }
 
-    override fun patch(decoder: Decoder, old: Map<String, Int>): Map<String, Int> =
+    override fun patch(decoder: Decoder, old: MutableMap<String, Int>): MutableMap<String, Int> =
         TODO("I don't know what this does")
 }

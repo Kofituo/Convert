@@ -22,10 +22,11 @@ import kotlin.math.round
 import kotlin.math.sqrt
 
 
-class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedScrollView (context,attributeSet) ,
+class MyNestedScrollView(context: Context, attributeSet: AttributeSet) :
+    NestedScrollView(context, attributeSet),
     GestureDetector.OnGestureListener {
 
-    private var mScroll : Int = -1
+    private var mScroll: Int = -1
 
     private var scrollChanged = false
 
@@ -34,7 +35,7 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
     private val u = displayMetrics.widthPixels.toDouble() / displayMetrics.xdpi.toDouble()
     private val screenSize = (round(sqrt((h.pow(2)) + (u.pow(2))) * 10) / 10)
 
-    private var detectorCompat = GestureDetectorCompat(context,this)
+    private var detectorCompat = GestureDetectorCompat(context, this)
 
     private val minVelocity = (-58).dpToInt(context)
 
@@ -82,7 +83,6 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
     }
 
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
-
         performClick()
         //return super.onTouchEvent(ev)
 
@@ -95,18 +95,12 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
                 val first = mProgress
                 delay(40)
                 if (abs(mProgress - first) <= 0.065 && !bugDetected) {
-
                     bugDetected = true
                     handler.obtainMessage(1).sendToTarget()
                 }
             }
-
-        } else if (ev?.actionMasked == MotionEvent.ACTION_UP) {
-            requestDisallowInterceptTouchEvent(
-                true
-            )
-        }
-
+        } else if (ev?.actionMasked == MotionEvent.ACTION_UP)
+            requestDisallowInterceptTouchEvent(true)
         return super.onTouchEvent(ev)
     }
 
@@ -116,14 +110,10 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) : NestedS
     }
 
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
-
         scrollChanged = true
         if (t == 0) handler.obtainMessage(2).sendToTarget()
         super.onScrollChanged(l, t, oldl, oldt)
     }
 
-
-    override fun getHandler(): Handler {
-        return motionHandler
-    }
+    override fun getHandler(): Handler = motionHandler
 }

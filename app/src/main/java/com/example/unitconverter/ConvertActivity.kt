@@ -1,6 +1,7 @@
 package com.example.unitconverter
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -34,9 +35,7 @@ import com.example.unitconverter.builders.buildConstraintSet
 import com.example.unitconverter.builders.buildIntent
 import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.functions.*
-import com.example.unitconverter.miscellaneous.colors
-import com.example.unitconverter.miscellaneous.isNull
-import com.example.unitconverter.miscellaneous.layoutParams
+import com.example.unitconverter.miscellaneous.*
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.Positions
 import com.google.android.material.textfield.TextInputEditText
@@ -86,7 +85,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
         dialog = ConvertFragment()
         // for setting the text
-        intent.apply {
+        intent {
             getStringExtra(TextMessage)?.also {
                 bundle.putString("viewName", it)
                 convert_header?.text = it
@@ -140,6 +139,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private inline fun dialog(block: ConvertFragment.() -> Unit) =
         dialog.apply(block)
+
+    private inline fun intent(block: Intent.() -> Unit) = intent.apply(block)
 
     private inline fun viewModel(block: ConvertViewModel.() -> Unit) =
         ViewModelProvider(this)[ConvertViewModel::class.java] // for the view model
@@ -642,31 +643,27 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private fun getLastConversions() {
         sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
         sharedPreferences {
-            val topEditTextText = getString("topEditTextText", null)
-            val bottomEditTextText = getString("bottomEditTextText", null)
-            getStringOrNull("topTextViewText") {
+            get<String>("topTextViewText") {
                 topTextView.text =
                     if (getBoolean("topIsSpans", false))
                         if (Build.VERSION.SDK_INT < 24) Html.fromHtml(this).trim()
                         else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT).trim()
                     else this
             }
-            getStringOrNull("bottomTextViewText") {
+            get<String>("bottomTextViewText") {
                 bottomTextView.text =
                     if (getBoolean("bottomIsSpans", false))
                         if (Build.VERSION.SDK_INT < 24) Html.fromHtml(this).trim()
                         else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT).trim()
                     else this
             }
-            secondBox.hint = bottomEditTextText ?: resources.getString(R.string.select_unit)
-            firstBox.hint = topEditTextText?.let {
-                Log.e("s1", it)
-                it
-            } ?: resources.getString(R.string.select_unit)
-
+            secondBox.hint =
+                get<String>("bottomEditTextText") ?: resources.getString(R.string.select_unit)
+            firstBox.hint =
+                get<String>("topEditTextText") ?: resources.getString(R.string.select_unit)
             //get last positions
-            val topPosition = getInt("topPosition", -1)
-            val bottomPosition = getInt("downPosition", -1)
+            val topPosition = get<Int>("topPosition")
+            val bottomPosition = get<Int>("downPosition")
             positionArray.apply {
                 put("topPosition", topPosition)
                 put("bottomPosition", bottomPosition)
@@ -676,58 +673,70 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private fun saveData() {
         editPreferences {
-            putString(
-                "topEditTextText",
-                firstBox.hint.toString().let {
+            put<String> {
+                key = "topEditTextText"
+                value = firstBox.hint.toString().let {
                     if (it != resources.getString(R.string.select_unit)) it
                     else null
                 }
-                //if (firstBox.hint.toString() !=) firstBox.hint.toString() else null
-            )
+            }
+
             val topTextViewText = topTextView.text
-            putString(
-                "topTextViewText",
-                if (topTextViewText is SpannedString) {
-                    if (Build.VERSION.SDK_INT < 24) Html.toHtml(topTextViewText)
-                    else Html.toHtml(topTextViewText, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
-                } else topTextViewText.toString()
-            )
-            putBoolean("topIsSpans", topTextViewText is SpannedString)
+            put<String> {
+                key = "topTextViewText"
+                value = topTextViewText.let {
+                    if (it is SpannedString) {
+                        if (Build.VERSION.SDK_INT < 24) Html.toHtml(it)
+                        else
+                            Html.toHtml(it, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
+                    } else it.toString()
+                }
+            }
+            put<Boolean> {
+                key = "topIsSpans"
+                value = topTextViewText is SpannedString
+            }
+
             val bottomTextViewText = bottomTextView.text
-            putString(
-                "bottomTextViewText",
-                if (bottomTextViewText is SpannedString) {
-                    if (Build.VERSION.SDK_INT < 24) Html.toHtml(bottomTextViewText)
-                    else
-                        Html.toHtml(bottomTextViewText, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
-                } else bottomTextViewText.toString()
-            )
-            putBoolean("bottomIsSpans", bottomTextViewText is SpannedString)
-            putString(
-                "bottomEditTextText",
-                secondBox.hint.toString().let {
+            put<String> {
+                key = "bottomTextViewText"
+                value = bottomTextViewText.let {
+                    if (it is SpannedString) {
+                        if (Build.VERSION.SDK_INT < 24) Html.toHtml(it)
+                        else
+                            Html.toHtml(it, Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL)
+                    } else it.toString()
+                }
+            }
+            put<Boolean> {
+                key = "bottomIsSpans"
+                value = bottomTextViewText is SpannedString
+            }
+            put<String> {
+                key = "bottomEditTextText"
+                value = secondBox.hint.toString().let {
                     if (it != resources.getString(R.string.select_unit)) it
                     else null
                 }
-                //if (secondBox.hint.toString() != resources.getString(R.string.select_unit)) secondBox.hint.toString() else null
-            )
-            putInt("topPosition", positionArray["topPosition"]!!)
-            putInt("downPosition", positionArray["bottomPosition"]!!)
+            }
+            put<Int> {
+                key = "topPosition"
+                value = positionArray["topPosition"]!!
+            }
+            put<Int> {
+                key = "downPosition"
+                value = positionArray["bottomPosition"]!!
+            }
             apply()
         }
     }
 
+
     private inline fun sharedPreferences(block: SharedPreferences.() -> Unit): SharedPreferences =
-        sharedPreferences.apply(block)
+        sharedPreferences(sharedPreferences, block)
 
     private inline fun editPreferences(block: SharedPreferences.Editor.() -> Unit) =
-        sharedPreferences.edit().apply(block)
-
-    private inline fun SharedPreferences.getStringOrNull(
-        string: String,
-        block: String?.() -> Unit
-    ) =
-        getString(string, null).apply(block)
+        editPreferences(sharedPreferences, block)
 
     override fun onPause() {
         super.onPause()
