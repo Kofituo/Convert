@@ -16,7 +16,8 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
     private val gram = _gram.toLowerCase(locale)
     private val gramUnit = getString(R.string.gram_unit)
     private val of = getString(R.string.of)
-    private val ton = getString(R.string.ton)
+    private val _ton = getString(R.string.ton)
+    private val ton = _ton.toLowerCase(locale)
     private val tonUnit = getString(R.string.metricTonUnit)
     private val calorie = getString(R.string.calorie)
     private val calorieUnit = getString(R.string.calorie_unit)
@@ -24,9 +25,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
     override fun getList() =
         buildRecyclerList(90) {
             add(_joule, jouleUnit)
-            addAll(
-                massPrefixes(joule, jouleUnit)
-            )
+            this putAll massPrefixes(joule, jouleUnit)
             add(calorie, calorieUnit)
             entry {
                 this quantity buildString {
@@ -68,78 +67,79 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                     }
                 }
             }
-            add(
-                buildString {
+            entry {
+                this quantity buildString {
                     put {
-                        this valueWithSpace ton
+                        this valueWithSpace _ton
                         this valueWithSpace of
                         this value tnt
                     }
-                }, buildString {
-                    put {
-                        this value tonUnit
-                    }
                 }
-            )
-            add(
-                buildString {
+                this unit tonUnit
+            }
+            entry {
+                this quantity buildString {
                     put {
                         this value kilo
                         this valueWithSpace ton
                         this valueWithSpace of
                         this value tnt
                     }
-                }, buildString {
+                }
+                this unit buildString {
                     put {
                         this value kiloSymbol
                         this value tonUnit
                     }
                 }
-            )
-            add(
-                buildString {
+            }
+            entry {
+                this quantity buildString {
                     put {
                         this value mega
                         this valueWithSpace ton
                         this valueWithSpace of
                         this value tnt
                     }
-                }, buildString {
+                }
+                this unit buildString {
                     put {
                         this value megaSymbol
                         this value tonUnit
                     }
                 }
-            )
-            add(
-                buildString {
+            }
+            entry {
+                this quantity buildString {
                     put {
                         this value giga
                         this valueWithSpace ton
                         this valueWithSpace of
                         this value tnt
                     }
-                }, buildString {
+                }
+                this unit buildString {
                     put {
                         this value gigaSymbol
                         this value tonUnit
                     }
                 }
-            )
-            add(
-                buildString {
+            }
+            entry {
+                this quantity buildString {
                     put {
                         this value tera
                         this valueWithSpace ton
                         this valueWithSpace of
                         this value tnt
                     }
-                }, buildString {
+                }
+                this unit buildString {
                     put {
                         this value teraSymbol
                         this value tonUnit
                     }
                 }
-            )
+            }
         }
 }

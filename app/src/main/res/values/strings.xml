@@ -98,7 +98,7 @@
 
     <!--    for mass-->
     <string name="ounce">Ounce</string>
-    <string name="ton">ton</string>
+    <string name="ton">Ton</string>
     <string name="ounce_unit">oz</string>
     <string name="metric_ton">Metric ton</string>
     <string name="metricTonUnit">t</string>
