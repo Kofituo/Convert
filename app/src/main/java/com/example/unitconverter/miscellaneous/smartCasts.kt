@@ -24,9 +24,22 @@ inline fun <T> T.isNull(): Boolean {
 }
 
 @OptIn(ExperimentalContracts::class)
-inline fun CharSequence?.isNeitherNullNorEmpty(): Boolean {
+inline fun CharSequence?.hasValue(): Boolean {
     contract {
-        returns(true) implies (this@isNeitherNullNorEmpty != null)
+        returns(true) implies (this@hasValue != null)
     }
     return this.isNotNull() && this.isNotEmpty()
 }
+
+/**
+ * Same as non null asserted call
+ * */
+/*
+@OptIn(ExperimentalContracts::class)
+inline fun <reified T> value(any: T?): T {
+    contract {
+        returns() implies (any != null)
+    }
+    return any!!
+}
+*/

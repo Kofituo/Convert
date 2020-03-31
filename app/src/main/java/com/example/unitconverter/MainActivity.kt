@@ -1,6 +1,5 @@
 package com.example.unitconverter
 
-
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -136,11 +135,12 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                  * recently used would also be a map : String -> Int
                  * when some ids have changed it would get updated ...keeping the order intact
                  * */
-                get<String>("mRecentlyUsed") {
+
+                get<String?>("mRecentlyUsed") {
                     mRecentlyUsed =
-                        if (this.isNeitherNullNorEmpty()) {
+                        if (this.hasValue())
                             Json.parse(DeserializeStringIntMap, this)
-                        } else originalMap.apply {
+                        else originalMap.apply {
                             put<String> {
                                 key = "mRecentlyUsed"
                                 value = toJson()
@@ -148,21 +148,21 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         }
                     Log.e("recent", "res  $mRecentlyUsed")
                 }
-                get<String>("mSelectedOrder") {
+                get<String?>("mSelectedOrder") {
                     mSelectedOrderArray =
-                        if (this.isNeitherNullNorEmpty()) {
+                        if (this.hasValue()) {
                             //sorting occurred
                             //so we have to keep it like that
                             Log.e("this", "$this ")
                             val selectedOrder =
-                                Json.parse(DeserializeStringIntMap, this)// as ArrayMap<String, Int>
+                                Json.parse(DeserializeStringIntMap, this)
                             grid.sort(selectedOrder)
                             selectedOrder
                         } else mapOf()
                 }
                 Log.e("select", "$mSelectedOrderArray ko")
-                descending = get("descending")!!
-                recentlyUsedBool = get("recentlyUsedBoolean")!!
+                descending = get("descending")
+                recentlyUsedBool = get("recentlyUsedBoolean")
                 apply()
             }
         }
@@ -245,14 +245,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     override fun onPause() {
         super.onPause()
         editPreferences {
-            //putIntegerArrayList("recentlyUsed", recentlyUsed)
-            /*Log.e("pause","$descending  $onCreateCalled  $recentlyUsedBool")
-        Log.e("json","${mRecentlyUsed.toJson()} " )*/
-            Log.e(
-                "resce",
-                "${mSelectedOrderArray.toJson()} AAAA${mRecentlyUsed.reversed()
-                    .toJson()} BBBB ${mRecentlyUsed.toJson()}"
-            )
             val recentlyUsed = mRecentlyUsed.toJson()
             put<String> {
                 key = "mRecentlyUsed"
@@ -317,9 +309,7 @@ private var callAgain = 2
  */
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-
         if (ev.actionMasked == MotionEvent.ACTION_DOWN) bugDetected = false
-
         if (bugDetected) return true
         if (ev.actionMasked == MotionEvent.ACTION_CANCEL) {
             bugDetected = true

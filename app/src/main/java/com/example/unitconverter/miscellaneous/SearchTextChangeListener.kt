@@ -25,7 +25,7 @@ class SearchTextChangeListener(
          * else scroll to the first position
          */
         if (s.isEmpty()) {
-            adapter.boolean = false //tells the recycler view to use the original list
+            adapter.useFilteredList = false //tells the recycler view to use the original list
             called = false
             adapter.notifyItemRangeChanged(0, adapter.itemCount)
             if (adapter.lastPosition != -1)
@@ -38,7 +38,7 @@ class SearchTextChangeListener(
         /**
          * It informs the recycler view to use the filtered data set
          * */
-        adapter.boolean = true
+        adapter.useFilteredList = true
         //inform the recycler view to use the filtered collection
         if (!called) adapter.notifyItemRangeChanged(0, adapter.itemCount)
         called = true

@@ -8,7 +8,7 @@ import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
 import com.example.unitconverter.builders.buildMutableList
-import com.example.unitconverter.miscellaneous.isNeitherNullNorEmpty
+import com.example.unitconverter.miscellaneous.hasValue
 import com.example.unitconverter.miscellaneous.isNotNull
 import com.google.android.material.textfield.TextInputEditText
 import java.text.DecimalFormat
@@ -31,7 +31,6 @@ object Utils {
                     add(value)
                 }
             }
-
 
     inline fun <V> SparseArray<V>.values(action: MutableList<V>.() -> Unit) =
         values.apply(action)
@@ -139,7 +138,7 @@ object Utils {
                 ) continue // prevent things like 4-5.0
 
                 if (source[i] == minusSign) {
-                    if (i != 0 || text.isNeitherNullNorEmpty()) continue
+                    if (i != 0 || text.hasValue()) continue
                     if (
                         editTextSelectionStart != 0 ||
                         editTextSelectionStart != editText.selectionEnd
@@ -197,7 +196,7 @@ object Utils {
         }
 
     @Suppress("NOTHING_TO_INLINE")
-    inline fun StringBuilder.appendWithSpace(string: String): StringBuilder {
+    inline infix fun StringBuilder.appendWithSpace(string: String): StringBuilder {
         append(string)
         append(" ")
         return this

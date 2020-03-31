@@ -64,5 +64,4 @@ class DataStorage(override val context: Context) : RecyclerDataAbstractClass() {
         add(mega + bit, megaSymbol + bit)
         add(kilo + bit, kiloSymbol + bit)
     }
-
 }

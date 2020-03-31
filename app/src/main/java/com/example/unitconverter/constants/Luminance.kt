@@ -43,6 +43,8 @@ object Luminance {
 
     inline val feetToInch get() = BigDecimal(144)
 
+    val lambertToCandelaInch get() = lambertToCandelaPerFoot.multiply(144)
+
     fun candelaPerSquareMetre() = buildSparseIntArray(15) {
         append(0, 0)
         append(1, -6)

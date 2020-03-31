@@ -36,6 +36,7 @@ import com.example.unitconverter.builders.buildIntent
 import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.functions.*
 import com.example.unitconverter.miscellaneous.*
+import com.example.unitconverter.subclasses.Constraints
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.Positions
 import com.google.android.material.textfield.TextInputEditText
@@ -291,9 +292,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.luminance -> luminanceConversions()
 
-            R.id.Illuminance -> {
-            }
-            R.id.capacitance -> {
+            R.id.Illuminance -> illuminance()
+
+            R.id.energy -> {
             }
             R.id.Currency -> {
             }
@@ -444,6 +445,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    private fun illuminance() {
+        function = {
+            Illuminance(it).getText()
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -476,48 +483,38 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         return super.onPrepareOptionsMenu(menu)
     }
 
+    val layout = this
     private fun swap() {
         val firstBox = if (swap) R.id.secondBox else R.id.firstBox
         val secondBox = if (swap) R.id.firstBox else R.id.secondBox
         val topButton = if (swap) R.id.bottom_button else R.id.top_button
         val bottomButton = if (swap) R.id.top_button else R.id.bottom_button
-
         buildConstraintSet {
-            clone(convert_inner)
-            // for the first box
-            //clear(R.id.firstBox,ConstraintSet.TOP)
-            connect(
-                firstBox,
-                ConstraintSet.TOP,
-                secondBox,
-                ConstraintSet.BOTTOM,
-                40.dpToInt(this@ConvertActivity)
-            )
-            connect(
-                firstBox,
-                ConstraintSet.BOTTOM,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM,
-                0
-            )
-
+            this clones convert_inner
+            constraint(firstBox) {
+                val value = 40.dpToInt(this@ConvertActivity)
+                margin(value) and it topToBottomOf secondBox
+                this margin 0 and it bottomToBottomOf ConstraintSet.PARENT_ID
+            }
             // for the second box
-            //clear(R.id.secondBox,ConstraintSet.TOP)
-            clear(secondBox, ConstraintSet.BOTTOM)
-            connect(secondBox, ConstraintSet.TOP, R.id.topGuide, ConstraintSet.TOP, 0)
-
+            constraint(secondBox) {
+                it clear Constraints.BOTTOM
+                this margin 0 and it topToTopOf R.id.topGuide
+            }
             // for the top button
-            connect(topButton, ConstraintSet.TOP, firstBox, ConstraintSet.TOP)
-            connect(topButton, ConstraintSet.BOTTOM, firstBox, ConstraintSet.BOTTOM)
-            connect(topButton, ConstraintSet.START, firstBox, ConstraintSet.END)
-
+            constraint(topButton) {
+                it topToTopOf firstBox
+                it bottomToBottomOf firstBox
+                it startToEndOf firstBox
+            }
             //for the down button
-            connect(bottomButton, ConstraintSet.TOP, R.id.topGuide, ConstraintSet.TOP)
-            connect(bottomButton, ConstraintSet.BOTTOM, secondBox, ConstraintSet.BOTTOM)
-            connect(bottomButton, ConstraintSet.START, secondBox, ConstraintSet.END)
-
+            constraint(bottomButton) {
+                it topToTopOf R.id.topGuide
+                it bottomToBottomOf secondBox
+                it startToEndOf secondBox
+            }
             TransitionManager.beginDelayedTransition(convert_inner)
-            applyTo(convert_inner)
+            this appliesTo convert_inner
         }
         swap = !swap
     }
@@ -643,24 +640,26 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private fun getLastConversions() {
         sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
         sharedPreferences {
-            get<String>("topTextViewText") {
+            get<String?>("topTextViewText") {
                 topTextView.text =
-                    if (getBoolean("topIsSpans", false))
+                    if (get("topIsSpans"))
                         if (Build.VERSION.SDK_INT < 24) Html.fromHtml(this).trim()
                         else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT).trim()
                     else this
             }
-            get<String>("bottomTextViewText") {
+
+            get<String?>("bottomTextViewText") {
                 bottomTextView.text =
-                    if (getBoolean("bottomIsSpans", false))
+                    if (get("bottomIsSpans"))
                         if (Build.VERSION.SDK_INT < 24) Html.fromHtml(this).trim()
                         else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT).trim()
                     else this
             }
             secondBox.hint =
-                get<String>("bottomEditTextText") ?: resources.getString(R.string.select_unit)
+                get<String?>("bottomEditTextText") ?: resources.getString(R.string.select_unit)
             firstBox.hint =
-                get<String>("topEditTextText") ?: resources.getString(R.string.select_unit)
+                get<String?>("topEditTextText") ?: resources.getString(R.string.select_unit)
+
             //get last positions
             val topPosition = get<Int>("topPosition")
             val bottomPosition = get<Int>("downPosition")
@@ -680,7 +679,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     else null
                 }
             }
-
             val topTextViewText = topTextView.text
             put<String> {
                 key = "topTextViewText"
@@ -730,7 +728,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             apply()
         }
     }
-
 
     private inline fun sharedPreferences(block: SharedPreferences.() -> Unit): SharedPreferences =
         sharedPreferences(sharedPreferences, block)

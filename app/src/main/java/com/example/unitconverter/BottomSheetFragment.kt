@@ -57,9 +57,8 @@ class BottomSheetFragment : DialogFragment() {
             "$pkgName.sortingSelection",
             Context.MODE_PRIVATE
         )
-        val firstSelection = sharedPreferences?.getInt("firstSelection", -1)
-        val secondSelection = sharedPreferences?.getInt("secondSelection", -1)
-
+        val firstSelection = sharedPreferences?.get<Int>("firstSelection")
+        val secondSelection = sharedPreferences?.get<Int>("secondSelection")
         if (firstSelection != -1) {
             firstGroup.check(firstSelection!!)
             secondGroup.check(secondSelection!!)
@@ -71,7 +70,7 @@ class BottomSheetFragment : DialogFragment() {
             checked = isChecked
         }
         sharedPreferences.get<Boolean>("useDefault") {
-            if (this!!) useDefault.isChecked = true
+            if (this) useDefault.isChecked = true
         }
         // get original values
         val originalFirstSelection = firstGroup.checkedRadioButtonId

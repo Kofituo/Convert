@@ -36,8 +36,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var viewModel: ConvertViewModel
-
-    //Prefixes and their units
     private lateinit var sharedPreferences: SharedPreferences
 
     //
@@ -49,19 +47,11 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private lateinit var string: String
     private lateinit var convertDialogInterface: ConvertDialogInterface
     private lateinit var positionKey: String
-
-    //comparator for re usability
-    //eg
-//    private val comparator =
-//        Comparator { first: RecyclerDataClass, second: RecyclerDataClass ->
-//            first.unit.compareTo(second.unit)
-//        }
-
     private val comparator =
         Comparator { first: RecyclerDataClass, second: RecyclerDataClass ->
             first.quantity.compareTo(second.quantity)
         }
-    var start = 0L
+    private var start = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         start = System.nanoTime()
@@ -79,7 +69,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
         }
         viewModel.dataSet = whichView(viewId)
-        lastPosition = sharedPreferences.get<Int>(string)!!
+        lastPosition = sharedPreferences.get(string)
     }
 
     @SuppressLint("InflateParams")
@@ -89,10 +79,13 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         val screenHeight = resources.displayMetrics.heightPixels
         val dialog = Dialog(context!!, R.style.sortDialogStyle)
         //view
-        LayoutInflater.from(context).inflate(R.layout.items_list, null).apply {
+        LayoutInflater.from(context).inflate {
+            resourceId = R.layout.items_list //root is by default set to null
+        }.apply {
             dialog.setContentView(this)
             cancelButton = findViewById(R.id.cancel_button)
             searchBar = findViewById(R.id.search_bar)
+
             layoutParams<ViewGroup.LayoutParams> {
                 width =
                     if (isPortrait) (screenWidth / 8) * 7
@@ -122,7 +115,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
                     )
                 )
         }
-
         setDialogColors(viewModel.randomInt)
         Log.e("time", "${(System.nanoTime() - start) / 1000_000.0}") //to get it in milli seconds
         return dialog
@@ -172,7 +164,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private fun whichView(id: Int): MutableList<RecyclerDataClass> {
         val context = context!!
         return when (id) {
-
             R.id.Mass -> Mass(context).getList()
 
             R.id.prefixes -> Prefix(context).getList()
@@ -201,6 +192,10 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.luminance -> Luminance(context).getList()
 
+            R.id.Illuminance -> Illuminance(context).getList()
+
+            R.id.energy -> Energy(context).getList()
+
             else -> mutableListOf()
         }
     }
@@ -225,3 +220,10 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         fun getOtherValues(position: Int, positionKey: String)
     }
 }
+
+//comparator for re usability
+//eg
+//    private val comparator =
+//        Comparator { first: RecyclerDataClass, second: RecyclerDataClass ->
+//            first.unit.compareTo(second.unit)
+//        }

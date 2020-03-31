@@ -445,7 +445,7 @@
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
-        app:layout_constraintEnd_toStartOf="@id/capacitance"
+        app:layout_constraintEnd_toStartOf="@id/energy"
         app:layout_constraintStart_toEndOf="@id/luminance"
         app:layout_constraintTop_toBottomOf="@id/dataStorage"
         app:layout_constraintWidth_percent="0.3">
@@ -466,7 +466,7 @@
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
-        android:id="@+id/capacitance"
+        android:id="@+id/energy"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
@@ -485,10 +485,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_margin="6dp"
-            android:drawableTop="@drawable/ic_capacitor"
+            android:drawableTop="@drawable/ic_science"
             android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
-            android:text="@string/capacitance"
+            android:text="@string/energy"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -572,7 +572,7 @@
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
-        app:layout_constraintTop_toBottomOf="@id/capacitance"
+        app:layout_constraintTop_toBottomOf="@id/energy"
         app:layout_constraintWidth_percent="0.3">
 
         <TextView

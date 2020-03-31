@@ -16,7 +16,7 @@ class Luminance(override val positions: Positions) : ConstantsAbstractClass() {
 
     private inline val map: Map<Int, Int> get() = lazyMap.value
 
-    private inline val pow: Int
+    private inline val pow
         //to prevent double calling
         get() = map.let {
             if (it.getValue(topPosition) > it.getValue(bottomPosition)) 1 else -1
@@ -110,6 +110,10 @@ class Luminance(override val positions: Positions) : ConstantsAbstractClass() {
                     intAssertOr(11) -> {
                         //to candela per foot
                         lambertToCandelaPerFoot
+                    }
+                    intAssertOr(12) -> {
+                        //to candela per sq inch
+                        lambertToCandelaInch
                     }
                     else -> TODO()
                 }

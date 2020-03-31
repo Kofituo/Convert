@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.SparseIntArray
 import androidx.constraintlayout.widget.ConstraintSet
+import com.example.unitconverter.subclasses.KotlinConstraintSet
 
 /* Collection builders*/
 /**
@@ -54,8 +55,8 @@ inline fun <reified T> buildIntent(context: Context, block: Intent.() -> Unit) =
 /**
  * Creates a new [ConstraintSet] and applies the [block] to it
  * */
-inline fun buildConstraintSet(block: ConstraintSet.() -> Unit) =
-    ConstraintSet().apply(block)
+inline fun buildConstraintSet(block: KotlinConstraintSet.() -> Unit) =
+    KotlinConstraintSet().apply(block)
 
 /*Sparse Int Array*/
 /**

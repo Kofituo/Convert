@@ -1,8 +1,10 @@
 package com.example.unitconverter.subclasses
 
 import android.content.res.ColorStateList
+import android.graphics.Rect
 import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -11,6 +13,8 @@ import androidx.recyclerview.widget.SortedList
 import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
 import com.example.unitconverter.Utils.dpToInt
+import com.example.unitconverter.miscellaneous.inflate
+import com.example.unitconverter.miscellaneous.layoutParams
 import com.google.android.material.radiobutton.MaterialRadioButton
 import java.util.*
 
@@ -23,7 +27,7 @@ class MyAdapter(
     var lastPosition: Int = -1
 
     /**If true use the filtered data set else use the original one*/
-    var boolean = false
+    var useFilteredList = false
 
     private lateinit var listener: OnRadioButtonsClickListener
 
@@ -37,11 +41,23 @@ class MyAdapter(
                 TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
 
             view.apply {
-                radioButton = findViewById(R.id.radioButtons)
+                radioButton = findViewById<MyRadioButton>(R.id.radioButtons)
+                    .also {
+                        post {
+                            val parentHitArea = Rect()
+                            val thisArea = Rect()
+                            it.getHitRect(thisArea)
+                            getHitRect(parentHitArea)
+                            thisArea.left = parentHitArea.left
+                            thisArea.right = parentHitArea.right
+                            touchDelegate = TouchDelegate(thisArea, it)
+                        }
+                    }
                 radioTextView = findViewById<TextView>(R.id.radioText).apply {
                     if (isRTL)
-                        (layoutParams as ViewGroup.MarginLayoutParams)
-                            .marginEnd = 20.dpToInt(context)
+                        layoutParams<ViewGroup.MarginLayoutParams> {
+                            marginEnd = 20.dpToInt(context)
+                        }
                 }
             }
             radioButton.setOnClickListener {
@@ -60,13 +76,14 @@ class MyAdapter(
     // rest of the class
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.recycler_view_items,
-                parent,
-                false
-            )
+            LayoutInflater.from(parent.context).inflate {
+                resourceId = R.layout.recycler_view_items
+                root = parent
+                attachToRoot = false
+            }
         view.findViewById<MaterialRadioButton>(R.id.radioButtons).buttonTintList =
             ColorStateList.valueOf(colorInt)
+
         return MyViewHolder(view)
     }
 
@@ -74,12 +91,13 @@ class MyAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.radioButton.apply {
-            text = if (boolean) mSortedList[position].quantity else dataSet[position].quantity
-            myId = if (boolean) mSortedList[position].id else dataSet[position].id
+            text =
+                if (useFilteredList) mSortedList[position].quantity else dataSet[position].quantity
+            myId = if (useFilteredList) mSortedList[position].id else dataSet[position].id
             isChecked = lastPosition == myId
         }
         holder.radioTextView.text =
-            if (boolean) mSortedList[position].correspondingUnit
+            if (useFilteredList) mSortedList[position].correspondingUnit
             else dataSet[position].correspondingUnit
     }
 

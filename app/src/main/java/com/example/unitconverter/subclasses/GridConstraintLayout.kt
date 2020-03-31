@@ -136,6 +136,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                 .beginDelayedTransition(this@GridConstraintLayout,
                     ChangeBounds().apply { interpolator = AccelerateInterpolator(0.057f) }
                 )
+
             applyTo(this@GridConstraintLayout)
         }
         for (i in viewIds.indices) {

@@ -43,9 +43,8 @@
     <string name="fuel_economy">Fuel Economy</string>
     <string name="pressure">Pressure</string>
     <string name="angularVelocity">Angular Velocity</string>
-    <string name="capacitance">Capacitance</string>
-    <string name="currency">Currency</string>
     <string name="energy">Energy</string>
+    <string name="currency">Currency</string>
     <string name="swap">Swap</string>
     <string name="mass">Mass</string>
     <string name="length">Length</string>
@@ -99,6 +98,7 @@
 
     <!--    for mass-->
     <string name="ounce">Ounce</string>
+    <string name="ton">ton</string>
     <string name="ounce_unit">oz</string>
     <string name="metric_ton">Metric ton</string>
     <string name="metricTonUnit">t</string>
@@ -347,4 +347,25 @@
     <string name="foot_lambert">Foot-lambert</string>
     <string name="foot_lambert_unit">fL</string>
     <string name="nit">Nit</string>
+
+    <!--illuminance-->
+    <string name="lux">Lux</string>
+    <string name="lux_unit">lx</string>
+    <string name="candle">Foot-candle</string>
+    <string name="phot">Phot [CGS unit]</string>
+    <string name="phot_unit">ph</string>
+    <string name="lumen">Lumen</string>
+    <string name="lumen_unit">lm</string>
+    <string name="nox">Nox</string>
+    <string name="nox_unit">nx</string>
+    <string name="candle_unit">fc</string>
+
+    <!--energy-->
+
+    <string name="joule">Joule</string>
+    <string name="joule_unit">J</string>
+    <string name="tnt">TNT</string>
+    <string name="of">of</string>
+    <string name="calorie">Calorie</string>
+    <string name="calorie_unit">cal</string>
 </resources>

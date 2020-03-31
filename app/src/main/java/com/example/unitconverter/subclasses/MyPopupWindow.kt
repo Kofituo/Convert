@@ -137,10 +137,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
             bottomMargin = 96.dpToInt()
             topMargin = 0
         }
-        //updating margin changes
-        //firstConstraintLayout.requestLayout()
-        //secondConstraintLayout.requestLayout()
-        //arrowImageView.requestLayout()
     }
 
     private fun setQuickActonView(resInt: Int) {

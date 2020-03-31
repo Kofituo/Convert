@@ -88,8 +88,25 @@ abstract class RecyclerDataAbstractClass {
     protected fun MutableList<RecyclerDataClass>.add(quantity: String, unit: CharSequence) =
         add(RecyclerDataClass(quantity, unit, start++))
 
+    protected inline fun MutableList<RecyclerDataClass>.entry(values: Data.() -> Unit) =
+        Data().apply(values).run {
+            add(RecyclerDataClass(quantity!!, unit!!, start++))
+        }
+
     protected inline fun buildRecyclerList(
         capacity: Int,
         block: MutableList<RecyclerDataClass>.() -> Unit
     ) = buildMutableList(capacity, block)
+
+    @Suppress("NOTHING_TO_INLINE")
+    protected inline infix fun Data.quantity(string: String) {
+        quantity = string
+    }
+
+    @Suppress("NOTHING_TO_INLINE")
+    protected inline infix fun Data.unit(string: String) {
+        unit = string
+    }
+
+    protected data class Data(var quantity: String? = null, var unit: CharSequence? = null)
 }

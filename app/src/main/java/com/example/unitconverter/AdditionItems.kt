@@ -10,12 +10,11 @@ import com.example.unitconverter.subclasses.MyCardView
 import com.example.unitconverter.subclasses.MyPopupWindow
 
 object AdditionItems {
-
     lateinit var popupWindow: MyPopupWindow
     var animateStart: Animator? = null
     var animationEnd: Animator? = null
     var orient = 0
-    val isInitialized get() = this::popupWindow.isInitialized
+    val isInitialized get() = ::popupWindow.isInitialized
     lateinit var motionHandler: Handler
     var statusBarHeight = 0
 

@@ -34,10 +34,10 @@ inline fun <reified T> SharedPreferences.Editor.put(block: SharedPreferencesEdit
  * */
 
 //default param of nothing
-inline fun <reified T> SharedPreferences.get(key: String, block: T?.() -> Unit = {}) =
+inline fun <reified T> SharedPreferences.get(key: String, block: T.() -> Unit = {}) =
     when (T::class) {
         Boolean::class -> (getBoolean(key, false) as T).apply(block)
-        String::class -> (getString(key, null) as? T).apply(block)
+        String::class -> (getString(key, null) as T).apply(block)
         Int::class -> (getInt(key, -1) as T).apply(block)
         else -> TODO()
     }
