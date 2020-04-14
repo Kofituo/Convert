@@ -60,6 +60,9 @@ abstract class RecyclerDataAbstractClass {
 
     protected fun getString(stringId: Int) = context.resources.getString(stringId)
 
+    protected fun getString(stringId: Int, block: String.() -> Unit) =
+        getString(stringId).apply(block)
+
     protected var start: Int = 0
 
     protected fun massPrefixes(quantity: String = "", unit: String = "") =

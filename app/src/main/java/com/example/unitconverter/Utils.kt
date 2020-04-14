@@ -56,6 +56,7 @@ object Utils {
 
     /**
      * Used to get name from id
+     *
      * First checks from a map is its there //for fast access
      * */
     val View.name: String

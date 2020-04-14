@@ -6,7 +6,9 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.util.AttributeSet
 import android.util.Log
+import android.view.Gravity
 import android.view.MotionEvent
+import android.view.View
 import android.widget.TextView
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
@@ -23,24 +25,59 @@ import com.example.unitconverter.R
 import com.example.unitconverter.Utils.name
 import com.example.unitconverter.builders.buildIntent
 import com.example.unitconverter.builders.buildMutableMap
+import com.example.unitconverter.subclasses.MyPopupWindow.Companion.myPopUpWindow
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.checkbox.MaterialCheckBox
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-
 class MyCardView(context: Context, attributeSet: AttributeSet) :
-    MaterialCardView(context, attributeSet) {
+    MaterialCardView(context, attributeSet), MyPopupWindow.PopupListener {
+
+    private val checkBox: MaterialCheckBox
+
+    init {
+        // adding view programmatically so i don't have to get a huge xml file
+        checkBox = MaterialCheckBox(context, attributeSet).apply {
+            //default layout param are wrap content
+            //so no need to reset them
+            gravity = Gravity.TOP and Gravity.START
+            scaleX = 0.95f
+            scaleY = 0.95f
+            visibility = View.INVISIBLE
+            this@MyCardView.addView(this)
+        }
+    }
+
+    /**
+     * Select items called
+     * */
+    override fun callback() {
+        Log.e("called", "called select  $this  \n${this.parent}")
+        (this.parent as GridConstraintLayout).initiateSelectItems()
+        checkBox.apply {
+            visibility = View.VISIBLE
+            isChecked = true
+        }
+    }
+
+    var checkBoxIsEnabled = false
+
+    override fun dispatchTouchEvent(ev: MotionEvent?) =
+        if (checkBoxIsEnabled) {
+            getChildAt(0).dispatchTouchEvent(ev)
+            true
+        } else
+            super.dispatchTouchEvent(ev)
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         card = this@MyCardView
-
         animationEnd =
             AnimatorInflater
                 .loadAnimator(context, R.animator.animation1_end)
                 .apply { setTarget(this@MyCardView) }
 
         when (event.actionMasked) {
-
             MotionEvent.ACTION_DOWN -> {
                 // Apply animation
                 cardY = this.y
@@ -51,22 +88,26 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
                         setTarget(this@MyCardView)
                         start()
                     }
-
-                popupWindow = MyPopupWindow(context, this, R.layout.quick_actions)
+                popupWindow = myPopUpWindow {
+                    mContext = context
+                    anchor = this@MyCardView
+                    resInt = R.layout.quick_actions
+                }
                 popupWindow.determinePosition()
+                popupWindow.setListener(this)
                 //Log.e("Y","${this.y} ${this.x}  ${this.top}  ${this.bottom}")
                 longPress = false
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                //Apply animation
-                Log.e("X", "${this.y}")
-                if (longPress) animateStart =
-                    AnimatorInflater
-                        .loadAnimator(context, R.animator.animation2).apply {
-                            setTarget(this@MyCardView)
-                            start()
-                            //longPress = false
-                        }
+                if (longPress)
+                // bouncing animation
+                    animateStart =
+                        AnimatorInflater
+                            .loadAnimator(context, R.animator.animation2)
+                            .apply {
+                                setTarget(this@MyCardView)
+                                start()
+                            }
                 else animationEnd?.start()
             }
         }
@@ -77,15 +118,13 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
         setOnLongClickListener {
             if (orient == Configuration.ORIENTATION_PORTRAIT) {
                 longPress = true
-
                 popupWindow.apply {
-                    val textView = this@MyCardView.getChildAt(0) as TextView
+                    val textView = this@MyCardView.getChildAt(1) as TextView
                     val drawable = textView.compoundDrawables[1]
                     setDrawable(drawable)
                     show()
                 }
             }
-
             true
         }
         setOnClickListener {
@@ -103,9 +142,35 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
         }
     }
 
+    fun shrinkSize() {
+        AnimatorInflater
+            .loadAnimator(context, R.animator.selection_animaton)
+            .apply {
+                setTarget(this@MyCardView)
+                start()
+            }
+    }
+
+    fun restoreSize() {
+        AnimatorInflater
+            .loadAnimator(context, R.animator.animation1_end)
+            .apply {
+                setTarget(this@MyCardView)
+                start()
+            }
+        checkBox.apply {
+            visibility = View.INVISIBLE
+            isChecked = false
+        }
+    }
+
+    fun showCheckBox() {
+        checkBox.visibility = View.VISIBLE
+    }
+
     fun startActivity() {
         buildIntent<ConvertActivity>(context) {
-            val textViewText = (this@MyCardView.getChildAt(0) as TextView).text
+            val textViewText = (this@MyCardView.getChildAt(1) as TextView).text
             putExtra(TextMessage, textViewText)
             putExtra(ViewIdMessage, this@MyCardView.id)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP

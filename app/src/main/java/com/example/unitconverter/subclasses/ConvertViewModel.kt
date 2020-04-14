@@ -12,7 +12,7 @@ class ConvertViewModel : ViewModel() {
             if (field.isEmpty()) {
                 field = value
             }
-            Log.e("value", "$value  ${value.size}")
+            Log.e("value", "$value  size${value.size}")
         }
     var whichButton = -1
 }

@@ -12,9 +12,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
 import androidx.constraintlayout.widget.ConstraintSet
-import com.example.unitconverter.AdditionItems.animationEnd
 import com.example.unitconverter.AdditionItems.endAnimation
-import com.example.unitconverter.AdditionItems.longPress
 import com.example.unitconverter.AdditionItems.statusBarHeight
 import com.example.unitconverter.R
 import com.example.unitconverter.Utils.app_bar_bottom
@@ -28,7 +26,21 @@ import com.google.android.material.card.MaterialCardView
 
  */
 class MyPopupWindow(private val context: Context, private val anchor: View, resInt: Int) :
-    PopupWindow(context) {
+    PopupWindow(context), QuickActionCardView.SelectItems {
+
+    companion object {
+        data class PopupBuilder(
+            var mContext: Context? = null,
+            var anchor: View? = null,
+            var resInt: Int? = null
+        )
+
+        inline fun myPopUpWindow(values: PopupBuilder.() -> Unit) =
+            PopupBuilder().apply(values).run {
+                MyPopupWindow(mContext!!, anchor!!, resInt!!)
+            }
+
+    }
 
     private var xPosition = -1
 
@@ -56,14 +68,17 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
 
     init {
         setQuickActonView(resInt)
+        quickAction
+            .findViewById<QuickActionCardView>(R.id.selectItems)
+            .setSelectionLister(this)
 
         setOnDismissListener {
-            if (!endAnimation()) {
-                animationEnd?.start()
-                longPress = false
-            }
+            endAnimation()
         }
     }
+
+    override fun initiateSelections() =
+        popupListener.callback()
 
     override fun isShowing(): Boolean = mWindow.isShowing
 
@@ -71,72 +86,51 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         constraintLayout as ConstraintLayout
 
         val arrowImageView = constraintLayout.findViewById<ImageView>(R.id.arrow)
-
         val firstConstraintLayout = constraintLayout.findViewById<MaterialCardView>(R.id.firstCont)
-
         val secondConstraintLayout =
             constraintLayout.findViewById<ConstraintLayout>(R.id.secondCont)
-
         arrowImageView.setBackgroundResource(R.drawable.ic_arrow_drop_up_black_24dp)
 
         buildConstraintSet {
-            clone(constraintLayout)
+            this clones constraintLayout
+            margin(0, true)
             // clear top constraint of arrow icon
-            clear(R.id.arrow, ConstraintSet.TOP)
-            connect(
-                R.id.arrow,
-                ConstraintSet.BOTTOM,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM,
-                0
-            )
-
+            R.id.arrow clear Constraints.TOP
+            R.id.arrow bottomToBottomOf ConstraintSet.PARENT_ID
             // reset constraints of firstCont
-            clear(R.id.firstCont, ConstraintSet.BOTTOM)
-            connect(R.id.firstCont, ConstraintSet.BOTTOM, R.id.secondCont, ConstraintSet.TOP, 0)
-            connect(
-                R.id.firstCont,
-                ConstraintSet.TOP,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP,
-                0
-            )
-            connect(R.id.firstCont, ConstraintSet.TOP, R.id.arrow, ConstraintSet.BOTTOM, 0)
-            connect(
-                R.id.firstCont,
-                ConstraintSet.TOP,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP,
-                0
-            )
-
+            constraint(R.id.firstCont) {
+                it clear Constraints.BOTTOM
+                it bottomToTopOf R.id.secondCont
+                it topToTopOf ConstraintSet.PARENT_ID
+                it topToBottomOf R.id.arrow
+                it topToTopOf ConstraintSet.PARENT_ID
+            }
             //resetting secondCont
-            clear(R.id.secondCont, ConstraintSet.BOTTOM)
-            clear(R.id.secondCont, ConstraintSet.TOP)
-            connect(
-                R.id.secondCont,
-                ConstraintSet.BOTTOM,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM,
-                0
-            )
-            connect(R.id.secondCont, ConstraintSet.TOP, R.id.firstCont, ConstraintSet.BOTTOM, 0)
-
-            applyTo(constraintLayout)
-        }
-        firstConstraintLayout.layoutParams<ViewGroup.MarginLayoutParams> {
-            topMargin = 13.dpToInt()
+            constraint(R.id.secondCont) {
+                it clear Constraints.BOTTOM
+                it clear Constraints.TOP
+                it bottomToBottomOf ConstraintSet.PARENT_ID
+                it topToBottomOf R.id.firstCont
+            }
+            this appliesTo constraintLayout
         }
 
-        secondConstraintLayout.layoutParams<ViewGroup.MarginLayoutParams> {
-            bottomMargin = 0
-            topMargin = 3.dpToInt()
-        }
+        firstConstraintLayout
+            .layoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = 13.dpToInt()
+            }
 
-        arrowImageView.layoutParams<ViewGroup.MarginLayoutParams> {
-            bottomMargin = 96.dpToInt()
-            topMargin = 0
-        }
+        secondConstraintLayout
+            .layoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = 0
+                topMargin = 3.dpToInt()
+            }
+
+        arrowImageView
+            .layoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = 96.dpToInt()
+                topMargin = 0
+            }
     }
 
     private fun setQuickActonView(resInt: Int) {
@@ -144,9 +138,7 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         //getting layout inflater
         val inflater: LayoutInflater =
             context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
         quickAction = inflater.inflate(resInt, null)
-
         quickAction.layoutParams =
             ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
         //setting the content view of the popup
@@ -309,4 +301,14 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
     }
 
     override fun getAnimationStyle(): Int = mWindow.animationStyle
+
+    lateinit var popupListener: PopupListener
+
+    fun setListener(popupListener: PopupListener) {
+        this.popupListener = popupListener
+    }
+
+    interface PopupListener {
+        fun callback()
+    }
 }

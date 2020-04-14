@@ -7,7 +7,6 @@ import com.example.unitconverter.miscellaneous.value
 import com.example.unitconverter.miscellaneous.valueWithSpace
 
 class Energy(override val context: Context) : RecyclerDataAbstractClass() {
-
     private val _joule = getString(R.string.joule)
     private val joule = _joule.toLowerCase(locale)
     private val jouleUnit = getString(R.string.joule_unit)
@@ -19,19 +18,27 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
     private val _ton = getString(R.string.ton)
     private val ton = _ton.toLowerCase(locale)
     private val tonUnit = getString(R.string.metricTonUnit)
-    private val calorie = getString(R.string.calorie)
+    private val calorie = getString(R.string.small_calorie)
     private val calorieUnit = getString(R.string.calorie_unit)
+    private val _wattHour = getString(R.string.watt_hour)
+    private val wattHour = _wattHour.toLowerCase(locale)
+    private val wattHourUnit = getString(R.string.watt_hour_unit)
 
     override fun getList() =
-        buildRecyclerList(90) {
+        buildRecyclerList(34) {
             add(_joule, jouleUnit)
             this putAll massPrefixes(joule, jouleUnit)
+            entry {
+                this quantity getString(R.string.erg)
+                this unit getString(R.string.erg_unit)
+            }
             add(calorie, calorieUnit)
             entry {
                 this quantity buildString {
                     put {
-                        this value kilo
-                        this value calorie.toLowerCase(locale)
+                        this valueWithSpace kilo
+                        this valueWithSpace getString(R.string.food)
+                        this value getString(R.string.large_calorie)
                     }
                 }
                 this unit buildString {
@@ -138,6 +145,64 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                     put {
                         this value teraSymbol
                         this value tonUnit
+                    }
+                }
+            }
+            entry {
+                this quantity getString(R.string.foot_pound)
+                this unit getString(R.string.foot_pound_unit)
+            }
+            entry {
+                this quantity getString(R.string.electron_volt)
+                this unit getString(R.string.electron_volt_unit)
+            }
+            entry {
+                this quantity getString(R.string.british_thermal_unit)
+                this unit getString(R.string.british_thermal_unit_unt)
+            }
+            entry {
+                this quantity _wattHour
+                this unit wattHourUnit
+            }
+            entry {
+                this quantity buildString {
+                    put {
+                        this value milli
+                        this value wattHour
+                    }
+                }
+                this unit buildString {
+                    put {
+                        this value milliSymbol
+                        this value wattHourUnit
+                    }
+                }
+            }
+            entry {
+                this quantity buildString {
+                    put {
+                        this value kilo
+                        this value wattHour
+                    }
+                }
+                this unit buildString {
+                    put {
+                        this value kiloSymbol
+                        this value wattHourUnit
+                    }
+                }
+            }
+            entry {
+                this quantity buildString {
+                    put {
+                        this value mega
+                        this value wattHour
+                    }
+                }
+                this unit buildString {
+                    put {
+                        this value megaSymbol
+                        this value wattHourUnit
                     }
                 }
             }

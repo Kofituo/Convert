@@ -7,10 +7,12 @@ import androidx.constraintlayout.widget.ConstraintSet
 
 class KotlinConstraintSet : ConstraintSet() {
 
+    var isConstant = false
     var margin: Int? = null
         get() {
             val result = field
-            margin = null //reset it to work with other connections
+            if (!isConstant)
+                margin = null //reset it to work with other constraints
             return result
         }
 
@@ -25,10 +27,20 @@ class KotlinConstraintSet : ConstraintSet() {
         this.margin = margin
     }
 
+    inline fun margin(margin: Int, isConstant: Boolean) {
+        this.isConstant = isConstant
+        this.margin = margin
+    }
+
     inline infix fun Int.bottomToBottomOf(bottom: Int) =
         margin?.let {
             connect(this, BOTTOM, bottom, BOTTOM, it)
         } ?: connect(this, BOTTOM, bottom, BOTTOM)
+
+    inline infix fun Int.bottomToTopOf(top: Int) =
+        margin?.let {
+            connect(this, BOTTOM, top, TOP, it)
+        } ?: connect(this, BOTTOM, top, TOP)
 
     inline infix fun Int.topToTopOf(top: Int) =
         margin?.let {
@@ -47,6 +59,11 @@ class KotlinConstraintSet : ConstraintSet() {
         margin?.let {
             connect(this, START, end, END, it)
         } ?: connect(this, START, end, END)
+
+    inline infix fun Int.endToStartOf(start: Int) =
+        margin?.let {
+            connect(this, END, start, START, it)
+        } ?: connect(this, END, start, START)
 
     //inline infix fun clearTopCon
     inline infix fun appliesTo(constraintLayout: ConstraintLayout) =

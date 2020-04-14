@@ -9,6 +9,7 @@ import com.example.unitconverter.constants.Luminance.feetToInch
 import java.math.BigDecimal
 
 object Illuminance {
+
     inline fun illuminance(block: Illuminance.() -> Unit) = apply(block)
 
     inline fun amongLux(block: (SparseIntArray) -> Unit) =

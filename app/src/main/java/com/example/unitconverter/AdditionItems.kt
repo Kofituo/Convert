@@ -11,7 +11,15 @@ import com.example.unitconverter.subclasses.MyPopupWindow
 
 object AdditionItems {
     lateinit var popupWindow: MyPopupWindow
+
+    /**
+     * bouncing animation
+     * */
     var animateStart: Animator? = null
+
+    /**
+     * Restores the card view to its original position
+     * */
     var animationEnd: Animator? = null
     var orient = 0
     val isInitialized get() = ::popupWindow.isInitialized
@@ -41,20 +49,18 @@ object AdditionItems {
     const val TextMessage = "$pkgName.TextMessage"
     const val ViewIdMessage = "$pkgName.ViewIdMessage"
 
-    fun endAnimation(): Boolean {
+    fun endAnimation() {
         animateStart?.apply {
             if (isRunning) {
-                end()
+                end() //stops the bouncing animation
                 Log.e("y", "$cardY")
-                ObjectAnimator.ofFloat(card, View.Y, cardY).start()
+                ObjectAnimator.ofFloat(card, View.Y, cardY).start() // keeps the y value constant
                 animationEnd?.apply {
                     duration = 200
                     start()
                 }
                 if (popupWindow.isShowing) popupWindow.dismiss()
-                return true
             }
         }
-        return false
     }
 }

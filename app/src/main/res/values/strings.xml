@@ -332,13 +332,13 @@
     <!--electric current-->
     <string name="amp">Ampere</string>
     <string name="amp_unit">A</string>
-    <string name="abAmp">Abampere [Biot, CGS unit]</string>
+    <string name="abAmp">Abampere [Biot, CGS Unit]</string>
     <string name="abAmp_unit">abA</string>
 
     <!--luminance-->
     <string name="candela">Candela</string>
     <string name="candela_unit">cd</string>
-    <string name="stilb">Stilb [CGS unit]</string>
+    <string name="stilb">Stilb [CGS Unit]</string>
     <string name="stilb_unit">sb</string>
     <string name="apostilb">Apostilb</string>
     <string name="apostilb_unit">asb</string>
@@ -352,7 +352,7 @@
     <string name="lux">Lux</string>
     <string name="lux_unit">lx</string>
     <string name="candle">Foot-candle</string>
-    <string name="phot">Phot [CGS unit]</string>
+    <string name="phot">Phot [CGS Unit]</string>
     <string name="phot_unit">ph</string>
     <string name="lumen">Lumen</string>
     <string name="lumen_unit">lm</string>
@@ -365,7 +365,21 @@
     <string name="joule">Joule</string>
     <string name="joule_unit">J</string>
     <string name="tnt">TNT</string>
+    <string name="foot_pound">Foot Pound-Force</string>
+    <string name="erg">Erg [CGS unit]</string>
+    <string name="erg_unit">erg</string>
+    <string name="foot_pound_unit">ft-lbf</string>
+    <string name="electron_volt">Electron Volt</string>
+    <string name="electron_volt_unit">eV</string>
     <string name="of">of</string>
-    <string name="calorie">Calorie</string>
+    <string name="small_calorie">Small Calorie</string>
+    <string name="large_calorie">Calorie</string>
     <string name="calorie_unit">cal</string>
+    <string name="british_thermal_unit">British Thermal Unit</string>
+    <string name="british_thermal_unit_unt">BTU (ISO)</string>
+    <string name="watt_hour">Watt-hour</string>
+    <string name="watt_hour_unit">W⋅h</string>
+    <string name="food">[Food]</string>
+    <string name="foot_poundal">Foot-poundal</string>
+    <string name="foot_poundal_unit">ft-pdl</string>
 </resources>

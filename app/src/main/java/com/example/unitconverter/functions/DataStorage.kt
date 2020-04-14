@@ -11,12 +11,11 @@ import kotlin.math.absoluteValue
 
 class DataStorage(override val positions: Positions) : ConstantsAbstractClass() {
 
-    override fun getText(): String {
-        return amongBit() ?: bitsConversions() ?: amongByte() ?: nibbleConversions()
+    override fun getText(): String =
+        amongBit() ?: bitsConversions() ?: amongByte() ?: nibbleConversions()
         ?: bytesConversions()
         ?: amongBiBits() ?: amongBiBytes() ?: biBitConversion()
         ?: TODO()
-    }
 
     /**
      * ReOrdering of the map

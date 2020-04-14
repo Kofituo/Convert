@@ -34,6 +34,7 @@ import com.example.unitconverter.Utils.values
 import com.example.unitconverter.builders.buildIntent
 import com.example.unitconverter.miscellaneous.*
 import com.example.unitconverter.subclasses.ConvertViewModel
+import com.example.unitconverter.subclasses.GridConstraintLayout
 import com.example.unitconverter.subclasses.MyMotionLayout
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
@@ -93,37 +94,38 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
         val viewModel = ViewModelProvider(this@MainActivity)[ConvertViewModel::class.java]
         motion {
-            motionHandler = object : Handler(Looper.getMainLooper()) {
-                override fun handleMessage(msg: Message) {
-                    when (msg.what) {
-                        1 -> {
-                            bugDetected =
-                                if (progress == 1F || progress == 0f) {
-                                    false
-                                } else {
-                                    scrollable.apply {
-                                        dispatchTouchEvent(motionEventDown)
-                                        dispatchTouchEvent(motionEventMove)
-                                        dispatchTouchEvent(motionEventMove)
-                                        dispatchTouchEvent(motionEventUp)
+            motionHandler =
+                object : Handler(Looper.getMainLooper()) {
+                    override fun handleMessage(msg: Message) {
+                        when (msg.what) {
+                            1 -> {
+                                bugDetected =
+                                    if (progress == 1F || progress == 0f) {
+                                        false
+                                    } else {
+                                        scrollable.apply {
+                                            dispatchTouchEvent(motionEventDown)
+                                            dispatchTouchEvent(motionEventMove)
+                                            dispatchTouchEvent(motionEventMove)
+                                            dispatchTouchEvent(motionEventUp)
+                                        }
+                                        true
                                     }
-                                    true
-                                }
-                            return
-                        }
-                        2 -> {
-                            GlobalScope.launch {
-                                delay(318)
-                                if (progress != 0F) {
-                                    motionHandler.obtainMessage(1).sendToTarget()
-                                }
+                                return
                             }
-                            return
+                            2 -> {
+                                GlobalScope.launch {
+                                    delay(318)
+                                    if (progress != 0F) {
+                                        motionHandler.obtainMessage(1).sendToTarget()
+                                    }
+                                }
+                                return
+                            }
                         }
+                        return super.handleMessage(msg)
                     }
-                    return super.handleMessage(msg)
                 }
-            }
             progress = viewModel.motionProgress
         }
         viewModel.motionProgress = 1f
@@ -174,42 +176,41 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun selection(firstSelection: Int, secondSelection: Int) {
         recentlyUsedBool = false /// reset the value
-        val temporalMap = LinkedHashMap<String, Int>(30)
         if (firstSelection == -1) {
             // use default
             grid.sort(originalMap)
-
             mSelectedOrderArray = originalMap
             Log.e("1", "1")
             return
         }
+        val temporalMap = LinkedHashMap<String, Int>(30)
         descending = secondSelection == R.id.descending
         Log.e("des", "$descending  $secondSelection  ${R.id.descending}")
-
         if (firstSelection == R.id.titleButton)
         //sort by title
             viewsMap.values {
                 sortWith(
-                    if (descending) compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    if (descending)
+                        compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
                     else compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 )
                 for (i in this)
                     temporalMap[i.name] = i.id
-                Log.e("2", "2  $temporalMap  $this  ")
+                Log.e("2", "2  $temporalMap  $this")
             }
         else {
             recentlyUsedBool = true
             Log.e(
                 "-90",
-                "-0 $descending  ${mRecentlyUsed == originalMap}  ${mRecentlyUsed.values == originalMap.values}"
+                "-0 $descending ${mRecentlyUsed == originalMap} ${mRecentlyUsed.values == originalMap.values}"
             )
             Log.e("ori", "$mRecentlyUsed pp  $originalMap")
             temporalMap.putAll(
-                if (descending || mRecentlyUsed.values == originalMap.values)
+                if (descending)
                     mRecentlyUsed
                 else mRecentlyUsed.reversed()
             )
-            Log.e("3", "3  $temporalMap ")
+            Log.e("3", "3  $temporalMap")
         }
         temporalMap.also {
             grid.sort(it)
@@ -218,7 +219,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 
     private var descending = false
-
     /**
      * True means recently used was selected
      * */
@@ -240,7 +240,21 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             else grid.sort(mRecentlyUsed.reversed())
         }
         onCreateCalled = false
+
+        /**
+         * case where prefixes was selected during sorting or any
+         * of those activities from the menu at the right
+         * */
+
+        grid {
+            selectionInProgress {
+                endSelection()
+            }
+        }
     }
+
+    private inline fun grid(block: GridConstraintLayout.() -> Unit) =
+        grid.apply(block)
 
     override fun onPause() {
         super.onPause()
@@ -270,7 +284,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
     }
 
-
     private fun myConfiguration(orientation: Int) {
         orient =
             if (orientation == Configuration.ORIENTATION_PORTRAIT)
@@ -283,6 +296,63 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     private inline fun sharedPreferences(block: SharedPreferences.() -> Unit) =
         sharedPreferences(sharedPreferences, block)
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.actionMasked == MotionEvent.ACTION_DOWN) bugDetected = false
+        if (bugDetected) return true
+        if (ev.actionMasked == MotionEvent.ACTION_CANCEL) {
+            bugDetected = true
+            motionHandler.obtainMessage(1).sendToTarget()
+        }
+        endAnimation()
+        return super.dispatchTouchEvent(ev)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.front_menu, menu)
+        return true
+    }
+
+    override fun onBackPressed() {
+        grid {
+            selectionInProgress {
+                return endSelection()
+            }
+            super.onBackPressed()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.sort -> {
+                BottomSheetFragment().apply {
+                    show(supportFragmentManager, "dialog")
+                }
+                true
+            }
+            R.id.prefixes -> {
+                buildIntent<ConvertActivity>(this) {
+                    putExtra(TextMessage, "Prefix")
+                    putExtra(ViewIdMessage, R.id.prefixes)
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    startActivity(this)
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        app_bar_bottom = app_bar.bottom - app_bar.top
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isInitialized) popupWindow.dismiss()
+    }
+}
+
 /*
 
     fun test(v: View) =
@@ -307,52 +377,3 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 private var mVelocityTracker: VelocityTracker? = null
 private var callAgain = 2
  */
-
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (ev.actionMasked == MotionEvent.ACTION_DOWN) bugDetected = false
-        if (bugDetected) return true
-        if (ev.actionMasked == MotionEvent.ACTION_CANCEL) {
-            bugDetected = true
-            motionHandler.obtainMessage(1).sendToTarget()
-        }
-
-        endAnimation()
-        return super.dispatchTouchEvent(ev)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.front_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.sort -> {
-                BottomSheetFragment().apply {
-                    show(supportFragmentManager, "dialog")
-                }
-                true
-            }
-            R.id.prefixes -> {
-                buildIntent<ConvertActivity>(this) {
-                    putExtra(TextMessage, "Prefix")
-                    putExtra(ViewIdMessage, R.id.prefixes)
-                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    startActivity(this)
-                }
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        app_bar_bottom = app_bar.bottom - app_bar.top
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (isInitialized) popupWindow.dismiss()
-    }
-}

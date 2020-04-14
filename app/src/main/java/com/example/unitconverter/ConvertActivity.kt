@@ -152,7 +152,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private fun setFilters(editText: TextInputEditText) {
         editText.filters =
-            if (viewId == R.id.Temperature)
+            if (isTemperature)
                 temperatureFilters(groupingSeparator, decimalSeparator, editText)
             else filters(groupingSeparator, decimalSeparator, editText)
     }
@@ -182,7 +182,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             if (secondBox.hint != text) {
                 secondBox.hint = text
                 bottomTextView.apply {
-                    this.text = if (unit is SpannedString) unit else unit
+                    this.text = unit
                     layoutParams<ViewGroup.LayoutParams> {
                         width = ViewGroup.LayoutParams.WRAP_CONTENT
                         height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -294,8 +294,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.Illuminance -> illuminance()
 
-            R.id.energy -> {
-            }
+            R.id.energy -> energyConversion()
+
             R.id.Currency -> {
             }
             R.id.heatCapacity -> {
@@ -451,6 +451,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    private fun energyConversion() {
+        function = {
+            Energy(it).getText()
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -483,7 +489,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         return super.onPrepareOptionsMenu(menu)
     }
 
-    val layout = this
     private fun swap() {
         val firstBox = if (swap) R.id.secondBox else R.id.firstBox
         val secondBox = if (swap) R.id.firstBox else R.id.secondBox
@@ -537,6 +542,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             convert_parent.setBackgroundColor(it)
             firstBox.boxStrokeColor = it
             secondBox.boxStrokeColor = it
+            ColorStateList.valueOf(12)
             val colorStateList = ColorStateList.valueOf(it)
             top_button.apply {
                 iconTint = colorStateList
@@ -588,7 +594,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     Log.e("may be Problem", it)
                     secondEditText.apply {
                         if (isTemperature) filters = arrayOf(lengthFilter())
-
                         setText(callBack(function, it))
                         if (isTemperature)
                             filters = temperatureFilters(groupingSeparator, decimalSeparator, this)

@@ -16,7 +16,6 @@ class SearchTextChangeListener(
      * If true means it has informed the recycler view to use the filtered data set
      * */
     private var called = false
-
     override fun afterTextChanged(s: Editable) {
         val filteredList = filter(dataSet, s)
         adapter.replaceAll(filteredList) // so the list would be updated to work with item count

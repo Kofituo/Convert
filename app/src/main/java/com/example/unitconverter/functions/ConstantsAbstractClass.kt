@@ -52,10 +52,29 @@ abstract class ConstantsAbstractClass {
     protected inline fun rangeAssertAnd(range: IntRange) =
         topPosition in range && bottomPosition in range
 
+
+    protected inline fun rangeAssertAnd(range: IntRange, block: () -> Unit) {
+        if (rangeAssertAnd(range)) block()
+    }
+
+    /**
+     * if ([topPosition] == [int] || [bottomPosition] == [int]) [block] ()
+     * */
+    protected inline fun intAssertOr(int: Int, block: () -> Unit) {
+        if (topPosition == int || bottomPosition == int) block()
+    }
+
     /** [topPosition] in [range] || [bottomPosition] in [range]
      * */
     protected inline fun rangeAssertOr(range: IntRange) =
         topPosition in range || bottomPosition in range
+
+
+    /** [topPosition] in [range] || [bottomPosition] in [range]
+     * */
+    protected inline fun rangeAssertOr(range: IntRange, block: () -> Unit) {
+        if (rangeAssertOr(range)) block()
+    }
 
     protected inline fun innerMultiplePrefix(sparseIntArray: SparseIntArray) {
         sparseIntArray.also {

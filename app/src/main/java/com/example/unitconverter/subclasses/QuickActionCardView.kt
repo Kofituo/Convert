@@ -1,5 +1,6 @@
 package com.example.unitconverter.subclasses
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
@@ -7,7 +8,6 @@ import android.os.Vibrator
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import com.example.unitconverter.AdditionItems.animationEnd
 import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.popupWindow
@@ -16,10 +16,12 @@ import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.Q)
+
+@SuppressLint("NewApi")
 class QuickActionCardView(context: Context, attributeSet: AttributeSet) :
     MaterialCardView(context, attributeSet) {
 
+    lateinit var selectItems: SelectItems
 
     init {
         setOnClickListener {
@@ -38,7 +40,7 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) :
                     }
                 }
                 R.id.selectItems -> {
-                    Toast.makeText(context, "Select clicked", Toast.LENGTH_SHORT).show()
+                    selectItems.initiateSelections()
                 }
                 R.id.favourite -> {
                     Toast.makeText(context, "Favourites clicked", Toast.LENGTH_SHORT).show()
@@ -68,5 +70,13 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) :
             }
             performClick()
         }
+    }
+
+    interface SelectItems {
+        fun initiateSelections()
+    }
+
+    fun setSelectionLister(selectItems: SelectItems) {
+        this.selectItems = selectItems
     }
 }

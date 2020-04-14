@@ -1,6 +1,5 @@
 package com.example.unitconverter
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -34,7 +33,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private lateinit var cancelButton: MaterialButton
     private lateinit var searchBar: TextInputLayout
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var viewModel: ConvertViewModel
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -72,7 +70,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         lastPosition = sharedPreferences.get(string)
     }
 
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val screenWidth = resources.displayMetrics.widthPixels
@@ -96,13 +93,13 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             }
             recyclerView = recyclerView {
                 setHasFixedSize(true)
-                viewManager = LinearLayoutManager(context)
-                layoutManager = viewManager
+                layoutManager = LinearLayoutManager(context)
                 adapter = adapter(viewModel.dataSet, viewModel.randomInt, comparator) {
                     setOnRadioButtonsClickListener(this@ConvertFragment)
                     add(viewModel.dataSet) // adds tom the sorted list
                     lastPosition = this@ConvertFragment.lastPosition
-                    if (lastPosition != -1) smoothScrollToPosition(lastPosition)
+                    if (lastPosition != -1)
+                        smoothScrollToPosition(lastPosition)
                     //Log.e("last", "$lastPosition ")
                 }
             }

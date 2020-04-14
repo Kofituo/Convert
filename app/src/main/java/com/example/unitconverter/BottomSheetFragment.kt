@@ -14,11 +14,11 @@ import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.miscellaneous.editPreferences
 import com.example.unitconverter.miscellaneous.get
+import com.example.unitconverter.miscellaneous.layoutParams
 import com.example.unitconverter.miscellaneous.put
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlin.math.round
-
 
 class BottomSheetFragment : DialogFragment() {
 
@@ -38,14 +38,13 @@ class BottomSheetFragment : DialogFragment() {
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet, null)
         dial.setContentView(view)
-        val params = view.layoutParams as ViewGroup.MarginLayoutParams
-        params.apply {
+
+        view.layoutParams<ViewGroup.MarginLayoutParams> {
             width = if (isPortrait) screenWidth - 16.dpToInt() else round(screenWidth / 1.7).toInt()
             bottomMargin = if (isPortrait) 15.dpToInt() else 2.dpToInt()
             height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
         view.apply {
-            layoutParams = params
             firstGroup = findViewById(R.id.firstGroup)
             secondGroup = findViewById(R.id.secondGroup)
             doneButton = findViewById(R.id.done)
@@ -56,20 +55,16 @@ class BottomSheetFragment : DialogFragment() {
         val sharedPreferences = activity?.getSharedPreferences(
             "$pkgName.sortingSelection",
             Context.MODE_PRIVATE
-        )
-        val firstSelection = sharedPreferences?.get<Int>("firstSelection")
-        val secondSelection = sharedPreferences?.get<Int>("secondSelection")
-        if (firstSelection != -1) {
-            firstGroup.check(firstSelection!!)
-            secondGroup.check(secondSelection!!)
+        )?.apply {
+            firstGroup.check(if (get("titleIsChecked")) R.id.titleButton else R.id.recent)
+            secondGroup.check(if (get("ascendingIsChecked")) R.id.ascending else R.id.descending)
         }
-
         useDefault.setOnCheckedChangeListener { _, isChecked ->
             firstGroup.setStates(state = !isChecked)
             secondGroup.setStates(state = !isChecked)
             checked = isChecked
         }
-        sharedPreferences.get<Boolean>("useDefault") {
+        sharedPreferences?.get<Boolean>("useDefault") {
             if (this) useDefault.isChecked = true
         }
         // get original values
@@ -79,7 +74,6 @@ class BottomSheetFragment : DialogFragment() {
         val switchValue = useDefault.isChecked
 
         cancelButton.setOnClickListener {
-
             firstGroup.check(originalFirstSelection)
             secondGroup.check(originalSecondSelection)
             useDefault.isChecked = switchValue
@@ -110,13 +104,13 @@ class BottomSheetFragment : DialogFragment() {
         ) ?: return
 
         editPreferences(sharedPreferences) {
-            put<Int> {
-                key = "firstSelection"
-                value = firstGroup.checkedRadioButtonId
+            put<Boolean> {
+                key = "titleIsChecked"
+                value = firstGroup.checkedRadioButtonId == R.id.titleButton
             }
-            put<Int> {
-                key = "secondSelection"
-                value = secondGroup.checkedRadioButtonId
+            put<Boolean> {
+                key = "ascendingIsChecked"
+                value = secondGroup.checkedRadioButtonId == R.id.ascending
             }
             put<Boolean> {
                 key = "useDefault"
