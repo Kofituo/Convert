@@ -37,7 +37,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private lateinit var sharedPreferences: SharedPreferences
 
     //
-    private var isPrefix = false
     private var viewId: Int = -1
     private lateinit var viewName: String
     private var lastPosition = -1
@@ -61,7 +60,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         }
         string = if (whichButton == R.id.top_button) "topButton" else "bottomButton"
         positionKey = string.substringBefore("B") + "Position"
-        isPrefix = viewId == R.id.prefixes
         activity?.run {
             viewModel = ViewModelProvider(this)[ConvertViewModel::class.java]
             sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)

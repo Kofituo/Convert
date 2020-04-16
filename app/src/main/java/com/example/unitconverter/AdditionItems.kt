@@ -21,7 +21,6 @@ object AdditionItems {
      * Restores the card view to its original position
      * */
     var animationEnd: Animator? = null
-    var orient = 0
     val isInitialized get() = ::popupWindow.isInitialized
     lateinit var motionHandler: Handler
     var statusBarHeight = 0
@@ -31,6 +30,9 @@ object AdditionItems {
      * */
     var viewsMap: SparseArray<View> = SparseArray(30)
 
+    /**
+     * Maps the view name to id
+     * */
     var originalMap = LinkedHashMap<String, Int>(30)
 
     /**

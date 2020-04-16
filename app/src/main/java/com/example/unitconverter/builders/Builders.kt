@@ -2,6 +2,7 @@
 
 package com.example.unitconverter.builders
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.SparseIntArray
@@ -50,6 +51,18 @@ inline fun <K, V> buildMutableMap(capacity: Int = 30, action: MutableMap<K, V>.(
  * */
 inline fun <reified T> buildIntent(context: Context, block: Intent.() -> Unit) =
     Intent(context, T::class.java).apply(block)
+
+
+/* Intent builder*/
+/**
+ * Creates a new [Intent] and applies [block] to it
+ *
+ * Returns true
+ * */
+inline fun <reified T> Activity.buildIntent(block: Intent.() -> Unit) =
+    true.also {
+        Intent(this, T::class.java).apply(block)
+    }
 
 /*Constraint set*/
 /**

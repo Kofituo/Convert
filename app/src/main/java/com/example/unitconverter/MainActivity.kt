@@ -1,11 +1,10 @@
 package com.example.unitconverter
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.AnimationDrawable
 import android.os.*
 import android.util.Log
 import android.view.Menu
@@ -21,7 +20,6 @@ import com.example.unitconverter.AdditionItems.endAnimation
 import com.example.unitconverter.AdditionItems.isInitialized
 import com.example.unitconverter.AdditionItems.mRecentlyUsed
 import com.example.unitconverter.AdditionItems.motionHandler
-import com.example.unitconverter.AdditionItems.orient
 import com.example.unitconverter.AdditionItems.originalMap
 import com.example.unitconverter.AdditionItems.popupWindow
 import com.example.unitconverter.AdditionItems.statusBarHeight
@@ -46,7 +44,8 @@ import kotlinx.serialization.json.Json
 
 //change manifest setting to backup allow true
 @UnstableDefault
-class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface {
+class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface,
+    GridConstraintLayout.Selection {
 
     private val downTime = SystemClock.uptimeMillis()
     private val eventTime = SystemClock.uptimeMillis() + 10
@@ -68,12 +67,15 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     private lateinit var mSelectedOrderArray: Map<String, Int>
 
+    companion object {
+        const val FAVOURITES = 0
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.front_page_activity)
         setSupportActionBar(app_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        myConfiguration(this.resources.configuration.orientation)
         window.statusBarColor = Color.parseColor("#4DD0E1")
         sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         h = resources.displayMetrics.heightPixels / 2
@@ -94,38 +96,37 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
         val viewModel = ViewModelProvider(this@MainActivity)[ConvertViewModel::class.java]
         motion {
-            motionHandler =
-                object : Handler(Looper.getMainLooper()) {
-                    override fun handleMessage(msg: Message) {
-                        when (msg.what) {
-                            1 -> {
-                                bugDetected =
-                                    if (progress == 1F || progress == 0f) {
-                                        false
-                                    } else {
-                                        scrollable.apply {
-                                            dispatchTouchEvent(motionEventDown)
-                                            dispatchTouchEvent(motionEventMove)
-                                            dispatchTouchEvent(motionEventMove)
-                                            dispatchTouchEvent(motionEventUp)
-                                        }
-                                        true
+            motionHandler = object : Handler(Looper.getMainLooper()) {
+                override fun handleMessage(msg: Message) {
+                    when (msg.what) {
+                        1 -> {
+                            bugDetected =
+                                if (progress == 1F || progress == 0f) {
+                                    false
+                                } else {
+                                    scrollable.apply {
+                                        dispatchTouchEvent(motionEventDown)
+                                        dispatchTouchEvent(motionEventMove)
+                                        dispatchTouchEvent(motionEventMove)
+                                        dispatchTouchEvent(motionEventUp)
                                     }
-                                return
-                            }
-                            2 -> {
-                                GlobalScope.launch {
-                                    delay(318)
-                                    if (progress != 0F) {
-                                        motionHandler.obtainMessage(1).sendToTarget()
-                                    }
+                                    true
                                 }
-                                return
-                            }
+                            return
                         }
-                        return super.handleMessage(msg)
+                        2 -> {
+                            GlobalScope.launch {
+                                delay(318)
+                                if (progress != 0F) {
+                                    motionHandler.obtainMessage(1).sendToTarget()
+                                }
+                            }
+                            return
+                        }
                     }
+                    return super.handleMessage(msg)
                 }
+            }
             progress = viewModel.motionProgress
         }
         viewModel.motionProgress = 1f
@@ -169,6 +170,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
         }
         onCreateCalled = true
+
+        grid setSelectionListener this
     }
 
     private inline fun motion(block: MyMotionLayout.() -> Unit) =
@@ -219,6 +222,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 
     private var descending = false
+
     /**
      * True means recently used was selected
      * */
@@ -284,13 +288,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
     }
 
-    private fun myConfiguration(orientation: Int) {
-        orient =
-            if (orientation == Configuration.ORIENTATION_PORTRAIT)
-                Configuration.ORIENTATION_PORTRAIT
-            else Configuration.ORIENTATION_LANDSCAPE
-    }
-
     private inline fun editPreferences(block: SharedPreferences.Editor.() -> Unit) =
         editPreferences(sharedPreferences, block)
 
@@ -308,8 +305,13 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         return super.dispatchTouchEvent(ev)
     }
 
+    lateinit var searchButton: MenuItem
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.front_menu, menu)
+        menu?.apply {
+            searchButton = findItem(R.id.search_button)
+        }
         return true
     }
 
@@ -331,11 +333,36 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 true
             }
             R.id.prefixes -> {
-                buildIntent<ConvertActivity>(this) {
+                buildIntent<ConvertActivity> {
                     putExtra(TextMessage, "Prefix")
                     putExtra(ViewIdMessage, R.id.prefixes)
-                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(this)
+                }
+            }
+            R.id.favourite -> {
+                buildIntent<FavouritesActivity> {
+                    startActivityForResult(this, FAVOURITES)
+                }
+            }
+            R.id.search_button -> {
+                if (!useDefault) {
+                    // store selected items
+                    grid {
+                        val map = getArray()
+                        if (map.isEmpty()) {
+                            endSelection()
+                            return true
+                        }
+                        Log.e("map", "$map")
+                        sharedPreferences {
+                            editPreferences {
+                                get<String?>("favouritesArray") {
+                                    if (this.hasValue()) {
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 true
             }
@@ -343,6 +370,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
     }
 
+    private var s = false
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         app_bar_bottom = app_bar.bottom - app_bar.top
     }
@@ -350,6 +378,27 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     override fun onDestroy() {
         super.onDestroy()
         if (isInitialized) popupWindow.dismiss()
+    }
+
+    private var useDefault = true
+
+    override fun changeSearchButton(useDefault: Boolean) {
+        this.useDefault = useDefault
+        if (useDefault) {
+            searchButton.icon = getDrawable(R.drawable.add_to_search)
+            (searchButton.icon as AnimationDrawable).apply {
+                setEnterFadeDuration(300)
+                setExitFadeDuration(500)
+                start()
+            }
+        } else {
+            searchButton.icon = getDrawable(R.drawable.search_to_add)
+            (searchButton.icon as AnimationDrawable).apply {
+                setEnterFadeDuration(300)
+                setExitFadeDuration(500)
+                start()
+            }
+        }
     }
 }
 

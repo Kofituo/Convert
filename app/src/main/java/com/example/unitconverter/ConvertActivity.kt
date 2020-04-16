@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
+import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.filters
@@ -99,7 +100,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
         }
         Log.e("id", "$viewId")
-
+        Log.e("vi", "$card")
         firstEditText.apply {
             setFilters(this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
@@ -400,11 +401,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private val dataStorageMap = lazy(LazyThreadSafetyMode.NONE) {
         buildMutableMap<Int, Int>(35) {
             put(0, 0) //bits
-            (27..34).forEachIndexed(1) { index, item -> // metric bits prefixes
+            (27..34).forEachIndexed(1) { index, item ->
+                // metric bits prefixes
                 put(item, index)
                 Log.e("size", "item $item  index $index")
             }
-            (3..10).forEachIndexed(size) { index, item -> //other bits prefixes
+            (3..10).forEachIndexed(size) { index, item ->
+                //other bits prefixes
                 put(item, index)
             }
             put(1, size)//nibble
@@ -468,12 +471,17 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 true
             }
             R.id.prefixes -> {
-                buildIntent<ConvertActivity>(this) {
+                buildIntent<ConvertActivity> {
                     putExtra(TextMessage, "Prefix")
                     putExtra(ViewIdMessage, R.id.prefixes)
                     startActivity(this)
                 }
-                true
+            }
+            R.id.favourite -> {
+                buildIntent<FavouritesActivity> {
+                    startActivity(this)
+                    finish()
+                }
             }
             else -> super.onOptionsItemSelected(item)
         }

@@ -18,7 +18,6 @@ import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.cardY
 import com.example.unitconverter.AdditionItems.longPress
 import com.example.unitconverter.AdditionItems.mRecentlyUsed
-import com.example.unitconverter.AdditionItems.orient
 import com.example.unitconverter.AdditionItems.popupWindow
 import com.example.unitconverter.ConvertActivity
 import com.example.unitconverter.R
@@ -46,6 +45,13 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
             scaleY = 0.95f
             visibility = View.INVISIBLE
             this@MyCardView.addView(this)
+        }
+
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
+            (parent as GridConstraintLayout).apply {
+                if (isChecked) addToArray(this@MyCardView.name)
+                else removeFromArray(this@MyCardView.name)
+            }
         }
     }
 
@@ -92,9 +98,10 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
                     mContext = context
                     anchor = this@MyCardView
                     resInt = R.layout.quick_actions
+                }.apply {
+                    determinePosition()
+                    setListener(this@MyCardView)
                 }
-                popupWindow.determinePosition()
-                popupWindow.setListener(this)
                 //Log.e("Y","${this.y} ${this.x}  ${this.top}  ${this.bottom}")
                 longPress = false
             }
@@ -116,7 +123,8 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
 
     init {
         setOnLongClickListener {
-            if (orient == Configuration.ORIENTATION_PORTRAIT) {
+            val orientation = resources.configuration.orientation
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                 longPress = true
                 popupWindow.apply {
                     val textView = this@MyCardView.getChildAt(1) as TextView

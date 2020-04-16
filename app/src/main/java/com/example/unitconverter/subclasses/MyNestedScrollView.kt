@@ -62,7 +62,6 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) :
         return true
     }
 
-
     override fun onScroll(
         e1: MotionEvent?,
         e2: MotionEvent?,
@@ -77,14 +76,11 @@ class MyNestedScrollView(context: Context, attributeSet: AttributeSet) :
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         detectorCompat.onTouchEvent(ev)
-
         return super.dispatchTouchEvent(ev)
-
     }
 
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
         performClick()
-        //return super.onTouchEvent(ev)
 
         if (scrollChanged || !canScrollVertically(1)) {
             scrollChanged = false

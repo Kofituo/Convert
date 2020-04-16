@@ -128,15 +128,18 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
 
     var selectionInProgress = false
 
-    /**,
+    /**
      * Called if selection is in progress
      * */
     inline fun selectionInProgress(block: () -> Unit) {
         if (selectionInProgress) block()
     }
 
+    lateinit var selection: Selection
+
     fun initiateSelectItems() {
         selectionInProgress = true
+        selection.changeSearchButton(false)
         for (i in 0 until childCount) {
             getChildAt(i).apply {
                 if (this is MyCardView) {
@@ -164,5 +167,29 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
             }
         }
         selectionInProgress = false
+        selection.changeSearchButton(true)
+    }
+
+    // initialize only when needed
+    private val selectionArray by lazy(LazyThreadSafetyMode.NONE) {
+        ArrayList<String>(30)
+    }
+
+    fun addToArray(viewName: String) {
+        selectionArray.add(viewName)
+    }
+
+    fun removeFromArray(viewName: String) {
+        selectionArray.remove(viewName)
+    }
+
+    fun getArray() = selectionArray
+
+    infix fun setSelectionListener(selection: Selection) {
+        this.selection = selection
+    }
+
+    interface Selection {
+        fun changeSearchButton(useDefault: Boolean)
     }
 }

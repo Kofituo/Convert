@@ -3,26 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/search_button"
-        android:icon="@drawable/search_to_add"
+        android:icon="@drawable/ic_magnifying_glass"
         android:title="@string/search"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/favourite"
-        android:icon="@drawable/ic_bookmark_border_black_24dp"
-        android:title="@string/favourite"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/prefixes"
         android:title="@string/prefixes"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/sort"
-        android:icon="@drawable/ic_sort_black_24dp"
-        android:title="@string/sort"
-        app:showAsAction="never" />
-
     <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_settings_black_24dp"

@@ -47,7 +47,7 @@
         app:layout_constraintTop_toTopOf="@id/topGuide"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -77,7 +77,7 @@
         app:layout_constraintTop_toTopOf="@id/topGuide"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -110,7 +110,7 @@
         app:layout_constraintTop_toTopOf="@id/topGuide"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -140,7 +140,7 @@
         app:layout_constraintTop_toTopOf="@id/topGuide"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -170,7 +170,7 @@
         app:layout_constraintTop_toBottomOf="@id/topGuide"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -202,7 +202,7 @@
         app:layout_constraintTop_toBottomOf="@id/Temperature"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -233,7 +233,7 @@
         app:layout_constraintTop_toBottomOf="@id/Area"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -264,7 +264,7 @@
         app:layout_constraintTop_toBottomOf="@id/Mass"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -295,7 +295,7 @@
         app:layout_constraintTop_toBottomOf="@id/Volume"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -326,7 +326,7 @@
         app:layout_constraintTop_toBottomOf="@id/Length"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -360,7 +360,7 @@
         app:layout_constraintTop_toBottomOf="@id/Angle"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -393,7 +393,7 @@
         app:layout_constraintTop_toBottomOf="@id/Pressure"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -425,7 +425,7 @@
         app:layout_constraintTop_toBottomOf="@id/Speed"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -458,7 +458,7 @@
         app:layout_constraintTop_toBottomOf="@id/time"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -489,7 +489,7 @@
         app:layout_constraintTop_toBottomOf="@id/fuelEconomy"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -520,7 +520,7 @@
         app:layout_constraintTop_toBottomOf="@id/dataStorage"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -551,7 +551,7 @@
         app:layout_constraintTop_toBottomOf="@id/electric_current"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -585,7 +585,7 @@
         app:layout_constraintTop_toBottomOf="@id/luminance"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -617,7 +617,7 @@
         app:layout_constraintTop_toBottomOf="@id/Illuminance"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -648,7 +648,7 @@
         app:layout_constraintTop_toBottomOf="@id/energy"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -680,7 +680,7 @@
         app:layout_constraintTop_toBottomOf="@id/Currency"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -710,7 +710,7 @@
         app:layout_constraintTop_toBottomOf="@id/heatCapacity"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -741,7 +741,7 @@
         app:layout_constraintTop_toBottomOf="@id/Angular_Velocity"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -771,7 +771,7 @@
         app:layout_constraintTop_toBottomOf="@id/angularAcceleration"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -802,7 +802,7 @@
         app:layout_constraintTop_toBottomOf="@id/sound"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -832,7 +832,7 @@
         app:layout_constraintTop_toBottomOf="@id/resistance"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -862,7 +862,7 @@
         app:layout_constraintTop_toBottomOf="@id/radioactivity"
         app:layout_constraintWidth_percent="0.18">
 
-        <TextView
+        <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

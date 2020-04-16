@@ -23,6 +23,9 @@ inline fun <T> T.isNull(): Boolean {
     return this == null
 }
 
+/**
+ * This.isNotNull() && this.isNotEmpty()
+ * */
 @OptIn(ExperimentalContracts::class)
 inline fun CharSequence?.hasValue(): Boolean {
     contract {

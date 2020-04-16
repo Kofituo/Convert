@@ -14,6 +14,7 @@ import com.google.android.material.textfield.TextInputEditText
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 import kotlin.math.round
 
@@ -47,12 +48,16 @@ object Utils {
         return this.div((context.resources.displayMetrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT)
     }*/
 
+    private val nameToId = LinkedHashMap<String, Int>(30) // what i should have done a long time
+
     /**
      * A map which holds view ids and view names
      * Used to <br>quickly</br> get name of views instead of using
      * resources.getResourceEntryName(view.id)
      * */
-    private val mutableMap = mutableMapOf<Int, String>()
+    private val viewNames = LinkedHashMap<Int, String>(30)
+
+    fun getViewNameMap() = viewNames
 
     /**
      * Used to get name from id
@@ -62,9 +67,12 @@ object Utils {
     val View.name: String
         get() =
             if (id == -0x1) throw Resources.NotFoundException("Invalid ID '-1' $this")
-            else mutableMap[this.id]
+            else viewNames[this.id]
                 ?: resources.getResourceEntryName(this.id) //returns a string
-                    .apply { mutableMap[this@name.id] = this } //updates the map
+                    .apply {
+                        viewNames[this@name.id] = this //updates the map
+                        nameToId[this] = this@name.id
+                    }
 
     fun String.removeCommas(decimalSeparator: Char): String? {
         if (this.isBlank()) return ""
@@ -191,9 +199,15 @@ object Utils {
      * i.e. the last pair becomes the first pair
      * */
     fun <K, V> Map<K, V>.reversed() =
-        if (size < 2) toMutableMap() // fast return
-        else toList().reversed().run {
-            toMap(LinkedHashMap(size))
+        if (size < 2) toMap() // fast return
+        else ArrayList(entries).run {
+            val reversedMap = LinkedHashMap<K, V>(size)
+            for (i in this.size - 1 downTo 0)
+                this[i].apply {
+                    reversedMap[key] = value
+                    mapOf<Int, Int>() + mapOf<Int, Int>()
+                }
+            reversedMap
         }
 
     @Suppress("NOTHING_TO_INLINE")
