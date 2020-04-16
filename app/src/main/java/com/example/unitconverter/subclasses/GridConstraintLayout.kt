@@ -171,25 +171,28 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
     }
 
     // initialize only when needed
-    private val selectionArray by lazy(LazyThreadSafetyMode.NONE) {
-        ArrayList<String>(30)
+    private val selectionMap by lazy(LazyThreadSafetyMode.NONE) {
+        LinkedHashMap<String, String>(30)
     }
 
-    fun addToArray(viewName: String) {
-        selectionArray.add(viewName)
+    fun addToMap(viewName: String) {
+        selectionMap[viewName] = viewName
     }
 
-    fun removeFromArray(viewName: String) {
-        selectionArray.remove(viewName)
+    fun removeFromMap(viewName: String) {
+        selectionMap.remove(viewName)
     }
 
-    fun getArray() = selectionArray
+    fun getMap() = selectionMap
 
     infix fun setSelectionListener(selection: Selection) {
         this.selection = selection
     }
 
+    fun addOneToFavorites(viewName: String) = selection.addOneToFavourites(viewName)
+
     interface Selection {
         fun changeSearchButton(useDefault: Boolean)
+        fun addOneToFavourites(viewName: String)
     }
 }

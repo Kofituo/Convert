@@ -43,7 +43,7 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) :
                     selectItems.initiateSelections()
                 }
                 R.id.favourite -> {
-                    Toast.makeText(context, "Favourites clicked", Toast.LENGTH_SHORT).show()
+                    selectItems.addOneToFavorites()
                 }
                 R.id.info -> {
                     Toast.makeText(context, "Info clicked", Toast.LENGTH_SHORT).show()
@@ -74,6 +74,7 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) :
 
     interface SelectItems {
         fun initiateSelections()
+        fun addOneToFavorites()
     }
 
     fun setSelectionLister(selectItems: SelectItems) {

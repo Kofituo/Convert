@@ -1,5 +1,8 @@
 package com.example.unitconverter.subclasses
 
+import android.app.Activity
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +16,13 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
 
     lateinit var dataSet: List<FavouritesData>
 
-    lateinit var comparatr: Comparator<FavouritesData>
+    lateinit var comparator: Comparator<FavouritesData>
+
+    lateinit var activity: Activity
+
+    private lateinit var favouritesItem: FavouritesItem
+
+    private val cacheDrawable = LinkedHashMap<Int, Drawable>(30)
 
     companion object {
         inline fun favouritesAdapter(block: FavouritesAdapter.() -> Unit) =
@@ -30,6 +39,10 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
                 imageView = findViewById(R.id.image)
                 mainTextView = findViewById(R.id.top_text)
                 metadataTextView = findViewById(R.id.metadata)
+                setOnClickListener {
+                    val pos = this@ViewHolder.adapterPosition
+                    favouritesItem.startActivity(dataSet[pos])
+                }
             }
         }
     }
@@ -47,12 +60,27 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.apply {
             dataSet[position].apply {
-                imageView.setImageDrawable(drawable?.let {
-                    imageView.resources.getDrawable(it, null)
-                })
+                Log.e("ths", "$this")
+                imageView.setImageDrawable(
+                    cacheDrawable[drawableId]
+                        ?: activity.resources.getDrawable(drawableId!!, null)
+                            .apply {
+                                cacheDrawable[drawableId!!] = this
+                                Log.e("caled", "callled ds ${dataSet[position]}")
+                            }
+                )
+                imageView.contentDescription = topText
                 mainTextView.text = topText
                 metadataTextView.text = metadata
             }
         }
+    }
+
+    fun setFavouritesItemListener(favouritesItem: FavouritesItem) {
+        this.favouritesItem = favouritesItem
+    }
+
+    interface FavouritesItem {
+        fun startActivity(data: FavouritesData)
     }
 }

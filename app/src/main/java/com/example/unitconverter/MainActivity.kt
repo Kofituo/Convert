@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.unitconverter.AdditionItems.TextMessage
@@ -21,24 +22,28 @@ import com.example.unitconverter.AdditionItems.isInitialized
 import com.example.unitconverter.AdditionItems.mRecentlyUsed
 import com.example.unitconverter.AdditionItems.motionHandler
 import com.example.unitconverter.AdditionItems.originalMap
+import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.AdditionItems.popupWindow
 import com.example.unitconverter.AdditionItems.statusBarHeight
 import com.example.unitconverter.AdditionItems.viewsMap
 import com.example.unitconverter.Utils.app_bar_bottom
+import com.example.unitconverter.Utils.getNameToViewMap
 import com.example.unitconverter.Utils.name
 import com.example.unitconverter.Utils.reversed
 import com.example.unitconverter.Utils.toJson
 import com.example.unitconverter.Utils.values
 import com.example.unitconverter.builders.buildIntent
+import com.example.unitconverter.builders.buildMutableMap
+import com.example.unitconverter.builders.put
 import com.example.unitconverter.miscellaneous.*
-import com.example.unitconverter.subclasses.ConvertViewModel
-import com.example.unitconverter.subclasses.GridConstraintLayout
-import com.example.unitconverter.subclasses.MyMotionLayout
+import com.example.unitconverter.subclasses.*
+import com.example.unitconverter.subclasses.FavouritesData.Companion.favouritesBuilder
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 
@@ -71,6 +76,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         const val FAVOURITES = 0
     }
 
+    @OptIn(ImplicitReflectionSerializer::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.front_page_activity)
@@ -173,6 +179,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
         grid setSelectionListener this
     }
+
 
     private inline fun motion(block: MyMotionLayout.() -> Unit) =
         motion?.apply(block)
@@ -305,7 +312,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         return super.dispatchTouchEvent(ev)
     }
 
-    lateinit var searchButton: MenuItem
+    private lateinit var searchButton: MenuItem
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.front_menu, menu)
@@ -324,53 +331,105 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.sort -> {
-                BottomSheetFragment().apply {
-                    show(supportFragmentManager, "dialog")
-                }
-                true
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.sort -> {
+            BottomSheetFragment().apply {
+                show(supportFragmentManager, "dialog")
             }
-            R.id.prefixes -> {
-                buildIntent<ConvertActivity> {
-                    putExtra(TextMessage, "Prefix")
-                    putExtra(ViewIdMessage, R.id.prefixes)
-                    startActivity(this)
-                }
+            true
+        }
+        R.id.prefixes -> {
+            buildIntent<ConvertActivity> {
+                putExtra(TextMessage, "Prefix")
+                putExtra(ViewIdMessage, R.id.prefixes)
+                startActivity(this)
             }
-            R.id.favourite -> {
-                buildIntent<FavouritesActivity> {
-                    startActivityForResult(this, FAVOURITES)
-                }
-            }
-            R.id.search_button -> {
-                if (!useDefault) {
-                    // store selected items
-                    grid {
-                        val map = getArray()
-                        if (map.isEmpty()) {
-                            endSelection()
-                            return true
-                        }
-                        Log.e("map", "$map")
-                        sharedPreferences {
-                            editPreferences {
-                                get<String?>("favouritesArray") {
-                                    if (this.hasValue()) {
+        }
+        R.id.favourite -> {
+            buildIntent<FavouritesActivity> {
+                sharedPreferences {
+                    get<String?>("favouritesArray") {
+                        if (this.hasValue()) {
+                            Log.e("has ", "value")
+                            //send the list to the activity
+                            val map = Json.parse(DeserializeStringStringMap, this)
+                                .apply {
+                                    if (isEmpty()) {
+                                        startActivity(this@buildIntent)
+                                        return true
                                     }
                                 }
+                            val favouritesList: ArrayList<FavouritesData>
+                            getNameToViewMap().apply {
+                                favouritesList = map.map {
+                                    val view = this[it.key] //shouldn't be null though
+                                    view?.run {
+                                        this as MyCardView
+                                        val textView = (this@run.getChildAt(1) as DataTextView)
+                                        favouritesBuilder {
+                                            drawableId = drawableIds[this@run.id]
+                                            topText = textView.text
+                                            metadata = textView.metadata
+                                            cardId = this@run.id
+                                            Log.e("item", "$this ${textView.text}  ")
+                                        }
+                                    }
+                                }.run {
+                                    filterNotNullTo(ArrayList(size)) // none should be null though
+                                }
                             }
+                            this@buildIntent.putExtra("$pkgName.favourites_list", favouritesList)
                         }
                     }
                 }
-                true
+                startActivity(this)
             }
-            else -> super.onOptionsItemSelected(item)
+            true
         }
+        R.id.search_button -> {
+            if (!useDefault) {
+                // store selected items
+                grid {
+                    val map = getMap()
+                    if (map.isEmpty()) {
+                        endSelection()
+                        return true
+                    }
+                    sharedPreferences {
+                        editPreferences {
+                            get<String?>("favouritesArray") {
+                                if (this.hasValue()) {
+                                    val previousMap =
+                                        Json.parse(DeserializeStringStringMap, this)
+                                    val updatedMap = map.reversed() + previousMap
+                                    put<String> {
+                                        key = "favouritesArray"
+                                        value = updatedMap.toJson()
+                                    }
+                                } else {
+                                    put<String> {
+                                        key = "favouritesArray"
+                                        value = map.reversed().toJson()
+                                    }
+                                }
+                                commit()
+                            }
+                        }
+                        grid {
+                            endSelection()
+                        }
+                        showToast {
+                            resId = R.string.added_favourites
+                            duration = Toast.LENGTH_LONG
+                        }
+                    }
+                }
+            }
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
-    private var s = false
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         app_bar_bottom = app_bar.bottom - app_bar.top
     }
@@ -397,6 +456,150 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 setEnterFadeDuration(300)
                 setExitFadeDuration(500)
                 start()
+            }
+        }
+    }
+
+    override fun addOneToFavourites(viewName: String) {
+        sharedPreferences {
+            editPreferences {
+                get<String?>("favouritesArray") {
+                    val updatedMap: MutableMap<String, String>
+                    if (this.hasValue()) {
+                        val previousMap = Json.parse(DeserializeStringStringMap, this)
+                        updatedMap = buildMutableMap(previousMap.size + 1) {
+                            put {
+                                key = viewName
+                                value = viewName
+                            }
+                            putAll(previousMap)
+                        }
+                    } else {
+                        updatedMap = mutableMapOf(viewName to viewName)
+                    }
+                    put<String> {
+                        key = "favouritesArray"
+                        value = updatedMap.toJson()
+                    }
+                    commit()
+                    showToast {
+                        resId = R.string.added_favourites
+                        duration = Toast.LENGTH_SHORT
+                    }
+                }
+            }
+        }
+    }
+
+    private val drawableIds by lazy(LazyThreadSafetyMode.NONE) {
+        buildMutableMap<Int, Int>(30) {
+            put {
+                key = R.id.Temperature
+                value = R.drawable.ic_temperature
+            }
+            put {
+                key = R.id.Area
+                value = R.drawable.ic_area
+            }
+            put {
+                key = R.id.Mass
+                value = R.drawable.ic_dumb_bell
+            }
+            put {
+                key = R.id.Volume
+                value = R.drawable.ic_cylinder
+            }
+            put {
+                key = R.id.Length
+                value = R.drawable.ic_ruler
+            }
+            put {
+                key = R.id.Angle
+                value = R.drawable.ic_angle1
+            }
+            put {
+                key = R.id.Pressure
+                value = R.drawable.ic_blood_pressure1
+            }
+            put {
+                key = R.id.Speed
+                value = R.drawable.ic_fast
+            }
+            put {
+                key = R.id.time
+                value = R.drawable.ic_circular_clock
+            }
+            put {
+                key = R.id.fuelEconomy
+                value = R.drawable.ic_gas_station
+            }
+            put {
+                key = R.id.dataStorage
+                value = R.drawable.ic_hard_drive
+            }
+            put {
+                key = R.id.electric_current
+                value = R.drawable.ic_lab
+            }
+            put {
+                key = R.id.luminance
+                value = R.drawable.ic_light_bulb
+            }
+            put {
+                key = R.id.Illuminance
+                value = R.drawable.ic_light_bulb_illuminance
+            }
+            put {
+                key = R.id.energy
+                value = R.drawable.ic_science
+            }
+            put {
+                key = R.id.Currency
+                value = R.drawable.ic_exchange
+            }
+            put {
+                key = R.id.heatCapacity
+                value = R.drawable.ic_flame
+            }
+            put {
+                key = R.id.Angular_Velocity
+                value = R.drawable.ic_angular_velocity
+            }
+            put {
+                key = R.id.angularAcceleration
+                value = R.drawable.ic_angular_acceleration
+            }
+            put {
+                key = R.id.sound
+                value = R.drawable.ic_speaker
+            }
+            put {
+                key = R.id.resistance
+                value = R.drawable.ic_resistor
+            }
+            put {
+                key = R.id.radioactivity
+                value = R.drawable.ic_radiation
+            }
+            put {
+                key = R.id.resolution
+                value = R.drawable.ic_monitor
+            }
+            put {
+                key = R.id.cooking
+                value = R.drawable.ic_cooking
+            }
+            put {
+                key = R.id.inductance
+                value = R.drawable.ic_inductor
+            }
+            put {
+                key = R.id.flow
+                value = R.drawable.ic_sea
+            }
+            put {
+                key = R.id.number_base
+                value = R.drawable.ic_ten
             }
         }
     }

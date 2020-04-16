@@ -43,6 +43,13 @@ inline fun <K, V> buildMutableMap(action: MutableMap<K, V>.() -> Unit): MutableM
 inline fun <K, V> buildMutableMap(capacity: Int = 30, action: MutableMap<K, V>.() -> Unit) =
     LinkedHashMap<K, V>(capacity).apply(action)
 
+data class MapValue<K, V>(var key: K? = null, var value: V? = null)
+
+inline fun <K, V> MutableMap<K, V>.put(block: MapValue<K, V>.() -> Unit) =
+    MapValue<K, V>().apply(block).run {
+        put(key!!, value!!)
+    }
+
 /*End of collection builders*/
 
 /* Intent builder*/

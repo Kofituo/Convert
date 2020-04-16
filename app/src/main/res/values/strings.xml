@@ -60,7 +60,7 @@
     <string name="luminance">Luminance</string>
     <string name="select_unit">Select Unit</string>
     <string name="feedback">Feedback</string>
-
+    <string name="added_favourites">Added To Favourites</string>
     <!--    for the prefixes-->
     <string name="yotta">Yotta</string>
     <string name="yotta_symbol">Y</string>

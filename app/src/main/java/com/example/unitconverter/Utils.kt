@@ -7,6 +7,7 @@ import android.util.SparseArray
 import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
+import com.example.unitconverter.Utils.toJson
 import com.example.unitconverter.builders.buildMutableList
 import com.example.unitconverter.miscellaneous.hasValue
 import com.example.unitconverter.miscellaneous.isNotNull
@@ -48,7 +49,7 @@ object Utils {
         return this.div((context.resources.displayMetrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT)
     }*/
 
-    private val nameToId = LinkedHashMap<String, Int>(30) // what i should have done a long time
+    private val nameToViews = LinkedHashMap<String, View>(30) // what i should have done a long time
 
     /**
      * A map which holds view ids and view names
@@ -57,7 +58,7 @@ object Utils {
      * */
     private val viewNames = LinkedHashMap<Int, String>(30)
 
-    fun getViewNameMap() = viewNames
+    fun getNameToViewMap() = nameToViews
 
     /**
      * Used to get name from id
@@ -71,7 +72,7 @@ object Utils {
                 ?: resources.getResourceEntryName(this.id) //returns a string
                     .apply {
                         viewNames[this@name.id] = this //updates the map
-                        nameToId[this] = this@name.id
+                        nameToViews[this] = this@name
                     }
 
     fun String.removeCommas(decimalSeparator: Char): String? {

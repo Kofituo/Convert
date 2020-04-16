@@ -1,5 +1,6 @@
 package com.example.unitconverter.miscellaneous
 
+import android.util.Log
 import kotlinx.serialization.Decoder
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialDescriptor
@@ -17,12 +18,13 @@ object DeserializeStringIntMap : DeserializationStrategy<MutableMap<String, Int>
     override fun deserialize(decoder: Decoder): MutableMap<String, Int> {
         val input = decoder as JsonInput
         val array = input.decodeJson() as JsonArray
-        return array.map {
-            it as JsonObject
-            val first = it.keys.first()
-            first to it[first]!!.content.toInt()
-        }.run {
-            toMap(LinkedHashMap(size))
+        Log.e("cso", "${array.size}")
+        return LinkedHashMap<String, Int>(array.size).apply {
+            array.map {
+                it as JsonObject
+                val first = it.keys.first()
+                put(first, it[first]!!.content.toInt())
+            }
         }
     }
 
