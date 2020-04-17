@@ -412,7 +412,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                                         value = map.reversed().toJson()
                                     }
                                 }
-                                commit()
+                                apply()
                             }
                         }
                         grid {
@@ -443,21 +443,25 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun changeSearchButton(useDefault: Boolean) {
         this.useDefault = useDefault
-        if (useDefault) {
-            searchButton.icon = getDrawable(R.drawable.add_to_search)
-            (searchButton.icon as AnimationDrawable).apply {
-                setEnterFadeDuration(300)
-                setExitFadeDuration(500)
-                start()
+        if (useDefault)
+            searchButton.apply {
+                icon = getDrawable(R.drawable.add_to_search)
+                title = getString(R.string.search)
+                (icon as AnimationDrawable).apply {
+                    setEnterFadeDuration(300)
+                    setExitFadeDuration(500)
+                    start()
+                }
+            } else
+            searchButton.apply {
+                title = getString(R.string.add_to_favourites)
+                icon = getDrawable(R.drawable.search_to_add)
+                (icon as AnimationDrawable).apply {
+                    setEnterFadeDuration(300)
+                    setExitFadeDuration(500)
+                    start()
+                }
             }
-        } else {
-            searchButton.icon = getDrawable(R.drawable.search_to_add)
-            (searchButton.icon as AnimationDrawable).apply {
-                setEnterFadeDuration(300)
-                setExitFadeDuration(500)
-                start()
-            }
-        }
     }
 
     override fun addOneToFavourites(viewName: String) {
@@ -481,7 +485,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         key = "favouritesArray"
                         value = updatedMap.toJson()
                     }
-                    commit()
+                    apply()
                     showToast {
                         resId = R.string.added_favourites
                         duration = Toast.LENGTH_SHORT

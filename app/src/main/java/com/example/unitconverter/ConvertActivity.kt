@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
+import com.example.unitconverter.AdditionItems.FavouritesCalledIt
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.card
@@ -477,18 +478,14 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     startActivity(this)
                 }
             }
-            R.id.favourite -> {
-                buildIntent<FavouritesActivity> {
-                    startActivity(this)
-                    finish()
-                }
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.convert_menu, menu)
+        val favoritesCalledIt = intent.getBooleanExtra(FavouritesCalledIt, false)
+        if (favoritesCalledIt) menu?.removeItem(R.id.favourite)
         return true
     }
 

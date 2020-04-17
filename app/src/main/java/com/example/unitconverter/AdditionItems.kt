@@ -50,6 +50,7 @@ object AdditionItems {
     const val pkgName = "com.example.unit_converter"
     const val TextMessage = "$pkgName.TextMessage"
     const val ViewIdMessage = "$pkgName.ViewIdMessage"
+    const val FavouritesCalledIt = "$pkgName.favourites_favourites_called_it"
 
     fun endAnimation() {
         animateStart?.apply {

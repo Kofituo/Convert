@@ -1,7 +1,11 @@
 package com.example.unitconverter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.InputFilter
 import android.util.SparseArray
 import android.util.TypedValue
@@ -227,5 +231,23 @@ object Utils {
     inline fun IntRange.forEachIndexed(start: Int, action: (index: Int, Int) -> Unit) {
         var index = start
         for (item in this) action(index++, item)
+    }
+
+    @SuppressLint("NewApi")
+    fun performVibration(context: Context) {
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        when {
+            Build.VERSION.SDK_INT < 26 -> vibrator.vibrate(100)
+            Build.VERSION.SDK_INT < 29 -> {
+                val vibrationEffect =
+                    VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
+                vibrator.vibrate(vibrationEffect)
+            }
+            else -> {
+                val vibrationEffect =
+                    VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                vibrator.vibrate(vibrationEffect)
+            }
+        }
     }
 }

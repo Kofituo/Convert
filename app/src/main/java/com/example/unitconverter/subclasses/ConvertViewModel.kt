@@ -16,7 +16,7 @@ class ConvertViewModel : ViewModel() {
         }
     var whichButton = -1
 
-    var favouritesData = listOf<FavouritesData>()
+    var favouritesData = mutableListOf<FavouritesData>()
         set(value) {
             if (field.isEmpty()) {
                 field = value
