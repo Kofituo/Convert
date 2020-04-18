@@ -1,66 +1,90 @@
 package com.example.unitconverter
 
+import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
+import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import com.example.unitconverter.AdditionItems.FavouritesCalledIt
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.builders.buildIntent
-import com.example.unitconverter.miscellaneous.isNull
-import com.example.unitconverter.miscellaneous.sharedPreferences
+import com.example.unitconverter.miscellaneous.*
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.FavouritesAdapter
 import com.example.unitconverter.subclasses.FavouritesAdapter.Companion.favouritesAdapter
 import com.example.unitconverter.subclasses.FavouritesData
 import kotlinx.android.synthetic.main.activity_favourites_empty.*
+import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.UnstableDefault
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.stringify
 
 class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var favouritesAdapter: FavouritesAdapter
     private lateinit var viewModel: ConvertViewModel
+    private lateinit var constraintLayout: ConstraintLayout
+    private lateinit var rootGroup: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        rootGroup = LayoutInflater.from(this).inflate {
+            resourceId = R.layout.activity_favourites_empty
+        } as ConstraintLayout
         viewModel = ViewModelProvider(this)[ConvertViewModel::class.java]
         intent {
-            if (getSerializableExtra("$pkgName.favourites_list")
+            if (
+                getSerializableExtra("$pkgName.favourites_list")
                     ?.apply {
-                        Log.e("called", "serial")
                         @Suppress("UNCHECKED_CAST")
                         this as ArrayList<FavouritesData>
                         viewModel.favouritesData = this
                         favouritesAdapter = favouritesAdapter {
                             dataSet = viewModel.favouritesData
                             activity = this@FavouritesActivity
-                            comparator =
-                                Comparator { first: FavouritesData, second: FavouritesData ->
-                                    first.drawableId!!.compareTo(second.drawableId!!)
-                                }
                             setFavouritesItemListener(this@FavouritesActivity)
                         }
-                        setContentView(R.layout.activity_favourites)
-                        recyclerView = recyclerView {
-                            layoutManager = LinearLayoutManager(this@FavouritesActivity)
-                            adapter = favouritesAdapter
-                        }
+                        Log.e("serial", "$this")
+                        rootGroup
+                            .addView(RecyclerView(this@FavouritesActivity)
+                                .apply {
+                                    id = R.id.view
+                                    background = getDrawable(R.drawable.rounded_front)
+                                    layoutParams = ConstraintLayout.LayoutParams(0, 0)
+                                    layoutParams<ConstraintLayout.LayoutParams> {
+                                        setDefaultParam()
+                                    }
+                                }
+                            )
+
                     }.isNull()
-            ) setContentView(R.layout.activity_favourites_empty)
+            ) {
+                initialiseLayout()
+                rootGroup.addView(constraintLayout)
+            }
+            setContentView(rootGroup)
+            if (!::constraintLayout.isInitialized)
+                recyclerView = recyclerView {
+                    layoutManager = LinearLayoutManager(this@FavouritesActivity)
+                    adapter = favouritesAdapter
+                    setTopPadding(this@FavouritesActivity, 20)
+                }
         }
+
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -76,15 +100,36 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         }
     }
 
-    private inline fun recyclerView(block: RecyclerView.() -> Unit) =
-        findViewById<RecyclerView>(R.id.view).apply(block)
+    private fun ConstraintLayout.LayoutParams.setDefaultParam() {
+        bottomToBottom = ConstraintSet.PARENT_ID
+        endToEnd = ConstraintSet.PARENT_ID
+        startToStart = ConstraintSet.PARENT_ID
+        topToBottom = R.id.toolbar
+    }
+
+    private fun initialiseLayout() {
+        constraintLayout = LayoutInflater
+            .from(this@FavouritesActivity)
+            .inflate {
+                resourceId = R.layout.add_to_favourites
+            } as ConstraintLayout
+        constraintLayout.apply {
+            id = R.id.view
+            layoutParams = ConstraintLayout.LayoutParams(0, 0)
+            layoutParams<ConstraintLayout.LayoutParams> {
+                setDefaultParam()
+            }
+        }
+    }
+
+    private inline fun recyclerView(block: RecyclerView.() -> Unit): RecyclerView {
+        Log.e("view", "${findViewById<View>(R.id.view)}")
+        return findViewById<RecyclerView>(R.id.view).apply(block)
+    }
 
     private inline fun window(block: Window.() -> Unit) = window?.apply(block)
 
     private inline fun intent(block: Intent.() -> Unit) = intent.apply(block)
-
-    private inline fun sharedPreferences(block: SharedPreferences.() -> Unit) =
-        sharedPreferences(sharedPreferences, block)
 
     private lateinit var searchButton: MenuItem
 
@@ -118,9 +163,13 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                                 forceChange = true
                                 endSelection()
                             }
-                            if (dataSet.isEmpty()) {
-                                setContentView(R.layout.activity_favourites_empty)
-                            }
+                            if (dataSet.isEmpty())
+                                rootGroup.apply {
+                                    TransitionManager.beginDelayedTransition(this)
+                                    removeView(recyclerView)
+                                    initialiseLayout()
+                                    addView(constraintLayout)
+                                }
                         }
                     binToSearch()
                     initiated = false
@@ -144,6 +193,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         buildIntent<ConvertActivity> {
             putExtra(TextMessage, data.topText)
             putExtra(ViewIdMessage, data.cardId!!)
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(this)
         }
     }
@@ -182,11 +232,20 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 getMap().apply {
                     if (isNotEmpty()) {
                         val max = keys.max()!! + 1
-                        val min = keys.min()!!
+                        //dummy null filled arrays so that only the selected items would call item changed
+                        val old = ArrayList<FavouritesData?>(size)
+                        val new = ArrayList<FavouritesData?>(size)
+                        for (i in 0 until max) {
+                            old.add(null)
+                            new.add(if (i in keys) FavouritesData() else null)
+                        }
                         clear()
-                        Log.e("called", "$min  $max  $this")
                         forceChange = true
-                        notifyItemRangeChanged(min, max)
+                        oldList = old
+                        newList = new
+                        DiffUtil
+                            .calculateDiff(diffUtil)
+                            .dispatchUpdatesTo(favouritesAdapter)
                         endSelection()
                     }
                 }
@@ -213,5 +272,25 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 notifyItemRangeChanged(0, itemCount)
             }
         }
+    }
+
+    @UnstableDefault
+    @OptIn(ImplicitReflectionSerializer::class)
+    override fun onPause() {
+        if (::favouritesAdapter.isInitialized) {
+            getSharedPreferences(MainActivity.FAVOURITES, Context.MODE_PRIVATE)
+                .edit()
+                .apply {
+                    val new = favouritesAdapter.dataSet.map { it.cardName }
+                    Log.e("new", "$new")
+                    put<String> {
+                        key = "favouritesArray"
+                        @Suppress("UNCHECKED_CAST")
+                        value = Json.stringify(new as ArrayList<String>)
+                    }
+                    apply()
+                }
+        }
+        super.onPause()
     }
 }

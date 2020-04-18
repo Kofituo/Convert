@@ -22,6 +22,7 @@ import com.example.unitconverter.builders.buildConstraintSet
 import com.example.unitconverter.miscellaneous.isNotNull
 import com.example.unitconverter.miscellaneous.layoutParams
 import com.google.android.material.card.MaterialCardView
+import java.util.*
 
 class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null) :
     ConstraintLayout(context, attributeSet) {
@@ -172,18 +173,18 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
 
     // initialize only when needed
     private val selectionMap by lazy(LazyThreadSafetyMode.NONE) {
-        LinkedHashMap<String, String>(30)
+        ArrayDeque<String>(30)
     }
 
     fun addToMap(viewName: String) {
-        selectionMap[viewName] = viewName
+        selectionMap.offerFirst(viewName)
     }
 
     fun removeFromMap(viewName: String) {
         selectionMap.remove(viewName)
     }
 
-    fun getMap() = selectionMap
+    fun getArray() = selectionMap
 
     infix fun setSelectionListener(selection: Selection) {
         this.selection = selection

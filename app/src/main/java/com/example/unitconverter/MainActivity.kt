@@ -46,6 +46,10 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.stringify
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.LinkedHashMap
 
 //change manifest setting to backup allow true
 @UnstableDefault
@@ -73,8 +77,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private lateinit var mSelectedOrderArray: Map<String, Int>
 
     companion object {
-        const val FAVOURITES = 0
+        const val FAVOURITES = "$pkgName.favourites_activity_list"
     }
+
+    private var waitingArrayDeque = ArrayDeque<String>(30)
 
     @OptIn(ImplicitReflectionSerializer::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -261,12 +267,14 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             selectionInProgress {
                 endSelection()
             }
+            waitingArrayDeque.clear()
         }
     }
 
     private inline fun grid(block: GridConstraintLayout.() -> Unit) =
         grid.apply(block)
 
+    @OptIn(ImplicitReflectionSerializer::class)
     override fun onPause() {
         super.onPause()
         editPreferences {
@@ -290,6 +298,26 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             put<Boolean> {
                 key = "recentlyUsedBoolean"
                 value = recentlyUsedBool
+            }
+            if (waitingArrayDeque.isNotEmpty()) {
+                if (!favouritesCalled)
+                    sharedPreferences(favouritesPreferences) {
+                        get<String?>("favouritesArray") {
+                            if (this.hasValue()) {
+                                val previous = Json.parse(DeserializeStringDeque, this)
+                                waitingArrayDeque.offerLast(previous)
+                            }
+                        }
+                        favouritesCalled = !favouritesCalled
+                    }
+                editPreferences(favouritesPreferences) {
+                    put<String> {
+                        Log.e("pause", "$waitingArrayDeque")
+                        key = "favouritesArray"
+                        value = Json.stringify(waitingArrayDeque.toMutableList())
+                    }
+                    apply()
+                }
             }
             apply()
         }
@@ -331,6 +359,11 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
     }
 
+    private val favouritesPreferences
+        get() = getSharedPreferences(FAVOURITES, Context.MODE_PRIVATE)
+
+    private var favouritesCalled = false //to prevent double getting of shared preference
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.sort -> {
             BottomSheetFragment().apply {
@@ -347,40 +380,50 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
         R.id.favourite -> {
             buildIntent<FavouritesActivity> {
-                sharedPreferences {
+                sharedPreferences(favouritesPreferences) {
                     get<String?>("favouritesArray") {
+                        favouritesCalled = true
                         if (this.hasValue()) {
-                            Log.e("has ", "value")
-                            //send the list to the activity
-                            val map = Json.parse(DeserializeStringStringMap, this)
+                            Log.e("has ", "value  $waitingArrayDeque")
+                            //already sorted in reverse order
+                            val deque = Json.parse(DeserializeStringDeque, this)
+                            waitingArrayDeque.offerLast(deque)
                                 .apply {
                                     if (isEmpty()) {
                                         startActivity(this@buildIntent)
                                         return true
                                     }
+                                    Log.e("called Linked", "$this  \n$deque $waitingArrayDeque")
                                 }
-                            val favouritesList: ArrayList<FavouritesData>
-                            getNameToViewMap().apply {
-                                favouritesList = map.map {
-                                    val view = this[it.key] //shouldn't be null though
-                                    view?.run {
-                                        this as MyCardView
-                                        val textView = (this@run.getChildAt(1) as DataTextView)
-                                        favouritesBuilder {
-                                            drawableId = drawableIds[this@run.id]
-                                            topText = textView.text
-                                            metadata = textView.metadata
-                                            cardId = this@run.id
-                                            Log.e("item", "$this ${textView.text}  ")
-                                        }
-                                    }
-                                }.run {
-                                    filterNotNullTo(ArrayList(size)) // none should be null though
-                                }
-                            }
-                            this@buildIntent.putExtra("$pkgName.favourites_list", favouritesList)
                         }
                     }
+                }
+                if (waitingArrayDeque.isNotEmpty()) {
+                    //send the list to the activity
+                    val favouritesList: ArrayList<FavouritesData>
+                    getNameToViewMap().apply {
+                        favouritesList = waitingArrayDeque.map {
+                            val view = this[it] //shouldn't be null though
+                            view?.run {
+                                this as MyCardView
+                                val textView = (this@run.getChildAt(1) as DataTextView)
+                                favouritesBuilder {
+                                    drawableId = drawableIds[this@run.id]
+                                    topText = textView.text
+                                    metadata = textView.metadata
+                                    cardId = this@run.id
+                                    cardName = this@run.name
+                                }
+                            }
+                        }.run {
+                            filterNotNullTo(ArrayList(size)) // none should be null though
+                        }
+                    }
+                    Log.e(
+                        "just before",
+                        "$favouritesList  $waitingArrayDeque  ${waitingArrayDeque.size == favouritesList.size}"
+                    )
+                    this@buildIntent.putExtra("$pkgName.favourites_list", favouritesList)
                 }
                 startActivity(this)
             }
@@ -390,39 +433,20 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             if (!useDefault) {
                 // store selected items
                 grid {
-                    val map = getMap()
+                    val map = getArray()
                     if (map.isEmpty()) {
                         endSelection()
                         return true
                     }
-                    sharedPreferences {
-                        editPreferences {
-                            get<String?>("favouritesArray") {
-                                if (this.hasValue()) {
-                                    val previousMap =
-                                        Json.parse(DeserializeStringStringMap, this)
-                                    val updatedMap = map.reversed() + previousMap
-                                    put<String> {
-                                        key = "favouritesArray"
-                                        value = updatedMap.toJson()
-                                    }
-                                } else {
-                                    put<String> {
-                                        key = "favouritesArray"
-                                        value = map.reversed().toJson()
-                                    }
-                                }
-                                apply()
-                            }
-                        }
-                        grid {
-                            endSelection()
-                        }
-                        showToast {
-                            resId = R.string.added_favourites
-                            duration = Toast.LENGTH_LONG
-                        }
+                    waitingArrayDeque.offerFirst(map)
+                    grid {
+                        endSelection()
                     }
+                    showToast {
+                        resId = R.string.added_favourites
+                        duration = Toast.LENGTH_LONG
+                    }
+                    map.clear() //for efficiency
                 }
             }
             true
@@ -465,33 +489,15 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 
     override fun addOneToFavourites(viewName: String) {
-        sharedPreferences {
-            editPreferences {
-                get<String?>("favouritesArray") {
-                    val updatedMap: MutableMap<String, String>
-                    if (this.hasValue()) {
-                        val previousMap = Json.parse(DeserializeStringStringMap, this)
-                        updatedMap = buildMutableMap(previousMap.size + 1) {
-                            put {
-                                key = viewName
-                                value = viewName
-                            }
-                            putAll(previousMap)
-                        }
-                    } else {
-                        updatedMap = mutableMapOf(viewName to viewName)
-                    }
-                    put<String> {
-                        key = "favouritesArray"
-                        value = updatedMap.toJson()
-                    }
-                    apply()
-                    showToast {
-                        resId = R.string.added_favourites
-                        duration = Toast.LENGTH_SHORT
-                    }
-                }
-            }
+        Log.e("array one before", "$waitingArrayDeque")
+        waitingArrayDeque.apply {
+            remove(viewName)
+            offerFirst(viewName)
+            Log.e("array one", "$this")
+        }
+        showToast {
+            resId = R.string.added_favourites
+            duration = Toast.LENGTH_SHORT
         }
     }
 
@@ -608,28 +614,3 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
     }
 }
-
-/*
-
-    fun test(v: View) =
-        Toast.makeText(this, "well", Toast.LENGTH_SHORT).show()
-
-    // create full screen mode
-    fun showBars() {
-        window.decorView.systemUiVisibility = //SYSTEM_UI_FLAG_LAYOUT_STABLE or
-            SYSTEM_UI_FLAG_VISIBLE or
-                    SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-    }
-
-    fun dimBars() {
-        window?.decorView?.systemUiVisibility = //SYSTEM_UI_FLAG_LAYOUT_STABLE or
-            SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    SYSTEM_UI_FLAG_IMMERSIVE or
-                    SYSTEM_UI_FLAG_HIDE_NAVIGATION
-    }
-*/
-
-/*
-private var mVelocityTracker: VelocityTracker? = null
-private var callAgain = 2
- */

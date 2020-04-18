@@ -71,6 +71,16 @@ inline fun <reified T> Activity.buildIntent(block: Intent.() -> Unit) =
         Intent(this, T::class.java).apply(block)
     }
 
+/**
+ * Creates a new [Intent] and applies [builder] to it
+ *
+ * Returns true
+ * */
+inline fun intentBuilder(builder: Intent.() -> Unit) =
+    true.also {
+        Intent().apply(builder)
+    }
+
 /*Constraint set*/
 /**
  * Creates a new [ConstraintSet] and applies the [block] to it

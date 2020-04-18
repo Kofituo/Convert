@@ -1,8 +1,10 @@
 package com.example.unitconverter.miscellaneous
 
 import android.app.Activity
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import com.example.unitconverter.Utils.dpToInt
 
 inline fun <reified T : ViewGroup.LayoutParams> View.layoutParams(block: T.() -> Unit) =
     (layoutParams as T).apply(block)
@@ -25,5 +27,27 @@ inline fun Activity.showToast(block: Toast.() -> Unit) {
         if (resId == null) {
             android.widget.Toast.makeText(this@showToast, text, duration!!).show()
         } else android.widget.Toast.makeText(this@showToast, resId!!, duration!!).show()
+    }
+}
+
+fun View.setLeftPadding(context: Context, padding: Int) {
+    apply {
+        setPadding(
+            padding.dpToInt(context),
+            paddingTop,
+            paddingRight,
+            paddingBottom
+        )
+    }
+}
+
+fun View.setTopPadding(context: Context, padding: Int) {
+    apply {
+        setPadding(
+            paddingLeft,
+            padding.dpToInt(context),
+            paddingRight,
+            paddingBottom
+        )
     }
 }

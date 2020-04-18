@@ -52,55 +52,5 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/toolbar" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/rounded_front"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/add_image"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/ic_add_box_black_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.4" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/add_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-thin"
-            android:gravity="center"
-            android:text="@string/favourites_dialog"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@id/rightGuide"
-            app:layout_constraintStart_toStartOf="@id/left"
-            app:layout_constraintTop_toBottomOf="@id/add_image" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/rightGuide"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.92" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/left"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.08" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--TODO-->
 </androidx.constraintlayout.motion.widget.MotionLayout>

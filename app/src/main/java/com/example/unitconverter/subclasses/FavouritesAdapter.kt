@@ -19,14 +19,12 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
 
     lateinit var dataSet: MutableList<FavouritesData>
 
-    lateinit var comparator: Comparator<FavouritesData>
-
     lateinit var activity: Activity
 
     private lateinit var favouritesItem: FavouritesItem
 
-    lateinit var oldList: List<FavouritesData>
-    lateinit var newList: List<FavouritesData>
+    lateinit var oldList: List<FavouritesData?>
+    lateinit var newList: List<FavouritesData?>
 
     private val cacheDrawable = LinkedHashMap<Int, Drawable>(30)
 
@@ -40,8 +38,6 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
         DiffUtil.calculateDiff(diffUtil).dispatchUpdatesTo(this)
         return result
     }
-
-    fun getRemovedValues() = ArrayList(selectedItems.keys)
 
     var forceChange = false
 
@@ -133,22 +129,25 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
                 view.background =
                     if (position in selectedItems) rippleDrawable
                     else activity.getDrawable(R.drawable.init)
-                Log.e("called", "called  ${selectedItems.size}  ${position in selectedItems}")
+                Log.e(
+                    "called",
+                    "called  ${selectedItems.size}  ${position in selectedItems}  $position"
+                )
             }
             if (forceChange) {
                 //it becomes gradient drawable for no reason
                 if (view.background !is RippleDrawable) {
                     view.background = activity.getDrawable(R.drawable.init)
-                    Log.e("gradient called", "called  $position")
+                    Log.e("gradient called", "$longClicked  $position")
                 }
             }
         }
     }
 
-    private val diffUtil = object : DiffUtil.Callback() {
+    val diffUtil = object : DiffUtil.Callback() {
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-            oldList[oldItemPosition].cardId == newList[newItemPosition].cardId
+            oldList[oldItemPosition]?.cardId == newList[newItemPosition]?.cardId
 
         override fun getOldListSize(): Int = oldList.size
 

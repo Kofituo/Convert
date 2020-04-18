@@ -210,7 +210,6 @@ object Utils {
             for (i in this.size - 1 downTo 0)
                 this[i].apply {
                     reversedMap[key] = value
-                    mapOf<Int, Int>() + mapOf<Int, Int>()
                 }
             reversedMap
         }

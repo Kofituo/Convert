@@ -7,7 +7,8 @@ data class FavouritesData(
     var drawableId: Int? = null,
     var topText: CharSequence? = null,
     var metadata: String? = null,
-    var cardId: Int? = null
+    var cardId: Int? = null,
+    var cardName: String? = null
 ) : Serializable {
     companion object {
         fun favouritesBuilder(action: FavouritesData.() -> Unit) = FavouritesData().apply(action)

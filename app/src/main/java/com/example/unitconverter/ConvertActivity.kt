@@ -83,8 +83,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             TextUtils.getLayoutDirectionFromLocale(Locale.getDefault()) == View.LAYOUT_DIRECTION_RTL
 
         if (!isRTL) {
-            bottom_button.setTopPadding(-3) //converts it to dp
-            top_button.setTopPadding(-3)
+            bottom_button.setLeftPadding(this, -3) //converts it to dp
+            top_button.setLeftPadding(this, -3)
         }
         dialog = ConvertFragment()
         // for setting the text
@@ -561,17 +561,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     private inline fun window(block: Window.() -> Unit) = window?.apply(block)
-
-    private fun View.setTopPadding(padding: Int) {
-        apply {
-            setPadding(
-                padding.dpToInt(this@ConvertActivity),
-                paddingTop,
-                paddingRight,
-                paddingBottom
-            )
-        }
-    }
 
     //could have used reflection
     private inline fun callBack(f: (Positions) -> String, x: String): String {
