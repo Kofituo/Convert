@@ -1,6 +1,5 @@
 package com.example.unitconverter
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
@@ -634,10 +633,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    private lateinit var sharedPreferences: SharedPreferences
+    private val sharedPreferences by sharedPreference {
+        pkgName + viewName
+    }
 
     private fun getLastConversions() {
-        sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
         sharedPreferences {
             get<String?>("topTextViewText") {
                 topTextView.text =

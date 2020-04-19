@@ -32,7 +32,7 @@ class BottomSheetFragment : DialogFragment() {
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dial = Dialog(context!!, R.style.sortDialogStyle)
+        val dial = Dialog(requireContext(), R.style.sortDialogStyle)
 
         val screenWidth = resources.displayMetrics.widthPixels
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -129,5 +129,5 @@ class BottomSheetFragment : DialogFragment() {
         for (i in 0 until this.childCount) this.getChildAt(i).isEnabled = state
     }
 
-    private fun Int.dpToInt(): Int = dpToInt(context!!)
+    private fun Int.dpToInt(): Int = dpToInt(requireContext())
 }

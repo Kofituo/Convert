@@ -3,7 +3,6 @@ package com.example.unitconverter
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.os.Bundle
@@ -12,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.AdditionItems.pkgName
@@ -33,8 +32,10 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private lateinit var cancelButton: MaterialButton
     private lateinit var searchBar: TextInputLayout
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewModel: ConvertViewModel
-    private lateinit var sharedPreferences: SharedPreferences
+    private val viewModel: ConvertViewModel by activityViewModels()
+    private val sharedPreferences by sharedPreferences {
+        pkgName + viewName
+    }
 
     //
     private var viewId: Int = -1
@@ -60,10 +61,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         }
         string = if (whichButton == R.id.top_button) "topButton" else "bottomButton"
         positionKey = string.substringBefore("B") + "Position"
-        activity?.run {
-            viewModel = ViewModelProvider(this)[ConvertViewModel::class.java]
-            sharedPreferences = getSharedPreferences(pkgName + viewName, Context.MODE_PRIVATE)
-        }
         viewModel.dataSet = whichView(viewId)
         lastPosition = sharedPreferences.get(string)
     }
@@ -72,7 +69,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         val isPortrait = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val screenWidth = resources.displayMetrics.widthPixels
         val screenHeight = resources.displayMetrics.heightPixels
-        val dialog = Dialog(context!!, R.style.sortDialogStyle)
+        val dialog = Dialog(requireContext(), R.style.sortDialogStyle)
         //view
         LayoutInflater.from(context).inflate {
             resourceId = R.layout.items_list //root is by default set to null
@@ -157,39 +154,38 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     }
 
     private fun whichView(id: Int): MutableList<RecyclerDataClass> {
-        val context = context!!
         return when (id) {
-            R.id.Mass -> Mass(context).getList()
+            R.id.Mass -> Mass(requireContext()).getList()
 
-            R.id.prefixes -> Prefix(context).getList()
+            R.id.prefixes -> Prefix(requireContext()).getList()
 
-            R.id.Temperature -> Temperature(context).getList()
+            R.id.Temperature -> Temperature(requireContext()).getList()
 
-            R.id.Area -> Area(context).getList()
+            R.id.Area -> Area(requireContext()).getList()
 
-            R.id.Length -> Length(context).getList()
+            R.id.Length -> Length(requireContext()).getList()
 
-            R.id.Volume -> Volume(context).getList()
+            R.id.Volume -> Volume(requireContext()).getList()
 
-            R.id.Angle -> Angle(context).getList()
+            R.id.Angle -> Angle(requireContext()).getList()
 
-            R.id.time -> Time(context).getList()
+            R.id.time -> Time(requireContext()).getList()
 
-            R.id.Pressure -> Pressure(context).getList()
+            R.id.Pressure -> Pressure(requireContext()).getList()
 
-            R.id.Speed -> Speed(context).getList()
+            R.id.Speed -> Speed(requireContext()).getList()
 
-            R.id.fuelEconomy -> FuelEconomy(context).getList()
+            R.id.fuelEconomy -> FuelEconomy(requireContext()).getList()
 
-            R.id.dataStorage -> DataStorage(context).getList()
+            R.id.dataStorage -> DataStorage(requireContext()).getList()
 
-            R.id.electric_current -> ElectricCurrent(context).getList()
+            R.id.electric_current -> ElectricCurrent(requireContext()).getList()
 
-            R.id.luminance -> Luminance(context).getList()
+            R.id.luminance -> Luminance(requireContext()).getList()
 
-            R.id.Illuminance -> Illuminance(context).getList()
+            R.id.Illuminance -> Illuminance(requireContext()).getList()
 
-            R.id.energy -> Energy(context).getList()
+            R.id.energy -> Energy(requireContext()).getList()
 
             else -> mutableListOf()
         }

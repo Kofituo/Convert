@@ -7,6 +7,12 @@ import com.example.unitconverter.RecyclerDataClass
 class ConvertViewModel : ViewModel() {
     var randomInt = 0
     var motionProgress = 0f
+        get() {
+            val result = field
+            field = 1f
+            return result
+        }
+
     var dataSet = mutableListOf<RecyclerDataClass>()
         set(value) {
             if (field.isEmpty()) {
@@ -16,12 +22,12 @@ class ConvertViewModel : ViewModel() {
         }
     var whichButton = -1
 
-    var favouritesData = mutableListOf<FavouritesData>()
-        set(value) {
-            if (field.isEmpty()) {
-                field = value
-                Log.e("called", "onec in field")
-            }
-            Log.e("favourites", "$value  size${value.size}")
+    var selectedFavourites: MutableMap<Int, FavouritesData>? = null
+
+    var favouritesProgress = 0f
+        get() {
+            val result = field
+            field = 1f
+            return result
         }
 }

@@ -48,7 +48,6 @@ import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.stringify
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
 //change manifest setting to backup allow true
@@ -72,7 +71,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private var h = 0
     private var w = 0
 
-    private lateinit var sharedPreferences: SharedPreferences
+    private val sharedPreferences by defaultPreferences()
 
     private lateinit var mSelectedOrderArray: Map<String, Int>
 
@@ -89,7 +88,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         setSupportActionBar(app_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         window.statusBarColor = Color.parseColor("#4DD0E1")
-        sharedPreferences = getPreferences(Context.MODE_PRIVATE)
         h = resources.displayMetrics.heightPixels / 2
         w = resources.displayMetrics.widthPixels / 2
         Log.e(
@@ -141,7 +139,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
             progress = viewModel.motionProgress
         }
-        viewModel.motionProgress = 1f
 
         sharedPreferences {
             editPreferences {
@@ -268,6 +265,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 endSelection()
             }
             waitingArrayDeque.clear()
+            favouritesCalled = false
         }
     }
 
@@ -300,11 +298,13 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 value = recentlyUsedBool
             }
             if (waitingArrayDeque.isNotEmpty()) {
+                //Log.e("fav", "$favouritesCalled")
                 if (!favouritesCalled)
                     sharedPreferences(favouritesPreferences) {
                         get<String?>("favouritesArray") {
                             if (this.hasValue()) {
                                 val previous = Json.parse(DeserializeStringDeque, this)
+                                //Log.e("prev", "$previous")
                                 waitingArrayDeque.offerLast(previous)
                             }
                         }
@@ -312,7 +312,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     }
                 editPreferences(favouritesPreferences) {
                     put<String> {
-                        Log.e("pause", "$waitingArrayDeque")
+                        //Log.e("pause", "$waitingArrayDeque")
                         key = "favouritesArray"
                         value = Json.stringify(waitingArrayDeque.toMutableList())
                     }
@@ -384,7 +384,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     get<String?>("favouritesArray") {
                         favouritesCalled = true
                         if (this.hasValue()) {
-                            Log.e("has ", "value  $waitingArrayDeque")
+                            //Log.e("has ", "value  $waitingArrayDeque")
                             //already sorted in reverse order
                             val deque = Json.parse(DeserializeStringDeque, this)
                             waitingArrayDeque.offerLast(deque)
@@ -393,7 +393,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                                         startActivity(this@buildIntent)
                                         return true
                                     }
-                                    Log.e("called Linked", "$this  \n$deque $waitingArrayDeque")
+                                    //Log.e("called Linked", "$this  \n$deque $waitingArrayDeque")
                                 }
                         }
                     }
@@ -402,6 +402,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     //send the list to the activity
                     val favouritesList: ArrayList<FavouritesData>
                     getNameToViewMap().apply {
+                        @Suppress("UNCHECKED_CAST")
                         favouritesList = waitingArrayDeque.map {
                             val view = this[it] //shouldn't be null though
                             view?.run {
@@ -415,14 +416,16 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                                     cardName = this@run.name
                                 }
                             }
-                        }.run {
-                            filterNotNullTo(ArrayList(size)) // none should be null though
-                        }
+                        } as ArrayList<FavouritesData>
+                        /*.run {
+                        filterNotNullTo(ArrayList(size)) // none should be null though
+                    }*/
                     }
-                    Log.e(
+                    /*Log.e(
                         "just before",
-                        "$favouritesList  $waitingArrayDeque  ${waitingArrayDeque.size == favouritesList.size}"
-                    )
+                        "$favouritesList  $waitingArrayDeque  " +
+                                "${waitingArrayDeque.size == favouritesList.size}"
+                    )*/
                     this@buildIntent.putExtra("$pkgName.favourites_list", favouritesList)
                 }
                 startActivity(this)
@@ -489,11 +492,11 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 
     override fun addOneToFavourites(viewName: String) {
-        Log.e("array one before", "$waitingArrayDeque")
+        //Log.e("array one before", "$waitingArrayDeque")
         waitingArrayDeque.apply {
             remove(viewName)
             offerFirst(viewName)
-            Log.e("array one", "$this")
+            //Log.e("array one", "$this")
         }
         showToast {
             resId = R.string.added_favourites

@@ -45,9 +45,11 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
         longClicked = false
     }
 
+    fun startSelection() {
+        longClicked = true
+        favouritesItem.selectionInitiated()
+    }
     fun getMap() = selectedItems
-
-    val selectionInProgress get() = selectedItems.isNotEmpty()
 
     companion object {
         inline fun favouritesAdapter(block: FavouritesAdapter.() -> Unit) =

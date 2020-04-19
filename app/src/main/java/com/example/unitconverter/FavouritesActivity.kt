@@ -9,9 +9,10 @@ import android.util.Log
 import android.view.*
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.lifecycle.ViewModelProvider
+import androidx.core.content.edit
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,25 +37,32 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var favouritesAdapter: FavouritesAdapter
-    private lateinit var viewModel: ConvertViewModel
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var rootGroup: ConstraintLayout
+    private val adapterIsInit get() = ::favouritesAdapter.isInitialized
+    private var onCreateCalled = false
+        get() {
+            val result = field
+            field = false //reset it
+            return result
+        }
+
+    private val viewModel by viewModels<ConvertViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rootGroup = LayoutInflater.from(this).inflate {
             resourceId = R.layout.activity_favourites_empty
         } as ConstraintLayout
-        viewModel = ViewModelProvider(this)[ConvertViewModel::class.java]
         intent {
             if (
                 getSerializableExtra("$pkgName.favourites_list")
                     ?.apply {
                         @Suppress("UNCHECKED_CAST")
                         this as ArrayList<FavouritesData>
-                        viewModel.favouritesData = this
+                        Log.e("this", "$this")
                         favouritesAdapter = favouritesAdapter {
-                            dataSet = viewModel.favouritesData
+                            dataSet = this@apply//viewModel.getFavouritesData()
                             activity = this@FavouritesActivity
                             setFavouritesItemListener(this@FavouritesActivity)
                         }
@@ -98,6 +106,10 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 else resources.getColor(android.R.color.transparent)
             setBackgroundDrawable(resources.getDrawable(R.drawable.test, null))
         }
+        if (rootGroup is MotionLayout) {
+            (rootGroup as MotionLayout).progress = viewModel.favouritesProgress
+        }
+        onCreateCalled = true
     }
 
     private fun ConstraintLayout.LayoutParams.setDefaultParam() {
@@ -264,33 +276,71 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             super.onBackPressed()
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (hasFocus && ::favouritesAdapter.isInitialized && favouritesAdapter.selectionInProgress) {
-            recyclerView.adapter?.apply {
-                Log.e("itemCount", "$itemCount")
-                notifyItemRangeChanged(0, itemCount)
-            }
-        }
-    }
-
     @UnstableDefault
     @OptIn(ImplicitReflectionSerializer::class)
     override fun onPause() {
         if (::favouritesAdapter.isInitialized) {
             getSharedPreferences(MainActivity.FAVOURITES, Context.MODE_PRIVATE)
-                .edit()
-                .apply {
+                .edit {
                     val new = favouritesAdapter.dataSet.map { it.cardName }
-                    Log.e("new", "$new")
                     put<String> {
                         key = "favouritesArray"
                         @Suppress("UNCHECKED_CAST")
                         value = Json.stringify(new as ArrayList<String>)
                     }
-                    apply()
                 }
         }
+        if (::favouritesAdapter.isInitialized) {
+            // save selected items
+            favouritesAdapter.getMap().apply {
+                if (isNotEmpty())
+                    viewModel.selectedFavourites = this
+            }
+        }
         super.onPause()
+    }
+
+    private fun refreshFromMap(map: MutableMap<Int, FavouritesData>) {
+        favouritesAdapter.apply {
+            map.apply {
+                if (isNotEmpty()) {
+                    startSelection()
+                    val max = keys.max()!! + 1
+                    //dummy null filled arrays so that only the selected items would call item changed
+                    val old = ArrayList<FavouritesData?>(size)
+                    val new = ArrayList<FavouritesData?>(size)
+                    for (i in 0 until max) {
+                        old.add(null)
+                        new.add(if (i in keys) FavouritesData() else null)
+                    }
+                    //forceChange = true
+                    oldList = old
+                    newList = new
+                    getMap().putAll(map)
+                    DiffUtil
+                        .calculateDiff(diffUtil)
+                        .dispatchUpdatesTo(favouritesAdapter)
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (adapterIsInit && onCreateCalled) {
+            //Log.e("init", "on create $onCreateCalled")
+            favouritesAdapter.apply {
+                viewModel.selectedFavourites.apply {
+                    if (this.isNotNull()) {
+                        //selection occurred
+                        //Log.e("finall", "finally  ${viewModel.selectedFavourites}")
+                        recyclerView.post {
+                            refreshFromMap(this)
+                        }
+                        viewModel.selectedFavourites = null
+                    }
+                }
+            }
+        }
     }
 }
