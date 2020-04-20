@@ -17,7 +17,11 @@ import com.example.unitconverter.miscellaneous.isNull
 
 class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
 
+    var initialSize: Int? = null
+
     lateinit var dataSet: MutableList<FavouritesData>
+
+    val currentSize get() = dataSet.size
 
     lateinit var activity: Activity
 
@@ -49,6 +53,7 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
         longClicked = true
         favouritesItem.selectionInitiated()
     }
+
     fun getMap() = selectedItems
 
     companion object {

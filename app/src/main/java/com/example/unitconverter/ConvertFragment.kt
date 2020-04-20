@@ -38,7 +38,6 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     }
 
     //
-    private var viewId: Int = -1
     private lateinit var viewName: String
     private var lastPosition = -1
     private var whichButton = -1
@@ -54,6 +53,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     override fun onCreate(savedInstanceState: Bundle?) {
         start = System.nanoTime()
         super.onCreate(savedInstanceState)
+        var viewId: Int = -1
         arguments?.apply {
             viewId = getInt("viewId")
             viewName = getString("viewName", "")
@@ -61,7 +61,12 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         }
         string = if (whichButton == R.id.top_button) "topButton" else "bottomButton"
         positionKey = string.substringBefore("B") + "Position"
-        viewModel.dataSet = whichView(viewId)
+        viewModel.apply {
+            if (!dataSetIsInit) {
+                dataSet = whichView(viewId)
+                Log.e("inini", "init")
+            }
+        }
         lastPosition = sharedPreferences.get(string)
     }
 

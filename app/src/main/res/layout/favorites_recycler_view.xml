@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingStart="28dp"
-    android:paddingEnd="28dp">
+    android:paddingStart="27dp"
+    android:paddingEnd="27dp">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/divider"
@@ -56,11 +56,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
         android:layout_marginBottom="3dp"
+        android:ellipsize="end"
         android:fontFamily="sans-serif-light"
         android:maxLines="1"
         android:text="@string/add_to_favourites"
         android:textColor="?android:attr/textColorPrimary"
         app:autoSizeMaxTextSize="19sp"
+        app:autoSizeStepGranularity="2sp"
         app:autoSizeMinTextSize="14sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@id/view_divider"

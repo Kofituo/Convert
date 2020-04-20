@@ -243,6 +243,7 @@
             android:layout_gravity="bottom|center"
             android:layout_margin="6dp"
             android:drawableTop="@drawable/ic_blood_pressure1"
+            app:metadata="@string/pressure_meta"
             android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/pressure"
@@ -275,6 +276,7 @@
             android:layout_margin="6dp"
             android:drawableTop="@drawable/ic_fast"
             android:drawablePadding="10dp"
+            app:metadata="@string/speed_meta"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/speed"
             android:textAlignment="center"
@@ -308,6 +310,7 @@
             android:fontFamily="@font/roboto_slab"
             android:text="@string/time"
             android:textAlignment="center"
+            app:metadata="@string/time_meta"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="14sp" />
@@ -337,6 +340,7 @@
             android:drawablePadding="8dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center"
+            app:metadata="@string/fuel_meta"
             android:lineSpacingMultiplier="0.86"
             android:text="@string/fuel_economy"
             android:textAlignment="center"
@@ -404,6 +408,7 @@
             android:lineSpacingMultiplier="0.88"
             android:text="@string/electric_current"
             android:textAlignment="center"
+            app:metadata="@string/current_meta"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
             android:textSize="13sp" />
@@ -430,6 +435,7 @@
             android:layout_gravity="bottom|center"
             android:layout_margin="6dp"
             android:drawableTop="@drawable/ic_light_bulb"
+            app:metadata="@string/luminance_meta"
             android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center"
@@ -459,6 +465,7 @@
 
         <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
+            app:metadata="@string/illuminance_meta"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_margin="6dp"
@@ -495,6 +502,7 @@
             android:drawableTop="@drawable/ic_science"
             android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
+            app:metadata="@string/energy_meta"
             android:text="@string/energy"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -520,6 +528,7 @@
 
         <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
+            app:metadata="@string/currency_meta"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_margin="6dp"

@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_margin="10dp"
+            app:metadata="@string/temp_meta"
             android:drawableTop="@drawable/ic_temperature"
             android:drawablePadding="6dp"
             android:fontFamily="@font/roboto_slab"
@@ -80,6 +81,7 @@
         <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:metadata="@string/area_meta"
             android:layout_gravity="bottom|center"
             android:layout_marginStart="-2dp"
             android:drawableTop="@drawable/ic_area"
@@ -121,6 +123,7 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
+            app:metadata="@string/mass_meta"
             android:textSize="13sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -145,6 +148,7 @@
             android:layout_gravity="center|bottom"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_cylinder"
+            app:metadata="@string/volume_meta"
             android:drawablePadding="6dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/volume"
@@ -173,6 +177,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
+            app:metadata="@string/length_meta"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_ruler"
             android:drawablePadding="6dp"
@@ -210,6 +215,7 @@
             android:drawablePadding="6dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/angle"
+            app:metadata="@string/angle_meta"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
@@ -234,6 +240,7 @@
 
         <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
+            app:metadata="@string/pressure_meta"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_margin="10dp"
@@ -271,6 +278,7 @@
             android:drawableTop="@drawable/ic_fast"
             android:drawablePadding="6dp"
             android:fontFamily="@font/roboto_slab"
+            app:metadata="@string/speed_meta"
             android:text="@string/speed"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -299,6 +307,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_margin="10dp"
+            app:metadata="@string/time_meta"
             android:drawableTop="@drawable/ic_circular_clock"
             android:drawablePadding="6dp"
             android:fontFamily="@font/roboto_slab"
@@ -329,6 +338,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
+            app:metadata="@string/fuel_meta"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_gas_station"
             android:drawablePadding="8dp"
@@ -401,6 +411,7 @@
             android:drawablePadding="2dp"
             android:fontFamily="@font/roboto_slab"
             android:lineSpacingMultiplier="0.88"
+            app:metadata="@string/current_meta"
             android:text="@string/electric_current"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -429,6 +440,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_margin="10dp"
+            app:metadata="@string/luminance_meta"
             android:drawableTop="@drawable/ic_light_bulb"
             android:drawablePadding="6dp"
             android:fontFamily="@font/roboto_slab"
@@ -469,6 +481,7 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#EB2B2313"
+            app:metadata="@string/illuminance_meta"
             android:textSize="13sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -493,6 +506,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_margin="10dp"
+            app:metadata="@string/energy_meta"
             android:drawableTop="@drawable/ic_science"
             android:drawablePadding="6dp"
             android:fontFamily="@font/roboto_slab"
@@ -522,6 +536,7 @@
         <com.example.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:metadata="@string/currency_meta"
             android:layout_gravity="center|bottom"
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_exchange"

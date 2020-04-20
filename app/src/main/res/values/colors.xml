@@ -4,5 +4,6 @@
     <color name="colorPrimaryDark">#FFFFFF</color>
     <color name="colorAccent">#D81B60</color>
     <color name="test">#000</color>
-    <color name="lighter_gray">#ddd</color>
+    <color name="selected">#ddd</color>
+    <color name="near_black">#464650</color>
 </resources>

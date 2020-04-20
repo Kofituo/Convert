@@ -64,6 +64,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                         favouritesAdapter = favouritesAdapter {
                             dataSet = this@apply//viewModel.getFavouritesData()
                             activity = this@FavouritesActivity
+                            initialSize = dataSet.size
                             setFavouritesItemListener(this@FavouritesActivity)
                         }
                         Log.e("serial", "$this")
@@ -279,22 +280,23 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     @UnstableDefault
     @OptIn(ImplicitReflectionSerializer::class)
     override fun onPause() {
-        if (::favouritesAdapter.isInitialized) {
-            getSharedPreferences(MainActivity.FAVOURITES, Context.MODE_PRIVATE)
-                .edit {
-                    val new = favouritesAdapter.dataSet.map { it.cardName }
-                    put<String> {
-                        key = "favouritesArray"
-                        @Suppress("UNCHECKED_CAST")
-                        value = Json.stringify(new as ArrayList<String>)
-                    }
+        if (adapterIsInit) {
+            favouritesAdapter.apply {
+                val arrayHasChanged = initialSize!! != currentSize
+                if (arrayHasChanged)
+                    getSharedPreferences(MainActivity.FAVOURITES, Context.MODE_PRIVATE)
+                        .edit {
+                            val new = dataSet.map { it.cardName }
+                            put<String> {
+                                key = "favouritesArray"
+                                @Suppress("UNCHECKED_CAST")
+                                value = Json.stringify(new as ArrayList<String>)
+                            }
+                        }
+                getMap().apply {
+                    if (isNotEmpty())
+                        viewModel.selectedFavourites = this
                 }
-        }
-        if (::favouritesAdapter.isInitialized) {
-            // save selected items
-            favouritesAdapter.getMap().apply {
-                if (isNotEmpty())
-                    viewModel.selectedFavourites = this
             }
         }
         super.onPause()
@@ -333,7 +335,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 viewModel.selectedFavourites.apply {
                     if (this.isNotNull()) {
                         //selection occurred
-                        //Log.e("finall", "finally  ${viewModel.selectedFavourites}")
+                        //Log.e("finally", "finally  ${viewModel.selectedFavourites}")
                         recyclerView.post {
                             refreshFromMap(this)
                         }

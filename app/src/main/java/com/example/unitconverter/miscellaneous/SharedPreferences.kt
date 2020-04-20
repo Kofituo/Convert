@@ -50,22 +50,17 @@ inline fun <reified T> SharedPreferences.get(key: String, block: T.() -> Unit = 
  * Delegate class to use shared preferences
  * */
 
-private class SharedPreferencesLazy(
-    activity: Any,
+class SharedPreferencesLazy(
+    private val activity: () -> Activity, // to create a wrapper around activity and to prevent errors like not attached to window
     private var stringFunc: (() -> String)? = null
 ) : Lazy<SharedPreferences> {
     private var cached: SharedPreferences? = null
-    private val activity by lazy {
-        when (activity) {
-            is Activity -> activity
-            is Fragment -> activity.requireActivity()
-            else -> TODO()
-        }
-    }
+
     override val value: SharedPreferences
         get() {
             val sharedPreferences = cached
             return if (sharedPreferences.isNull()) {
+                val activity = activity()
                 if (stringFunc.isNull())
                     activity.getPreferences(Context.MODE_PRIVATE)
                         .also {
@@ -84,10 +79,10 @@ private class SharedPreferencesLazy(
     override fun isInitialized(): Boolean = cached != null
 }
 
-fun Activity.defaultPreferences(): Lazy<SharedPreferences> = SharedPreferencesLazy(this)
+fun Activity.defaultPreferences(): Lazy<SharedPreferences> = SharedPreferencesLazy({ this })
 
 fun Fragment.sharedPreferences(string: () -> String): Lazy<SharedPreferences> =
-    SharedPreferencesLazy(this, string)
+    SharedPreferencesLazy({ this.requireActivity() }, string)
 
 fun Activity.sharedPreference(string: () -> String): Lazy<SharedPreferences> =
-    SharedPreferencesLazy(this, string)
+    SharedPreferencesLazy({ this }, string)
