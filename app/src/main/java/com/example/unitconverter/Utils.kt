@@ -244,7 +244,7 @@ object Utils {
             }
             else -> {
                 val vibrationEffect =
-                    VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                    VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK)
                 vibrator.vibrate(vibrationEffect)
             }
         }

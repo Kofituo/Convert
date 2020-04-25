@@ -40,9 +40,7 @@ import com.example.unitconverter.subclasses.*
 import com.example.unitconverter.subclasses.FavouritesData.Companion.favouritesBuilder
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
@@ -53,7 +51,7 @@ import kotlin.collections.LinkedHashMap
 //change manifest setting to backup allow true
 @UnstableDefault
 class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface,
-    GridConstraintLayout.Selection {
+    GridConstraintLayout.Selection,CoroutineScope by MainScope() {
 
     private val downTime = SystemClock.uptimeMillis()
     private val eventTime = SystemClock.uptimeMillis() + 10
@@ -125,7 +123,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                             return
                         }
                         2 -> {
-                            GlobalScope.launch {
+                            launch {
                                 delay(318)
                                 if (progress != 0F) {
                                     motionHandler.obtainMessage(1).sendToTarget()
@@ -464,6 +462,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     override fun onDestroy() {
         super.onDestroy()
         if (isInitialized) popupWindow.dismiss()
+        cancel()
     }
 
     private var useDefault = true

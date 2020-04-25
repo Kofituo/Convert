@@ -7,6 +7,8 @@
     <dist:module dist:instant="true" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="false"
@@ -17,10 +19,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".FavouritesActivity"></activity>
-        <activity
-            android:name=".ConvertActivity"
-            android:configChanges="layoutDirection|locale" />
         <activity
             android:name=".MainActivity"
             android:hardwareAccelerated="true"
@@ -28,10 +26,15 @@
             tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".FavouritesActivity">
+
+        </activity>
+        <activity
+            android:name=".ConvertActivity"
+            android:configChanges="layoutDirection|locale" />
     </application>
 
 </manifest>

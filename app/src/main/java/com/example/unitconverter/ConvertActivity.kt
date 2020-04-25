@@ -1,10 +1,14 @@
 package com.example.unitconverter
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -32,20 +36,30 @@ import com.example.unitconverter.Utils.lengthFilter
 import com.example.unitconverter.Utils.minusSign
 import com.example.unitconverter.Utils.removeCommas
 import com.example.unitconverter.Utils.temperatureFilters
-import com.example.unitconverter.builders.buildConstraintSet
-import com.example.unitconverter.builders.buildIntent
-import com.example.unitconverter.builders.buildMutableMap
+import com.example.unitconverter.builders.*
 import com.example.unitconverter.functions.*
 import com.example.unitconverter.miscellaneous.*
+import com.example.unitconverter.networks.DownloadCallback
+import com.example.unitconverter.networks.NetworkFragment
+import com.example.unitconverter.networks.Token
 import com.example.unitconverter.subclasses.Constraints
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.Positions
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_convert.*
+import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.parseMap
+import kotlinx.serialization.stringify
+import java.net.Socket
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.LinkedHashMap
 
-class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface {
+class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface,
+    DownloadCallback<String> {
 
     private var swap = false
     private var randomColor = -1
@@ -70,6 +84,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private lateinit var viewModel: ConvertViewModel
 
+    private inline val isCurrency get() = viewId == R.id.Currency
+    private lateinit var networkFragment: NetworkFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_convert)
@@ -85,6 +102,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             bottom_button.setLeftPadding(this, -3) //converts it to dp
             top_button.setLeftPadding(this, -3)
         }
+        if (isCurrency) {
+            networkFragment = NetworkFragment
+                .createFragment(supportFragmentManager) {
+                }
+        }
+        Snackbar.make(convert_parent,R.string.unable_to_get,Snackbar.LENGTH_LONG).show()
+        Snackbar.make(convert_parent,R.string.no_connection,Snackbar.LENGTH_LONG).show()
         dialog = ConvertFragment()
         // for setting the text
         intent {
@@ -173,7 +197,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 firstBox.hint = text
                 topTextView.apply {
                     this.text = unit
-                    layoutParams<ViewGroup.LayoutParams> {
+                    layoutParams = layoutParams {
                         width = ViewGroup.LayoutParams.WRAP_CONTENT
                         height = ViewGroup.LayoutParams.WRAP_CONTENT
                     }
@@ -184,7 +208,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 secondBox.hint = text
                 bottomTextView.apply {
                     this.text = unit
-                    layoutParams<ViewGroup.LayoutParams> {
+                    layoutParams = layoutParams {
                         width = ViewGroup.LayoutParams.WRAP_CONTENT
                         height = ViewGroup.LayoutParams.WRAP_CONTENT
                     }
@@ -637,6 +661,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         pkgName + viewName
     }
 
+    private var currenciesList: MutableList<RecyclerDataClass>? = null
+    private var currencyHasLoaded: Boolean? = null
+
     private fun getLastConversions() {
         sharedPreferences {
             get<String?>("topTextViewText") {
@@ -666,9 +693,47 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 put("topPosition", topPosition)
                 put("bottomPosition", bottomPosition)
             }
+            if (isCurrency) {
+                //get currency preferences
+                get<String?>("list_of_currencies") {
+                    if (this.hasValue()) {
+                        //means loaded before
+                        currencyHasLoaded = true
+                        currenciesList = getCurrencyList(this)
+                    }
+                }
+            }
         }
     }
 
+    @OptIn(ImplicitReflectionSerializer::class)
+    fun getCurrencyList(string: String): MutableList<RecyclerDataClass> {
+        Json.parseMap<String, String>(string).apply {
+            val list = ArrayList<RecyclerDataClass>(size)
+            var start = 0
+            forEach {
+                list.add {
+                    RecyclerDataClass(it.key, it.value, start++)
+                }
+            }
+            return list
+        }
+    }
+
+    //no need for this
+    /*@OptIn(ImplicitReflectionSerializer::class)
+    fun SharedPreferences.Editor.saveCurrencyList(key: String, list: MutableList<RecyclerDataClass>) {
+        put<String> {
+            this.key = key
+            value = LinkedHashMap<String,String>(list.size).run {
+                list.forEach {
+                    put(it.quantity,it.correspondingUnit as String)
+                }
+                Json.stringify(this)
+            }
+        }
+    }
+*/
     private fun saveData() {
         editPreferences {
             put<String> {
@@ -737,5 +802,89 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     override fun onPause() {
         super.onPause()
         saveData()
+    }
+
+    // for currencies
+    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
+    private val urlArray by lazy(LazyThreadSafetyMode.NONE) {
+        buildMutableList<String>(2) {
+            add {
+                "${Token.Repository}/currency_conversions/contents/values.json"
+            }
+            add {
+                "${Token.Repository}/currency_conversions/contents/currency.json"
+            }
+        }
+    }
+    var networkIsAvailable: Boolean? = null
+    lateinit var snackbar: Snackbar
+
+    override fun updateFromDownload(url: String?, result: String?) {
+        if (url.isNotNull() && result.isNotNull()) {
+            editPreferences {
+                put<String> {
+                    key = when (url) {
+                        urlArray[0] -> "values_for_conversion" // values.json
+                        urlArray[1] -> "list_of_currencies" // currency.json
+                        else -> TODO()
+                    }
+                    value = result
+                }
+                apply()
+            }
+            when (url) {
+                urlArray[0] -> {
+
+                }
+                urlArray[1] ->{
+                    currenciesList = getCurrencyList(result)
+                }
+            }
+        } else {
+            snackbar = Snackbar.make(convert_parent, R.string.no_connection, Snackbar.LENGTH_LONG)
+                .apply {
+                    setAction(R.string.retry) {
+                    }
+                }
+        }
+    }
+
+    override fun networkAvailable(): Boolean? {
+        if (!::networkCallback.isInitialized) {
+            (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+                .apply {
+                    networkCallback = object : ConnectivityManager.NetworkCallback() {
+                        override fun onAvailable(network: Network) {
+                            networkIsAvailable = true
+                            Log.e("ava", "called")
+                        }
+
+                        override fun onLost(network: Network) {
+                            Log.e("lost", "lost")
+                            networkIsAvailable = false
+                        }
+                    }
+                    registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
+                }
+        }
+        return networkIsAvailable //shouldn't be null though
+    }
+
+    override fun onProgressUpdate(progressCode: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun finishDownloading() {
+        TODO("Not yet implemented")
+    }
+
+    override fun passException(exception: Exception) {
+        //means error occurred
+        Snackbar.make(convert_parent,R.string.unable_to_get,Snackbar.LENGTH_LONG)
+            .apply {
+                setAction(R.string.retry) {
+
+                }
+            }
     }
 }

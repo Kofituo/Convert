@@ -102,3 +102,4 @@ inline fun buildSparseIntArray(builderAction: SparseIntArray.() -> Unit) =
 SparseIntArray().apply(builderAction)
 
  */
+inline fun<T> MutableList<T>.add(block: () -> T) = add(block())
