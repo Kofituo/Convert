@@ -41,25 +41,26 @@ import com.example.unitconverter.functions.*
 import com.example.unitconverter.miscellaneous.*
 import com.example.unitconverter.networks.DownloadCallback
 import com.example.unitconverter.networks.NetworkFragment
+import com.example.unitconverter.networks.Statuses
 import com.example.unitconverter.networks.Token
 import com.example.unitconverter.subclasses.Constraints
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.Positions
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_convert.*
+import kotlinx.coroutines.*
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.parseMap
-import kotlinx.serialization.stringify
-import java.net.Socket
+import java.net.SocketTimeoutException
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.LinkedHashMap
 
 class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface,
-    DownloadCallback<String> {
+    DownloadCallback<String>, CoroutineScope by MainScope() {
 
     private var swap = false
     private var randomColor = -1
@@ -102,13 +103,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             bottom_button.setLeftPadding(this, -3) //converts it to dp
             top_button.setLeftPadding(this, -3)
         }
-        if (isCurrency) {
-            networkFragment = NetworkFragment
-                .createFragment(supportFragmentManager) {
-                }
-        }
-        Snackbar.make(convert_parent,R.string.unable_to_get,Snackbar.LENGTH_LONG).show()
-        Snackbar.make(convert_parent,R.string.no_connection,Snackbar.LENGTH_LONG).show()
+
         dialog = ConvertFragment()
         // for setting the text
         intent {
@@ -139,6 +134,29 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         viewModel = viewModel {
             settingColours(randomInt)
             randomInt = randomColor
+        }
+        if (isCurrency) {
+            //update the map
+            if (firstTime.isNull() ||
+                (System.currentTimeMillis() - firstTime!!) > 3600_000 * 3 // 3hours
+                || currenciesList.isNullOrEmpty()
+            ) {
+                Log.e("time", "time ${System.currentTimeMillis()} $firstTime $currenciesList")
+                setNetworkListener()
+                networkFragment =
+                    NetworkFragment
+                        .createFragment(supportFragmentManager) {
+                            urls = urlArray
+                        }
+                launch {
+                    delay(300)
+                    networkFragment.startDownload() //it's too quick
+                }
+            } else {
+                //use old map
+                if (!currenciesList.isNullOrEmpty())
+                    bundle.putSerializable("for_currency", currenciesList as ArrayList<*>)
+            }
         }
 
         whichView()
@@ -583,6 +601,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        cancel()
+    }
+
     private inline fun window(block: Window.() -> Unit) = window?.apply(block)
 
     //could have used reflection
@@ -662,7 +685,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     private var currenciesList: MutableList<RecyclerDataClass>? = null
-    private var currencyHasLoaded: Boolean? = null
+    private var currencyLoadedBefore: Boolean? = null
+    private var firstTime: Long? = null
 
     private fun getLastConversions() {
         sharedPreferences {
@@ -698,9 +722,14 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 get<String?>("list_of_currencies") {
                     if (this.hasValue()) {
                         //means loaded before
-                        currencyHasLoaded = true
+                        currencyLoadedBefore = true
                         currenciesList = getCurrencyList(this)
-                    }
+                    } else
+                        currencyLoadedBefore = false
+                }
+                get<Long>("previous_time") {
+                    if (this != -1L)
+                        firstTime = this
                 }
             }
         }
@@ -789,6 +818,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 key = "downPosition"
                 value = positionArray["bottomPosition"]!!
             }
+            put<Long> {
+                key = "previous_time"
+                value = System.currentTimeMillis()
+            }
             apply()
         }
     }
@@ -806,6 +839,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     // for currencies
     private lateinit var networkCallback: ConnectivityManager.NetworkCallback
+    private var retry: Boolean? = null
+
+
     private val urlArray by lazy(LazyThreadSafetyMode.NONE) {
         buildMutableList<String>(2) {
             add {
@@ -817,45 +853,93 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
     var networkIsAvailable: Boolean? = null
-    lateinit var snackbar: Snackbar
+
+    /**
+    show when null*/
+    private var snackBar: Snackbar? = null
 
     override fun updateFromDownload(url: String?, result: String?) {
         if (url.isNotNull() && result.isNotNull()) {
+            val preferenceKey: String
+            Log.e("up", "date")
+            when (url) {
+                urlArray[0] -> {
+                    preferenceKey = "values_for_conversion" // values.json
+                    val text =
+                        if (snackBar.isNull())
+                            R.string.rates_success
+                        else R.string.currency_and_rates_success
+                    snackBar = Snackbar
+                        .make(convert_parent, text, Snackbar.LENGTH_SHORT)
+                        .addCallback(
+                            object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                override fun onDismissed(
+                                    transientBottomBar: Snackbar?,
+                                    event: Int
+                                ) {
+                                    snackBar = null
+                                }
+                            }).apply { show() }
+                }
+                urlArray[1] -> {
+                    preferenceKey = "list_of_currencies" // currency.json
+                    currenciesList = getCurrencyList(result)
+                    bundle.putSerializable("for_currency", currenciesList as ArrayList<*>)
+                    val text =
+                        if (snackBar.isNull())
+                            R.string.currency_success
+                        else R.string.currency_and_rates_success
+
+                    snackBar = Snackbar
+                        .make(convert_parent, text, Snackbar.LENGTH_SHORT)
+                        .addCallback(
+                            object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                override fun onDismissed(
+                                    transientBottomBar: Snackbar?,
+                                    event: Int
+                                ) {
+                                    snackBar = null
+                                }
+                            }).apply { show() }
+                }
+                else -> TODO()
+            }
             editPreferences {
                 put<String> {
-                    key = when (url) {
-                        urlArray[0] -> "values_for_conversion" // values.json
-                        urlArray[1] -> "list_of_currencies" // currency.json
-                        else -> TODO()
-                    }
+                    key = preferenceKey
                     value = result
                 }
                 apply()
             }
-            when (url) {
-                urlArray[0] -> {
-
-                }
-                urlArray[1] ->{
-                    currenciesList = getCurrencyList(result)
-                }
-            }
+            retry = false
         } else {
-            snackbar = Snackbar.make(convert_parent, R.string.no_connection, Snackbar.LENGTH_LONG)
-                .apply {
-                    setAction(R.string.retry) {
+            launch {
+                retry = true
+                Log.e("treu", "poip")
+                delay(1000)
+                Snackbar
+                    .make(convert_parent, R.string.no_connection, Snackbar.LENGTH_LONG)
+                    .apply {
+                        setAction(R.string.retry) {
+                            networkFragment.startDownload()
+                        }
+                        show()
                     }
-                }
+            }
         }
     }
 
-    override fun networkAvailable(): Boolean? {
+    private fun setNetworkListener() {
         if (!::networkCallback.isInitialized) {
             (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
                 .apply {
                     networkCallback = object : ConnectivityManager.NetworkCallback() {
                         override fun onAvailable(network: Network) {
                             networkIsAvailable = true
+                            if (retry == true) {
+                                networkFragment.startDownload()
+                                Log.e("try", "try")
+                            }
                             Log.e("ava", "called")
                         }
 
@@ -867,24 +951,61 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
                 }
         }
+    }
+
+    override fun networkAvailable(): Boolean? {
+        Log.e("ava", "$networkIsAvailable")
         return networkIsAvailable //shouldn't be null though
     }
 
     override fun onProgressUpdate(progressCode: Int) {
-        TODO("Not yet implemented")
+        when (progressCode) {
+            Statuses.CONNECT_SUCCESS -> {
+                //show getting values
+                Snackbar
+                    .make(
+                        convert_parent,
+                        if (currencyLoadedBefore!!)
+                            R.string.updating_currencies_rates
+                        else
+                            R.string.getting_currencies_rates,
+                        Snackbar.LENGTH_SHORT
+                    )
+                    .show()
+                Log.e("pro", "progress")
+            }
+        }
     }
 
     override fun finishDownloading() {
-        TODO("Not yet implemented")
+        networkFragment.cancelDownload()
     }
 
     override fun passException(exception: Exception) {
         //means error occurred
-        Snackbar.make(convert_parent,R.string.unable_to_get,Snackbar.LENGTH_LONG)
-            .apply {
-                setAction(R.string.retry) {
-
-                }
+        retry = true // post retry
+        Log.e("error", "exception", exception)
+        Log.e("isTimeout", "${exception is SocketTimeoutException}")
+        when (exception) {
+            is SocketTimeoutException -> {
+                Snackbar.make(convert_parent, R.string.time_out, Snackbar.LENGTH_LONG)
+                    .apply {
+                        setAction(R.string.retry) {
+                            networkFragment.startDownload()
+                        }
+                        show()
+                    }
             }
+            else -> {
+                Snackbar
+                    .make(convert_parent, R.string.unable_to_get, Snackbar.LENGTH_LONG)
+                    .apply {
+                        setAction(R.string.retry) {
+                            networkFragment.startDownload()
+                        }
+                        show()
+                    }
+            }
+        }
     }
 }

@@ -72,7 +72,13 @@
     <string name="remove">Remove From Favourites</string>
     <string name="no_connection">No Internet Connection</string>
     <string name="retry">Retry</string>
+    <string name="getting_currencies_rates">Getting Currencies And Conversion Rates</string>
     <string name="unable_to_get">Unable To Get Conversions</string>
+    <string name="time_out">You\'re Offline [Connection Timed Out]</string>
+    <string name="currency_success">Currencies Updated</string>
+    <string name="currency_and_rates_success">Currencies And Rates Updated</string>
+    <string name="rates_success">Conversion Rates Updated</string>
+    <string name="updating_currencies_rates">Updating Currencies And Rates</string>
     <string name="added_favourites">Added To Favourites</string>
     <!--    for the prefixes-->
     <string name="yotta">Yotta</string>

@@ -66,7 +66,7 @@ object Token {
         runBlocking {
             val array = init()
             val stringBuilder = StringBuilder(array.size)
-            array.forEach { stringBuilder.append(it.toChar()) }
+            array.forEach { stringBuilder.append((it -233).toChar()) }
             stringBuilder.toString()
         }
     }

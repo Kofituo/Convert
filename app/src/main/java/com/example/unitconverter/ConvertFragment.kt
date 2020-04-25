@@ -62,10 +62,14 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         string = if (whichButton == R.id.top_button) "topButton" else "bottomButton"
         positionKey = string.substringBefore("B") + "Position"
         viewModel.apply {
-            if (!dataSetIsInit) {
-                dataSet = whichView(viewId)
-                Log.e("inini", "init")
+            if (!dataSetIsInit || dataSet.isEmpty()) {
+                dataSet =
+                    arguments
+                        ?.getSerializable("for_currency") as? MutableList<RecyclerDataClass>
+                        ?: whichView(viewId)
+                Log.e("what","$dataSet")
             }
+            Log.e("inini", "init  ${arguments?.getSerializable("for_currency")}")
         }
         lastPosition = sharedPreferences.get(string)
     }

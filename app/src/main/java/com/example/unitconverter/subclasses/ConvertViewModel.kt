@@ -14,7 +14,8 @@ class ConvertViewModel : ViewModel() {
 
     lateinit var dataSet: MutableList<RecyclerDataClass>
 
-    val dataSetIsInit get() = ::dataSet.isInitialized
+    val dataSetIsInit
+        get() = ::dataSet.isInitialized
 
     var whichButton = -1
 
