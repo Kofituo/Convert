@@ -21,8 +21,10 @@ import android.view.*
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
+import com.example.unitconverter.AdditionItems.Author
 import com.example.unitconverter.AdditionItems.FavouritesCalledIt
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
@@ -38,6 +40,7 @@ import com.example.unitconverter.Utils.removeCommas
 import com.example.unitconverter.Utils.temperatureFilters
 import com.example.unitconverter.builders.*
 import com.example.unitconverter.functions.*
+import com.example.unitconverter.functions.Currency
 import com.example.unitconverter.miscellaneous.*
 import com.example.unitconverter.networks.DownloadCallback
 import com.example.unitconverter.networks.NetworkFragment
@@ -58,6 +61,7 @@ import java.net.SocketTimeoutException
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.LinkedHashMap
 
 class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface,
     DownloadCallback<String>, CoroutineScope by MainScope() {
@@ -149,16 +153,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                             urls = urlArray
                         }
                 launch {
-                    delay(300)
+                    delay(400)
                     networkFragment.startDownload() //it's too quick
                 }
-            } else {
-                //use old map
-                if (!currenciesList.isNullOrEmpty())
-                    bundle.putSerializable("for_currency", currenciesList as ArrayList<*>)
             }
+            if (!currenciesList.isNullOrEmpty()) //use old map for now
+                bundle.putSerializable("for_currency", currenciesList as ArrayList<*>)
         }
-
         whichView()
         getTextWhileTyping()
         top_button.setOnClickListener {
@@ -299,7 +300,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         bottomPosition =
             if (reverse) positionArray["topPosition"]!! else positionArray["bottomPosition"]!!
         if (topPosition == bottomPosition) return null
-
         return true
     }
 
@@ -339,8 +339,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.energy -> energyConversion()
 
-            R.id.Currency -> {
-            }
+            R.id.Currency -> currencyConversion()
+
             R.id.heatCapacity -> {
             }
             R.id.Angular_Velocity -> {
@@ -502,6 +502,34 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    /**
+     * Assuming someone opens it 3 hours later and starts typing before it refreshes
+     * [currencyRates] would be updated and so should [currencyRatesEnumeration]
+     * */
+    private val currencyRatesEnumeration = MutableLazy.mutableLazy {
+        var index = 0
+        Log.e("sp", "inde")
+        currencyRates?.run {
+            val map = LinkedHashMap<Int, String>(size)
+            forEach {
+                map[index++] = it.key
+            }
+            map
+        }
+    }
+
+    private fun currencyConversion() {
+        val enumeratedMap by currencyRatesEnumeration // so i  can reset the value
+        Log.e("en", "$enumeratedMap")
+        function = {
+            Currency.buildConversions {
+                positions = it
+                ratesMap = currencyRates
+                this.enumerationRates = enumeratedMap
+            }.getText()
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -619,7 +647,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    inner class CommonWatcher(editText: EditText, private val secondEditText: TextInputEditText) :
+    inner class CommonWatcher(
+        editText: EditText,
+        private val secondEditText: TextInputEditText
+    ) :
         SeparateThousands(editText, groupingSeparator, decimalSeparator) {
         override fun afterTextChanged(s: Editable?) {
             val start = System.currentTimeMillis()
@@ -636,7 +667,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         if (isTemperature) filters = arrayOf(lengthFilter())
                         setText(callBack(function, it))
                         if (isTemperature)
-                            filters = temperatureFilters(groupingSeparator, decimalSeparator, this)
+                            filters =
+                                temperatureFilters(groupingSeparator, decimalSeparator, this)
                     }
                     var k = 0
                     for (i in secondEditText.text!!) if (i.isDigit()) k++
@@ -681,10 +713,15 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     private val sharedPreferences by sharedPreference {
-        pkgName + viewName
+        buildString {
+            append(pkgName)
+            append(viewName)
+            append(Author) // to prevent name clashes with the fragment
+        }
     }
 
     private var currenciesList: MutableList<RecyclerDataClass>? = null
+    private var currencyRates: Map<String, String>? = null
     private var currencyLoadedBefore: Boolean? = null
     private var firstTime: Long? = null
 
@@ -731,6 +768,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     if (this != -1L)
                         firstTime = this
                 }
+                get<String?>("values_for_conversion") {
+                    if (this.hasValue())
+                        currencyRates = getRatesList(this)
+                }
             }
         }
     }
@@ -749,20 +790,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    //no need for this
-    /*@OptIn(ImplicitReflectionSerializer::class)
-    fun SharedPreferences.Editor.saveCurrencyList(key: String, list: MutableList<RecyclerDataClass>) {
-        put<String> {
-            this.key = key
-            value = LinkedHashMap<String,String>(list.size).run {
-                list.forEach {
-                    put(it.quantity,it.correspondingUnit as String)
-                }
-                Json.stringify(this)
-            }
-        }
-    }
-*/
+    @OptIn(ImplicitReflectionSerializer::class)
+    fun getRatesList(string: String) = Json.parseMap<String, String>(string)
+
     private fun saveData() {
         editPreferences {
             put<String> {
@@ -818,10 +848,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 key = "downPosition"
                 value = positionArray["bottomPosition"]!!
             }
-            put<Long> {
-                key = "previous_time"
-                value = System.currentTimeMillis()
-            }
+            if (isCurrency && retry != true)
+                put<Long> {
+                    Log.e("retryy", "put $retry")
+                    key = "previous_time"
+                    value = System.currentTimeMillis()
+                }
             apply()
         }
     }
@@ -841,6 +873,20 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private lateinit var networkCallback: ConnectivityManager.NetworkCallback
     private var retry: Boolean? = null
 
+    private fun refreshEverything() {
+        positionArray["bottomPosition"] = -1
+        positionArray["topPosition"] = -1
+        getString(R.string.select_unit).apply {
+            firstBox.hint = this
+            secondBox.hint = this
+        }
+        null.apply {
+            firstEditText.text = this
+            secondEditText.text = this
+            topTextView.text = this
+            bottomTextView.text = this
+        }
+    }
 
     private val urlArray by lazy(LazyThreadSafetyMode.NONE) {
         buildMutableList<String>(2) {
@@ -865,6 +911,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             when (url) {
                 urlArray[0] -> {
                     preferenceKey = "values_for_conversion" // values.json
+                    currencyRates = getRatesList(result)
+                        .apply {
+                            currencyRatesEnumeration.reset()
+                        }
                     val text =
                         if (snackBar.isNull())
                             R.string.rates_success
@@ -883,13 +933,36 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 }
                 urlArray[1] -> {
                     preferenceKey = "list_of_currencies" // currency.json
+                    /**
+                     * Assuming for some reason the currency list changes e.g new currencies have
+                     * been added everything should be reset
+                     * */
+                    currenciesList = getCurrencyList(result)
+                        .run {
+                            if (currenciesList.isNotNull() && currenciesList?.size != size) {
+                                refreshEverything()
+                                Log.e("everything", "pop")
+                                //clear saved preferences
+                                val sharedPreferences by this@ConvertActivity.sharedPreference {
+                                    pkgName + "Currency"
+                                }
+                                sharedPreferences.edit { clear() }
+                                Snackbar
+                                    .make(
+                                        convert_parent,
+                                        R.string.currency_reset,
+                                        Snackbar.LENGTH_LONG
+                                    )
+                                    .show()
+                            }
+                            this
+                        }
                     currenciesList = getCurrencyList(result)
                     bundle.putSerializable("for_currency", currenciesList as ArrayList<*>)
                     val text =
                         if (snackBar.isNull())
                             R.string.currency_success
                         else R.string.currency_and_rates_success
-
                     snackBar = Snackbar
                         .make(convert_parent, text, Snackbar.LENGTH_SHORT)
                         .addCallback(
@@ -942,7 +1015,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                             }
                             Log.e("ava", "called")
                         }
-
                         override fun onLost(network: Network) {
                             Log.e("lost", "lost")
                             networkIsAvailable = false
@@ -959,20 +1031,27 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     override fun onProgressUpdate(progressCode: Int) {
+        Log.e("pro", "progress $progressCode")
         when (progressCode) {
             Statuses.CONNECT_SUCCESS -> {
                 //show getting values
                 Snackbar
                     .make(
                         convert_parent,
-                        if (currencyLoadedBefore!!)
+                        if (currencyLoadedBefore == true)
                             R.string.updating_currencies_rates
                         else
                             R.string.getting_currencies_rates,
                         Snackbar.LENGTH_SHORT
                     )
                     .show()
-                Log.e("pro", "progress")
+            }
+            Statuses.CONNECTING -> {
+                Snackbar.make(convert_parent, R.string.connecting, Snackbar.LENGTH_LONG)
+                    .apply {
+                        animationMode = Snackbar.ANIMATION_MODE_SLIDE
+                        show()
+                    }
             }
         }
     }
@@ -981,10 +1060,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         networkFragment.cancelDownload()
     }
 
-    override fun passException(exception: Exception) {
+    override fun passException(url: String?, exception: Exception) {
         //means error occurred
         retry = true // post retry
-        Log.e("error", "exception", exception)
+        Log.e("error", "$url  $exception", exception)
         Log.e("isTimeout", "${exception is SocketTimeoutException}")
         when (exception) {
             is SocketTimeoutException -> {

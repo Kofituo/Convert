@@ -51,6 +51,7 @@ object AdditionItems {
     const val TextMessage = "$pkgName.TextMessage"
     const val ViewIdMessage = "$pkgName.ViewIdMessage"
     const val FavouritesCalledIt = "$pkgName.favourites_favourites_called_it"
+    const val Author = "Kofi Otuo"
 
     fun endAnimation() {
         animateStart?.apply {

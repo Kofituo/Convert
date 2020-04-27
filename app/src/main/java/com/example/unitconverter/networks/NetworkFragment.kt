@@ -9,13 +9,18 @@ import androidx.fragment.app.FragmentManager
 import com.example.unitconverter.builders.add
 import com.example.unitconverter.miscellaneous.isNotNull
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.IOException
 import java.net.URL
-import java.util.ArrayDeque
+import java.util.*
 import javax.net.ssl.HttpsURLConnection
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.forEach
+import kotlin.collections.isNotEmpty
+import kotlin.collections.toTypedArray
 
 class NetworkFragment : Fragment() {
 
@@ -146,7 +151,7 @@ class NetworkFragment : Fragment() {
                 }
                 sortedList.forEach {
                     it.exception?.also { exception ->
-                        passException(exception)
+                        passException(it.url,exception)
                     }
                     it.resultValue?.also { resultValue ->
                         updateFromDownload(it.url, resultValue)
@@ -169,12 +174,13 @@ class NetworkFragment : Fragment() {
         private fun downloadUrl(url: URL): String? {
             var connection: HttpsURLConnection? = null
             return try {
+                publishProgress(Statuses.CONNECTING)
                 connection = (url.openConnection() as? HttpsURLConnection)
                 connection?.run {
                     // Timeout for reading InputStream arbitrarily set to 3000ms.
                     readTimeout = 3000
                     // Timeout for connection.connect() arbitrarily set to 3000ms.
-                    connectTimeout = 6000
+                    connectTimeout = 5350
                     // For this use case, set HTTP method to GET.
                     requestMethod = "GET"
                     // Already true by default but setting just in case; needs to be true since this request
@@ -184,11 +190,11 @@ class NetworkFragment : Fragment() {
                     addRequestProperty("Accept", "application/vnd.github.v3.raw")
                     // Open communications link (network traffic occurs here).
                     connect()
-                    publishProgress(Statuses.CONNECT_SUCCESS)
                     if (responseCode != HttpsURLConnection.HTTP_OK)
                         throw IOException("HTTP error code: $responseCode")
                     // Retrieve the response body as an InputStream.
                     publishProgress(Statuses.GET_INPUT_STREAM_SUCCESS)
+                    Log.e("end", "end")
                     inputStream?.bufferedReader()?.use { it.readText() }
                 }
             } finally {

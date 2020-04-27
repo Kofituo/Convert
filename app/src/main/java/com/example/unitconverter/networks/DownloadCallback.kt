@@ -29,5 +29,5 @@ interface DownloadCallback<T> {
      */
     fun finishDownloading()
 
-    fun passException( exception: Exception)
+    fun passException(url: String?,exception: Exception)
 }
