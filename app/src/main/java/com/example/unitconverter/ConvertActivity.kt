@@ -42,6 +42,7 @@ import com.example.unitconverter.builders.*
 import com.example.unitconverter.functions.*
 import com.example.unitconverter.functions.Currency
 import com.example.unitconverter.miscellaneous.*
+import com.example.unitconverter.miscellaneous.ResetAfterNGets.Companion.resetAfter2Gets
 import com.example.unitconverter.networks.DownloadCallback
 import com.example.unitconverter.networks.NetworkFragment
 import com.example.unitconverter.networks.Statuses
@@ -57,12 +58,14 @@ import kotlinx.coroutines.*
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.parseMap
+import java.io.Serializable
 import java.net.SocketTimeoutException
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
+@OptIn(ImplicitReflectionSerializer::class)
 class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface,
     DownloadCallback<String>, CoroutineScope by MainScope() {
 
@@ -132,7 +135,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             setFilters(this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
         }
-
         getLastConversions()
 
         viewModel = viewModel {
@@ -158,7 +160,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 }
             }
             if (!currenciesList.isNullOrEmpty()) //use old map for now
-                bundle.putSerializable("for_currency", currenciesList as ArrayList<*>)
+                bundle.putSerializable("for_currency", currenciesList as Serializable)
         }
         whichView()
         getTextWhileTyping()
@@ -776,8 +778,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    @OptIn(ImplicitReflectionSerializer::class)
-    fun getCurrencyList(string: String): MutableList<RecyclerDataClass> {
+    private fun getCurrencyList(string: String): MutableList<RecyclerDataClass> {
         Json.parseMap<String, String>(string).apply {
             val list = ArrayList<RecyclerDataClass>(size)
             var start = 0
@@ -790,8 +791,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    @OptIn(ImplicitReflectionSerializer::class)
-    fun getRatesList(string: String) = Json.parseMap<String, String>(string)
+    private fun getRatesList(string: String) = Json.parseMap<String, String>(string)
 
     private fun saveData() {
         editPreferences {
@@ -904,10 +904,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     show when null*/
     private var snackBar: Snackbar? = null
 
+    private var shouldShowSnack: Boolean? by resetAfter2Gets(null, null)
+
     override fun updateFromDownload(url: String?, result: String?) {
         if (url.isNotNull() && result.isNotNull()) {
             val preferenceKey: String
-            Log.e("up", "date")
             when (url) {
                 urlArray[0] -> {
                     preferenceKey = "values_for_conversion" // values.json
@@ -915,65 +916,83 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         .apply {
                             currencyRatesEnumeration.reset()
                         }
-                    val text =
-                        if (snackBar.isNull())
-                            R.string.rates_success
-                        else R.string.currency_and_rates_success
-                    snackBar = Snackbar
-                        .make(convert_parent, text, Snackbar.LENGTH_SHORT)
-                        .addCallback(
-                            object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                                override fun onDismissed(
-                                    transientBottomBar: Snackbar?,
-                                    event: Int
-                                ) {
-                                    snackBar = null
-                                }
-                            }).apply { show() }
+                    if (shouldShowSnack != false) {
+                        val text =
+                            if (snackBar.isNull())
+                                R.string.rates_success
+                            else R.string.currency_and_rates_success
+                        snackBar = Snackbar
+                            .make(convert_parent, text, Snackbar.LENGTH_SHORT)
+                            .addCallback(
+                                object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                    override fun onDismissed(
+                                        transientBottomBar: Snackbar?,
+                                        event: Int
+                                    ) {
+                                        snackBar = null
+                                    }
+                                }).apply { show() }
+                    }
                 }
                 urlArray[1] -> {
                     preferenceKey = "list_of_currencies" // currency.json
                     /**
                      * Assuming for some reason the currency list changes e.g new currencies have
-                     * been added everything should be reset
+                     * been added, everything should be reset
                      * */
                     currenciesList = getCurrencyList(result)
                         .run {
-                            if (currenciesList.isNotNull() && currenciesList?.size != size) {
-                                refreshEverything()
-                                Log.e("everything", "pop")
-                                //clear saved preferences
-                                val sharedPreferences by this@ConvertActivity.sharedPreference {
-                                    pkgName + "Currency"
+                            //execute only when it isn't null
+                            currenciesList?.let { list ->
+                                val shouldClear =
+                                    //quickly check the size
+                                    if (list.size != size) {
+                                        true
+                                    } else {
+                                        var index = 0
+                                        //if there's a difference in  currency
+                                        !list.all {
+                                            it.quantity == this[index++].quantity //compare only quantity to be fast
+                                        }
+                                    }
+                                //Log.e("should", "clear $shouldClear")
+                                if (shouldClear) {
+                                    refreshEverything()
+                                    //clear saved preferences
+                                    val sharedPreferences by sharedPreference {
+                                        pkgName + "Currency"
+                                    }
+                                    sharedPreferences.edit { clear() }
+                                    Snackbar
+                                        .make(
+                                            convert_parent,
+                                            R.string.currency_reset,
+                                            Snackbar.LENGTH_LONG
+                                        )
+                                        .show()
+                                    shouldShowSnack = false
                                 }
-                                sharedPreferences.edit { clear() }
-                                Snackbar
-                                    .make(
-                                        convert_parent,
-                                        R.string.currency_reset,
-                                        Snackbar.LENGTH_LONG
-                                    )
-                                    .show()
                             }
                             this
                         }
-                    currenciesList = getCurrencyList(result)
-                    bundle.putSerializable("for_currency", currenciesList as ArrayList<*>)
-                    val text =
-                        if (snackBar.isNull())
-                            R.string.currency_success
-                        else R.string.currency_and_rates_success
-                    snackBar = Snackbar
-                        .make(convert_parent, text, Snackbar.LENGTH_SHORT)
-                        .addCallback(
-                            object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                                override fun onDismissed(
-                                    transientBottomBar: Snackbar?,
-                                    event: Int
-                                ) {
-                                    snackBar = null
-                                }
-                            }).apply { show() }
+                    bundle.putSerializable("for_currency", currenciesList as Serializable)
+                    if (shouldShowSnack != false) {
+                        val text =
+                            if (snackBar.isNull())
+                                R.string.currency_success
+                            else R.string.currency_and_rates_success
+                        snackBar = Snackbar
+                            .make(convert_parent, text, Snackbar.LENGTH_SHORT)
+                            .addCallback(
+                                object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                    override fun onDismissed(
+                                        transientBottomBar: Snackbar?,
+                                        event: Int
+                                    ) {
+                                        snackBar = null
+                                    }
+                                }).apply { show() }
+                    }
                 }
                 else -> TODO()
             }
@@ -1015,6 +1034,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                             }
                             Log.e("ava", "called")
                         }
+
                         override fun onLost(network: Network) {
                             Log.e("lost", "lost")
                             networkIsAvailable = false

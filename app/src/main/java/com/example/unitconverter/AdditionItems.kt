@@ -54,6 +54,7 @@ object AdditionItems {
     const val Author = "Kofi Otuo"
 
     fun endAnimation() {
+        lazy {  }
         animateStart?.apply {
             if (isRunning) {
                 end() //stops the bouncing animation

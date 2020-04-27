@@ -59,7 +59,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 getSerializableExtra("$pkgName.favourites_list")
                     ?.apply {
                         @Suppress("UNCHECKED_CAST")
-                        this as ArrayList<FavouritesData>
+                        this as MutableList<FavouritesData>
                         Log.e("this", "$this")
                         favouritesAdapter = favouritesAdapter {
                             dataSet = this@apply//viewModel.getFavouritesData()

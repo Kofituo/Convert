@@ -45,13 +45,15 @@ import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.stringify
+import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
 //change manifest setting to backup allow true
 @UnstableDefault
 class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface,
-    GridConstraintLayout.Selection,CoroutineScope by MainScope() {
+    GridConstraintLayout.Selection, CoroutineScope by MainScope() {
 
     private val downTime = SystemClock.uptimeMillis()
     private val eventTime = SystemClock.uptimeMillis() + 10
@@ -398,7 +400,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 }
                 if (waitingArrayDeque.isNotEmpty()) {
                     //send the list to the activity
-                    val favouritesList: ArrayList<FavouritesData>
+                    val favouritesList: MutableList<FavouritesData>
                     getNameToViewMap().apply {
                         @Suppress("UNCHECKED_CAST")
                         favouritesList = waitingArrayDeque.map {
@@ -424,7 +426,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         "$favouritesList  $waitingArrayDeque  " +
                                 "${waitingArrayDeque.size == favouritesList.size}"
                     )*/
-                    this@buildIntent.putExtra("$pkgName.favourites_list", favouritesList)
+                    this@buildIntent
+                        .putExtra("$pkgName.favourites_list", favouritesList as Serializable)
                 }
                 startActivity(this)
             }
