@@ -23,7 +23,7 @@ class HeatCapacity(override val context: Context) : RecyclerDataAbstractClass() 
             .substringBefore(' ') //get only btu
 
     override fun getList() =
-        buildRecyclerList(0) {
+        buildRecyclerList(8) {
             putEntry {
                 this quantity appendString {
                     this valueWithSpace _joule

@@ -30,7 +30,7 @@ class SearchTextChangeListener(
             if (adapter.lastPosition != -1)
                 recyclerView.smoothScrollToPosition(adapter.lastPosition)
         } else
-            recyclerView.smoothScrollToPosition(0)
+            recyclerView.scrollToPosition(0)
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -63,3 +63,9 @@ class SearchTextChangeListener(
         }
     }
 }
+//just in case
+/*recyclerView
+                .apply {
+                    (layoutManager as? LinearLayoutManager)
+                        ?.scrollToPositionWithOffset(0, 0)
+                }*/

@@ -11,7 +11,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -100,9 +99,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             "${dataStorage.id} ${resources.displayMetrics.widthPixels}  ${resources.displayMetrics.density}"
         )
         val rect = Rect()
-        window?.apply {
-            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        }
         val isNightMode =
             resources
                 ?.configuration
@@ -119,7 +115,12 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
         }
 
-        val viewModel = ViewModelProvider(this@MainActivity)[ConvertViewModel::class.java]
+        val viewModel =
+            ViewModelProvider(this@MainActivity)[ConvertViewModel::class.java]
+                .apply {
+                    if (resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE)
+                        motionProgress //to reset the value
+                }
         motion {
             motionHandler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
@@ -155,7 +156,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             progress = viewModel.motionProgress
         }
 
-        sharedPreferences{
+        sharedPreferences {
             editPreferences {
                 //rethinking almost everything to make sure it works well always
                 /**
@@ -612,20 +613,32 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 value = R.drawable.ic_radiation
             }
             put {
-                key = R.id.resolution
-                value = R.drawable.ic_monitor
+                key = R.id.force
+                value = R.drawable.force
             }
             put {
-                key = R.id.cooking
-                value = R.drawable.ic_cooking
+                key = R.id.power
+                value = R.drawable.ic_fuse_box
+            }
+            put {
+                key = R.id.density
+                value = R.drawable.ic_ice
+            }
+            put {
+                key = R.id.flow
+                value = R.drawable.ic_sea
             }
             put {
                 key = R.id.inductance
                 value = R.drawable.ic_inductor
             }
             put {
-                key = R.id.flow
-                value = R.drawable.ic_sea
+                key = R.id.resolution
+                value = R.drawable.ic_monitor
+            }
+            put {
+                key = R.id.cooking
+                value = R.drawable.ic_cooking
             }
             put {
                 key = R.id.number_base

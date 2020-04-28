@@ -110,6 +110,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         if (rootGroup is MotionLayout) {
             (rootGroup as MotionLayout).progress = viewModel.favouritesProgress
         }
+        viewModel.favouritesProgress // to reset the value
         onCreateCalled = true
     }
 

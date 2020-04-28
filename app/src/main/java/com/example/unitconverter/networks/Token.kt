@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 
 object Token {
     //wrap in co routine to make it hard to decompiles
-    suspend fun init(): MutableList<Int> = withContext(Dispatchers.Default) {
+    suspend fun init() = withContext(Dispatchers.Default) {
         buildMutableList<Int>(40) {
             runBlocking {
                 add(290)
@@ -66,7 +66,7 @@ object Token {
         runBlocking {
             val array = init()
             val stringBuilder = StringBuilder(array.size)
-            array.forEach { stringBuilder.append((it -233).toChar()) }
+            array.forEach { stringBuilder.append((it - 233).toChar()) }
             stringBuilder.toString()
         }
     }

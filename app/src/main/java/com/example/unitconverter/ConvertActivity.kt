@@ -345,8 +345,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.heatCapacity -> heatCapacityConversions()
 
-            R.id.Angular_Velocity -> {
-            }
+            R.id.Angular_Velocity -> velocityConversions()
+            
             R.id.angularAcceleration -> {
             }
             R.id.sound -> {
@@ -355,15 +355,15 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
             R.id.radioactivity -> {
             }
-            R.id.resolution -> {
+            R.id.force -> {
             }
-            R.id.cooking -> {
+            R.id.power -> {
             }
-            R.id.inductance -> {
+            R.id.density -> {
             }
             R.id.flow -> {
             }
-            R.id.number_base -> {
+            R.id.inductance -> {
             }
         }
     }
@@ -535,6 +535,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private fun heatCapacityConversions() {
         function = {
             HeatCapacity(it).getText()
+        }
+    }
+
+    private fun velocityConversions() {
+        function = {
+            Velocity(it).getText()
         }
     }
 

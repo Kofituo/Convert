@@ -198,6 +198,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.heatCapacity -> HeatCapacity(requireContext()).getList()
 
+            R.id.Angular_Velocity->Velocity(requireContext()).getList()
+
             else -> mutableListOf()
         }
     }

@@ -40,7 +40,7 @@ abstract class ConstantsAbstractClass {
      * */
     @Suppress("FunctionName")
     protected inline fun TODO(): Nothing =
-        TODO("class: ${this.javaClass.simpleName} top position is $topPosition bottom position is $bottomPosition")
+        TODO("class: ${this::class.simpleName} top position is $topPosition bottom position is $bottomPosition")
 
     /**
      * [topPosition] == [int] || [bottomPosition] == [int]
@@ -163,7 +163,7 @@ abstract class ConstantsAbstractClass {
          */
         return if (pow == 1) {
             BigDecimal(x)
-                .quickMultiplication(ratio)
+                .multiply(ratio)
                 .add(fixedValue)
                 .toStringWithCommas()
         }
@@ -173,7 +173,7 @@ abstract class ConstantsAbstractClass {
          */
         else {
             BigDecimal(x).subtract(fixedValue)
-                .quickMultiplication(ratio.pow(-1, mathContext))
+                .multiply(ratio.pow(-1, mathContext))
                 .toStringWithCommas()
         }
     }
@@ -183,20 +183,17 @@ abstract class ConstantsAbstractClass {
         // same as previous function but uses bigDecimal directly
         return if (pow == 1) {
             bigDecimal
-                .quickMultiplication(ratio)
+                .multiply(ratio)
                 .add(fixedValue)
                 .toStringWithCommas()
         } //for now else is'nt used
         else {
             bigDecimal
                 .subtract(fixedValue)
-                .quickMultiplication(ratio.pow(-1, mathContext))
+                .multiply(ratio.pow(-1, mathContext))
                 .toStringWithCommas()
         }
     }
 
     protected fun BigDecimal.toStringWithCommas(): String = stripTrailingZeros().insertCommas()
-
-    private fun BigDecimal.quickMultiplication(other: BigDecimal) =
-        if (other == BigDecimal.ONE) this else this.multiply(other)
 }

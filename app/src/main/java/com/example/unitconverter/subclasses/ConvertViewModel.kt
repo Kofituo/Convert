@@ -2,15 +2,12 @@ package com.example.unitconverter.subclasses
 
 import androidx.lifecycle.ViewModel
 import com.example.unitconverter.RecyclerDataClass
+import com.example.unitconverter.miscellaneous.ResetAfterNGets
+import com.example.unitconverter.miscellaneous.ResetAfterNGets.Companion.resetAfterGet
 
 class ConvertViewModel : ViewModel() {
     var randomInt = 0
-    var motionProgress = 0f
-        get() {
-            val result = field
-            field = 1f
-            return result
-        }
+    val motionProgress by resetAfterGet(0f,1f)
 
     lateinit var dataSet: MutableList<RecyclerDataClass>
 
@@ -21,10 +18,5 @@ class ConvertViewModel : ViewModel() {
 
     var selectedFavourites: MutableMap<Int, FavouritesData>? = null
 
-    var favouritesProgress = 0f
-        get() {
-            val result = field
-            field = 1f
-            return result
-        }
+    val favouritesProgress by resetAfterGet(0f,1f)
 }
