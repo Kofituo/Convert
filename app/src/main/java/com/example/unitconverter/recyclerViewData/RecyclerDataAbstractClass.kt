@@ -60,7 +60,7 @@ abstract class RecyclerDataAbstractClass {
 
     protected fun getString(stringId: Int) = context.resources.getString(stringId)
 
-    protected fun getString(stringId: Int, block: String.() -> Unit) =
+    protected inline fun getString(stringId: Int, block: String.() -> Unit) =
         getString(stringId).apply(block)
 
     protected var start: Int = 0
@@ -95,7 +95,7 @@ abstract class RecyclerDataAbstractClass {
     protected inline infix fun <T> MutableList<T>.putAll(list: MutableList<T>) =
         addAll(list)
 
-    protected inline fun MutableList<RecyclerDataClass>.entry(values: Data.() -> Unit) =
+    protected inline fun MutableList<RecyclerDataClass>.putEntry(values: Data.() -> Unit) =
         Data().apply(values).run {
             add(RecyclerDataClass(quantity!!, unit!!, start++))
         }

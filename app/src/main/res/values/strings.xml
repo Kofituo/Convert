@@ -45,7 +45,9 @@
     <string name="selectItems">Select\nitems</string>
     <string name="convert">Convert</string>
     <string name="data_storage">Data Storage</string>
+    <string name="data_meta">The Amount Of Information In A Storage Medium</string>
     <string name="heatCapacity">Heat Capacity</string>
+    <string name="heat_meta">Heat Needed To Raise The Temperature Of A Body By One Degree</string>
     <string name="time">Time</string>
     <string name="time_meta">Measured Period During Which An Action Exists</string>
     <string name="angularAcceleration">Angular Acceleration</string>

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="selected">#464650</color>
+    <color name="adaptive_white_black">#000</color>
+    <color name="front_page">#1E2829</color>
+    <color name="quick_action">#C5C0B0</color>
+    <color name="scroll_card">#5D6070</color>
+    <color name="scroll_card_text">#000</color>
 </resources>

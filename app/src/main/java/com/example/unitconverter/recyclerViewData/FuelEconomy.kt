@@ -36,7 +36,7 @@ class FuelEconomy(override val context: Context) : RecyclerDataAbstractClass() {
                 append(litreUnit)
             }
         )
-        entry {
+        putEntry {
             quantity = buildString {
                 append(kilo)
                 appendWithSpace(metre)

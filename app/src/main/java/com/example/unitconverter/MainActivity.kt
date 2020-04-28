@@ -2,7 +2,7 @@ package com.example.unitconverter
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
+import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.drawable.AnimationDrawable
 import android.os.*
@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -87,7 +88,11 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         setContentView(R.layout.front_page_activity)
         setSupportActionBar(app_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        window.statusBarColor = Color.parseColor("#4DD0E1")
+        /*window.statusBarColor =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                getColor(R.color.front_page)
+            else resources.getColor(R.color.front_page)*/
+
         h = resources.displayMetrics.heightPixels / 2
         w = resources.displayMetrics.widthPixels / 2
         Log.e(
@@ -95,12 +100,22 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             "${dataStorage.id} ${resources.displayMetrics.widthPixels}  ${resources.displayMetrics.density}"
         )
         val rect = Rect()
+        window?.apply {
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        }
+        val isNightMode =
+            resources
+                ?.configuration
+                ?.uiMode
+                ?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         window?.decorView?.apply {
             post {
                 getWindowVisibleDisplayFrame(rect)
                 statusBarHeight = rect.top
-                if (Build.VERSION.SDK_INT > 22) systemUiVisibility =
-                    systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                if (Build.VERSION.SDK_INT > 22)
+                    systemUiVisibility =
+                        if (isNightMode) systemUiVisibility and SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                        else systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
 
@@ -140,7 +155,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             progress = viewModel.motionProgress
         }
 
-        sharedPreferences {
+        sharedPreferences{
             editPreferences {
                 //rethinking almost everything to make sure it works well always
                 /**

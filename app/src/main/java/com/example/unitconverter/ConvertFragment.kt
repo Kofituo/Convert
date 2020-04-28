@@ -196,6 +196,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.energy -> Energy(requireContext()).getList()
 
+            R.id.heatCapacity -> HeatCapacity(requireContext()).getList()
+
             else -> mutableListOf()
         }
     }

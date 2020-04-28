@@ -22,3 +22,9 @@ inline infix fun Value.valueWithSpace(string: String) {
     stringBuilder.append(string)
     stringBuilder.append(" ")
 }
+
+inline fun appendString(action: Value.() -> Unit) =
+    Value(StringBuilder()).apply(action).stringBuilder.toString()
+
+inline fun appendString(capacity: Int, action: Value.() -> Unit) =
+    Value(StringBuilder(capacity)).apply(action).stringBuilder.toString()

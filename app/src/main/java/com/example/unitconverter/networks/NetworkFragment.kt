@@ -180,7 +180,7 @@ class NetworkFragment : Fragment() {
                     // Timeout for reading InputStream arbitrarily set to 3000ms.
                     readTimeout = 3000
                     // Timeout for connection.connect() arbitrarily set to 3000ms.
-                    connectTimeout = 5350
+                    connectTimeout = 5555
                     // For this use case, set HTTP method to GET.
                     requestMethod = "GET"
                     // Already true by default but setting just in case; needs to be true since this request
@@ -190,6 +190,7 @@ class NetworkFragment : Fragment() {
                     addRequestProperty("Accept", "application/vnd.github.v3.raw")
                     // Open communications link (network traffic occurs here).
                     connect()
+                    publishProgress(Statuses.CONNECT_SUCCESS)
                     if (responseCode != HttpsURLConnection.HTTP_OK)
                         throw IOException("HTTP error code: $responseCode")
                     // Retrieve the response body as an InputStream.

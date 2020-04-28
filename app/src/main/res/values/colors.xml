@@ -6,4 +6,9 @@
     <color name="test">#000</color>
     <color name="selected">#ddd</color>
     <color name="near_black">#464650</color>
+    <color name="front_page">#4DD0E1</color>
+    <color name="quick_action">#FFF9C4</color>
+    <color name="adaptive_white_black">#ffffff</color>
+    <color name="scroll_card">#FFFDE7</color>
+    <color name="scroll_card_text">#EB2B2313</color>
 </resources>

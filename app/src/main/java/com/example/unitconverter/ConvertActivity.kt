@@ -343,8 +343,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.Currency -> currencyConversion()
 
-            R.id.heatCapacity -> {
-            }
+            R.id.heatCapacity -> heatCapacityConversions()
+
             R.id.Angular_Velocity -> {
             }
             R.id.angularAcceleration -> {
@@ -508,7 +508,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
      * Assuming someone opens it 3 hours later and starts typing before it refreshes
      * [currencyRates] would be updated and so should [currencyRatesEnumeration]
      * */
-    private val currencyRatesEnumeration = MutableLazy.mutableLazy {
+    private val currencyRatesEnumeration = MutableLazy.resettableLazy {
         var index = 0
         Log.e("sp", "inde")
         currencyRates?.run {
@@ -529,6 +529,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 ratesMap = currencyRates
                 this.enumerationRates = enumeratedMap
             }.getText()
+        }
+    }
+
+    private fun heatCapacityConversions() {
+        function = {
+            HeatCapacity(it).getText()
         }
     }
 
@@ -848,12 +854,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 key = "downPosition"
                 value = positionArray["bottomPosition"]!!
             }
-            if (isCurrency && retry != true)
-                put<Long> {
-                    Log.e("retryy", "put $retry")
-                    key = "previous_time"
-                    value = System.currentTimeMillis()
-                }
             apply()
         }
     }
@@ -1001,6 +1001,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     key = preferenceKey
                     value = result
                 }
+                Log.e("before final", "put $retry")
+                if (retry == false) //so it would only put after the first one has loaded
+                    put<Long> {
+                        Log.e("final", "put $retry")
+                        key = "previous_time"
+                        value = System.currentTimeMillis()
+                    }
                 apply()
             }
             retry = false

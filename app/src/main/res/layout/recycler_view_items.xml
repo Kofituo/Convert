@@ -29,7 +29,6 @@
         android:padding="10dp"
         android:textSize="15sp"
         android:gravity="center"
-        android:textColor="#323232"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/radioButtons"

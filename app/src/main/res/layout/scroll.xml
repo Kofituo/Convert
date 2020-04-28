@@ -37,7 +37,7 @@
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -59,7 +59,7 @@
             android:text="@string/temperature"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -69,7 +69,7 @@
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -91,7 +91,7 @@
             android:text="@string/area"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -101,7 +101,7 @@
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -123,7 +123,7 @@
             android:text="@string/mass"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
 
     </com.example.unitconverter.subclasses.MyCardView>
@@ -135,7 +135,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -155,7 +155,7 @@
             android:text="@string/volume"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -166,7 +166,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -187,7 +187,7 @@
             android:text="@string/length"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -198,7 +198,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -218,7 +218,7 @@
             android:text="@string/angle"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -229,7 +229,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -249,7 +249,7 @@
             android:text="@string/pressure"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -260,7 +260,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -281,7 +281,7 @@
             android:text="@string/speed"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -292,7 +292,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -312,7 +312,7 @@
             android:textAlignment="center"
             app:metadata="@string/time_meta"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -323,7 +323,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -345,7 +345,7 @@
             android:text="@string/fuel_economy"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -356,7 +356,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -372,13 +372,14 @@
             android:layout_margin="6dp"
             android:drawableTop="@drawable/ic_hard_drive"
             android:drawablePadding="8dp"
+            app:metadata="@string/data_meta"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center"
             android:lineSpacingMultiplier="0.88"
             android:text="@string/data_storage"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -389,7 +390,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -410,7 +411,7 @@
             android:textAlignment="center"
             app:metadata="@string/current_meta"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="13sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -421,7 +422,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -443,7 +444,7 @@
             android:text="@string/luminance"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -454,7 +455,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -475,7 +476,7 @@
             android:text="@string/illuminance"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -486,7 +487,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -505,7 +506,7 @@
             app:metadata="@string/energy_meta"
             android:text="@string/energy"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -516,7 +517,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -538,7 +539,7 @@
             android:text="@string/currency"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -549,7 +550,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -565,12 +566,13 @@
             android:layout_margin="6dp"
             android:drawableTop="@drawable/ic_flame"
             android:drawablePadding="10dp"
+            app:metadata="@string/heat_meta"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center_horizontal"
             android:lineSpacingMultiplier="0.88"
             android:text="@string/heatCapacity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -583,7 +585,7 @@
         android:focusable="true"
         android:maxWidth="100dp"
         android:maxHeight="60dp"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -603,7 +605,7 @@
             android:lineSpacingMultiplier="0.88"
             android:text="@string/angularVelocity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -614,7 +616,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -633,7 +635,7 @@
             android:lineSpacingMultiplier="0.88"
             android:text="@string/angularAcceleration"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -644,7 +646,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -664,7 +666,7 @@
             android:gravity="center"
             android:text="@string/sound"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -675,7 +677,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -693,7 +695,7 @@
             android:fontFamily="@font/roboto_slab"
             android:text="@string/resistance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -704,7 +706,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -725,7 +727,7 @@
             android:gravity="center"
             android:text="@string/radioactivity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -736,7 +738,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -755,7 +757,7 @@
             android:fontFamily="@font/roboto_slab"
             android:text="@string/resolution"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -766,7 +768,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -786,7 +788,7 @@
             android:gravity="center"
             android:text="@string/cooking"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -797,7 +799,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -817,7 +819,7 @@
             android:fontFamily="@font/roboto_slab"
             android:text="@string/inductance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -828,7 +830,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -848,7 +850,7 @@
             android:gravity="center"
             android:text="@string/flow"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 
@@ -859,7 +861,7 @@
         android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="#FFFDE7"
+        app:cardBackgroundColor="@color/scroll_card"
         app:cardCornerRadius="22dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.94"
@@ -879,7 +881,7 @@
             android:gravity="center"
             android:text="@string/number_base"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#EB2B2313"
+            android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
     </com.example.unitconverter.subclasses.MyCardView>
 

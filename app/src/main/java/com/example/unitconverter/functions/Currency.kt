@@ -1,6 +1,5 @@
 package com.example.unitconverter.functions
 
-import android.util.Log
 import com.example.unitconverter.constants.BigDecimalsAddOns
 import com.example.unitconverter.subclasses.Positions
 import java.math.BigDecimal

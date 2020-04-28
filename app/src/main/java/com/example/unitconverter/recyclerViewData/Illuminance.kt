@@ -17,27 +17,27 @@ class Illuminance(override val context: Context) : RecyclerDataAbstractClass() {
     private val metreUnit = getString(R.string.metre_unit)
     override fun getList() =
         buildRecyclerList(10) {
-            entry {
+            putEntry {
                 quantity = _lux
                 unit = luxUnit
             }
-            entry {
+            putEntry {
                 quantity = "$kilo$lux"
                 unit = "$kiloSymbol$luxUnit"
             }
-            entry {
+            putEntry {
                 quantity = "$micro$lux"
                 unit = "$microSymbol$luxUnit"
             }
-            entry {
+            putEntry {
                 quantity = getString(R.string.phot)
                 unit = getString(R.string.phot_unit)
             }
-            entry {
+            putEntry {
                 quantity = getString(R.string.nox)
                 unit = getString(R.string.nox_unit)
             }
-            entry {
+            putEntry {
                 quantity = buildString {
                     appendWithSpace(lumen)
                     appendWithSpace(per)
@@ -53,7 +53,7 @@ class Illuminance(override val context: Context) : RecyclerDataAbstractClass() {
                     append(squareSymbol)
                 }
             }
-            entry {
+            putEntry {
                 quantity = buildString {
                     appendWithSpace(lumen)
                     appendWithSpace(per)
@@ -69,7 +69,7 @@ class Illuminance(override val context: Context) : RecyclerDataAbstractClass() {
                     append(squareSymbol)
                 }
             }
-            entry {
+            putEntry {
                 quantity = buildString {
                     appendWithSpace(lumen)
                     appendWithSpace(per)
@@ -85,7 +85,7 @@ class Illuminance(override val context: Context) : RecyclerDataAbstractClass() {
                     append(squareSymbol)
                 }
             }
-            entry {
+            putEntry {
                 quantity = buildString {
                     appendWithSpace(lumen)
                     appendWithSpace(per)
@@ -101,11 +101,11 @@ class Illuminance(override val context: Context) : RecyclerDataAbstractClass() {
                     append(squareSymbol)
                 }
             }
-            entry {
+            putEntry {
                 quantity = getString(R.string.candle)
                 unit = getString(R.string.candle_unit)
             }
-            entry {
+            putEntry {
                 quantity = buildString {
                     appendWithSpace(lumen)
                     appendWithSpace(per)

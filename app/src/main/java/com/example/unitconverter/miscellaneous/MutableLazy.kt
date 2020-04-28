@@ -18,6 +18,6 @@ class MutableLazy<T>(private val initializer: () -> T) : Lazy<T> {
     override fun isInitialized(): Boolean = cached != null
 
     companion object {
-        fun <T> mutableLazy(value: () -> T) = MutableLazy(value)
+        fun <T> resettableLazy(value: () -> T) = MutableLazy(value)
     }
 }

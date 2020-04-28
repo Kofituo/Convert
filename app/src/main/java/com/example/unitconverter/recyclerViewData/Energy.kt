@@ -28,12 +28,12 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
         buildRecyclerList(34) {
             add(_joule, jouleUnit)
             this putAll massPrefixes(joule, jouleUnit)
-            entry {
+            putEntry {
                 this quantity getString(R.string.erg)
                 this unit getString(R.string.erg_unit)
             }
             add(calorie, calorieUnit)
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this valueWithSpace kilo
@@ -48,7 +48,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                     }
                 }
             }
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this valueWithSpace _gram
@@ -58,7 +58,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                 }
                 this unit gramUnit
             }
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this value kilo
@@ -74,7 +74,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                     }
                 }
             }
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this valueWithSpace _ton
@@ -84,7 +84,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                 }
                 this unit tonUnit
             }
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this value kilo
@@ -100,7 +100,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                     }
                 }
             }
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this value mega
@@ -116,7 +116,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                     }
                 }
             }
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this value giga
@@ -132,7 +132,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                     }
                 }
             }
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this value tera
@@ -148,23 +148,23 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                     }
                 }
             }
-            entry {
+            putEntry {
                 this quantity getString(R.string.foot_pound)
                 this unit getString(R.string.foot_pound_unit)
             }
-            entry {
+            putEntry {
                 this quantity getString(R.string.electron_volt)
                 this unit getString(R.string.electron_volt_unit)
             }
-            entry {
+            putEntry {
                 this quantity getString(R.string.british_thermal_unit)
                 this unit getString(R.string.british_thermal_unit_unt)
             }
-            entry {
+            putEntry {
                 this quantity _wattHour
                 this unit wattHourUnit
             }
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this value milli
@@ -178,7 +178,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                     }
                 }
             }
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this value kilo
@@ -192,7 +192,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                     }
                 }
             }
-            entry {
+            putEntry {
                 this quantity buildString {
                     put {
                         this value mega
