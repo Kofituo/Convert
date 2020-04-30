@@ -148,7 +148,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                     this.apply {
                         shrinkSize()
                         showCheckBox()
-                        checkBoxIsEnabled = true
+                        enableCheckBox()
                     }
                 }
             }
@@ -162,7 +162,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
                     // shrink its size
                     this.apply {
                         restoreSize()
-                        checkBoxIsEnabled = false
+                        disableCheckBox()
                     }
                 }
             }

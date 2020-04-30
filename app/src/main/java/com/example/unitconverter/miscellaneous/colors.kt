@@ -34,6 +34,6 @@ val colors by lazy(LazyThreadSafetyMode.NONE) {
 }
 val nighColors by lazy(LazyThreadSafetyMode.NONE) {
     listOf(
-        "#EC407A","#DCB579"
+        "#EC407A","#DCB579","#474747"
     )
 }

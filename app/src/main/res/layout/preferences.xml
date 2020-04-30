@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/all_round">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topGuide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.01" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/preferences"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/preferences"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/viewDivider1"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toTopOf="@id/topGuide" />
+
+    <View
+        android:id="@+id/viewDivider1"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="3dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@id/expanded_menu"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/preferences" />
+
+    <com.example.unitconverter.subclasses.MyExpandableList
+        android:id="@+id/expanded_menu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/adaptive_white_black"
+        android:groupIndicator="@null"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@id/go_to_settings"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/viewDivider1" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/go_to_settings"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:text="@string/go_to_settings"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/viewDivider2"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/expanded_menu" />
+
+    <View
+        android:id="@+id/viewDivider2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="1dp"
+        android:background="#33AAAAAA"
+        app:layout_constraintBottom_toTopOf="@id/done_button"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/go_to_settings" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/done_button"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:text="@string/done"
+        android:textColor="?android:attr/textColorPrimary"
+        app:cornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintTop_toBottomOf="@id/viewDivider2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

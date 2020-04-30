@@ -76,7 +76,15 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
         mParent.addOneToFavorites(name)
     }
 
-    var checkBoxIsEnabled = false
+    private var checkBoxIsEnabled = false
+
+    fun enableCheckBox() {
+        checkBoxIsEnabled = true
+    }
+
+    fun disableCheckBox() {
+        checkBoxIsEnabled = false
+    }
 
     override fun dispatchTouchEvent(ev: MotionEvent?) =
         if (checkBoxIsEnabled) {

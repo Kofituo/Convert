@@ -10,10 +10,20 @@
     <string name="sort">Sort</string>
     <string name="sort_by">Sort By</string>
     <string name="cancel">Cancel</string>
+    <string name="decimal_notation">Decimal Notation</string>
+    <string name="scientific_notation">Scientific Notation</string>
+    <string name="engineering_notation">Engineering notation</string>
     <string name="done">Done</string>
     <string name="prefixes">Prefixes</string>
     <string name="preferences">Preferences</string>
     <string name="angle">Angle</string>
+    <string name="comma">Comma </string>
+    <string name="e_symbol">E</string>
+    <string name="small_ten">⏨</string>
+    <string name="dot">Dot </string>
+    <string name="space">Space</string>
+    <string name="other">Other</string>
+    <string name="go_to_settings">To Change <b>Preferences</b> For The Whole App, Go To <b>Settings</b></string>
     <string name="angle_meta">The Figure Between Two Intersecting Rays Or Planes</string>
     <string name="density">Density</string>
     <string name="density_meta">The Mass Of A Body Per Unit Volume</string>
@@ -93,6 +103,11 @@
     <string name="currency_and_rates_success">Currencies And Rates Updated</string>
     <string name="rates_success">Conversion Rates Updated</string>
     <string name="connecting">Connecting …</string>
+    <string name="notation">Notation</string>
+    <string name="grouping_separator">GROUPING SEPARATOR</string>
+    <string name="decimal_separator">DECIMAL SEPARATOR</string>
+    <string name="exponent_separator">EXPONENT SEPARATOR</string>
+    <string name="decimal_place">DECIMAL PLACE</string>
     <string name="updating_currencies_rates">Updating Currencies And Rates</string>
     <string name="added_favourites">Added To Favourites</string>
     <!--    for the prefixes-->

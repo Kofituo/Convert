@@ -3,7 +3,6 @@ package com.example.unitconverter
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.os.Handler
-import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import com.example.unitconverter.subclasses.MyCardView
@@ -28,12 +27,12 @@ object AdditionItems {
     /**
      * To prevent find view by id.
      * */
-    var viewsMap: SparseArray<View> = SparseArray(30)
+    val viewsMap: SparseArray<View> = SparseArray(30)
 
     /**
      * Maps the view name to id
      * */
-    var originalMap = LinkedHashMap<String, Int>(30)
+    val originalMap = LinkedHashMap<String, Int>(30)
 
     /**
      * Map which keeps track of opened activities
@@ -53,19 +52,19 @@ object AdditionItems {
     const val FavouritesCalledIt = "$pkgName.favourites_favourites_called_it"
     const val Author = "Kofi Otuo"
 
-    fun endAnimation() {
-        lazy {  }
+    fun endAnimation(): Boolean {
         animateStart?.apply {
             if (isRunning) {
                 end() //stops the bouncing animation
-                Log.e("y", "$cardY")
                 ObjectAnimator.ofFloat(card, View.Y, cardY).start() // keeps the y value constant
                 animationEnd?.apply {
                     duration = 200
                     start()
                 }
                 if (popupWindow.isShowing) popupWindow.dismiss()
+                return true
             }
         }
+        return false
     }
 }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/separate"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants">
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="match_parent"
+        android:focusable="false"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.example.unitconverter.subclasses.MyRadioButton
+            android:id="@+id/comma"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/comma" />
+
+        <com.example.unitconverter.subclasses.MyRadioButton
+            android:id="@+id/dot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dot" />
+
+        <com.example.unitconverter.subclasses.MyRadioButton
+            android:id="@+id/space"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/space" />
+    </RadioGroup>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--no dey hia-->
+    <!--<androidx.constraintlayout.widget.Guideline
+            android:id="@+id/rightGuide"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:boxCornerRadiusBottomEnd="10dp"
+            app:boxCornerRadiusBottomStart="10dp"
+            app:boxCornerRadiusTopEnd="10dp"
+            app:boxCornerRadiusTopStart="10dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/rightGuide"
+            app:layout_constraintTop_toBottomOf="@id/radio_group"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintWidth_percent="0.07">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/firstEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:inputType="text"
+                android:maxLength="1"
+                android:textSize="13sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>-->

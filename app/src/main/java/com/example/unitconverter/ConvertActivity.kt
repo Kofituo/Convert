@@ -346,7 +346,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             R.id.heatCapacity -> heatCapacityConversions()
 
             R.id.Angular_Velocity -> velocityConversions()
-            
+
             R.id.angularAcceleration -> {
             }
             R.id.sound -> {
@@ -561,6 +561,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     startActivity(this)
                 }
             }
+            R.id.preferences -> {
+                PreferencesFragment().show(supportFragmentManager,"PREFERENCES")
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -617,16 +621,20 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         randomColor = if (colorInt == 0) Color.parseColor(colors.random()) else colorInt
         window {
             statusBarColor = randomColor
+            /*statusBarColor =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    resources.getColor(android.R.color.transparent, null)
+                else resources.getColor(android.R.color.transparent)*/
             decorView.apply {
                 post {
                     if (Build.VERSION.SDK_INT > 22) systemUiVisibility =
                         systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 }
             }
+            //setBackgroundDrawable(getDrawable(R.drawable.test))
         }
         Log.e("color", String.format("#%06X", (0xffffff and randomColor)))
         randomColor.also {
-            window.statusBarColor = it
             convert_parent.setBackgroundColor(it)
             firstBox.boxStrokeColor = it
             secondBox.boxStrokeColor = it
