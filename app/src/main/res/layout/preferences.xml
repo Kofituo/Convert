@@ -52,17 +52,27 @@
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/preferences" />
 
-    <com.example.unitconverter.subclasses.MyExpandableList
-        android:id="@+id/expanded_menu"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/adaptive_white_black"
-        android:groupIndicator="@null"
-        android:scrollbars="none"
+        android:id="@+id/expanded_menu"
         app:layout_constraintBottom_toTopOf="@id/go_to_settings"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/viewDivider1" />
+        app:layout_constraintTop_toBottomOf="@id/viewDivider1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/adaptive_white_black"
+            android:scrollbars="none"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/go_to_settings"

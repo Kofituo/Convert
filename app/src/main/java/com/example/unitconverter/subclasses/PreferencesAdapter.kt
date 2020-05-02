@@ -1,186 +1,241 @@
+@file:Suppress("KDocUnresolvedReference")
+
 package com.example.unitconverter.subclasses
 
+import android.content.Context
+import android.util.ArrayMap
 import android.util.Log
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseExpandableListAdapter
-import android.widget.RadioButton
-import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.example.unitconverter.FlattenMap
 import com.example.unitconverter.R
 import com.example.unitconverter.miscellaneous.inflate
-import com.example.unitconverter.miscellaneous.isNull
 
-class PreferencesAdapter : BaseExpandableListAdapter() {
+/**
+ * [dataSet] has keys as the header and the values as children
+ * */
+class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceData>>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(), GroupViewHolder.GroupClickListener,
+    ChildViewHolder.ChildClickListener, DecimalPlaceHolder.SliderListener {
 
-    lateinit var headers: List<String>
-    lateinit var map: Map<Int, List<String>>
-    private var colorInt: Int? = null
-    private lateinit var checkedChildren: MutableMap<Int, List<Int>>
+    var color: Int? = null
+    private var visibleItemsPerGroup = LinkedHashMap<Int, Int>(dataSet.size)
 
-    fun setCheckedChildren(mutableMap: MutableMap<Int, List<Int>>) {
-        checkedChildren = mutableMap
-    }
+    /**
+     * At start say the first 5 views are all groups
+     * means position is from 0 to 4
+     * When the user clicks a group, [notifyItemRangeInserted]
+     * would be called and it would push the next group ,giving it a new position.
+     * @example lets say we have notation (0), dec sep (1), group sep (2), decimal place (3)
+     * when we tap on notation which has 3 child views the recycler view becomes
+     * notation (0) , ch1 (1) ,ch2 (2) , ch3 (3) , dec sep (4), group sep (5) , dec place (6)
+     * */
 
-    fun setColor(color: Int) {
-        colorInt = color
-    }
-
-    fun getSelectedItems() = viewHolder.getSelectedItems()
-
-    private val viewHolder = ViewHolder(3)
-
-    class ViewHolder(int: Int) {
-        private val map = mutableMapOf<Int, MutableMap<Int, View>>()
-
-        init {
-            for (i in 0..int)
-                map[i] = mutableMapOf()
+    init {
+        //fill map
+        var index = 0
+        dataSet.map {
+            visibleItemsPerGroup[index++] = it.value.size
         }
+        visibleItemsPerGroup.apply { put(index - 1, 1) }//for the last element
+    }
 
-        fun getSelectedItems(): LinkedHashMap<Int, List<Int>> {
-            val finalMap = LinkedHashMap<Int, List<Int>>(map.size)
-            for ((groupPosition, listOfViews) in map) {
-                val list = ArrayList<Int>(listOfViews.size)
-                for (items in listOfViews) {
-                    val isChecked = items
-                        .value
-                        .findViewById<RadioButton>(R.id.decimal_notation)
-                        .isChecked
-                    if (isChecked)
-                        list.add(items.key)
+    //initially it's only the headers
+    private var numberOfVisibleItems = dataSet.size
+
+    override fun getItemViewType(position: Int): Int {
+        //Log.e("map","position $position ${FlattenMap.getType(dataSetCopy, position)}")
+        return FlattenMap.getType(dataSetCopy, position)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val viewHolder: RecyclerView.ViewHolder
+        //Log.e("view type","$viewType $itemCount")
+        when (viewType) {
+            FlattenMap.GROUP -> {
+                //for the group
+                val view = inflater.inflate {
+                    resourceId = R.layout.preferences_group
+                    root = parent
                 }
-                finalMap[groupPosition] = list
+                viewHolder =
+                    GroupViewHolder(view, color!!)
+                        .apply { setOnGroupClickListener(this@PreferencesAdapter) }
             }
-            return finalMap
+            FlattenMap.CHILD -> {
+                //for the child
+                val view = inflater.inflate {
+                    resourceId = R.layout.notation
+                    root = parent
+                }
+                viewHolder =
+                    ChildViewHolder(view, color!!)
+                        .apply { setOnChildClickedListener(this@PreferencesAdapter) }
+            }
+            FlattenMap.UNSPECIFIED -> {
+                //for the slider
+                val view = inflater.inflate {
+                    resourceId = R.layout.decimal_place
+                    root = parent
+                }
+                viewHolder =
+                    DecimalPlaceHolder(view, color!!)
+                        .apply { setSliderListener(this@PreferencesAdapter) }
+            }
+            else -> TODO()
         }
-
-        fun addView(groupPosition: Int, childPosition: Int, view: View) {
-            map[groupPosition]?.put(childPosition, view)
-        }
-
-        fun getView(groupPosition: Int, childPosition: Int): View? {
-            return map[groupPosition]?.get(childPosition)
-        }
-
-        fun getViewsInGroup(groupPosition: Int): MutableCollection<View>? {
-            return map[groupPosition]?.values
-        }
+        return viewHolder
     }
 
-    override fun getGroup(groupPosition: Int): Any? =
-        headers[groupPosition]
+    override fun getItemCount(): Int = numberOfVisibleItems
 
-    override fun isChildSelectable(groupPosition: Int, childPosition: Int) =
-        true
+    lateinit var context: Context
 
-    override fun hasStableIds(): Boolean = true
-
-    override fun getGroupView(
-        groupPosition: Int,
-        isExpanded: Boolean,
-        convertView: View?,
-        parent: ViewGroup?
-    ): View {
-        var viewGroup = convertView
-        if (viewGroup.isNull()) {
-            viewGroup = LayoutInflater.from(parent?.context).inflate {
-                resourceId = R.layout.preferences_group
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        if (holder is GroupViewHolder) {
+            val pos = holder.adapterPosition
+            FlattenMap.getGroupPosition(dataSetCopy, pos)?.let {
+                if (groupsExpanded[it])
+                    holder.rotateArrow0T180()
             }
         }
-        val textView = viewGroup.findViewById<TextView>(R.id.group_header)
-        textView.text = headers[groupPosition]
-        /*if (isExpanded) {
-            viewGroup.findViewById<ImageView>(R.id.image)
-                .apply {
-                    RotateAnimation(
-                        0f,
-                        180f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f
-                    ).apply {
-                        duration = 400
-                        startAnimation(this)
-                        fillAfter = true
-                    }
-                }
-        }*/
-        return viewGroup
     }
 
-    override fun getChildrenCount(groupPosition: Int): Int {
-        Log.e("child", " $groupPosition called")
-        return if (groupPosition == 4) 1 else (map[groupPosition] ?: error("no view here")).size
-    }
-
-    override fun getChild(groupPosition: Int, childPosition: Int): Any? =
-        viewHolder.getView(groupPosition, childPosition)
-
-    override fun getGroupId(groupPosition: Int): Long = groupPosition.toLong()
-
-    var i = 0
-    override fun getChildView(
-        groupPosition: Int,
-        childPosition: Int,
-        isLastChild: Boolean,
-        convertView: View?,
-        parent: ViewGroup?
-    ): View {
-        val inflater = LayoutInflater.from(parent?.context)
-        var nullView = viewHolder.getView(groupPosition, childPosition)
-        if (nullView.isNull()) {
-            //1,3,1,2
-            when (groupPosition) {
-                0, 1, 2, 3 -> {
-                    nullView = inflater.inflate {
-                        resourceId = R.layout.notation
-                    }
-                    nullView
-                        .findViewById<RadioButton>(R.id.decimal_notation)
-                        .apply {
-                            text = map[groupPosition]?.get(childPosition)
-                            setOnClickListener {
-                                Log.e("radio", "radio")
-                                //uncheck the others in the group
-                                val views = viewHolder.getViewsInGroup(groupPosition)
-                                    ?.map { it.findViewById<RadioButton>(R.id.decimal_notation) }
-                                views?.run {
-                                    for (view in this) {/*
-                                findViewById<RadioButton>(R.id.decimal_notation)
-                                    ?.isChecked = false*/
-                                        Log.e(
-                                            "equal",
-                                            "${view === it}  ${view?.text}  ${(it as? RadioButton)?.text}"
-                                        )
-                                        if (view == it) continue
-                                        view.isChecked = false
-                                    }
-                                }
-                            }
-                            /*if (checkedChildren[groupPosition]?.getOrNull(childPosition) ==
-                                childPosition
-                            ) isChecked = true*/
-                        }
-                    Log.e("null", "${map[groupPosition]?.get(childPosition)}")
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        //Log.e("bind", "$holder  pos $position   ${FlattenMap.getType(dataSetCopy, position)}")
+        when (FlattenMap.getType(dataSetCopy, position)) {
+            FlattenMap.GROUP -> {
+                //bind for the groups
+                val originalGroup =
+                    FlattenMap.getGroupPosition(dataSetCopy, position) ?: error("should'nt be null")
+                originalGroup.let {
+                    (holder as GroupViewHolder).header.text = dataSetCopy.keyAt(it)
                 }
-                4 -> {
-                    nullView = inflater.inflate {
-                        resourceId = R.layout.decimal_place
-                    }
-                }
-                else -> TODO()
             }
-            viewHolder.addView(groupPosition, childPosition, nullView)
+            FlattenMap.CHILD -> {
+                (holder as ChildViewHolder)
+                    .titleButton.apply {
+                        text = FlattenMap.getChildText(dataSetCopy, position).string
+                    }
+            }
+            FlattenMap.UNSPECIFIED -> {
+                //(holder as DecimalPlaceHolder)
+                Log.e("UNSPECIFIED", "UNSPECIFIED")
+            }
         }
-        return nullView
     }
 
-    override fun getChildId(groupPosition: Int, childPosition: Int): Long =
-        childPosition.toLong()
+    private val headerToIndex =
+        LinkedHashMap<Int, String>(dataSet.size).apply {
+            var index = 0
+            dataSet.forEach {
+                put(index++, it.key)
+            }
+        }
 
-    override fun getGroupCount(): Int {
-        return headers.size
+
+    private val dataSetCopy =
+        ArrayMap<String, MutableList<PreferenceData>>(dataSet.size).apply {
+            dataSet.forEach {
+                put(it.key, mutableListOf())
+            }
+        }
+
+    private val groupsExpanded = SparseBooleanArray(dataSet.size).apply {
+        var index = 0
+        dataSet.forEach { _ ->
+            append(index++, false)
+        }
+    }
+
+    private fun expand(groupPosition: Int, originalPosition: Int) {
+        val visibleItems = visibleItemsPerGroup[groupPosition] ?: error("check code $groupPosition")
+        val newMap = LinkedHashMap<Int, Int>(visibleItemsPerGroup.size)
+        for ((position, numberOfChildren) in visibleItemsPerGroup.toMap()) {
+            /**only the views after the clicked group would be affected by the collapse*/
+            if (position > groupPosition)
+                newMap[position + visibleItems] = numberOfChildren
+            else newMap[position] = numberOfChildren
+        }
+        visibleItemsPerGroup = newMap
+        val previousList = FlattenMap.convertMapToList(dataSetCopy)
+        val title = headerToIndex[originalPosition]
+        dataSet[headerToIndex[originalPosition]]?.let {
+            //Log.e("str", "$it")
+            dataSetCopy[title]?.addAll(it)
+        }
+        numberOfVisibleItems += visibleItems
+        RecyclerViewUpdater<Int>().apply {
+            oldList = previousList
+            newList = FlattenMap.convertMapToNullList(previousList, groupPosition, visibleItems)
+            apply(this@PreferencesAdapter)
+        }
+    }
+
+    /**@param position refer to the position clicked
+     * notify that from after the header to items in itemsInGroup has been remove
+     * Eventually update [visibleItemsPerGroup]
+     * when we tap on notation which has 3 child views the recycler view becomes
+     * notation (0) , ch1 (1) ,ch2 (2) , ch3 (3) , dec sep (4), group sep (5) , dec place (6)
+     * */
+    private fun collapse(position: Int, initialPosition: Int) {
+        val itemsInGroup = visibleItemsPerGroup[position] ?: error("check code $position")
+        val newMap = LinkedHashMap<Int, Int>(visibleItemsPerGroup.size)
+        for ((groupPosition, numberOfChildren) in visibleItemsPerGroup) {
+            /**only the views after the clicked group would be affected by the collapse*/
+            if (groupPosition > position) {
+                newMap[groupPosition - itemsInGroup] = numberOfChildren
+            } else newMap[groupPosition] = numberOfChildren
+        }
+        visibleItemsPerGroup = newMap
+
+        val title = headerToIndex[initialPosition]
+        Log.e("before", "$dataSetCopy  $title")
+        dataSetCopy[title]?.clear()
+        Log.e("after", "$dataSetCopy")
+        numberOfVisibleItems -= itemsInGroup
+        RecyclerViewUpdater<Int?>().apply {
+            val dataSetToList = FlattenMap.convertMapToList(dataSetCopy)
+            Log.e("dat after", "$dataSetToList")
+            newList = dataSetToList
+            oldList = FlattenMap.convertMapToNullList(
+                dataSetToList,
+                position,
+                itemsInGroup
+            )
+            Log.e("da befre", "$oldList")
+            apply(this@PreferencesAdapter)
+        }
+    }
+
+    /**
+     * Called just before an expansion or collapse occurs
+     * when a group is tapped,if it's expanded collapse it by removing the child views
+     * else add views and call [notifyItemRangeInserted]
+     *
+     * @param  position refers to the position clicked
+     * */
+    override fun onGroupClick(position: Int, holder: GroupViewHolder) {
+        val initialPosition =
+            FlattenMap.getGroupPosition(dataSetCopy, position) ?: error("check code $position")
+        if (!groupsExpanded[initialPosition]) {
+            //expand it
+            groupsExpanded.put(initialPosition, true)
+            holder.rotateArrow0T180()
+            expand(position, initialPosition)
+        } else {
+            groupsExpanded.put(initialPosition, false)
+            holder.rotateArrow180To0()
+            collapse(position, initialPosition)
+        }
+    }
+
+    override fun onChildClicked(position: Int) {
+    }
+
+    override fun onTrackChanged(value: Float) {
     }
 }

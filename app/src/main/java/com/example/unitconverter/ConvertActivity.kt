@@ -30,9 +30,11 @@ import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.pkgName
+import com.example.unitconverter.Utils.decimalSeparator
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.filters
 import com.example.unitconverter.Utils.forEachIndexed
+import com.example.unitconverter.Utils.groupingSeparator
 import com.example.unitconverter.Utils.insertCommas
 import com.example.unitconverter.Utils.lengthFilter
 import com.example.unitconverter.Utils.minusSign
@@ -60,7 +62,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.parseMap
 import java.io.Serializable
 import java.net.SocketTimeoutException
-import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
@@ -77,16 +78,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private val bundle = Bundle()
     private lateinit var viewName: String
     lateinit var function: (Positions) -> String
-
-    private val groupingSeparator
-        get() =
-            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
-                .decimalFormatSymbols.groupingSeparator
-
-    private val decimalSeparator
-        get() =
-            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
-                .decimalFormatSymbols.decimalSeparator
 
     private inline val isTemperature: Boolean get() = viewId == R.id.Temperature
 
@@ -562,7 +553,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 }
             }
             R.id.preferences -> {
-                PreferencesFragment().show(supportFragmentManager,"PREFERENCES")
+                PreferenceFragment()
+                    .apply {
+                        arguments = bundle
+                    }
+                    .show(supportFragmentManager, "PREFERENCES")
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -53,6 +53,7 @@
     <string name="speed_meta">How Fast An Object Is Moving</string>
     <string name="use_default">Use default</string>
     <string name="descending">Descending</string>
+    <string name="_default">Default</string>
     <string name="add_to_favourites">Add to favourites</string>
     <string name="electric_current">Electric Current</string>
     <string name="current_meta">The Rate Of Flow Of Electric Charge</string>

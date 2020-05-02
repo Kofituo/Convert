@@ -63,6 +63,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
         positionKey = string.substringBefore("B") + "Position"
         viewModel.apply {
             if (!dataSetIsInit || dataSet.isEmpty()) {
+                @Suppress("UNCHECKED_CAST")
                 dataSet =
                     arguments
                         ?.getSerializable("for_currency") as? MutableList<RecyclerDataClass>

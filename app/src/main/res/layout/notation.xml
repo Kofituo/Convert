@@ -3,21 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/notation"
     android:layout_width="match_parent"
-    android:descendantFocusability="afterDescendants"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:id="@+id/leftGuide"
+        app:layout_constraintGuide_percent="0.01" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:id="@+id/rightGuide"
+        app:layout_constraintGuide_percent="0.97" />
 
     <com.example.unitconverter.subclasses.MyRadioButton
         android:id="@+id/decimal_notation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        android:padding="10dp"
         android:text="@string/decimal_notation"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

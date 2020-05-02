@@ -2,6 +2,7 @@ package com.example.unitconverter.subclasses
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.ExpandableListView
 
 class MyExpandableList(context: Context, attributeSet: AttributeSet?) :
@@ -12,7 +13,7 @@ class MyExpandableList(context: Context, attributeSet: AttributeSet?) :
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(
             widthMeasureSpec,
-            maxHeight?.let { MeasureSpec.makeMeasureSpec(it, MeasureSpec.AT_MOST) }
+            maxHeight?.let { MeasureSpec.makeMeasureSpec(it, MeasureSpec.EXACTLY) }
                 ?: heightMeasureSpec)
     }
 }

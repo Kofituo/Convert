@@ -11,7 +11,6 @@ import android.util.SparseArray
 import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
-import com.example.unitconverter.Utils.toJson
 import com.example.unitconverter.builders.buildMutableList
 import com.example.unitconverter.miscellaneous.hasValue
 import com.example.unitconverter.miscellaneous.isNotNull
@@ -24,6 +23,13 @@ import kotlin.collections.LinkedHashMap
 import kotlin.math.round
 
 object Utils {
+    var groupingSeparator =
+        (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
+            .decimalFormatSymbols.groupingSeparator
+
+    var decimalSeparator =
+        (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
+            .decimalFormatSymbols.decimalSeparator
 
     var app_bar_bottom = 0
     val minusSign

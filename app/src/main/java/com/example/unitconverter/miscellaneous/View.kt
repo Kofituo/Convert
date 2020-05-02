@@ -22,7 +22,7 @@ inline fun android.view.LayoutInflater.inflate(values: LayoutInflater.() -> Unit
 
 data class Toast(var resId: Int? = null, var duration: Int? = null, var text: CharSequence? = null)
 
-inline fun Activity.showToast(block: Toast.() -> Unit) {
+inline fun Context.showToast(block: Toast.() -> Unit) {
     Toast().apply(block).run {
         if (resId == null) {
             android.widget.Toast.makeText(this@showToast, text, duration!!).show()
