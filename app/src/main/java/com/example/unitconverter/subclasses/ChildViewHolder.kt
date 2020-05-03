@@ -13,11 +13,14 @@ class ChildViewHolder(childView: View, int: Int) : RecyclerView.ViewHolder(child
     val titleButton: MyRadioButton = childView.findViewById(R.id.decimal_notation)
 
     init {
-        titleButton.buttonTintList = ColorStateList.valueOf(int)
+        titleButton.apply {
+            buttonTintList = ColorStateList.valueOf(int)
+            setOnClickListener(this@ChildViewHolder)
+        }
     }
 
     override fun onClick(v: View?) {
-        childClickListener?.onChildClicked(adapterPosition)
+        childClickListener?.onChildClicked(adapterPosition, titleButton.myId, v as MyRadioButton)
     }
 
     fun setOnChildClickedListener(childClickListener: ChildClickListener) {
@@ -25,6 +28,6 @@ class ChildViewHolder(childView: View, int: Int) : RecyclerView.ViewHolder(child
     }
 
     interface ChildClickListener {
-        fun onChildClicked(position: Int)
+        fun onChildClicked(position: Int, radioId: Int, buttonView: MyRadioButton)
     }
 }

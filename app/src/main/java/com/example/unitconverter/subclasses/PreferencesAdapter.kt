@@ -11,7 +11,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.FlattenMap
 import com.example.unitconverter.R
+import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.miscellaneous.inflate
+import com.example.unitconverter.miscellaneous.isNotNull
 
 /**
  * [dataSet] has keys as the header and the values as children
@@ -32,7 +34,6 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
      * when we tap on notation which has 3 child views the recycler view becomes
      * notation (0) , ch1 (1) ,ch2 (2) , ch3 (3) , dec sep (4), group sep (5) , dec place (6)
      * */
-
     init {
         //fill map
         var index = 0
@@ -118,7 +119,12 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             FlattenMap.CHILD -> {
                 (holder as ChildViewHolder)
                     .titleButton.apply {
-                        text = FlattenMap.getChildText(dataSetCopy, position).string
+                        val data = FlattenMap.getChildData(dataSetCopy, position)
+                        text = data.string
+                        myId = data.radioId
+                        isChecked = groupToCheckedId[data.groupNumber] == myId
+                        if (isChecked)
+                            groupToCheckedButton[data.groupNumber] = this
                     }
             }
             FlattenMap.UNSPECIFIED -> {
@@ -193,20 +199,16 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
         visibleItemsPerGroup = newMap
 
         val title = headerToIndex[initialPosition]
-        Log.e("before", "$dataSetCopy  $title")
+        //Log.e("before", "$dataSetCopy  $title")
         dataSetCopy[title]?.clear()
-        Log.e("after", "$dataSetCopy")
+        //Log.e("after", "$dataSetCopy")
         numberOfVisibleItems -= itemsInGroup
         RecyclerViewUpdater<Int?>().apply {
             val dataSetToList = FlattenMap.convertMapToList(dataSetCopy)
-            Log.e("dat after", "$dataSetToList")
+            //Log.e("dat after", "$dataSetToList")
             newList = dataSetToList
-            oldList = FlattenMap.convertMapToNullList(
-                dataSetToList,
-                position,
-                itemsInGroup
-            )
-            Log.e("da befre", "$oldList")
+            oldList = FlattenMap.convertMapToNullList(dataSetToList, position, itemsInGroup)
+            //Log.e("da befre", "$oldList")
             apply(this@PreferencesAdapter)
         }
     }
@@ -233,8 +235,21 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
         }
     }
 
-    override fun onChildClicked(position: Int) {
+    val groupToCheckedId = buildMutableMap<Int, Int>()
+
+    override fun onChildClicked(position: Int, radioId: Int, buttonView: MyRadioButton) {
+        val groupPosition = FlattenMap.getChildData(dataSetCopy, position).groupNumber
+        val previousButton = groupToCheckedButton[groupPosition]
+        if (previousButton.isNotNull()) {
+            //Log.e("inn", "called")
+            previousButton.isChecked = false
+        }
+        //Log.e("is checked", "${buttonView.isChecked}")
+        groupToCheckedButton[groupPosition] = buttonView.apply { isChecked = true }
+        groupToCheckedId[groupPosition] = buttonView.myId
     }
+
+    private val groupToCheckedButton = LinkedHashMap<Int, MyRadioButton>()
 
     override fun onTrackChanged(value: Float) {
     }

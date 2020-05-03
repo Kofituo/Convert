@@ -59,6 +59,12 @@ class PreferenceFragment : DialogFragment() {
                 adapter = PreferencesAdapter(map).apply {
                     context = requireContext()
                     color = colour
+                    groupToCheckedId.apply {
+                        put(0, 0)
+                        put(1, 3)
+                        put(2, 7)
+                        put(3, 11)
+                    }
                 }
             }
             doneButton = findViewById(R.id.done_button)
@@ -81,34 +87,34 @@ class PreferenceFragment : DialogFragment() {
             put {
                 key = getString(R.string.notation).toUpperCase(Locale.getDefault())
                 value = mutableListOf(
-                    PreferenceData(getString(R.string.decimal_notation), start++),
-                    PreferenceData(getString(R.string.scientific_notation), start++),
-                    PreferenceData(getString(R.string.engineering_notation), start++)
+                    PreferenceData(getString(R.string.decimal_notation), start++, 0),
+                    PreferenceData(getString(R.string.scientific_notation), start++, 0),
+                    PreferenceData(getString(R.string.engineering_notation), start++, 0)
                 )
             }
             put {
                 key = getString(R.string.grouping_separator)
                 value = mutableListOf(
-                    PreferenceData(getString(R.string._default), start++),
-                    PreferenceData(getString(R.string.comma), start++),
-                    PreferenceData(getString(R.string.dot), start++),
-                    PreferenceData(getString(R.string.space), start++)
+                    PreferenceData(getString(R.string._default), start++, 1),
+                    PreferenceData(getString(R.string.comma), start++, 1),
+                    PreferenceData(getString(R.string.dot), start++, 1),
+                    PreferenceData(getString(R.string.space), start++, 1)
                 )
             }
             put {
                 key = getString(R.string.decimal_separator)
                 value = mutableListOf(
-                    PreferenceData(getString(R.string._default), start++),
-                    PreferenceData(getString(R.string.comma), start++),
-                    PreferenceData(getString(R.string.dot), start++),
-                    PreferenceData(getString(R.string.space), start++)
+                    PreferenceData(getString(R.string._default), start++, 2),
+                    PreferenceData(getString(R.string.comma), start++, 2),
+                    PreferenceData(getString(R.string.dot), start++, 2),
+                    PreferenceData(getString(R.string.space), start++, 2)
                 )
             }
             put {
                 key = getString(R.string.exponent_separator)
                 value = mutableListOf(
-                    PreferenceData(getString(R.string.e_symbol), start++),
-                    PreferenceData(getString(R.string.small_ten), start++)
+                    PreferenceData(getString(R.string.e_symbol), start++, 3),
+                    PreferenceData(getString(R.string.small_ten), start++, 3)
                 )
             }
             put {

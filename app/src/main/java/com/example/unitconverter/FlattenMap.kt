@@ -1,17 +1,15 @@
 package com.example.unitconverter
 
-import android.util.Log
-
 object FlattenMap {
 
     const val GROUP = 0
     const val CHILD = 1
     const val UNSPECIFIED = 2
 
-    fun <T> getType(map: Map<String, Collection<T>>, position: Int): Int {
+    fun <T, U> getType(map: Map<U, Collection<T>>, position: Int): Int {
         val groups = ArrayList<Int>(map.size)
         var index = 0
-        for ((text, list) in map) {
+        for ((_, list) in map) {
             groups.add(index)
             index += list.size + 1
         }
@@ -19,23 +17,22 @@ object FlattenMap {
         return if (position in groups) GROUP else CHILD
     }
 
-    fun <T> getGroupPosition(map: Map<String, Collection<T>>, position: Int): Int? {
+    fun <T, J> getGroupPosition(map: Map<J, Collection<T>>, position: Int): Int? {
         val groups = LinkedHashMap<Int, Int>(map.size)
         var mapIndex = 0
         var index = 0
-        for ((text, list) in map) {
+        for ((_, list) in map) {
             groups[index] = mapIndex++
             index += list.size + 1
         }
         return groups[position]
     }
 
-    fun <T>getChildText(map: Map<String, Collection<T>>, position: Int): T {
+    fun <T, N> getChildData(map: Map<N, Collection<T>>, position: Int): T {
         var index = 0
-        for ((text, list) in map) {
+        for ((_, list) in map) {
             index++
             list.forEach {
-                println(index)
                 if (position == index)
                     return it
                 index++
@@ -44,7 +41,7 @@ object FlattenMap {
         error("this is not a child $position  $map")
     }
 
-    fun <T> convertMapToList(map: Map<String, Collection<T>>): ArrayList<Int> {
+    fun <T, S> convertMapToList(map: Map<S, Collection<T>>): ArrayList<Int> {
         val array = ArrayList<Int>(map.size + 8)
         var index = 0
         for ((_, list) in map) {

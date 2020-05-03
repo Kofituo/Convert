@@ -63,8 +63,8 @@ class MyAdapter(
             }
             radioButton.setOnClickListener {
                 //lastPosition = adapterPosition
-                lastPosition = radioButton.myId
-                notifyItemRangeChanged(0, itemCount)
+                //lastPosition = radioButton.myId
+                //notifyItemRangeChanged(0, itemCount)
                 listener.radioButtonClicked(
                     radioButton.myId,
                     radioButton.text,

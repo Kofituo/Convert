@@ -40,7 +40,7 @@ inline fun <K, V> buildMutableMap(action: MutableMap<K, V>.() -> Unit): MutableM
  *
  * Default [capacity] = 30
  * */
-inline fun <K, V> buildMutableMap(capacity: Int = 30, action: MutableMap<K, V>.() -> Unit) =
+inline fun <K, V> buildMutableMap(capacity: Int = 30, action: MutableMap<K, V>.() -> Unit = {}) =
     LinkedHashMap<K, V>(capacity).apply(action)
 
 data class MapValue<K, V>(var key: K? = null, var value: V? = null)
