@@ -11,9 +11,10 @@ import com.google.android.material.slider.Slider
 class DecimalPlaceHolder(view: View, int: Int) : RecyclerView.ViewHolder(view) {
 
     private var sliderListener: SliderListener? = null
+    private val slider: Slider
 
     init {
-        view.findViewById<Slider>(R.id.slider)
+        slider = view.findViewById<Slider>(R.id.slider)
             .apply {
                 addOnChangeListener { slider: Slider, value: Float, fromUser: Boolean ->
                     sliderListener?.onTrackChanged(value)
@@ -28,6 +29,10 @@ class DecimalPlaceHolder(view: View, int: Int) : RecyclerView.ViewHolder(view) {
                 haloColor = ColorStateList.valueOf(lighterColor)
                 tickColorActive = ColorStateList.valueOf(Color.WHITE)
             }
+    }
+
+    fun setSliderInitialValue(float: Float) {
+        slider.value = float
     }
 
     fun setSliderListener(sliderListener: SliderListener) {

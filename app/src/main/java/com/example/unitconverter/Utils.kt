@@ -7,15 +7,18 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.InputFilter
+import android.util.Log
 import android.util.SparseArray
 import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
 import com.example.unitconverter.builders.buildMutableList
+import com.example.unitconverter.miscellaneous.DecimalFormatFactory
 import com.example.unitconverter.miscellaneous.hasValue
 import com.example.unitconverter.miscellaneous.isNotNull
 import com.google.android.material.textfield.TextInputEditText
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -23,13 +26,18 @@ import kotlin.collections.LinkedHashMap
 import kotlin.math.round
 
 object Utils {
-    var groupingSeparator =
-        (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
-            .decimalFormatSymbols.groupingSeparator
 
-    var decimalSeparator =
-        (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat)
-            .decimalFormatSymbols.decimalSeparator
+    var decimalFormatSymbols: DecimalFormatSymbols? = null
+
+    val groupingSeparator get() = decimalFormatSymbols?.groupingSeparator
+
+    val decimalSeparator get() = decimalFormatSymbols?.decimalSeparator
+
+    var isEngineering: Boolean? = null
+
+    var pattern: String? = null
+
+    var numberOfDecimalPlace = -1
 
     var app_bar_bottom = 0
     val minusSign
@@ -104,10 +112,28 @@ object Utils {
     fun <T> T.insertCommas(): String {
         val decimalFormat =
             (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
-                applyPattern("#,##0.######")
+                decimalFormatSymbols = this@Utils.decimalFormatSymbols
+                applyPattern(pattern)
             }
-        return if (this is String) decimalFormat.format(this.toBigDecimal())
-        else decimalFormat.format(this)
+        var unformattedResult =
+            if (this is String) decimalFormat.format(this.toBigDecimal())
+            else decimalFormat.format(this)
+        Log.e("patt", "$pattern")
+        if (isEngineering == true)
+            unformattedResult =
+                DecimalFormatFactory().formatEngineeringString(
+                    unformattedResult,
+                    numberOfDecimalPlace
+                )
+        unformattedResult.apply {
+            if (endsWith(decimalSeparator!!)) {
+                return buildString(length - 1) {
+                    append(unformattedResult)
+                    delete(length - 1, length)
+                }
+            }
+        }
+        return unformattedResult
     }
 
     //filters

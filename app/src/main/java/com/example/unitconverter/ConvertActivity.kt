@@ -60,6 +60,7 @@ import kotlinx.coroutines.*
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.parseMap
+import kotlinx.serialization.stringify
 import java.io.Serializable
 import java.net.SocketTimeoutException
 import java.util.*
@@ -68,7 +69,7 @@ import kotlin.collections.LinkedHashMap
 
 @OptIn(ImplicitReflectionSerializer::class)
 class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface,
-    DownloadCallback<String>, CoroutineScope by MainScope() {
+    DownloadCallback<String>, CoroutineScope by MainScope(), PreferenceFragment.PreferenceFragment {
 
     private var swap = false
     private var randomColor = -1
@@ -118,6 +119,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
         Log.e("id", "$viewId")
         Log.e("vi", "$card")
+        getLastConversions()
         firstEditText.apply {
             setFilters(this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
@@ -126,8 +128,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             setFilters(this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
         }
-        getLastConversions()
-
         viewModel = viewModel {
             settingColours(randomInt)
             randomInt = randomColor
@@ -190,8 +190,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private fun setFilters(editText: TextInputEditText) {
         editText.filters =
             if (isTemperature)
-                temperatureFilters(groupingSeparator, decimalSeparator, editText)
-            else filters(groupingSeparator, decimalSeparator, editText)
+                temperatureFilters(groupingSeparator!!, decimalSeparator!!, editText)
+            else filters(groupingSeparator!!, decimalSeparator!!, editText)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -553,6 +553,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 }
             }
             R.id.preferences -> {
+                viewModel.clearForPreferences()
                 PreferenceFragment()
                     .apply {
                         arguments = bundle
@@ -668,7 +669,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         editText: EditText,
         private val secondEditText: TextInputEditText
     ) :
-        SeparateThousands(editText, groupingSeparator, decimalSeparator) {
+        SeparateThousands(editText, groupingSeparator!!, decimalSeparator!!) {
         override fun afterTextChanged(s: Editable?) {
             val start = System.currentTimeMillis()
             Log.e("came", "$s   ${secondEditText.text}")
@@ -678,14 +679,14 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     secondEditText.text = null // to prevent Unparseable number "-"error
                     return
                 }
-                this.removeCommas(decimalSeparator)?.also {
+                this.removeCommas(decimalSeparator!!)?.also {
                     Log.e("may be Problem", it)
                     secondEditText.apply {
                         if (isTemperature) filters = arrayOf(lengthFilter())
                         setText(callBack(function, it))
                         if (isTemperature)
                             filters =
-                                temperatureFilters(groupingSeparator, decimalSeparator, this)
+                                temperatureFilters(groupingSeparator!!, decimalSeparator!!, this)
                     }
                     var k = 0
                     for (i in secondEditText.text!!) if (i.isDigit()) k++
@@ -790,6 +791,23 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         currencyRates = getRatesList(this)
                 }
             }
+            Utils.isEngineering = get("isEngineering")
+            get<Int>("sliderValue") {
+                if (this != -1)
+                    sliderValue = this
+            }
+            get<String?>("preferences_selections") {
+                if (this.hasValue())
+                    preferencesSelected.putAll(Json.parseMap(this))
+                else preferencesSelected.apply {
+                    put(0, 0)
+                    put(1, 3)
+                    put(2, 7)
+                    put(3, 11)
+                }
+                applyChanges() //build the decimal format
+            }
+            Utils.numberOfDecimalPlace = sliderValue
         }
     }
 
@@ -862,6 +880,18 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             put<Int> {
                 key = "downPosition"
                 value = positionArray["bottomPosition"]!!
+            }
+            put<String> {
+                key = "preferences_selections"
+                value = Json.stringify(preferencesSelected)
+            }
+            put<Int> {
+                key = "sliderValue"
+                value = sliderValue
+            }
+            put<Boolean> {
+                key = "isEngineering"
+                value = Utils.isEngineering
             }
             apply()
         }
@@ -1096,6 +1126,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         networkFragment.cancelDownload()
     }
 
+
     override fun passException(url: String?, exception: Exception) {
         //means error occurred
         retry = true // post retry
@@ -1103,7 +1134,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         Log.e("isTimeout", "${exception is SocketTimeoutException}")
         when (exception) {
             is SocketTimeoutException -> {
-                Snackbar.make(convert_parent, R.string.time_out, Snackbar.LENGTH_LONG)
+                Snackbar.make(convert_parent, R.string.time_out, 12_500)//12.5seconds
                     .apply {
                         setAction(R.string.retry) {
                             networkFragment.startDownload()
@@ -1113,7 +1144,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
             else -> {
                 Snackbar
-                    .make(convert_parent, R.string.unable_to_get, Snackbar.LENGTH_LONG)
+                    .make(convert_parent, R.string.unable_to_get, 12_500)
                     .apply {
                         setAction(R.string.retry) {
                             networkFragment.startDownload()
@@ -1121,6 +1152,36 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         show()
                     }
             }
+        }
+    }
+
+    private val preferencesSelected by lazy(LazyThreadSafetyMode.NONE) {
+        LinkedHashMap<Int, Int>(4)
+    }
+
+    override fun getPreferences(group: Int, child: Int) {
+        preferencesSelected[child] = child
+    }
+
+    private var sliderValue = 6
+    override fun getSliderValue(sliderValue: Int) {
+        this.sliderValue = sliderValue
+    }
+
+    private var decimalFormatFactory: DecimalFormatFactory? = null
+    override fun applyChanges() {
+        decimalFormatFactory = DecimalFormatFactory().apply {
+            buildDecimalFormatSymbols(this@ConvertActivity, preferencesSelected.values)
+                .apply {
+                    Utils.decimalFormatSymbols = decimalFormatSymbols
+                    Utils.pattern = pattern
+                    Log.e("isTrue", "${Utils.isEngineering}")
+                    if (Utils.isEngineering != true) {
+                        Utils.pattern = setDecimalPlaces(pattern!!, sliderValue)
+                        Log.e("set", "set")
+                    }
+                    Log.e("thi", "called  ${preferencesSelected.values} $decimalFormatSymbols")
+                }
         }
     }
 }

@@ -30,6 +30,7 @@ inline fun <reified T> SharedPreferences.Editor.put(block: SharedPreferencesEdit
             String::class -> putString(key, value as? String)
             Int::class -> putInt(key, value as Int)
             Long::class -> putLong(key, value as Long)
+            Float::class -> putFloat(key, value as Float)
             else -> TODO()
         }
     }
@@ -45,6 +46,7 @@ inline fun <reified T> SharedPreferences.get(key: String, block: T.() -> Unit = 
         String::class -> (getString(key, null) as T).apply(block)
         Int::class -> (getInt(key, -1) as T).apply(block)
         Long::class -> (getLong(key, -1) as T).apply(block)
+        Float::class -> (getFloat(key, -1f) as T).apply(block)
         else -> TODO()
     }
 

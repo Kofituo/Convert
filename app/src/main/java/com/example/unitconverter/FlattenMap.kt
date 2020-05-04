@@ -28,6 +28,16 @@ object FlattenMap {
         return groups[position]
     }
 
+    fun <J, K> getGroups(map: Map<J, Collection<K>>): ArrayList<Int> {
+        val groups = ArrayList<Int>(map.size)
+        var index = 0
+        for ((_, list) in map) {
+            groups.add(index)
+            index += list.size + 1
+        }
+        return groups
+    }
+
     fun <T, N> getChildData(map: Map<N, Collection<T>>, position: Int): T {
         var index = 0
         for ((_, list) in map) {
@@ -53,7 +63,7 @@ object FlattenMap {
         return array
     }
 
-    fun convertMapToNullList(
+    fun addNullsToList(
         oldList: Collection<Int>,
         changedIndex: Int,
         numberOfNewItems: Int

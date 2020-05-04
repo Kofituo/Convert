@@ -13,7 +13,6 @@ import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.bugDetected
@@ -47,7 +46,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.stringify
 import java.io.Serializable
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
 //change manifest setting to backup allow true
@@ -114,13 +112,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         else systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
-
-        val viewModel =
-            ViewModelProvider(this@MainActivity)[ConvertViewModel::class.java]
-                .apply {
-                    if (resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE)
-                        motionProgress //to reset the value
-                }
+        savedInstanceState?.putFloat("motion_progress", 1f)
         motion {
             motionHandler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
@@ -153,9 +145,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     return super.handleMessage(msg)
                 }
             }
-            progress = viewModel.motionProgress
+            progress = savedInstanceState?.getFloat("motion_progress") ?: 0f
         }
-
         sharedPreferences {
             editPreferences {
                 //rethinking almost everything to make sure it works well always

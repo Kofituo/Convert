@@ -2,12 +2,10 @@
 
 package com.example.unitconverter.subclasses
 
-import android.content.Context
-import android.util.ArrayMap
-import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.FlattenMap
 import com.example.unitconverter.R
@@ -23,7 +21,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
     ChildViewHolder.ChildClickListener, DecimalPlaceHolder.SliderListener {
 
     var color: Int? = null
-    private var visibleItemsPerGroup = LinkedHashMap<Int, Int>(dataSet.size)
+    var visibleItemsPerGroup: MutableMap<Int, Int> = LinkedHashMap(dataSet.size)
 
     /**
      * At start say the first 5 views are all groups
@@ -44,7 +42,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
     }
 
     //initially it's only the headers
-    private var numberOfVisibleItems = dataSet.size
+    var numberOfVisibleItems = dataSet.size
 
     override fun getItemViewType(position: Int): Int {
         //Log.e("map","position $position ${FlattenMap.getType(dataSetCopy, position)}")
@@ -84,16 +82,19 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                 }
                 viewHolder =
                     DecimalPlaceHolder(view, color!!)
-                        .apply { setSliderListener(this@PreferencesAdapter) }
+                        .apply {
+                            setSliderListener(this@PreferencesAdapter)
+                            setSliderInitialValue(sliderValue)
+                        }
             }
             else -> TODO()
         }
         return viewHolder
     }
 
-    override fun getItemCount(): Int = numberOfVisibleItems
-
-    lateinit var context: Context
+    override fun getItemCount(): Int {
+        return numberOfVisibleItems
+    }
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         if (holder is GroupViewHolder) {
@@ -129,7 +130,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             }
             FlattenMap.UNSPECIFIED -> {
                 //(holder as DecimalPlaceHolder)
-                Log.e("UNSPECIFIED", "UNSPECIFIED")
+                ///Log.e("UNSPECIFIED", "UNSPECIFIED")
             }
         }
     }
@@ -142,15 +143,14 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             }
         }
 
-
-    private val dataSetCopy =
-        ArrayMap<String, MutableList<PreferenceData>>(dataSet.size).apply {
+    var dataSetCopy =
+        ArrayMap<String, MutableCollection<PreferenceData>>(dataSet.size).apply {
             dataSet.forEach {
                 put(it.key, mutableListOf())
             }
         }
 
-    private val groupsExpanded = SparseBooleanArray(dataSet.size).apply {
+    var groupsExpanded = SparseBooleanArray(dataSet.size).apply {
         var index = 0
         dataSet.forEach { _ ->
             append(index++, false)
@@ -176,7 +176,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
         numberOfVisibleItems += visibleItems
         RecyclerViewUpdater<Int>().apply {
             oldList = previousList
-            newList = FlattenMap.convertMapToNullList(previousList, groupPosition, visibleItems)
+            newList = FlattenMap.addNullsToList(previousList, groupPosition, visibleItems)
             apply(this@PreferencesAdapter)
         }
     }
@@ -207,7 +207,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             val dataSetToList = FlattenMap.convertMapToList(dataSetCopy)
             //Log.e("dat after", "$dataSetToList")
             newList = dataSetToList
-            oldList = FlattenMap.convertMapToNullList(dataSetToList, position, itemsInGroup)
+            oldList = FlattenMap.addNullsToList(dataSetToList, position, itemsInGroup)
             //Log.e("da befre", "$oldList")
             apply(this@PreferencesAdapter)
         }
@@ -251,6 +251,8 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
 
     private val groupToCheckedButton = LinkedHashMap<Int, MyRadioButton>()
 
+    var sliderValue = 6f
     override fun onTrackChanged(value: Float) {
+        sliderValue = value
     }
 }
