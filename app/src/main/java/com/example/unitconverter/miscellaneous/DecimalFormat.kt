@@ -71,6 +71,7 @@ class DecimalFormatFactory {
                 if (numberOfPlaces != 0) append('.')
                 for (i in 0 until numberOfPlaces)
                     append('#')
+                append("E0")
             }
             else -> TODO()
         }
@@ -88,7 +89,10 @@ class DecimalFormatFactory {
                             slice(0 until if (isOverflow) length else numberOfPlaces + 1)
                         if (!isOverflow)
                         //for rounding numbers
-                            BigDecimal(subString).round(MathContext(subString.trimStart(Utils.decimalSeparator!!).length - 1))
+                            BigDecimal(subString)
+                                .round(
+                                    MathContext(subString.trimStart(Utils.decimalSeparator!!).length - 1)
+                                )
                                 .toPlainString().run {
                                     val str = StringBuilder()
                                     //big decimal removes leading zeroes

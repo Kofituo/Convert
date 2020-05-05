@@ -39,6 +39,8 @@ class ConvertViewModel : ViewModel() {
 
     var initialMap: Map<Int, Int>? = null
 
+    var mGroupToEnabledID: MutableMap<Int, SparseBooleanArray>? = null
+
     fun clearForPreferences() {
         dataSetCopy = null
         numberOfItems = null
@@ -48,5 +50,6 @@ class ConvertViewModel : ViewModel() {
         visibleItemsPerGroup = null
         sliderValue = null
         groupToCheckedId = null
+        mGroupToEnabledID = null
     }
 }

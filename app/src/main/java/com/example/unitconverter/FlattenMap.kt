@@ -1,19 +1,23 @@
 package com.example.unitconverter
 
+import android.util.Log
+
 object FlattenMap {
 
     const val GROUP = 0
     const val CHILD = 1
     const val UNSPECIFIED = 2
+    private const val UNKNOWN = -1
 
     fun <T, U> getType(map: Map<U, Collection<T>>, position: Int): Int {
+        if (position < 0) return UNKNOWN
         val groups = ArrayList<Int>(map.size)
         var index = 0
         for ((_, list) in map) {
             groups.add(index)
             index += list.size + 1
         }
-        if (position == index) return UNSPECIFIED// for the last one
+        if (position >= index) return UNSPECIFIED// for the last one
         return if (position in groups) GROUP else CHILD
     }
 
@@ -28,6 +32,8 @@ object FlattenMap {
         return groups[position]
     }
 
+/*
+
     fun <J, K> getGroups(map: Map<J, Collection<K>>): ArrayList<Int> {
         val groups = ArrayList<Int>(map.size)
         var index = 0
@@ -37,6 +43,7 @@ object FlattenMap {
         }
         return groups
     }
+*/
 
     fun <T, N> getChildData(map: Map<N, Collection<T>>, position: Int): T {
         var index = 0

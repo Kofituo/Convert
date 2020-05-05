@@ -65,6 +65,7 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:splitMotionEvents="false"
             android:background="@color/adaptive_white_black"
             android:scrollbars="none"
             app:layout_constrainedHeight="true"

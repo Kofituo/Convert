@@ -1,7 +1,7 @@
-@file:Suppress("KDocUnresolvedReference")
-
 package com.example.unitconverter.subclasses
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,6 +12,10 @@ import com.example.unitconverter.R
 import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.miscellaneous.inflate
 import com.example.unitconverter.miscellaneous.isNotNull
+import com.example.unitconverter.miscellaneous.isNull
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 
 /**
  * [dataSet] has keys as the header and the values as children
@@ -26,7 +30,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
     /**
      * At start say the first 5 views are all groups
      * means position is from 0 to 4
-     * When the user clicks a group, [notifyItemRangeInserted]
+     * When the user clicks a group, notifyItemRangeInserted
      * would be called and it would push the next group ,giving it a new position.
      * @example lets say we have notation (0), dec sep (1), group sep (2), decimal place (3)
      * when we tap on notation which has 3 child views the recycler view becomes
@@ -49,14 +53,16 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
         return FlattenMap.getType(dataSetCopy, position)
     }
 
+    private var inflater: LayoutInflater? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
+        if (inflater.isNull()) inflater = LayoutInflater.from(parent.context)
+        val fastInflater = inflater!!
         val viewHolder: RecyclerView.ViewHolder
         //Log.e("view type","$viewType $itemCount")
         when (viewType) {
             FlattenMap.GROUP -> {
                 //for the group
-                val view = inflater.inflate {
+                val view = fastInflater.inflate {
                     resourceId = R.layout.preferences_group
                     root = parent
                 }
@@ -66,7 +72,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             }
             FlattenMap.CHILD -> {
                 //for the child
-                val view = inflater.inflate {
+                val view = fastInflater.inflate {
                     resourceId = R.layout.notation
                     root = parent
                 }
@@ -76,7 +82,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             }
             FlattenMap.UNSPECIFIED -> {
                 //for the slider
-                val view = inflater.inflate {
+                val view = fastInflater.inflate {
                     resourceId = R.layout.decimal_place
                     root = parent
                 }
@@ -126,6 +132,20 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                         isChecked = groupToCheckedId[data.groupNumber] == myId
                         if (isChecked)
                             groupToCheckedButton[data.groupNumber] = this
+                        /**
+                         * initially [groupToCheckedId] has all values null
+                         * if the value is null enable that group's buttons
+                         * if there's a value, enable only that one and disable the rest
+                         * */
+                        val mGroupNumber = buttonToMyGroupNumber(myId)
+                        if (mGroupNumber.isNull()) {
+                            enableRadioButton(this)
+                            return
+                        }
+                        if (mGroupToEnabledID[mGroupNumber]!![myId])
+                            enableRadioButton(this)
+                        else disableRadioButton(this)
+
                     }
             }
             FlattenMap.UNSPECIFIED -> {
@@ -134,6 +154,14 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             }
         }
     }
+
+    private fun buttonToMyGroupNumber(radioId: Int) =
+        when (radioId) {
+            4, 8 -> 1
+            5, 9 -> 2
+            6, 10 -> 3
+            else -> null
+        }
 
     private val headerToIndex =
         LinkedHashMap<Int, String>(dataSet.size).apply {
@@ -235,8 +263,16 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
         }
     }
 
-    val groupToCheckedId = buildMutableMap<Int, Int>()
+    var groupToCheckedId = buildMutableMap<Int, Int>()
 
+    var mGroupToEnabledID: MutableMap<Int, SparseBooleanArray> = buildMutableMap(3) {
+        //initially they're all are enabled
+        put(1, SparseBooleanArray(2).apply { append(4, true); append(8, true) })
+        put(2, SparseBooleanArray(2).apply { append(5, true); append(9, true) })
+        put(3, SparseBooleanArray(2).apply { append(6, true); append(10, true) })
+    }
+
+    //to make sure recently added is'nt removed
     override fun onChildClicked(position: Int, radioId: Int, buttonView: MyRadioButton) {
         val groupPosition = FlattenMap.getChildData(dataSetCopy, position).groupNumber
         val previousButton = groupToCheckedButton[groupPosition]
@@ -247,6 +283,183 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
         //Log.e("is checked", "${buttonView.isChecked}")
         groupToCheckedButton[groupPosition] = buttonView.apply { isChecked = true }
         groupToCheckedId[groupPosition] = buttonView.myId
+        val index = if (groupPosition == 1) 1 else 0
+        resetWhenDefault(radioId, position, index, groupPosition)
+            ?: return //means it is default selected
+        //to make sure only one of each is checked at a time and disable the other
+        val viewsToEdit = addToMap(radioId) ?: return //we have no business if it's null
+        val positionToDisable =
+            if (groupPosition == 1) position + 5 else position - 5
+        //Log.e("viewsToEdit", "$viewsToEdit")
+        val otherGroupsMap = mGroupToEnabledID.map {
+            val value = it.value
+            value.keyAt(index) to value.valueAt(index)
+        }.toMap()
+        var previousIdToReEnable: Int? = null
+        for ((i, isEnabled) in otherGroupsMap) {
+            if (i == viewsToEdit.viewToDisable) continue
+            if (!isEnabled)
+                previousIdToReEnable = i
+        }
+        //Log.e("map", "gr1 $otherGroupsMap  $previousIdToReEnable  id $radioId $position ")
+        previousIdToReEnable?.let {
+            //Log.e("prev", "${mGroupToEnabledID[getIndex(it)]} $positionToDisable  ${viewsToEdit.viewToDisable - it}")
+            mGroupToEnabledID[getIndex(it)]!!.put(it, true)
+        }
+        /**
+         * first position is [position]
+         * If the id to be disabled is opened, [FlattenMap.getType] would return [FlattenMap.CHILD]
+         * if it isn't opened we move
+         * */
+        if (FlattenMap.getType(dataSetCopy, positionToDisable) == FlattenMap.CHILD) {
+            //it could be a child but not for grouping or decimal separator
+            val positionToDisableId =
+                FlattenMap.getChildData(dataSetCopy, positionToDisable).radioId
+            val shouldChange =
+                //the id should be for the other group
+                if (groupPosition == 1)
+                    positionToDisableId in 8..10
+                else positionToDisableId in 4..6
+            /*Log.e(
+                "wrong",
+                "$position " +
+                        " ${FlattenMap.getChildData(
+                            dataSetCopy,
+                            positionToDisable
+                        )}  $shouldChange" +
+                        " $positionToDisableId  r $groupPosition"
+            )*/
+            if (shouldChange) {
+                notifyItemChanged(positionToDisable)
+                //since the position to disable is in the same group as previous id to re enable
+                // I can put the code to update it here
+                previousIdToReEnable?.let {
+                    val difference = viewsToEdit.viewToDisable - it
+                    val adapterPositionForIt = positionToDisable - difference
+                    notifyItemChanged(adapterPositionForIt)
+                }
+            }
+        }
+    }
+
+    private fun resetWhenDefault(
+        radioId: Int,
+        position: Int,
+        index: Int,
+        groupPosition: Int
+    ): Unit? {
+        when (radioId) {
+            3, 7 -> {
+                //handle case for the default
+                var previousIdToReEnable: Int? = null
+                val otherGroupsMap = mGroupToEnabledID.map {
+                    val value = it.value
+                    value.keyAt(index) to value.valueAt(index)
+                }.toMap()
+                //Log.e("mp", "$mGroupToEnabledID index $index")
+                //Log.e("other", "$otherGroupsMap")
+                for ((i, isEnabled) in otherGroupsMap) {
+                    if (!isEnabled) {
+                        previousIdToReEnable = i
+                        break // since only one can be false at a time
+                    }
+                }
+                //should'nt be null though
+                previousIdToReEnable?.let {
+                    val adapterPosition =
+                        if (groupPosition == 1)
+                            position + (it - radioId) + 1
+                        else position - (radioId - it) - 1
+                    mGroupToEnabledID[getIndex(it)]!!.put(it, true)
+                    if (FlattenMap.getType(dataSetCopy, adapterPosition) == FlattenMap.CHILD) {
+                        //update if visible
+                        //Log.e("prev", "$previousIdToReEnable  $radioId  $position sum $adapterPosition ")
+                        //it could be a child but not for grouping or decimal separator
+                        val positionToDisableId =
+                            FlattenMap.getChildData(dataSetCopy, adapterPosition).radioId
+                        val shouldChange =
+                            //the id should be for the other group
+                            if (groupPosition == 1)
+                                positionToDisableId in 8..10
+                            else positionToDisableId in 4..6
+                        if (shouldChange) notifyItemChanged(adapterPosition)
+                    }
+                }
+                return null //no need to go to the next line and return
+            }
+        }
+        return Unit
+    }
+
+    private fun getIndex(int: Int): Int {
+        return when (int) {
+            4, 8 -> 1
+            5, 9 -> 2
+            6, 10 -> 3
+            else -> TODO()
+        }
+    }
+
+    /**Updates the map and return the positions to be updated*/
+    private fun addToMap(radioId: Int): ViewsToEdit? {
+        return when (radioId) {
+            4, 8 -> {
+                val idToDisable: Int
+                val idClicked = if (radioId == 4) {
+                    idToDisable = 8
+                    4
+                } else {
+                    idToDisable = 4
+                    8
+                }
+                enableAndDisable(1, idClicked, idToDisable)
+                ViewsToEdit(idClicked, idToDisable)
+            }
+            5, 9 -> {
+                val idToDisable: Int
+                val idClicked = if (radioId == 5) {
+                    idToDisable = 9
+                    5
+                } else {
+                    idToDisable = 5
+                    9
+                }
+                enableAndDisable(2, idClicked, idToDisable)
+                ViewsToEdit(idClicked, idToDisable)
+            }
+            6, 10 -> {
+                val idToDisable: Int
+                val idClicked = if (radioId == 6) {
+                    idToDisable = 10
+                    6
+                } else {
+                    idToDisable = 6
+                    10
+                }
+                enableAndDisable(3, idClicked, idToDisable)
+                ViewsToEdit(idClicked, idToDisable)
+            }
+            else -> null
+        }
+    }
+
+    private fun enableAndDisable(mGroup: Int, idToEnable: Int, idToDisable: Int) {
+        mGroupToEnabledID[mGroup]!!.apply {
+            put(idToEnable, true)
+            put(idToDisable, false)
+        }
+    }
+
+    private data class ViewsToEdit(val viewClicked: Int, val viewToDisable: Int)
+
+    private fun enableRadioButton(radioButton: MyRadioButton) {
+        radioButton.isEnabled = true
+        radioButton.buttonTintList = ColorStateList.valueOf(color!!)
+    }
+
+    private fun disableRadioButton(radioButton: MyRadioButton) {
+        radioButton.isEnabled = false
+        radioButton.buttonTintList = ColorStateList.valueOf(Color.DKGRAY)
     }
 
     private val groupToCheckedButton = LinkedHashMap<Int, MyRadioButton>()

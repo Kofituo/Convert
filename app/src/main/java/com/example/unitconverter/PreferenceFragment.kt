@@ -83,6 +83,7 @@ class PreferenceFragment : DialogFragment() {
         viewModel.visibleItemsPerGroup = adapter.visibleItemsPerGroup
         viewModel.sliderValue = adapter.sliderValue
         viewModel.groupToCheckedId = adapter.groupToCheckedId
+        viewModel.mGroupToEnabledID = adapter.mGroupToEnabledID
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -113,6 +114,7 @@ class PreferenceFragment : DialogFragment() {
             val colour = viewModel.randomInt
             recyclerView.apply {
                 //setHasFixedSize(true)
+                setItemViewCacheSize(20)
                 layoutManager = LinearLayoutManager(context)
                 adapter = PreferencesAdapter(map).apply {
                     color = colour
@@ -121,6 +123,7 @@ class PreferenceFragment : DialogFragment() {
                     dataSetCopy = viewModel.dataSetCopy ?: dataSetCopy
                     visibleItemsPerGroup = viewModel.visibleItemsPerGroup ?: visibleItemsPerGroup
                     groupsExpanded = viewModel.groupsExpanded ?: groupsExpanded
+                    mGroupToEnabledID = viewModel.mGroupToEnabledID ?: mGroupToEnabledID
                     sliderValue = viewModel.sliderValue!!
                     this@PreferenceFragment.adapter = this
                 }
@@ -160,11 +163,11 @@ class PreferenceFragment : DialogFragment() {
                                 value = sliderValue
                             }
                     }
-                        groupToCheckedId.forEach {
-                            preferenceFragment.getPreferences(it.key, it.value)
-                        }
-                        preferenceFragment.getSliderValue(sliderValue.toInt())
-                        preferenceFragment.applyChanges() //to signify the end of the updates
+                    groupToCheckedId.forEach {
+                        preferenceFragment.getPreferences(it.key, it.value)
+                    }
+                    preferenceFragment.getSliderValue(sliderValue.toInt())
+                    preferenceFragment.applyChanges() //to signify the end of the updates
                 }
             }
         }
@@ -219,7 +222,7 @@ class PreferenceFragment : DialogFragment() {
 
     interface PreferenceFragment {
         fun getPreferences(group: Int, child: Int)
-        fun getSliderValue(sliderValue:Int)
+        fun getSliderValue(sliderValue: Int)
         fun applyChanges()
     }
 }

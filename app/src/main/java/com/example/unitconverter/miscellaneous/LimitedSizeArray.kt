@@ -1,8 +1,6 @@
 package com.example.unitconverter.miscellaneous
 
-import android.util.Log
-
-class LimitedSizeArray<T>(val maxSize: Int) : MutableCollection<T> {
+class LimitedSizeArray<T>(private val maxSize: Int) : MutableCollection<T> {
     private val arrayList = ArrayList<T>(maxSize)
 
     override val size: Int
@@ -23,7 +21,9 @@ class LimitedSizeArray<T>(val maxSize: Int) : MutableCollection<T> {
     override fun iterator(): MutableIterator<T> = arrayList.iterator()
 
     override fun add(element: T): Boolean {
-        if (size == maxSize) return false
+        if (size == maxSize) {
+            TODO()
+        }
         return arrayList.add(element)
     }
 

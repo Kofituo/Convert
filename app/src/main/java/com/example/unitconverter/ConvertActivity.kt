@@ -51,6 +51,7 @@ import com.example.unitconverter.networks.Statuses
 import com.example.unitconverter.networks.Token
 import com.example.unitconverter.subclasses.Constraints
 import com.example.unitconverter.subclasses.ConvertViewModel
+import com.example.unitconverter.subclasses.DisableEditText
 import com.example.unitconverter.subclasses.Positions
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -665,6 +666,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    private fun removeFilters(editText: EditText) {
+        editText.filters = arrayOf(lengthFilter())
+    }
+
     inner class CommonWatcher(
         editText: EditText,
         private val secondEditText: TextInputEditText
@@ -672,21 +677,24 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         SeparateThousands(editText, groupingSeparator!!, decimalSeparator!!) {
         override fun afterTextChanged(s: Editable?) {
             val start = System.currentTimeMillis()
+            Log.e("sep", "$groupingSeparator $decimalSeparator")
             Log.e("came", "$s   ${secondEditText.text}")
             super.afterTextChanged(s)
+            Log.e("act", "act")
             s?.toString()?.apply {
                 if (s.length == 1 && s[0] == minusSign) {
                     secondEditText.text = null // to prevent Unparseable number "-"error
                     return
                 }
-                this.removeCommas(decimalSeparator!!)?.also {
+                removeCommas(decimalSeparator!!)?.also {
                     Log.e("may be Problem", it)
                     secondEditText.apply {
-                        if (isTemperature) filters = arrayOf(lengthFilter())
-                        setText(callBack(function, it))
-                        if (isTemperature)
-                            filters =
-                                temperatureFilters(groupingSeparator!!, decimalSeparator!!, this)
+                        removeFilters(this)
+                        val result = callBack(function, it)
+                        this as DisableEditText
+                        shouldDisable(Utils.decimalFormatSymbols?.exponentSeparator!! in result)
+                        setText(result)
+                        setFilters(this)
                     }
                     var k = 0
                     for (i in secondEditText.text!!) if (i.isDigit()) k++
@@ -1175,10 +1183,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 .apply {
                     Utils.decimalFormatSymbols = decimalFormatSymbols
                     Utils.pattern = pattern
-                    Log.e("isTrue", "${Utils.isEngineering}")
+                    Log.e("isTrue", "${Utils.isEngineering}  $pattern")
                     if (Utils.isEngineering != true) {
                         Utils.pattern = setDecimalPlaces(pattern!!, sliderValue)
-                        Log.e("set", "set")
+                        Log.e("set", "set  ${Utils.pattern}")
                     }
                     Log.e("thi", "called  ${preferencesSelected.values} $decimalFormatSymbols")
                 }

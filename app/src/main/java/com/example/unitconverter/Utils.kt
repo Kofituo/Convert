@@ -126,12 +126,8 @@ object Utils {
                     numberOfDecimalPlace
                 )
         unformattedResult.apply {
-            if (endsWith(decimalSeparator!!)) {
-                return buildString(length - 1) {
-                    append(unformattedResult)
-                    delete(length - 1, length)
-                }
-            }
+            if (endsWith(decimalSeparator!!))
+                return substring(0 until length - 1)
         }
         return unformattedResult
     }
@@ -139,6 +135,7 @@ object Utils {
     //filters
     fun filters(comma: Char, fullStop: Char, editText: TextInputEditText): Array<InputFilter> {
         val filter = InputFilter { source, start, end, _, _, _ ->
+            Log.e("fil","fil")
             val stringBuilder = StringBuilder(end - start)
             var count = 0
             for (i in start until end) {
