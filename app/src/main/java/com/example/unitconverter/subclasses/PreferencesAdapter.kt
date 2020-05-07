@@ -2,12 +2,14 @@ package com.example.unitconverter.subclasses
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.FlattenMap
+import com.example.unitconverter.PreferenceFragment
 import com.example.unitconverter.R
 import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.miscellaneous.inflate
@@ -26,6 +28,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
 
     var color: Int? = null
     var visibleItemsPerGroup: MutableMap<Int, Int> = LinkedHashMap(dataSet.size)
+    lateinit var separators: PreferenceFragment.Separators
 
     /**
      * At start say the first 5 views are all groups
@@ -127,7 +130,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                 (holder as ChildViewHolder)
                     .titleButton.apply {
                         val data = FlattenMap.getChildData(dataSetCopy, position)
-                        text = data.string
+                        text = data.string + "  " + data.radioId
                         myId = data.radioId
                         isChecked = groupToCheckedId[data.groupNumber] == myId
                         if (isChecked)
@@ -264,13 +267,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
     }
 
     var groupToCheckedId = buildMutableMap<Int, Int>()
-
-    var mGroupToEnabledID: MutableMap<Int, SparseBooleanArray> = buildMutableMap(3) {
-        //initially they're all are enabled
-        put(1, SparseBooleanArray(2).apply { append(4, true); append(8, true) })
-        put(2, SparseBooleanArray(2).apply { append(5, true); append(9, true) })
-        put(3, SparseBooleanArray(2).apply { append(6, true); append(10, true) })
-    }
+    lateinit var mGroupToEnabledID: MutableMap<Int, SparseBooleanArray>
 
     //to make sure recently added is'nt removed
     override fun onChildClicked(position: Int, radioId: Int, buttonView: MyRadioButton) {
@@ -313,6 +310,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
          * */
         if (FlattenMap.getType(dataSetCopy, positionToDisable) == FlattenMap.CHILD) {
             //it could be a child but not for grouping or decimal separator
+            Log.e("dis", "able  $positionToDisable  $separators")
             val positionToDisableId =
                 FlattenMap.getChildData(dataSetCopy, positionToDisable).radioId
             val shouldChange =
@@ -357,8 +355,15 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                     value.keyAt(index) to value.valueAt(index)
                 }.toMap()
                 //Log.e("mp", "$mGroupToEnabledID index $index")
-                //Log.e("other", "$otherGroupsMap")
+                Log.e("other", "$otherGroupsMap  $separators")
+                var otherDefaultToDisable: Int? = null
                 for ((i, isEnabled) in otherGroupsMap) {
+                    if (i == separators.decimalSeparatorId || i == separators.groupingSeparatorId) {
+                        Log.e("here", "here  $i")
+                        //instead of continuing disable it
+                        otherDefaultToDisable = i
+                        continue
+                    }
                     if (!isEnabled) {
                         previousIdToReEnable = i
                         break // since only one can be false at a time
@@ -382,7 +387,17 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                             if (groupPosition == 1)
                                 positionToDisableId in 8..10
                             else positionToDisableId in 4..6
-                        if (shouldChange) notifyItemChanged(adapterPosition)
+                        if (shouldChange) {
+                            notifyItemChanged(adapterPosition)
+                            otherDefaultToDisable?.let { pos: Int ->
+                                mGroupToEnabledID[getIndex(pos)]!!.put(pos, false)
+                                val otherPosition =
+                                    if (groupPosition == 1)
+                                        position + (pos - radioId) + 1
+                                    else position - (radioId - pos) - 1
+                                notifyItemChanged(otherPosition)
+                            }
+                        }
                     }
                 }
                 return null //no need to go to the next line and return

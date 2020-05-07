@@ -11,11 +11,11 @@ import java.text.DecimalFormat
 import java.util.*
 
 open class SeparateThousands(
-    private val editText: EditText,
-    private val groupingSeparator: Char,
-    private val decimalSeparator: Char
+    private val editText: EditText
 ) : TextWatcher {
     //private var busy = false
+    val groupingSeparator: Char get() = Utils.groupingSeparator!!
+    val decimalSeparator: Char get() = Utils.decimalSeparator!!
     private var lastPosition = 0
     private lateinit var prevString: CharSequence
     private val zeroDigit

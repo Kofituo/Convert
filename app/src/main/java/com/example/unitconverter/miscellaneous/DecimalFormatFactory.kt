@@ -10,7 +10,7 @@ import java.text.DecimalFormatSymbols
 
 class DecimalFormatFactory {
 
-    private val decimalFormatSymbols = DecimalFormatSymbols()
+    private val decimalFormatSymbols = DecimalFormatSymbols.getInstance()
 
     data class SymbolAndPattern(
         val decimalFormatSymbols: DecimalFormatSymbols,
@@ -45,7 +45,7 @@ class DecimalFormatFactory {
 
                 9 -> decimalFormatSymbols.decimalSeparator = '.'
 
-                10 -> decimalFormatSymbols.decimalSeparator = ' '
+                10 -> decimalFormatSymbols.decimalSeparator = ' ' // normal space
 
                 12 -> decimalFormatSymbols.exponentSeparator =
                     context.getString(R.string.small_ten)

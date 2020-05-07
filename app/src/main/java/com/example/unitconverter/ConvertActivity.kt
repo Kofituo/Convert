@@ -11,10 +11,7 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.Html
-import android.text.SpannedString
-import android.text.TextUtils
+import android.text.*
 import android.util.ArrayMap
 import android.util.Log
 import android.view.*
@@ -80,11 +77,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private val bundle = Bundle()
     private lateinit var viewName: String
     lateinit var function: (Positions) -> String
-
     private inline val isTemperature: Boolean get() = viewId == R.id.Temperature
-
     private lateinit var viewModel: ConvertViewModel
-
     private inline val isCurrency get() = viewId == R.id.Currency
     private lateinit var networkFragment: NetworkFragment
 
@@ -674,11 +668,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         editText: EditText,
         private val secondEditText: TextInputEditText
     ) :
-        SeparateThousands(editText, groupingSeparator!!, decimalSeparator!!) {
+        SeparateThousands(editText) {
         override fun afterTextChanged(s: Editable?) {
             val start = System.currentTimeMillis()
-            Log.e("sep", "$groupingSeparator $decimalSeparator")
-            Log.e("came", "$s   ${secondEditText.text}")
+            Log.e("came", "$s   ${secondEditText.text} $groupingSeparator de $decimalSeparator")
             super.afterTextChanged(s)
             Log.e("act", "act")
             s?.toString()?.apply {
@@ -686,7 +679,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     secondEditText.text = null // to prevent Unparseable number "-"error
                     return
                 }
-                removeCommas(decimalSeparator!!)?.also {
+                removeCommas(decimalSeparator)?.also {
                     Log.e("may be Problem", it)
                     secondEditText.apply {
                         removeFilters(this)
@@ -964,13 +957,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                             currencyRatesEnumeration.reset()
                         }
                     if (shouldShowSnack != false) {
-                        val text =
-                            if (snackBar.isNull())
+                        snackBar = showSnack {
+                            view = convert_parent
+                            resId = if (snackBar.isNull())
                                 R.string.rates_success
                             else R.string.currency_and_rates_success
-                        snackBar = Snackbar
-                            .make(convert_parent, text, Snackbar.LENGTH_SHORT)
-                            .addCallback(
+                            duration = Snackbar.LENGTH_SHORT
+                            callback =
                                 object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
                                     override fun onDismissed(
                                         transientBottomBar: Snackbar?,
@@ -978,7 +971,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                                     ) {
                                         snackBar = null
                                     }
-                                }).apply { show() }
+                                }
+                        }
                     }
                 }
                 urlArray[1] -> {
@@ -987,50 +981,16 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                      * Assuming for some reason the currency list changes e.g new currencies have
                      * been added, everything should be reset
                      * */
-                    currenciesList = getCurrencyList(result)
-                        .run {
-                            //execute only when it isn't null
-                            currenciesList?.let { list ->
-                                val shouldClear =
-                                    //quickly check the size
-                                    if (list.size != size) {
-                                        true
-                                    } else {
-                                        var index = 0
-                                        //if there's a difference in  currency
-                                        !list.all {
-                                            it.quantity == this[index++].quantity //compare only quantity to be fast
-                                        }
-                                    }
-                                //Log.e("should", "clear $shouldClear")
-                                if (shouldClear) {
-                                    refreshEverything()
-                                    //clear saved preferences
-                                    val sharedPreferences by sharedPreference {
-                                        pkgName + "Currency"
-                                    }
-                                    sharedPreferences.edit { clear() }
-                                    Snackbar
-                                        .make(
-                                            convert_parent,
-                                            R.string.currency_reset,
-                                            Snackbar.LENGTH_LONG
-                                        )
-                                        .show()
-                                    shouldShowSnack = false
-                                }
-                            }
-                            this
-                        }
+                    currenciesList = getCurrenciesFromDownload(result)
                     bundle.putSerializable("for_currency", currenciesList as Serializable)
                     if (shouldShowSnack != false) {
-                        val text =
-                            if (snackBar.isNull())
-                                R.string.currency_success
-                            else R.string.currency_and_rates_success
-                        snackBar = Snackbar
-                            .make(convert_parent, text, Snackbar.LENGTH_SHORT)
-                            .addCallback(
+                        snackBar = showSnack {
+                            view = convert_parent
+                            resId =
+                                if (snackBar.isNull()) R.string.currency_success
+                                else R.string.currency_and_rates_success
+                            duration = Snackbar.LENGTH_SHORT
+                            callback =
                                 object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
                                     override fun onDismissed(
                                         transientBottomBar: Snackbar?,
@@ -1038,7 +998,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                                     ) {
                                         snackBar = null
                                     }
-                                }).apply { show() }
+                                }
+                        }
                     }
                 }
                 else -> TODO()
@@ -1051,7 +1012,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 Log.e("before final", "put $retry")
                 if (retry == false) //so it would only put after the first one has loaded
                     put<Long> {
-                        Log.e("final", "put $retry")
                         key = "previous_time"
                         value = System.currentTimeMillis()
                     }
@@ -1063,17 +1023,54 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 retry = true
                 Log.e("treu", "poip")
                 delay(1000)
-                Snackbar
-                    .make(convert_parent, R.string.no_connection, Snackbar.LENGTH_LONG)
-                    .apply {
-                        setAction(R.string.retry) {
+                showSnack {
+                    view = convert_parent
+                    resId = R.string.no_connection
+                    duration = Snackbar.LENGTH_LONG
+                    setAction {
+                        resId = R.string.retry
+                        listener = View.OnClickListener {
                             networkFragment.startDownload()
                         }
-                        show()
                     }
+                }
             }
         }
     }
+
+    private fun getCurrenciesFromDownload(result: String) =
+        getCurrencyList(result)
+            .apply {
+                //execute only when it isn't null
+                currenciesList?.let { list ->
+                    val shouldClear =
+                        //quickly check the size
+                        if (list.size != size) {
+                            true
+                        } else {
+                            var index = 0
+                            //if there's a difference in  currency
+                            !list.all {
+                                it.quantity == this[index++].quantity //compare only quantity to be fast
+                            }
+                        }
+                    //Log.e("should", "clear $shouldClear")
+                    if (shouldClear) {
+                        refreshEverything()
+                        //clear saved preferences
+                        val sharedPreferences by sharedPreference {
+                            pkgName + "Currency"
+                        }
+                        sharedPreferences.edit { clear() }
+                        showSnack {
+                            view = convert_parent
+                            resId = R.string.currency_reset
+                            duration = Snackbar.LENGTH_LONG
+                        }
+                        shouldShowSnack = false
+                    }
+                }
+            }
 
     private fun setNetworkListener() {
         if (!::networkCallback.isInitialized) {
@@ -1094,7 +1091,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                             networkIsAvailable = false
                         }
                     }
-                    registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
+                    registerNetworkCallback(
+                        NetworkRequest.Builder().build(),
+                        networkCallback
+                    )
                 }
         }
     }
@@ -1109,24 +1109,22 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         when (progressCode) {
             Statuses.CONNECT_SUCCESS -> {
                 //show getting values
-                Snackbar
-                    .make(
-                        convert_parent,
+                showSnack {
+                    view = convert_parent
+                    resId =
                         if (currencyLoadedBefore == true)
                             R.string.updating_currencies_rates
-                        else
-                            R.string.getting_currencies_rates,
-                        Snackbar.LENGTH_SHORT
-                    )
-                    .show()
+                        else R.string.getting_currencies_rates
+                    duration = Snackbar.LENGTH_SHORT
+                }
             }
-            Statuses.CONNECTING -> {
-                Snackbar.make(convert_parent, R.string.connecting, Snackbar.LENGTH_LONG)
-                    .apply {
-                        animationMode = Snackbar.ANIMATION_MODE_SLIDE
-                        show()
-                    }
-            }
+            Statuses.CONNECTING ->
+                showSnack {
+                    view = convert_parent
+                    resId = R.string.connecting
+                    duration = Snackbar.LENGTH_LONG
+                    animationMode = Snackbar.ANIMATION_MODE_SLIDE
+                }
         }
     }
 
@@ -1141,25 +1139,30 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         Log.e("error", "$url  $exception", exception)
         Log.e("isTimeout", "${exception is SocketTimeoutException}")
         when (exception) {
-            is SocketTimeoutException -> {
-                Snackbar.make(convert_parent, R.string.time_out, 12_500)//12.5seconds
-                    .apply {
-                        setAction(R.string.retry) {
+            is SocketTimeoutException ->
+                showSnack {
+                    view = convert_parent
+                    resId = R.string.time_out
+                    duration = 12_500 //12.5 seconds
+                    setAction {
+                        resId = R.string.retry
+                        listener = View.OnClickListener {
                             networkFragment.startDownload()
                         }
-                        show()
                     }
-            }
-            else -> {
-                Snackbar
-                    .make(convert_parent, R.string.unable_to_get, 12_500)
-                    .apply {
-                        setAction(R.string.retry) {
+                }
+            else ->
+                showSnack {
+                    view = convert_parent
+                    resId = R.string.unable_to_get
+                    duration = 12_500
+                    setAction {
+                        resId = R.string.retry
+                        listener = View.OnClickListener {
                             networkFragment.startDownload()
                         }
-                        show()
                     }
-            }
+                }
         }
     }
 
@@ -1167,8 +1170,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         LinkedHashMap<Int, Int>(4)
     }
 
-    override fun getPreferences(group: Int, child: Int) {
-        preferencesSelected[child] = child
+    override fun getChosenValues(group: Int, child: Int) {
+        preferencesSelected[group] = child
+        Log.e("pre", "$preferencesSelected")
     }
 
     private var sliderValue = 6
@@ -1183,12 +1187,34 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 .apply {
                     Utils.decimalFormatSymbols = decimalFormatSymbols
                     Utils.pattern = pattern
-                    Log.e("isTrue", "${Utils.isEngineering}  $pattern")
+                    Log.e(
+                        "isTrue",
+                        "${Utils.isEngineering}  $pattern  $preferencesSelected"
+                    )
                     if (Utils.isEngineering != true) {
                         Utils.pattern = setDecimalPlaces(pattern!!, sliderValue)
                         Log.e("set", "set  ${Utils.pattern}")
                     }
-                    Log.e("thi", "called  ${preferencesSelected.values} $decimalFormatSymbols")
+                    Log.e(
+                        "thi",
+                        "called  ${preferencesSelected.values} $decimalFormatSymbols"
+                    )
+                    val editText =
+                        when {
+                            firstEditText.isFocused -> firstEditText
+                            secondEditText.isFocused -> secondEditText
+                            else -> return
+                        }
+                    editText.apply {
+                        val text = SpannableStringBuilder(text)
+                        setFilters(this)//reset the filters
+                        val cursorPosition = selectionEnd
+                        if (text.isNotEmpty()) {
+                            this.text = null
+                            this.text = text
+                            setSelection(cursorPosition)
+                        }
+                    }
                 }
         }
     }

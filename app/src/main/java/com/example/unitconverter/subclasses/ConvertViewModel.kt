@@ -8,8 +8,6 @@ import com.example.unitconverter.miscellaneous.ResetAfterNGets.Companion.resetAf
 
 class ConvertViewModel : ViewModel() {
     var randomInt = 0
-    val motionProgress by resetAfterGet(0f, 1f)
-
     lateinit var dataSet: MutableList<RecyclerDataClass>
 
     val dataSetIsInit

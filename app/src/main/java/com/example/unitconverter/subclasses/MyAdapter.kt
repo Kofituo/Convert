@@ -3,7 +3,6 @@ package com.example.unitconverter.subclasses
 import android.content.res.ColorStateList
 import android.graphics.Rect
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.TouchDelegate
 import android.view.View
@@ -76,7 +75,6 @@ class MyAdapter(
 
     // rest of the class
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        Log.e("viewTyp","$viewType")
         val view =
             LayoutInflater.from(parent.context).inflate {
                 resourceId = R.layout.recycler_view_items

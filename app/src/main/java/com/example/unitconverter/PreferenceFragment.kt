@@ -6,6 +6,8 @@ import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -14,6 +16,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.unitconverter.Utils.toMap
 import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.builders.put
 import com.example.unitconverter.miscellaneous.*
@@ -25,10 +28,11 @@ import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.parseMap
 import kotlinx.serialization.stringify
+import java.text.DecimalFormatSymbols
 import java.util.*
 import kotlin.math.round
 
-@ImplicitReflectionSerializer
+@OptIn(ImplicitReflectionSerializer::class)
 class PreferenceFragment : DialogFragment() {
 
     private val viewModel by activityViewModels<ConvertViewModel>()
@@ -65,12 +69,32 @@ class PreferenceFragment : DialogFragment() {
                     get<Float>("preference_slider_value") {
                         viewModel.sliderValue = if (this == -1f) 6f else this
                     }
+                //get group id to enabled id
+                if (viewModel.mGroupToEnabledID.isNullOrEmpty()) {
+                    viewModel.mGroupToEnabledID = buildMutableMap(3)
+                    //either all is there or none is there
+                    for (i in 1..3) {
+                        get<String?>("mGroupToEnabledID$i") {
+                            if (this.hasValue()) {
+                                val sparseBooleanArray = SparseBooleanArray(2)
+                                Json.parseMap<Int, Boolean>(this).forEach {
+                                    sparseBooleanArray.append(it.key, it.value)
+                                }
+                                viewModel.mGroupToEnabledID!![i] = sparseBooleanArray
+                            } else {
+                                viewModel.mGroupToEnabledID = defaultIntToBooleanArray()
+                                return@apply
+                            }
+                        }
+                    }
+                }
             }
         viewModel.apply {
             if (initialMap.isNull())
                 initialMap = groupToCheckedId?.toMap()
             if (initialSliderValue.isNull())
                 initialSliderValue = sliderValue
+            Log.e("mgr","$mGroupToEnabledID")
         }
     }
 
@@ -123,8 +147,9 @@ class PreferenceFragment : DialogFragment() {
                     dataSetCopy = viewModel.dataSetCopy ?: dataSetCopy
                     visibleItemsPerGroup = viewModel.visibleItemsPerGroup ?: visibleItemsPerGroup
                     groupsExpanded = viewModel.groupsExpanded ?: groupsExpanded
-                    mGroupToEnabledID = viewModel.mGroupToEnabledID ?: mGroupToEnabledID
+                    mGroupToEnabledID = viewModel.mGroupToEnabledID!! //can't be null at this point
                     sliderValue = viewModel.sliderValue!!
+                    separators = defaultSeparators() // load every time
                     this@PreferenceFragment.adapter = this
                 }
             }
@@ -162,9 +187,15 @@ class PreferenceFragment : DialogFragment() {
                                 key = "preference_slider_value"
                                 value = sliderValue
                             }
+                        for (i in 1..3) {
+                            put<String> {
+                                key = "mGroupToEnabledID$i"
+                                value = Json.stringify(mGroupToEnabledID[i]!!.toMap())
+                            }
+                        }
                     }
                     groupToCheckedId.forEach {
-                        preferenceFragment.getPreferences(it.key, it.value)
+                        preferenceFragment.getChosenValues(it.key, it.value)
                     }
                     preferenceFragment.getSliderValue(sliderValue.toInt())
                     preferenceFragment.applyChanges() //to signify the end of the updates
@@ -220,8 +251,68 @@ class PreferenceFragment : DialogFragment() {
         preferenceFragment = context as PreferenceFragment
     }
 
+    private fun defaultIntToBooleanArray() =
+        buildMutableMap<Int, SparseBooleanArray>(3) {
+            put(1, SparseBooleanArray(2).apply { append(4, true); append(8, true) })
+            put(2, SparseBooleanArray(2).apply { append(5, true); append(9, true) })
+            put(3, SparseBooleanArray(2).apply { append(6, true); append(10, true) })
+            defaultSeparators().apply {
+                //they could be null
+                decimalSeparatorId?.let { get(decimalGroup)!!.put(it, false) }
+                groupingSeparatorId?.let { get(groupingGroup)!!.put(it, false) }
+            }
+        }
+
+    private fun defaultSeparators(): Separators {
+        val decimalFormatSymbols = DecimalFormatSymbols.getInstance()
+        decimalFormatSymbols.apply {
+            val separators = Separators()
+            when (groupingSeparator) {
+                '.' -> separators.apply {
+                    groupingSeparatorId = 9
+                    groupingGroup = 2
+                }
+                ',' -> separators.apply {
+                    groupingSeparatorId = 8
+                    groupingGroup = 1
+                }
+                else -> {
+                    //normal space
+                    when {
+                        groupingSeparator.isWhitespace() -> separators.apply {
+                            groupingSeparatorId = 10
+                            groupingGroup = 3
+                        }
+                    }
+                }
+            }
+            when (decimalSeparator) {
+                '.' -> separators.apply {
+                    decimalSeparatorId = 5
+                    decimalGroup = 2
+                }
+                ' ' -> separators.apply {
+                    decimalSeparatorId = 6
+                    decimalGroup = 3
+                }
+                ',' -> separators.apply {
+                    decimalSeparatorId = 4
+                    decimalGroup = 1
+                }
+            }
+            return separators
+        }
+    }
+
+    data class Separators(
+        var decimalSeparatorId: Int? = null,
+        var groupingSeparatorId: Int? = null,
+        var decimalGroup: Int? = null,
+        var groupingGroup: Int? = null
+    )
+
     interface PreferenceFragment {
-        fun getPreferences(group: Int, child: Int)
+        fun getChosenValues(group: Int, child: Int)
         fun getSliderValue(sliderValue: Int)
         fun applyChanges()
     }

@@ -9,10 +9,13 @@ import android.os.Vibrator
 import android.text.InputFilter
 import android.util.Log
 import android.util.SparseArray
+import android.util.SparseBooleanArray
 import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
 import com.example.unitconverter.builders.buildMutableList
+import com.example.unitconverter.builders.buildMutableMap
+import com.example.unitconverter.builders.put
 import com.example.unitconverter.miscellaneous.DecimalFormatFactory
 import com.example.unitconverter.miscellaneous.hasValue
 import com.example.unitconverter.miscellaneous.isNotNull
@@ -96,14 +99,16 @@ object Utils {
     fun String.removeCommas(decimalSeparator: Char): String? {
         if (this.isBlank()) return ""
         val checkString = StringBuilder()
+        val zero = decimalFormatSymbols!!.zeroDigit
         when {
             this.startsWith(decimalSeparator) ->
-                checkString.append(0).append(this)
+                checkString.append(zero).append(this)
             this.endsWith(decimalSeparator) ->
-                checkString.append(this).append(0)
+                checkString.append(this).append(zero)
             else -> checkString.append(this)
         }
         (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
+            decimalFormatSymbols = this@Utils.decimalFormatSymbols
             isParseBigDecimal = true
             return parse(checkString.toString())?.toString()
         }
@@ -135,7 +140,7 @@ object Utils {
     //filters
     fun filters(comma: Char, fullStop: Char, editText: TextInputEditText): Array<InputFilter> {
         val filter = InputFilter { source, start, end, _, _, _ ->
-            Log.e("fil","fil")
+            Log.e("fil","fil $source c $comma  f $fullStop")
             val stringBuilder = StringBuilder(end - start)
             var count = 0
             for (i in start until end) {
@@ -278,4 +283,14 @@ object Utils {
             }
         }
     }
+
+    fun SparseBooleanArray.toMap() =
+        buildMutableMap<Int, Boolean>(size()) {
+            this@toMap.forEach { key, value ->
+                put {
+                    this.key = key
+                    this.value = value
+                }
+            }
+        }
 }
