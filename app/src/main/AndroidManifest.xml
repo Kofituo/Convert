@@ -32,9 +32,7 @@
         <activity android:name=".FavouritesActivity">
 
         </activity>
-        <activity
-            android:name=".ConvertActivity"
-            android:configChanges="layoutDirection|locale" />
+        <activity android:name=".ConvertActivity" />
     </application>
 
 </manifest>

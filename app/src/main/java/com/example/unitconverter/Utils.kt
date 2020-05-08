@@ -30,11 +30,12 @@ import kotlin.math.round
 
 object Utils {
 
+    //it is set right from the start
     var decimalFormatSymbols: DecimalFormatSymbols? = null
 
-    val groupingSeparator get() = decimalFormatSymbols?.groupingSeparator
+    val groupingSeparator get() = decimalFormatSymbols!!.groupingSeparator
 
-    val decimalSeparator get() = decimalFormatSymbols?.decimalSeparator
+    val decimalSeparator get() = decimalFormatSymbols!!.decimalSeparator
 
     var isEngineering: Boolean? = null
 
@@ -131,35 +132,35 @@ object Utils {
                     numberOfDecimalPlace
                 )
         unformattedResult.apply {
-            if (endsWith(decimalSeparator!!))
+            if (endsWith(decimalSeparator))
                 return substring(0 until length - 1)
         }
         return unformattedResult
     }
 
     //filters
-    fun filters(comma: Char, fullStop: Char, editText: TextInputEditText): Array<InputFilter> {
+    fun filters(editText: TextInputEditText): Array<InputFilter> {
         val filter = InputFilter { source, start, end, _, _, _ ->
-            Log.e("fil","fil $source c $comma  f $fullStop")
+            Log.e("fil", "fil $source c $groupingSeparator  f $decimalSeparator")
             val stringBuilder = StringBuilder(end - start)
             var count = 0
             for (i in start until end) {
                 if (source[i].isDigit() ||
-                    source[i] == comma ||
-                    source[i] == fullStop
+                    source[i] == groupingSeparator ||
+                    source[i] == decimalSeparator
                 ) {
-                    if (source[i] == fullStop) {
+                    if (source[i] == decimalSeparator) {
                         // ensures only one decimal separator is in the text
                         count++
                         if (count >= 2) continue
                         if (source.length > 1 && editText.isFocused) {
                             val text = editText.text
                             if (text.isNotNull()
-                                && text.contains(fullStop)
+                                && text.contains(decimalSeparator)
                             ) continue
                         }
                     }
-                    if (source[0] == comma && editText.text.isNullOrEmpty())
+                    if (source[0] == groupingSeparator && editText.text.isNullOrEmpty())
                         continue //to prevent unparseable number ,
                     stringBuilder.append(source[i])
                 }
@@ -171,8 +172,6 @@ object Utils {
 
     // temperature filter
     fun temperatureFilters(
-        comma: Char,
-        fullStop: Char,
         editText: TextInputEditText
     ): Array<InputFilter> {
         val filter = InputFilter { source, start, end, _, _, _ ->
@@ -195,18 +194,18 @@ object Utils {
                     if (text.isNotNull() && text.indexOf(minusSign) != -1) continue
                     stringBuilder.append(source[i])
                 }
-                if (text.isNullOrEmpty() && source[0] == comma) continue //to prevent unparseable number ,
+                if (text.isNullOrEmpty() && source[0] == groupingSeparator) continue //to prevent unparseable number ,
                 if (source[i].isDigit() ||
-                    source[i] == comma ||
-                    source[i] == fullStop
+                    source[i] == groupingSeparator ||
+                    source[i] == decimalSeparator
                 ) {
-                    if (source[i] == fullStop) {
+                    if (source[i] == decimalSeparator) {
                         // ensures only one decimal separator is in the text
                         count++
                         if (count >= 2) continue
                         if (source.length > 1 && editText.isFocused) {
                             if (text.isNotNull()
-                                && text.contains(fullStop)
+                                && text.contains(decimalSeparator)
                             ) continue
                         }
                     }

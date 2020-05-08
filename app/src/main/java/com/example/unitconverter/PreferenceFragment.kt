@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -52,11 +51,11 @@ class PreferenceFragment : DialogFragment() {
         arguments?.let {
             viewName = it.getString("viewName") ?: error("no view name ?????")
         }
-        sharedPreferences
-            .apply {
-                if (viewModel.groupToCheckedId.isNull())
+        sharedPreferences.apply {
+            viewModel.apply {
+                if (groupToCheckedId.isNull())
                     get<String?>("preferences_for_activity") {
-                        viewModel.groupToCheckedId =
+                        groupToCheckedId =
                             if (this.hasValue()) Json.parseMap(this)
                             else buildMutableMap(4) {
                                 put(0, 0)
@@ -65,36 +64,38 @@ class PreferenceFragment : DialogFragment() {
                                 put(3, 11)
                             }
                     }
-                if (viewModel.sliderValue.isNull())
+                if (sliderValue.isNull())
                     get<Float>("preference_slider_value") {
-                        viewModel.sliderValue = if (this == -1f) 6f else this
+                        sliderValue = if (this == -1f) 6f else this
                     }
-                //get group id to enabled id
-                if (viewModel.mGroupToEnabledID.isNullOrEmpty()) {
-                    viewModel.mGroupToEnabledID = buildMutableMap(3)
-                    //either all is there or none is there
-                    for (i in 1..3) {
-                        get<String?>("mGroupToEnabledID$i") {
-                            if (this.hasValue()) {
-                                val sparseBooleanArray = SparseBooleanArray(2)
-                                Json.parseMap<Int, Boolean>(this).forEach {
-                                    sparseBooleanArray.append(it.key, it.value)
-                                }
-                                viewModel.mGroupToEnabledID!![i] = sparseBooleanArray
-                            } else {
-                                viewModel.mGroupToEnabledID = defaultIntToBooleanArray()
-                                return@apply
+            }
+            //get group id to enabled id
+            if (viewModel.mGroupToEnabledID.isNullOrEmpty()) {
+                viewModel.mGroupToEnabledID = buildMutableMap(3)
+                //either all is there or none is there
+                for (i in 1..3) {
+                    get<String?>("mGroupToEnabledID$i") {
+                        if (this.hasValue()) {
+                            val sparseBooleanArray = SparseBooleanArray(2)
+                            Json.parseMap<Int, Boolean>(this).forEach {
+                                sparseBooleanArray.append(it.key, it.value)
                             }
+                            viewModel.mGroupToEnabledID!![i] = sparseBooleanArray
+                        } else {
+                            viewModel.mGroupToEnabledID = defaultIntToBooleanArray()
+                            //Log.e("bre", "eak")
+                            return@apply //since i can't use break
                         }
                     }
                 }
             }
+        }
         viewModel.apply {
             if (initialMap.isNull())
                 initialMap = groupToCheckedId?.toMap()
             if (initialSliderValue.isNull())
                 initialSliderValue = sliderValue
-            Log.e("mgr","$mGroupToEnabledID")
+            //Log.e("mgr", "$mGroupToEnabledID")
         }
     }
 
@@ -149,7 +150,8 @@ class PreferenceFragment : DialogFragment() {
                     groupsExpanded = viewModel.groupsExpanded ?: groupsExpanded
                     mGroupToEnabledID = viewModel.mGroupToEnabledID!! //can't be null at this point
                     sliderValue = viewModel.sliderValue!!
-                    separators = defaultSeparators() // load every time
+                    separators = defaultSeparators ?: defaultSeparators() // load every time
+                    defaultIdToIsChecked = defaultIdToIsChecked(separators, groupToCheckedId)
                     this@PreferenceFragment.adapter = this
                 }
             }
@@ -167,6 +169,26 @@ class PreferenceFragment : DialogFragment() {
         }
         return dialog
     }
+
+    private fun defaultIdToIsChecked(separators: Separators, groupToCheckedId: Map<Int, Int>) =
+        buildMutableMap<Int, Boolean>(2) {
+            separators.apply {
+                val firstChecked = groupToCheckedId[1] ?: error("the hell??")
+                val secondChecked = groupToCheckedId.getValue(2)
+                groupingSeparatorId?.also {
+                    if (it == firstChecked)
+                        put(3, false)
+                    else if (it == secondChecked)
+                        put(3, false)
+                }
+                decimalSeparatorId?.also {
+                    if (it == firstChecked)
+                        put(7, false)
+                    else if (it == secondChecked)
+                        put(7, false)
+                }
+            }
+        }
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
@@ -251,6 +273,7 @@ class PreferenceFragment : DialogFragment() {
         preferenceFragment = context as PreferenceFragment
     }
 
+    private var defaultSeparators: Separators? = null //just to prevent double calling
     private fun defaultIntToBooleanArray() =
         buildMutableMap<Int, SparseBooleanArray>(3) {
             put(1, SparseBooleanArray(2).apply { append(4, true); append(8, true) })
@@ -260,6 +283,7 @@ class PreferenceFragment : DialogFragment() {
                 //they could be null
                 decimalSeparatorId?.let { get(decimalGroup)!!.put(it, false) }
                 groupingSeparatorId?.let { get(groupingGroup)!!.put(it, false) }
+                defaultSeparators = this
             }
         }
 
@@ -291,13 +315,18 @@ class PreferenceFragment : DialogFragment() {
                     decimalSeparatorId = 5
                     decimalGroup = 2
                 }
-                ' ' -> separators.apply {
-                    decimalSeparatorId = 6
-                    decimalGroup = 3
-                }
                 ',' -> separators.apply {
                     decimalSeparatorId = 4
                     decimalGroup = 1
+                }
+                else -> {
+                    when {
+                        decimalSeparator.isWhitespace() ->
+                            separators.apply {
+                                decimalSeparatorId = 6
+                                decimalGroup = 3
+                            }
+                    }
                 }
             }
             return separators

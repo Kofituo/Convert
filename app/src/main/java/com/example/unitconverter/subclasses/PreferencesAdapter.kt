@@ -2,7 +2,6 @@ package com.example.unitconverter.subclasses
 
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -130,7 +129,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                 (holder as ChildViewHolder)
                     .titleButton.apply {
                         val data = FlattenMap.getChildData(dataSetCopy, position)
-                        text = data.string + "  " + data.radioId
+                        text = data.string
                         myId = data.radioId
                         isChecked = groupToCheckedId[data.groupNumber] == myId
                         if (isChecked)
@@ -140,20 +139,32 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                          * if the value is null enable that group's buttons
                          * if there's a value, enable only that one and disable the rest
                          * */
-                        val mGroupNumber = buttonToMyGroupNumber(myId)
-                        if (mGroupNumber.isNull()) {
-                            enableRadioButton(this)
-                            return
+                        when (myId) {
+                            3, 7 -> { //handle case for default
+                                //Log.e("def", "$defaultIdToIsChecked")
+                                if (defaultIdToIsChecked[myId] == false)
+                                    disableRadioButton(this)
+                                else enableRadioButton(this)
+                            }
+                            else -> { // others
+                                val mGroupNumber = buttonToMyGroupNumber(myId)
+                                //Log.e("mGr","$mGroupNumber $mGroupToEnabledID")
+                                if (mGroupNumber.isNull()) {
+                                    enableRadioButton(this)
+                                    return
+                                }
+                                if (mGroupToEnabledID[mGroupNumber]!![myId])
+                                    enableRadioButton(this)
+                                else disableRadioButton(this)
+                            }
                         }
-                        if (mGroupToEnabledID[mGroupNumber]!![myId])
-                            enableRadioButton(this)
-                        else disableRadioButton(this)
 
                     }
             }
             FlattenMap.UNSPECIFIED -> {
                 //(holder as DecimalPlaceHolder)
                 ///Log.e("UNSPECIFIED", "UNSPECIFIED")
+                //NOTHING TO BIND
             }
         }
     }
@@ -266,8 +277,9 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
         }
     }
 
-    var groupToCheckedId = buildMutableMap<Int, Int>()
+    var groupToCheckedId = buildMutableMap<Int, Int>(4)
     lateinit var mGroupToEnabledID: MutableMap<Int, SparseBooleanArray>
+    lateinit var defaultIdToIsChecked: MutableMap<Int, Boolean>
 
     //to make sure recently added is'nt removed
     override fun onChildClicked(position: Int, radioId: Int, buttonView: MyRadioButton) {
@@ -280,13 +292,21 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
         //Log.e("is checked", "${buttonView.isChecked}")
         groupToCheckedButton[groupPosition] = buttonView.apply { isChecked = true }
         groupToCheckedId[groupPosition] = buttonView.myId
-        val index = if (groupPosition == 1) 1 else 0
-        resetWhenDefault(radioId, position, index, groupPosition)
+        val groupPositionIsOne = groupPosition == 1
+        //let's just re enable the default button here
+        var shouldNotUpdateDefault: Boolean?
+        defaultIdToIsChecked.apply {
+            //Log.e("bef", "$this")
+            shouldNotUpdateDefault = put(if (groupPositionIsOne) 7 else 3, true)
+        }
+        //Log.e("here", "en  $defaultIdToIsChecked  $groupPositionIsOne")
+        val index = if (groupPositionIsOne) 1 else 0
+        resetWhenDefault(radioId, position, index, groupPositionIsOne, shouldNotUpdateDefault)
             ?: return //means it is default selected
         //to make sure only one of each is checked at a time and disable the other
         val viewsToEdit = addToMap(radioId) ?: return //we have no business if it's null
         val positionToDisable =
-            if (groupPosition == 1) position + 5 else position - 5
+            if (groupPositionIsOne) position + 5 else position - 5
         //Log.e("viewsToEdit", "$viewsToEdit")
         val otherGroupsMap = mGroupToEnabledID.map {
             val value = it.value
@@ -301,23 +321,34 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
         //Log.e("map", "gr1 $otherGroupsMap  $previousIdToReEnable  id $radioId $position ")
         previousIdToReEnable?.let {
             //Log.e("prev", "${mGroupToEnabledID[getIndex(it)]} $positionToDisable  ${viewsToEdit.viewToDisable - it}")
+            //Log.e("2","${mGroupToEnabledID[getIndex(it)]!!}  $it")
             mGroupToEnabledID[getIndex(it)]!!.put(it, true)
+        }
+        /**
+         * if the default separator is selected, disable default button
+         * */
+        var shouldNotify = false
+        if (radioId == separators.groupingSeparatorId ||
+            radioId == separators.decimalSeparatorId
+        ) {
+            defaultIdToIsChecked[if (groupPositionIsOne) 7 else 3] = false
+            shouldNotify = true
+        } else {
+            if (shouldNotUpdateDefault != true) shouldNotify = true
         }
         /**
          * first position is [position]
          * If the id to be disabled is opened, [FlattenMap.getType] would return [FlattenMap.CHILD]
          * if it isn't opened we move
          * */
+        ///Log.e("sep", "$separators")
         if (FlattenMap.getType(dataSetCopy, positionToDisable) == FlattenMap.CHILD) {
             //it could be a child but not for grouping or decimal separator
-            Log.e("dis", "able  $positionToDisable  $separators")
             val positionToDisableId =
                 FlattenMap.getChildData(dataSetCopy, positionToDisable).radioId
             val shouldChange =
                 //the id should be for the other group
-                if (groupPosition == 1)
-                    positionToDisableId in 8..10
-                else positionToDisableId in 4..6
+                if (groupPositionIsOne) positionToDisableId in 8..10 else positionToDisableId in 4..6
             /*Log.e(
                 "wrong",
                 "$position " +
@@ -336,15 +367,32 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                     val adapterPositionForIt = positionToDisable - difference
                     notifyItemChanged(adapterPositionForIt)
                 }
+                if (shouldNotify) {
+                    //Log.e("called","called")
+                    notifyItemChanged(
+                        getDefaultPosition(groupPositionIsOne, radioId, positionToDisable)
+                    )
+                }
             }
         }
+    }
+
+    private fun getDefaultPosition(
+        groupPositionIsOne: Boolean,
+        radioId: Int,
+        positionToDisable: Int
+    ): Int {
+        val defaultId = if (groupPositionIsOne) 3 else 7
+        val difference = defaultId - radioId
+        return positionToDisable + difference
     }
 
     private fun resetWhenDefault(
         radioId: Int,
         position: Int,
         index: Int,
-        groupPosition: Int
+        groupPositionIsOne: Boolean,
+        shouldNotUpdateDef: Boolean?
     ): Unit? {
         when (radioId) {
             3, 7 -> {
@@ -355,24 +403,24 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                     value.keyAt(index) to value.valueAt(index)
                 }.toMap()
                 //Log.e("mp", "$mGroupToEnabledID index $index")
-                Log.e("other", "$otherGroupsMap  $separators")
                 var otherDefaultToDisable: Int? = null
                 for ((i, isEnabled) in otherGroupsMap) {
                     if (i == separators.decimalSeparatorId || i == separators.groupingSeparatorId) {
-                        Log.e("here", "here  $i")
                         //instead of continuing disable it
                         otherDefaultToDisable = i
                         continue
                     }
                     if (!isEnabled) {
                         previousIdToReEnable = i
-                        break // since only one can be false at a time
                     }
+                }
+                otherDefaultToDisable?.let {
+                    mGroupToEnabledID[getIndex(it)]!!.put(it, false)
                 }
                 //should'nt be null though
                 previousIdToReEnable?.let {
                     val adapterPosition =
-                        if (groupPosition == 1)
+                        if (groupPositionIsOne)
                             position + (it - radioId) + 1
                         else position - (radioId - it) - 1
                     mGroupToEnabledID[getIndex(it)]!!.put(it, true)
@@ -380,22 +428,31 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                         //update if visible
                         //Log.e("prev", "$previousIdToReEnable  $radioId  $position sum $adapterPosition ")
                         //it could be a child but not for grouping or decimal separator
-                        val positionToDisableId =
+                        val positionToReEnableId =
                             FlattenMap.getChildData(dataSetCopy, adapterPosition).radioId
                         val shouldChange =
                             //the id should be for the other group
-                            if (groupPosition == 1)
-                                positionToDisableId in 8..10
-                            else positionToDisableId in 4..6
+                            if (groupPositionIsOne)
+                                positionToReEnableId in 8..10
+                            else positionToReEnableId in 4..6
                         if (shouldChange) {
                             notifyItemChanged(adapterPosition)
                             otherDefaultToDisable?.let { pos: Int ->
-                                mGroupToEnabledID[getIndex(pos)]!!.put(pos, false)
+                                //mGroupToEnabledID[getIndex(pos)]!!.put(pos, false)
                                 val otherPosition =
-                                    if (groupPosition == 1)
-                                        position + (pos - radioId) + 1
+                                    if (groupPositionIsOne) position + (pos - radioId) + 1
                                     else position - (radioId - pos) - 1
                                 notifyItemChanged(otherPosition)
+                            }
+                            if (shouldNotUpdateDef != true) {
+                                val mRadioId = if (groupPositionIsOne) 7 else 3
+                                val difference = positionToReEnableId - mRadioId
+                                val otherDefaultPosition = adapterPosition - difference
+                                notifyItemChanged(otherDefaultPosition)
+                                /*Log.e(
+                                    "cl",
+                                    "ra $radioId $adapterPosition $groupPositionIsOne $positionToReEnableId  $mRadioId  $otherDefaultPosition"
+                                )*/
                             }
                         }
                     }

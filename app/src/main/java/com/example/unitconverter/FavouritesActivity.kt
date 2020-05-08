@@ -40,12 +40,10 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var rootGroup: ConstraintLayout
     private val adapterIsInit get() = ::favouritesAdapter.isInitialized
-    private var onCreateCalled = false
-        get() {
-            val result = field
-            field = false //reset it
-            return result
-        }
+    private var onCreateCalled by ResetAfterNGets.resetAfterGet(
+        initialValue = false,
+        resetValue = false
+    )
 
     private val viewModel by viewModels<ConvertViewModel>()
 

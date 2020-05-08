@@ -27,11 +27,9 @@ import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.pkgName
-import com.example.unitconverter.Utils.decimalSeparator
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.filters
 import com.example.unitconverter.Utils.forEachIndexed
-import com.example.unitconverter.Utils.groupingSeparator
 import com.example.unitconverter.Utils.insertCommas
 import com.example.unitconverter.Utils.lengthFilter
 import com.example.unitconverter.Utils.minusSign
@@ -184,17 +182,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private fun setFilters(editText: TextInputEditText) {
         editText.filters =
-            if (isTemperature)
-                temperatureFilters(groupingSeparator!!, decimalSeparator!!, editText)
-            else filters(groupingSeparator!!, decimalSeparator!!, editText)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        firstEditText?.text = null
-        secondEditText?.text = null
-        setFilters(firstEditText)
-        setFilters(secondEditText)
+            if (isTemperature) temperatureFilters(editText) else filters(editText)
     }
 
     override fun texts(text: CharSequence, unit: CharSequence) {
@@ -1207,9 +1195,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         }
                     editText.apply {
                         val text = SpannableStringBuilder(text)
-                        setFilters(this)//reset the filters
-                        val cursorPosition = selectionEnd
                         if (text.isNotEmpty()) {
+                            val cursorPosition = selectionEnd
                             this.text = null
                             this.text = text
                             setSelection(cursorPosition)

@@ -39,13 +39,14 @@ class DecimalFormatFactory {
 
                 5 -> decimalFormatSymbols.groupingSeparator = '.'
 
-                6 -> decimalFormatSymbols.groupingSeparator = ' '
+                6 -> decimalFormatSymbols.groupingSeparator = ' '
 
                 8 -> decimalFormatSymbols.decimalSeparator = ','
 
                 9 -> decimalFormatSymbols.decimalSeparator = '.'
-
-                10 -> decimalFormatSymbols.decimalSeparator = ' ' // normal space
+                // normal space so if someone changes the local, the default would
+                // be non breaking space and this won't cause calculation problems
+                10 -> decimalFormatSymbols.decimalSeparator = ' '
 
                 12 -> decimalFormatSymbols.exponentSeparator =
                     context.getString(R.string.small_ten)
@@ -79,8 +80,8 @@ class DecimalFormatFactory {
 
     fun formatEngineeringString(string: String, numberOfPlaces: Int): String {
         string.apply {
-            val stringBeforePoint = substringBefore(Utils.decimalSeparator!!)
-            val stringAfterPoint = substringAfter(Utils.decimalSeparator!!)
+            val stringBeforePoint = substringBefore(Utils.decimalSeparator)
+            val stringAfterPoint = substringAfter(Utils.decimalSeparator)
             val stringForPoint =
                 stringAfterPoint.substringBefore('E')
                     .run {
@@ -91,7 +92,7 @@ class DecimalFormatFactory {
                         //for rounding numbers
                             BigDecimal(subString)
                                 .round(
-                                    MathContext(subString.trimStart(Utils.decimalSeparator!!).length - 1)
+                                    MathContext(subString.trimStart(Utils.decimalSeparator).length - 1)
                                 )
                                 .toPlainString().run {
                                     val str = StringBuilder()
@@ -109,7 +110,7 @@ class DecimalFormatFactory {
                 slice(indexOf(Utils.decimalFormatSymbols?.exponentSeparator!!) until length)
             return buildString {
                 append(stringBeforePoint)
-                if (numberOfPlaces != 0) append(Utils.decimalSeparator!!)
+                if (numberOfPlaces != 0) append(Utils.decimalSeparator)
                 append(stringForPoint)
                 assert((stringForPoint as CharSequence).length <= numberOfPlaces)
                 append(stringFromEToEnd)

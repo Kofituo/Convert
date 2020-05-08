@@ -52,7 +52,7 @@ class GroupViewHolder(group: View, int: Int) : RecyclerView.ViewHolder(group),
                 Animation.RELATIVE_TO_SELF,
                 0.5f
             ).apply {
-                duration = 300
+                duration = 350
                 startAnimation(this)
                 fillAfter = true
             }
@@ -69,7 +69,7 @@ class GroupViewHolder(group: View, int: Int) : RecyclerView.ViewHolder(group),
                 Animation.RELATIVE_TO_SELF,
                 0.5f
             ).apply {
-                duration = 250
+                duration = 300
                 startAnimation(this)
                 fillAfter = true
             }
