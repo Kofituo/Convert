@@ -20,6 +20,7 @@ import com.example.unitconverter.miscellaneous.DecimalFormatFactory
 import com.example.unitconverter.miscellaneous.hasValue
 import com.example.unitconverter.miscellaneous.isNotNull
 import com.google.android.material.textfield.TextInputEditText
+import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
@@ -29,13 +30,16 @@ import kotlin.collections.LinkedHashMap
 import kotlin.math.round
 
 object Utils {
-
     //it is set right from the start
     var decimalFormatSymbols: DecimalFormatSymbols? = null
 
     val groupingSeparator get() = decimalFormatSymbols!!.groupingSeparator
 
     val decimalSeparator get() = decimalFormatSymbols!!.decimalSeparator
+
+    val exponentSeparator get() = decimalFormatSymbols?.exponentSeparator!!
+
+    val zero get() = decimalFormatSymbols!!.zeroDigit
 
     var isEngineering: Boolean? = null
 
@@ -44,9 +48,7 @@ object Utils {
     var numberOfDecimalPlace = -1
 
     var app_bar_bottom = 0
-    val minusSign
-        get() =
-            (DecimalFormat.getInstance(Locale.getDefault()) as DecimalFormat).decimalFormatSymbols.minusSign
+    val minusSign get() = decimalFormatSymbols!!.minusSign
 
     val <V>SparseArray<V>.values: MutableList<V>
         get() =
@@ -80,7 +82,7 @@ object Utils {
      * */
     private val viewNames = LinkedHashMap<Int, String>(30)
 
-    fun getNameToViewMap() = nameToViews
+    fun getNameToViewMap(): Map<String, View> = nameToViews
 
     /**
      * Used to get name from id
@@ -100,7 +102,6 @@ object Utils {
     fun String.removeCommas(decimalSeparator: Char): String? {
         if (this.isBlank()) return ""
         val checkString = StringBuilder()
-        val zero = decimalFormatSymbols!!.zeroDigit
         when {
             this.startsWith(decimalSeparator) ->
                 checkString.append(zero).append(this)
@@ -115,27 +116,24 @@ object Utils {
         }
     }
 
-    fun <T> T.insertCommas(): String {
-        val decimalFormat =
-            (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat).apply {
-                decimalFormatSymbols = this@Utils.decimalFormatSymbols
-                applyPattern(pattern)
+    private val decimalFormat
+        get() =
+            (NumberFormat.getNumberInstance(Locale.getDefault()) as DecimalFormat)
+                .apply {
+                    decimalFormatSymbols = this@Utils.decimalFormatSymbols
+                    applyPattern(pattern)
+                }
+
+    fun String.insertCommas(): String = toBigDecimal().insertCommas()
+
+    fun BigDecimal.insertCommas(): String {
+        if (isEngineering != true)
+            return decimalFormat.format(this).run {
+                if (endsWith(decimalSeparator)) {
+                    substringBeforeLast(decimalSeparator)
+                } else this
             }
-        var unformattedResult =
-            if (this is String) decimalFormat.format(this.toBigDecimal())
-            else decimalFormat.format(this)
-        Log.e("patt", "$pattern")
-        if (isEngineering == true)
-            unformattedResult =
-                DecimalFormatFactory().formatEngineeringString(
-                    unformattedResult,
-                    numberOfDecimalPlace
-                )
-        unformattedResult.apply {
-            if (endsWith(decimalSeparator))
-                return substring(0 until length - 1)
-        }
-        return unformattedResult
+        return DecimalFormatFactory().format(decimalFormat, this, numberOfDecimalPlace)
     }
 
     //filters

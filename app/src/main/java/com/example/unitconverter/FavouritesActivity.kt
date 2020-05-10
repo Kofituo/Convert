@@ -215,7 +215,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         (recyclerView.adapter as FavouritesAdapter).forceChange = false
         if (!initiated) {
             searchButton.apply {
-                title = getString(R.string.add_to_favourites)
+                title = getString(R.string.remove)
                 icon = getDrawable(R.drawable.search_to_remove)
                 (icon as AnimationDrawable).apply {
                     setEnterFadeDuration(300)

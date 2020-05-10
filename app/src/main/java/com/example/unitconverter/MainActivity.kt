@@ -50,6 +50,7 @@ import kotlin.collections.LinkedHashMap
 
 //change manifest setting to backup allow true
 @UnstableDefault
+@OptIn(ImplicitReflectionSerializer::class)
 class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface,
     GridConstraintLayout.Selection, CoroutineScope by MainScope() {
 
@@ -77,9 +78,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         const val FAVOURITES = "$pkgName.favourites_activity_list"
     }
 
-    private var waitingArrayDeque = ArrayDeque<String>(30)
+    private val waitingArrayDeque by lazy(LazyThreadSafetyMode.NONE) {
+        ArrayDeque<String>(30)
+    }
 
-    @OptIn(ImplicitReflectionSerializer::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.front_page_activity)
@@ -279,7 +281,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private inline fun grid(block: GridConstraintLayout.() -> Unit) =
         grid.apply(block)
 
-    @OptIn(ImplicitReflectionSerializer::class)
     override fun onPause() {
         super.onPause()
         editPreferences {
@@ -407,7 +408,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 }
                 if (waitingArrayDeque.isNotEmpty()) {
                     //send the list to the activity
-                    val favouritesList: MutableList<FavouritesData>
+                    val favouritesList: List<FavouritesData?>
                     getNameToViewMap().apply {
                         @Suppress("UNCHECKED_CAST")
                         favouritesList = waitingArrayDeque.map {
@@ -423,10 +424,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                                     cardName = this@run.name
                                 }
                             }
-                        } as ArrayList<FavouritesData>
-                        /*.run {
-                        filterNotNullTo(ArrayList(size)) // none should be null though
-                    }*/
+                        }
                     }
                     /*Log.e(
                         "just before",
@@ -485,19 +483,18 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 title = getString(R.string.search)
                 (icon as AnimationDrawable).apply {
                     setEnterFadeDuration(300)
-                    setExitFadeDuration(500)
+                    setExitFadeDuration(300)
                     start()
                 }
-            } else
-            searchButton.apply {
-                title = getString(R.string.add_to_favourites)
-                icon = getDrawable(R.drawable.search_to_add)
-                (icon as AnimationDrawable).apply {
-                    setEnterFadeDuration(300)
-                    setExitFadeDuration(500)
-                    start()
-                }
+            } else searchButton.apply {
+            title = getString(R.string.add_to_favourites)
+            icon = getDrawable(R.drawable.search_to_add)
+            (icon as AnimationDrawable).apply {
+                setEnterFadeDuration(300)
+                setExitFadeDuration(300)
+                start()
             }
+        }
     }
 
     override fun addOneToFavourites(viewName: String) {

@@ -66,7 +66,7 @@ class PreferenceFragment : DialogFragment() {
                     }
                 if (sliderValue.isNull())
                     get<Float>("preference_slider_value") {
-                        sliderValue = if (this == -1f) 6f else this
+                        sliderValue = if (this == -1f) 5f else this
                     }
             }
             //get group id to enabled id
@@ -139,7 +139,7 @@ class PreferenceFragment : DialogFragment() {
             val colour = viewModel.randomInt
             recyclerView.apply {
                 //setHasFixedSize(true)
-                setItemViewCacheSize(20)
+                //setItemViewCacheSize(20)
                 layoutManager = LinearLayoutManager(context)
                 adapter = PreferencesAdapter(map).apply {
                     color = colour

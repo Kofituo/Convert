@@ -518,6 +518,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    var preferenceFragment: PreferenceFragment? = null
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -537,11 +539,15 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
             R.id.preferences -> {
                 viewModel.clearForPreferences()
-                PreferenceFragment()
-                    .apply {
-                        arguments = bundle
-                    }
-                    .show(supportFragmentManager, "PREFERENCES")
+                if (preferenceFragment.isNull())
+                    preferenceFragment = PreferenceFragment()
+                        .apply {
+                            arguments = bundle
+                        }
+                preferenceFragment?.let {
+                    if (!it.isAdded)
+                        it.show(supportFragmentManager, "PREFERENCES")
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -1163,7 +1169,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         Log.e("pre", "$preferencesSelected")
     }
 
-    private var sliderValue = 6
+    private var sliderValue = 5
     override fun getSliderValue(sliderValue: Int) {
         this.sliderValue = sliderValue
     }
@@ -1175,6 +1181,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 .apply {
                     Utils.decimalFormatSymbols = decimalFormatSymbols
                     Utils.pattern = pattern
+                    Utils.numberOfDecimalPlace = sliderValue
                     Log.e(
                         "isTrue",
                         "${Utils.isEngineering}  $pattern  $preferencesSelected"

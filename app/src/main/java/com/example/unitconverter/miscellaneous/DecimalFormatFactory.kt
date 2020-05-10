@@ -1,16 +1,19 @@
 package com.example.unitconverter.miscellaneous
 
 import android.content.Context
-import android.util.Log
 import com.example.unitconverter.R
 import com.example.unitconverter.Utils
 import java.math.BigDecimal
 import java.math.MathContext
+import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import kotlin.math.round
 
 class DecimalFormatFactory {
 
-    private val decimalFormatSymbols = DecimalFormatSymbols.getInstance()
+    private val decimalFormatSymbols by lazy(LazyThreadSafetyMode.NONE) {
+        DecimalFormatSymbols.getInstance()
+    }
 
     data class SymbolAndPattern(
         val decimalFormatSymbols: DecimalFormatSymbols,
@@ -32,7 +35,6 @@ class DecimalFormatFactory {
                 2 -> {
                     //is engineering
                     Utils.isEngineering = true
-                    Log.e("here", "here")
                     pattern = "#00.###############E0"
                 }
                 4 -> decimalFormatSymbols.groupingSeparator = ','
@@ -52,10 +54,7 @@ class DecimalFormatFactory {
                     context.getString(R.string.small_ten)
             }
         }
-        return SymbolAndPattern(
-            decimalFormatSymbols,
-            pattern
-        )
+        return SymbolAndPattern(decimalFormatSymbols, pattern)
     }
 
     fun setDecimalPlaces(pattern: String, numberOfPlaces: Int): String {
@@ -78,12 +77,80 @@ class DecimalFormatFactory {
         }
     }
 
-    fun formatEngineeringString(string: String, numberOfPlaces: Int): String {
+    fun format(decimalFormat: DecimalFormat, bigDecimal: BigDecimal, int: Int): String {
+        if (int == 0)
+        //when number of decimal places is zero
+            return decimalFormat.format(bigDecimal).run {
+                Utils.let {
+                    val dotIndex = indexOf(it.decimalSeparator)
+                    val eIndex = indexOf(it.exponentSeparator)
+                    if (dotIndex == -1 || eIndex == -1)
+                        return this
+                    // throw AssertionError("index is -1 e $eIndex  . $dotIndex  $this")
+                    //really inefficient
+                    //TODO get a more efficient way to round
+                    buildString {
+                        append(round(this@run.substring(0..dotIndex + 1).toDouble()).toInt())
+                        append(this@run.substring(eIndex until this@run.length))
+                    }
+                }
+            }
+        val string = StringBuilder(bigDecimal.abs().toPlainString())
+        /**
+         * case where the number is less than one
+         * */
+        Utils.let {
+            if (string.startsWith("${it.zero}${it.decimalSeparator}")) {
+                //it could be that the number is 0.000, 0.00000
+                string.deleteCharAt(1)
+                val isZero = string.all { char: Char ->
+                    char == it.zero
+                }
+                if (isZero) {
+                    return "${it.zero}${it.exponentSeparator}${it.zero}"
+                }
+                var zerosCounter = 0
+                //deletes the first zero
+                for (i in string.deleteCharAt(0)) {
+                    if (i != it.zero)
+                        break
+                    zerosCounter++
+                }
+                var numbersBeforeDot = zerosCounter % 3
+                when (numbersBeforeDot) {
+                    0 -> {
+                        numbersBeforeDot += 3
+                    }
+                    1 -> {
+                        numbersBeforeDot += 1
+                    }
+                    else -> numbersBeforeDot -= 1
+                }
+                val roundNumber = numbersBeforeDot + int
+                val newBigDecimal = bigDecimal.round(MathContext(roundNumber))
+                return decimalFormat.format(newBigDecimal)
+            } else {
+                val dotIndex = string.indexOf(it.decimalSeparator)
+                if (dotIndex != -1)
+                    string.delete(dotIndex, string.length)
+                var numbersBeforeDot = string.length % 3
+                if (numbersBeforeDot == 0) {
+                    numbersBeforeDot += 3
+                }
+                val roundNumber = numbersBeforeDot + int
+                val newBigDecimal = bigDecimal.round(MathContext(roundNumber))
+                return decimalFormat.format(newBigDecimal)
+            }
+        }
+    }
+}
+/*fun formatEngineeringString(string: String, numberOfPlaces: Int): String {
         string.apply {
-            val stringBeforePoint = substringBefore(Utils.decimalSeparator)
+            val index = indexOf(Utils.decimalSeparator)
+            val stringBeforePoint = if (index == -1) return string else substring(0, index)
             val stringAfterPoint = substringAfter(Utils.decimalSeparator)
             val stringForPoint =
-                stringAfterPoint.substringBefore('E')
+                stringAfterPoint.substringBefore(Utils.decimalFormatSymbols!!.exponentSeparator)
                     .run {
                         val isOverflow = numberOfPlaces + 1 > length
                         val subString =
@@ -95,13 +162,18 @@ class DecimalFormatFactory {
                                     MathContext(subString.trimStart(Utils.decimalSeparator).length - 1)
                                 )
                                 .toPlainString().run {
+                                    '3'.isDefined()
+                                    Log.e(
+                                        "sub",
+                                        "$subString  ${subString.trimStart(Utils.decimalSeparator)}  $string"
+                                    )
                                     val str = StringBuilder()
                                     //big decimal removes leading zeroes
                                     (0 until subString.length - length).forEach { _ ->
-                                        str.append(DecimalFormatSymbols().zeroDigit)
+                                        str.append(Utils.zero)
                                     }
                                     if (str.length < numberOfPlaces)
-                                        str.append(subSequence(0 until if (length == 1) length else length - 1))
+                                        str.append(substring(0 until if (length == 1) length else length - 1))
                                     str
                                 }
                         else subString
@@ -110,11 +182,16 @@ class DecimalFormatFactory {
                 slice(indexOf(Utils.decimalFormatSymbols?.exponentSeparator!!) until length)
             return buildString {
                 append(stringBeforePoint)
+
                 if (numberOfPlaces != 0) append(Utils.decimalSeparator)
-                append(stringForPoint)
-                assert((stringForPoint as CharSequence).length <= numberOfPlaces)
+                put {
+                    stringForPoint as CharSequence
+                    this value
+                            if (stringForPoint.length > numberOfPlaces)
+                                stringForPoint.slice(0 until numberOfPlaces)
+                            else stringForPoint
+                }
                 append(stringFromEToEnd)
             }
         }
-    }
-}
+    }*/

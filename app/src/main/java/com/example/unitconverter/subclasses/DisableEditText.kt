@@ -32,7 +32,15 @@ class DisableEditText(context: Context, attributeSet: AttributeSet) :
 
     fun shouldDisable(shouldDisable: Boolean) {
         if (this.shouldDisable != shouldDisable)
-            setTextColor(if (shouldDisable) textColorSecondary else textColorPrimary)
+            setTextColor(
+                if (shouldDisable) {
+                    isFocusable = false
+                    textColorSecondary
+                } else {
+                    isFocusableInTouchMode = true
+                    textColorPrimary
+                }
+            )
         this.shouldDisable = shouldDisable
         //if (shouldDisable)
     }
