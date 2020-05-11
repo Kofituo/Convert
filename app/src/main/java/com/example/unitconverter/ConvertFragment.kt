@@ -68,7 +68,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
                     arguments
                         ?.getSerializable("for_currency") as? MutableList<RecyclerDataClass>
                         ?: whichView(viewId)
-                Log.e("what","$dataSet")
+                Log.e("what", "$dataSet")
             }
             Log.e("inini", "init  ${arguments?.getSerializable("for_currency")}")
         }
@@ -199,9 +199,11 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.heatCapacity -> HeatCapacity(requireContext()).getList()
 
-            R.id.Angular_Velocity->Velocity(requireContext()).getList()
+            R.id.Angular_Velocity -> Velocity(requireContext()).getList()
 
             R.id.angularAcceleration -> Acceleration(requireContext()).getList()
+
+            R.id.sound -> Sound(requireContext()).getList()
 
             else -> mutableListOf()
         }

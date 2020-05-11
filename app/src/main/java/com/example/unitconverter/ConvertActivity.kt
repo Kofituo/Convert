@@ -323,8 +323,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.angularAcceleration -> accelerationConversions()
 
-            R.id.sound -> {
-            }
+            R.id.sound -> soundConversions()
+
             R.id.resistance -> {
             }
             R.id.radioactivity -> {
@@ -524,7 +524,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    var preferenceFragment: PreferenceFragment? = null
+    private fun soundConversions() {
+        function = {
+            Sound(it).getText()
+        }
+    }
+
+    private var preferenceFragment: PreferenceFragment? = null
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

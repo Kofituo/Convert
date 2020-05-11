@@ -439,4 +439,10 @@
     <string name="food">[Food]</string>
     <string name="foot_poundal">Foot-poundal</string>
     <string name="foot_poundal_unit">ft-pdl</string>
+
+    <!--Sound-->
+    <string name="bel">Bel</string>
+    <string name="bel_unit">B</string>
+    <string name="neper">Neper</string>
+    <string name="neper_unit">Np</string>
 </resources>
