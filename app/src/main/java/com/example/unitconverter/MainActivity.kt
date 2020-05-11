@@ -34,6 +34,7 @@ import com.example.unitconverter.Utils.values
 import com.example.unitconverter.builders.buildIntent
 import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.builders.put
+import com.example.unitconverter.builders.putAll
 import com.example.unitconverter.miscellaneous.*
 import com.example.unitconverter.subclasses.*
 import com.example.unitconverter.subclasses.FavouritesData.Companion.favouritesBuilder
@@ -54,18 +55,39 @@ import kotlin.collections.LinkedHashMap
 class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface,
     GridConstraintLayout.Selection, CoroutineScope by MainScope() {
 
-    private val downTime = SystemClock.uptimeMillis()
-    private val eventTime = SystemClock.uptimeMillis() + 10
+    private val downTime get() = SystemClock.uptimeMillis()
+    private val eventTime get() = SystemClock.uptimeMillis() + 10
     private val xPoint = 0f
     private val yPoint = 0f
     private val metaState = 0
-    private val motionEventDown =
-        MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_DOWN, xPoint, yPoint, metaState)
-    private val motionEventUp: MotionEvent =
-        MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_UP, xPoint, yPoint, metaState)
+    private val motionEventDown
+        get() = MotionEvent.obtain(
+            downTime,
+            eventTime,
+            MotionEvent.ACTION_DOWN,
+            xPoint,
+            yPoint,
+            metaState
+        )
+    private val motionEventUp: MotionEvent
+        get() = MotionEvent.obtain(
+            downTime,
+            eventTime,
+            MotionEvent.ACTION_UP,
+            xPoint,
+            yPoint,
+            metaState
+        )
 
-    private val motionEventMove: MotionEvent =
-        MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_MOVE, xPoint, yPoint, metaState)
+    private val motionEventMove: MotionEvent
+        get() = MotionEvent.obtain(
+            downTime,
+            eventTime,
+            MotionEvent.ACTION_MOVE,
+            xPoint,
+            yPoint,
+            metaState
+        )
 
     private var h = 0
     private var w = 0
@@ -115,40 +137,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
         }
         savedInstanceState?.putFloat("motion_progress", 1f)
-        motion {
-            motionHandler = object : Handler(Looper.getMainLooper()) {
-                override fun handleMessage(msg: Message) {
-                    when (msg.what) {
-                        1 -> {
-                            bugDetected =
-                                if (progress == 1F || progress == 0f) {
-                                    false
-                                } else {
-                                    scrollable.apply {
-                                        dispatchTouchEvent(motionEventDown)
-                                        dispatchTouchEvent(motionEventMove)
-                                        dispatchTouchEvent(motionEventMove)
-                                        dispatchTouchEvent(motionEventUp)
-                                    }
-                                    true
-                                }
-                            return
-                        }
-                        2 -> {
-                            launch {
-                                delay(318)
-                                if (progress != 0F) {
-                                    motionHandler.obtainMessage(1).sendToTarget()
-                                }
-                            }
-                            return
-                        }
-                    }
-                    return super.handleMessage(msg)
-                }
-            }
-            progress = savedInstanceState?.getFloat("motion_progress") ?: 0f
-        }
+        motionLayoutTuning(savedInstanceState)
         sharedPreferences {
             editPreferences {
                 //rethinking almost everything to make sure it works well always
@@ -192,6 +181,42 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         grid setSelectionListener this
     }
 
+    private fun motionLayoutTuning(savedInstanceState: Bundle?) {
+        motion {
+            motionHandler = object : Handler(Looper.getMainLooper()) {
+                override fun handleMessage(msg: Message) {
+                    when (msg.what) {
+                        1 -> {
+                            bugDetected =
+                                if (progress == 1F || progress == 0f) {
+                                    false
+                                } else {
+                                    scrollable.apply {
+                                        dispatchTouchEvent(motionEventDown)
+                                        dispatchTouchEvent(motionEventMove)
+                                        dispatchTouchEvent(motionEventMove)
+                                        dispatchTouchEvent(motionEventUp)
+                                    }
+                                    true
+                                }
+                            return
+                        }
+                        2 -> {
+                            launch {
+                                delay(318)
+                                if (progress != 0F) {
+                                    motionHandler.obtainMessage(1).sendToTarget()
+                                }
+                            }
+                            return
+                        }
+                    }
+                    return super.handleMessage(msg)
+                }
+            }
+            progress = savedInstanceState?.getFloat("motion_progress") ?: 0f
+        }
+    }
 
     private inline fun motion(block: MyMotionLayout.() -> Unit) =
         motion?.apply(block)
@@ -227,11 +252,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 "-0 $descending ${mRecentlyUsed == originalMap} ${mRecentlyUsed.values == originalMap.values}"
             )
             Log.e("ori", "$mRecentlyUsed pp  $originalMap")
-            temporalMap.putAll(
-                if (descending)
-                    mRecentlyUsed
+            temporalMap.putAll {
+                if (descending) mRecentlyUsed
                 else mRecentlyUsed.reversed()
-            )
+            }
             Log.e("3", "3  $temporalMap")
         }
         temporalMap.also {

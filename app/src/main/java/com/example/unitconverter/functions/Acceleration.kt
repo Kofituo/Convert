@@ -1,13 +1,13 @@
 package com.example.unitconverter.functions
 
+import com.example.unitconverter.constants.Acceleration
 import com.example.unitconverter.constants.Angle
 import com.example.unitconverter.constants.BigDecimalsAddOns.inverseOf
 import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
-import com.example.unitconverter.constants.Velocity
 import com.example.unitconverter.subclasses.Positions
 import java.math.BigDecimal
 
-class Velocity(override val positions: Positions) : ConstantsAbstractClass() {
+class Acceleration(override val positions: Positions) : ConstantsAbstractClass() {
 
     override fun getText(): String =
         amongRad() ?: radiansPerSecConversion() ?: amongDegrees() ?: degreesPerSecConversions()
@@ -19,17 +19,20 @@ class Velocity(override val positions: Positions) : ConstantsAbstractClass() {
         intRange.iterator().run {
             val map = mapOf(
                 nextInt() to 0,
-                nextInt() to 17,
-                nextInt() to 18,
-                nextInt() to 19
+                nextInt() to 1,
+                nextInt() to 2
             )
             return Time(
-                Positions(map.getValue(bottomPosition), map.getValue(topPosition), inputString)
+                Positions(
+                    map.getValue(bottomPosition),
+                    map.getValue(topPosition),
+                    inputString
+                )
             ).getText()
         }
 
     private fun getExp(intRange: IntRange): Int {
-        val map = Velocity.amongSeconds(intRange)
+        val map = Acceleration.amongSeconds(intRange)
         val first = map[topPosition, 200]
         if (first != 200) return first
         val second = map[bottomPosition, 200]
@@ -40,32 +43,32 @@ class Velocity(override val positions: Positions) : ConstantsAbstractClass() {
     private inline fun amongUnits(intRange: () -> IntRange) =
         if (rangeAssertAnd(intRange())) amongTimes(intRange()) else null
 
-    private fun amongRad() = amongUnits { 0..3 }
+    private fun amongRad() = amongUnits { 0..2 }
 
-    private fun amongDegrees() = amongUnits { 4..7 }
+    private fun amongDegrees() = amongUnits { 3..5 }
 
-    private fun amongGrad() = amongUnits { 8..11 }
+    private fun amongGrad() = amongUnits { 6..8 }
 
-    private fun amongRev() = amongUnits { 12..15 }
+    private fun amongRev() = amongUnits { 9..11 }
 
     private fun radiansPerSecConversion(): String? {
-        rangeAssertOr(0..3) {
+        rangeAssertOr(0..2) {
             when {
-                rangeAssertOr(4..7) -> {
+                rangeAssertOr(3..5) -> {
                     //to degrees
-                    return getConversion(0..3, 4..7) {
+                    return getConversion(0..2, 3..5) {
                         Angle.degreesToRadians
                     }
                 }
-                rangeAssertOr(8..11) -> {
+                rangeAssertOr(6..8) -> {
                     //to gradians
-                    return getConversion(0..3, 8..11) {
+                    return getConversion(0..2, 6..8) {
                         inverseOf(Angle.radiansToGradians)
                     }
                 }
-                rangeAssertOr(12..15) -> {
+                rangeAssertOr(9..11) -> {
                     //to revolution
-                    return getConversion(0..3, 12..15) {
+                    return getConversion(0..2, 9..11) {
                         inverseOf(Angle.radiansToRevolutions)
                     }
                 }
@@ -76,17 +79,17 @@ class Velocity(override val positions: Positions) : ConstantsAbstractClass() {
     }
 
     private fun degreesPerSecConversions(): String? {
-        rangeAssertOr(4..7) {
+        rangeAssertOr(3..5) {
             return when {
-                rangeAssertOr(8..11) -> {
+                rangeAssertOr(6..8) -> {
                     //to gradians
-                    getConversion(4..7, 8..11) {
+                    getConversion(3..5, 6..8) {
                         inverseOf(Angle.degreesToGradians)
                     }
                 }
-                rangeAssertOr(12..15) -> {
+                rangeAssertOr(9..11) -> {
                     //to revolution
-                    getConversion(4..7, 12..15) {
+                    getConversion(3..5, 9..11) {
                         inverseOf(Angle.degreesToRevolution)
                     }
                 }
@@ -97,10 +100,10 @@ class Velocity(override val positions: Positions) : ConstantsAbstractClass() {
     }
 
     private fun gradiansConversion(): String? {
-        rangeAssertOr(8..11) {
-            rangeAssertOr(12..15) {
+        rangeAssertOr(6..8) {
+            rangeAssertOr(9..11) {
                 //to revolution
-                return getConversion(8..11, 12..15) {
+                return getConversion(6..8, 9..11) {
                     inverseOf(Angle.gradiansToRevolutions)
                 }
             }
@@ -119,7 +122,7 @@ class Velocity(override val positions: Positions) : ConstantsAbstractClass() {
                 firstExponent = getExp(firstRange)
             } catch (e: NotImplementedError) {
                 //radians per day selected
-                val map = Velocity.hoursMap(secondRange)
+                val map = Acceleration.hoursMap(secondRange)
                 val temp = map[topPosition, 200]
                 val whichOne = if (temp == 200) map[bottomPosition] else temp
                 ratio = bigDecimal().divide(BigDecimal(whichOne), mathContext)
@@ -136,7 +139,7 @@ class Velocity(override val positions: Positions) : ConstantsAbstractClass() {
                 if (intAssertOr(firstRange.last))
                     bigDecimal()
                 else {
-                    val map = Velocity.hoursMap(firstRange)
+                    val map = Acceleration.hoursMap(firstRange)
                     val temp = map[topPosition, 200]
                     val whichOne = if (temp == 200) map[bottomPosition] else temp
                     bigDecimal().multiply(BigDecimal(whichOne))
@@ -144,5 +147,33 @@ class Velocity(override val positions: Positions) : ConstantsAbstractClass() {
             return basicFunction(-swapConversions())
         }
         TODO() // should'nt reach here though
+    }
+
+    private class Time(override val positions: Positions) : ConstantsAbstractClass() {
+
+        override fun getText(): String {
+            when {
+                intAssertOr(0) -> {
+                    ratio = when {
+                        intAssertOr(1) -> {
+                            //to minutes
+                            com.example.unitconverter.constants.Time.secondsToMinutes.pow(2)
+                        }
+                        intAssertOr(2) -> {
+                            //to hours
+                            com.example.unitconverter.constants.Time.secondsToHours.pow(2)
+                        }
+                        else -> TODO()
+                    }
+                }
+                intAssertOr(1) -> {
+                    intAssertOr(2) {
+                        ratio = com.example.unitconverter.constants.Time.secondsToMinutes.pow(2)
+                    }
+                }
+                else -> TODO()
+            }
+            return result
+        }
     }
 }

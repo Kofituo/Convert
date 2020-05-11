@@ -321,8 +321,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
             R.id.Angular_Velocity -> velocityConversions()
 
-            R.id.angularAcceleration -> {
-            }
+            R.id.angularAcceleration -> accelerationConversions()
+
             R.id.sound -> {
             }
             R.id.resistance -> {
@@ -518,6 +518,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
+    private fun accelerationConversions() {
+        function = {
+            Acceleration(it).getText()
+        }
+    }
+
     var preferenceFragment: PreferenceFragment? = null
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -530,13 +536,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 swap()
                 true
             }
-            R.id.prefixes -> {
+            R.id.prefixes ->
                 buildIntent<ConvertActivity> {
                     putExtra(TextMessage, "Prefix")
                     putExtra(ViewIdMessage, R.id.prefixes)
                     startActivity(this)
                 }
-            }
             R.id.preferences -> {
                 viewModel.clearForPreferences()
                 if (preferenceFragment.isNull())
@@ -668,8 +673,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             Log.e("came", "$s   ${secondEditText.text} $groupingSeparator de $decimalSeparator")
             super.afterTextChanged(s)
             Log.e("act", "act")
-            s?.toString()?.apply {
-                if (s.length == 1 && s[0] == minusSign) {
+            s?.apply {
+                if (length == 1 && get(0) == minusSign) {
                     secondEditText.text = null // to prevent Unparseable number "-"error
                     return
                 }
@@ -747,7 +752,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT).trim()
                     else this
             }
-
             get<String?>("bottomTextViewText") {
                 bottomTextView.text =
                     if (get("bottomIsSpans"))
@@ -793,7 +797,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
             get<String?>("preferences_selections") {
                 if (this.hasValue())
-                    preferencesSelected.putAll(Json.parseMap(this))
+                    preferencesSelected.putAll {
+                        Json.parseMap(this)
+                    }
                 else preferencesSelected.apply {
                     put(0, 0)
                     put(1, 3)
@@ -934,8 +940,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
     var networkIsAvailable: Boolean? = null
 
-    /**
-    show when null*/
+    /**show when null*/
     private var snackBar: Snackbar? = null
 
     private var shouldShowSnack: Boolean? by resetAfter2Gets(null, null)
@@ -946,55 +951,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             when (url) {
                 urlArray[0] -> {
                     preferenceKey = "values_for_conversion" // values.json
-                    currencyRates = getRatesList(result)
-                        .apply {
-                            currencyRatesEnumeration.reset()
-                        }
-                    if (shouldShowSnack != false) {
-                        snackBar = showSnack {
-                            view = convert_parent
-                            resId = if (snackBar.isNull())
-                                R.string.rates_success
-                            else R.string.currency_and_rates_success
-                            duration = Snackbar.LENGTH_SHORT
-                            callback =
-                                object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                                    override fun onDismissed(
-                                        transientBottomBar: Snackbar?,
-                                        event: Int
-                                    ) {
-                                        snackBar = null
-                                    }
-                                }
-                        }
-                    }
+                    getRates(result)
                 }
                 urlArray[1] -> {
                     preferenceKey = "list_of_currencies" // currency.json
-                    /**
-                     * Assuming for some reason the currency list changes e.g new currencies have
-                     * been added, everything should be reset
-                     * */
-                    currenciesList = getCurrenciesFromDownload(result)
-                    bundle.putSerializable("for_currency", currenciesList as Serializable)
-                    if (shouldShowSnack != false) {
-                        snackBar = showSnack {
-                            view = convert_parent
-                            resId =
-                                if (snackBar.isNull()) R.string.currency_success
-                                else R.string.currency_and_rates_success
-                            duration = Snackbar.LENGTH_SHORT
-                            callback =
-                                object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                                    override fun onDismissed(
-                                        transientBottomBar: Snackbar?,
-                                        event: Int
-                                    ) {
-                                        snackBar = null
-                                    }
-                                }
-                        }
-                    }
+                    getCurrencies(result)
                 }
                 else -> TODO()
             }
@@ -1032,39 +993,87 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    private fun getCurrenciesFromDownload(result: String) =
-        getCurrencyList(result)
-            .apply {
-                //execute only when it isn't null
-                currenciesList?.let { list ->
-                    val shouldClear =
-                        //quickly check the size
-                        if (list.size != size) {
-                            true
-                        } else {
-                            var index = 0
-                            //if there's a difference in  currency
-                            !list.all {
-                                it.quantity == this[index++].quantity //compare only quantity to be fast
-                            }
+    private fun getRates(result: String) {
+        currencyRates = getRatesList(result)
+        currencyRatesEnumeration.reset()
+        if (shouldShowSnack != false) {
+            snackBar = showSnack {
+                view = convert_parent
+                resId = if (snackBar.isNull())
+                    R.string.rates_success
+                else R.string.currency_and_rates_success
+                duration = Snackbar.LENGTH_SHORT
+                callback =
+                    object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        override fun onDismissed(
+                            transientBottomBar: Snackbar?,
+                            event: Int
+                        ) {
+                            snackBar = null
                         }
-                    //Log.e("should", "clear $shouldClear")
-                    if (shouldClear) {
-                        refreshEverything()
-                        //clear saved preferences
-                        val sharedPreferences by sharedPreference {
-                            pkgName + "Currency"
-                        }
-                        sharedPreferences.edit { clear() }
-                        showSnack {
-                            view = convert_parent
-                            resId = R.string.currency_reset
-                            duration = Snackbar.LENGTH_LONG
-                        }
-                        shouldShowSnack = false
                     }
+            }
+        }
+    }
+
+    private fun getCurrencies(result: String) {
+        /**
+         * Assuming for some reason the currency list changes e.g new currencies have
+         * been added, everything should be reset
+         * */
+        currenciesList = getCurrenciesFromDownload(result)
+        bundle.putSerializable("for_currency", currenciesList as Serializable)
+        if (shouldShowSnack != false) {
+            snackBar = showSnack {
+                view = convert_parent
+                resId =
+                    if (snackBar.isNull()) R.string.currency_success
+                    else R.string.currency_and_rates_success
+                duration = Snackbar.LENGTH_SHORT
+                callback =
+                    object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        override fun onDismissed(
+                            transientBottomBar: Snackbar?,
+                            event: Int
+                        ) {
+                            snackBar = null
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun getCurrenciesFromDownload(result: String) =
+        getCurrencyList(result).apply {
+            //execute only when it isn't null
+            currenciesList?.let { list ->
+                val shouldClear =
+                    //quickly check the size
+                    if (list.size != size) true
+                    else {
+                        var index = 0
+                        //if there's a difference in  currency
+                        !list.all {
+                            it.quantity == this[index++].quantity //compare only quantity to be fast
+                        }
+                    }
+                //Log.e("should", "clear $shouldClear")
+                if (shouldClear) {
+                    refreshEverything()
+                    //clear saved preferences
+                    val sharedPreferences by sharedPreference {
+                        pkgName + "Currency"
+                    }
+                    sharedPreferences.edit { clear() }
+                    showSnack {
+                        view = convert_parent
+                        resId = R.string.currency_reset
+                        duration = Snackbar.LENGTH_LONG
+                    }
+                    shouldShowSnack = false
                 }
             }
+        }
 
     private fun setNetworkListener() {
         if (!::networkCallback.isInitialized) {
@@ -1125,7 +1134,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     override fun finishDownloading() {
         networkFragment.cancelDownload()
     }
-
 
     override fun passException(url: String?, exception: Exception) {
         //means error occurred

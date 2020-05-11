@@ -52,7 +52,7 @@ object Utils {
 
     val <V>SparseArray<V>.values: MutableList<V>
         get() =
-            buildMutableList(30) {
+            buildMutableList(size()) {
                 this@values.forEach { _, value ->
                     add(value)
                 }
@@ -99,7 +99,7 @@ object Utils {
                         nameToViews[this] = this@name
                     }
 
-    fun String.removeCommas(decimalSeparator: Char): String? {
+    fun CharSequence.removeCommas(decimalSeparator: Char): String? {
         if (this.isBlank()) return ""
         val checkString = StringBuilder()
         when {

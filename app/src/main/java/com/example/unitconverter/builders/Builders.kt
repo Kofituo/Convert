@@ -50,6 +50,9 @@ inline fun <K, V> MutableMap<K, V>.put(block: MapValue<K, V>.() -> Unit) =
         put(key!!, value!!)
     }
 
+inline fun <K, V> MutableMap<K, V>.putAll(block: () -> Map<K, V>) =
+    putAll(block())
+
 /*End of collection builders*/
 
 /* Intent builder*/

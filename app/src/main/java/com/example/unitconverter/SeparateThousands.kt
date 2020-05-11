@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.widget.EditText
 import com.example.unitconverter.Utils.lengthFilter
 import com.example.unitconverter.Utils.minusSign
-import com.example.unitconverter.miscellaneous.isNotNull
 import java.text.DecimalFormat
 import java.util.*
 
@@ -24,7 +23,7 @@ open class SeparateThousands(
     private var isNegative = false
     private lateinit var filters: Array<InputFilter>
     override fun afterTextChanged(s: Editable?) {
-        if (s.isNotNull()) {
+        s?.let {
             isNegative = s.isNotEmpty() && s[0] == minusSign
 
             editText.apply {
@@ -135,7 +134,7 @@ open class SeparateThousands(
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        if (s != null && s.toString().isNotEmpty()) {
+        if (s != null && s.isNotEmpty()) {
             prevString = s.subSequence(0, s.length)
             lastPosition = s.indexOf(decimalSeparator)
         }

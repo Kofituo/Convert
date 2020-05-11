@@ -134,10 +134,8 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         }
     }
 
-    private inline fun recyclerView(block: RecyclerView.() -> Unit): RecyclerView {
-        Log.e("view", "${findViewById<View>(R.id.view)}")
-        return findViewById<RecyclerView>(R.id.view).apply(block)
-    }
+    private inline fun recyclerView(block: RecyclerView.() -> Unit) =
+        findViewById<RecyclerView>(R.id.view).apply(block)
 
     private inline fun window(block: Window.() -> Unit) = window?.apply(block)
 

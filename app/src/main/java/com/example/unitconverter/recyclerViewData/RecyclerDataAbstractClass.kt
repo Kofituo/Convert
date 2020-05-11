@@ -51,7 +51,7 @@ abstract class RecyclerDataAbstractClass {
     protected val zeptoSymbol get() = getString(R.string.zepto_symbol)
     protected val yoctoSymbol get() = getString(R.string.yocto_symbol)
     protected val squareSymbol get() = getString(R.string.square_symbol)
-    protected val square get() = getString(R.string.square)
+    protected open val square get() = getString(R.string.square)
 
     //
     protected abstract val context: Context

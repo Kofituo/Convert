@@ -201,6 +201,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.Angular_Velocity->Velocity(requireContext()).getList()
 
+            R.id.angularAcceleration -> Acceleration(requireContext()).getList()
+
             else -> mutableListOf()
         }
     }
