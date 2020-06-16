@@ -473,7 +473,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         endSelection()
                     }
                     showToast {
-                        resId = R.string.added_favourites
+                        stringId = R.string.added_favourites
                         duration = Toast.LENGTH_LONG
                     }
                     map.clear() //for efficiency
@@ -526,7 +526,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             //Log.e("array one", "$this")
         }
         showToast {
-            resId = R.string.added_favourites
+            stringId = R.string.added_favourites
             duration = Toast.LENGTH_SHORT
         }
     }

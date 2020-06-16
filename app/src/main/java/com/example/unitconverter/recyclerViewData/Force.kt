@@ -15,7 +15,7 @@ class Force(override val context: Context) : RecyclerDataAbstractClass() {
     private val gramForceUnit = getString(R.string.gram_force_unit)
     private val tonForceUnit = getString(R.string.ton_force_unit)
 
-    override fun getList() = buildRecyclerList(0) {
+    override fun getList() = buildRecyclerList(25) {
         putEntry {
             quantity = _newton
             unit = newtonUnit
@@ -34,7 +34,7 @@ class Force(override val context: Context) : RecyclerDataAbstractClass() {
         putEntry {
             quantity = appendString {
                 this value kilo
-                this value gramForce
+                this value gramForce.toLC()
             }
             unit = appendString(3) {
                 this value kiloSymbol
@@ -52,7 +52,7 @@ class Force(override val context: Context) : RecyclerDataAbstractClass() {
         putEntry {
             getString(R.string.kip) {
                 quantity = this
-                unit = this
+                unit = this.toLC()
             }
         }
         putEntry {

@@ -16,6 +16,7 @@ import android.util.ArrayMap
 import android.util.Log
 import android.view.*
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.edit
@@ -165,6 +166,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     arguments = bundle
                     show(supportFragmentManager, "dialog")
                 }
+        }
+        showToast {
+            text = "On Create Called"
+            duration = Toast.LENGTH_SHORT
         }
     }
 

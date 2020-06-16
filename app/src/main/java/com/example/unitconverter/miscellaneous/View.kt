@@ -1,6 +1,5 @@
 package com.example.unitconverter.miscellaneous
 
-import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -20,13 +19,13 @@ inline fun android.view.LayoutInflater.inflate(values: LayoutInflater.() -> Unit
         inflate(resourceId!!, root, attachToRoot)
     }
 
-data class Toast(var resId: Int? = null, var duration: Int? = null, var text: CharSequence? = null)
+data class Toast(var stringId: Int = -1, var duration: Int? = null, var text: CharSequence? = null)
 
 inline fun Context.showToast(block: Toast.() -> Unit) {
     Toast().apply(block).run {
-        if (resId == null) {
+        if (stringId == -1) {
             android.widget.Toast.makeText(this@showToast, text, duration!!).show()
-        } else android.widget.Toast.makeText(this@showToast, resId!!, duration!!).show()
+        } else android.widget.Toast.makeText(this@showToast, stringId, duration!!).show()
     }
 }
 
