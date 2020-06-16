@@ -2,7 +2,6 @@ package com.example.unitconverter.functions
 
 import android.util.SparseIntArray
 import com.example.unitconverter.constants.Luminance
-import com.example.unitconverter.miscellaneous.colors
 import com.example.unitconverter.subclasses.Positions
 
 class Luminance(override val positions: Positions) : ConstantsAbstractClass() {
@@ -25,12 +24,9 @@ class Luminance(override val positions: Positions) : ConstantsAbstractClass() {
     private fun amongCanPerMetre(): String? {
         if (
             rangeAssertAnd(0..7) //among candela per metre with metric prefix
-            ||
-            rangeAssertAnd(13..19) // among candela per sq km and family
-            ||
-            rangeAssertOr(0..7) && rangeAssertOr(13..19) // from say candela per sq metre to candela per sq kilometre
+            || rangeAssertAnd(13..19) // among candela per sq km and family
+            || rangeAssertOr(0..7) && rangeAssertOr(13..19) // from say candela per sq metre to candela per sq kilometre
         ) canPerMetre { return innerAmongPrefix(it) }
-        colors
         return null
     }
 

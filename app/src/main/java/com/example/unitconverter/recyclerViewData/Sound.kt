@@ -11,7 +11,7 @@ class Sound(override val context: Context) : RecyclerDataAbstractClass() {
     private val bel = _bel.toLowerCase(locale)
     private val belUnit = getString(R.string.bel_unit)
 
-    override fun getList() = buildRecyclerList(0) {
+    override fun getList() = buildRecyclerList(4) {
         putEntry {
             quantity = appendString(3) {
                 this value _bel

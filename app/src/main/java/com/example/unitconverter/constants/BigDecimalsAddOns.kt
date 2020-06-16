@@ -19,4 +19,6 @@ object BigDecimalsAddOns {
 
     fun inverseOf(bigDecimal: BigDecimal): BigDecimal =
         BigDecimal.ONE.divide(bigDecimal, mathContext)
+
+    val speedOfLight get() = BigDecimal(299_792_458)
 }

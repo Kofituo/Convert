@@ -115,5 +115,7 @@ abstract class RecyclerDataAbstractClass {
         unit = string
     }
 
+    fun String.toLC() = toLowerCase(locale)
+
     protected data class Data(var quantity: String? = null, var unit: CharSequence? = null)
 }

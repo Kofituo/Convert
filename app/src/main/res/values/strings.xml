@@ -423,7 +423,7 @@
     <string name="joule_unit">J</string>
     <string name="tnt">TNT</string>
     <string name="foot_pound">Foot Pound-Force</string>
-    <string name="erg">Erg [CGS unit]</string>
+    <string name="erg">Erg [CGS Unit]</string>
     <string name="erg_unit">erg</string>
     <string name="foot_pound_unit">ft-lbf</string>
     <string name="electron_volt">Electron Volt</string>
@@ -445,4 +445,20 @@
     <string name="bel_unit">B</string>
     <string name="neper">Neper</string>
     <string name="neper_unit">Np</string>
+
+    <!--Resistance-->
+    <string name="ohm">Ohm</string>
+    <string name="statohm">Statohm [CGS Unit]</string>
+    <string name="abohms">Abohm [EMU-CGS Unit]</string>
+    <string name="ohm_unit">Ω</string>
+    <string name="abohm_unit">abΩ</string>
+    <string name="statohm_unit">sΩ</string>
+
+    <!--Radioactivity-->
+    <string name="becquerel">Becquerel</string>
+    <string name="becquerel_unit">Bq</string>
+    <string name="rutherford">Rutherford</string>
+    <string name="rutherford_unit">Rd</string>
+    <string name="curie">Curie</string>
+    <string name="curie_unit">Ci</string>
 </resources>

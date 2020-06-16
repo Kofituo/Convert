@@ -15,8 +15,8 @@ object HeatCapacity {
             append(3, 9)//giga //kilo ton
         }.also(block)
 
-    val jouleToCalorie = Energy.jouleToCalorie
+    val jouleToCalorie get() = Energy.jouleToCalorie
 
-    val jouleToBtu = Energy.jouleToThermalUnit
+    val jouleToBtu get() = Energy.jouleToThermalUnit
 
 }

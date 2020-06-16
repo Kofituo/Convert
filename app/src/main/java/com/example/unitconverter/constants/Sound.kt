@@ -5,6 +5,7 @@ import com.example.unitconverter.builders.buildSparseIntArray
 import java.math.BigDecimal
 
 object Sound {
+
     private val logEBase10 = BigDecimal("0.434294481903251827651128918916605")
 
     val neperToBel get() = BigDecimal(2).times(logEBase10)

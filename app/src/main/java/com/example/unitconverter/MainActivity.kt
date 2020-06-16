@@ -410,7 +410,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 startActivity(this)
             }
         }
-        R.id.favourite -> {
+        R.id.favourite ->
             buildIntent<FavouritesActivity> {
                 sharedPreferences(favouritesPreferences) {
                     get<String?>("favouritesArray") {
@@ -434,7 +434,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     //send the list to the activity
                     val favouritesList: List<FavouritesData?>
                     getNameToViewMap().apply {
-                        @Suppress("UNCHECKED_CAST")
                         favouritesList = waitingArrayDeque.map {
                             val view = this[it] //shouldn't be null though
                             view?.run {
@@ -459,8 +458,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         .putExtra("$pkgName.favourites_list", favouritesList as Serializable)
                 }
                 startActivity(this)
-            }
-            true
         }
         R.id.search_button -> {
             if (!useDefault) {
