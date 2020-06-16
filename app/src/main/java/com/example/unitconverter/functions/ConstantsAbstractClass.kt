@@ -75,6 +75,12 @@ abstract class ConstantsAbstractClass {
     protected inline fun rangeAssertOr(range: IntRange, block: () -> Unit) {
         if (rangeAssertOr(range)) block()
     }
+/*
+
+    protected fun multiplePrefix(sparseIntArray: SparseIntArray) = swapConversions().also {
+        innerMultiplePrefix(sparseIntArray)
+    }
+*/
 
     protected inline fun innerMultiplePrefix(sparseIntArray: SparseIntArray) {
         sparseIntArray.also {
@@ -86,6 +92,13 @@ abstract class ConstantsAbstractClass {
             top = whichOne
             bottom = 0
         }
+    }
+
+    protected fun amongPrefixes(range: IntRange, sparseIntArray: SparseIntArray): String? {
+        rangeAssertAnd(range) {
+            return innerAmongPrefix(sparseIntArray)
+        }
+        return null
     }
 
     protected inline fun innerAmongPrefix(sparseIntArray: SparseIntArray): String {

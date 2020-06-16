@@ -98,11 +98,13 @@ inline fun buildConstraintSet(block: KotlinConstraintSet.() -> Unit) =
 inline fun buildSparseIntArray(capacity: Int, builderAction: SparseIntArray.() -> Unit) =
     SparseIntArray(capacity).apply(builderAction)
 
-/**
+/*
  * Creates a new [/SparseIntArray] and applies [/builderAction] to it
 
 inline fun buildSparseIntArray(builderAction: SparseIntArray.() -> Unit) =
 SparseIntArray().apply(builderAction)
 
  */
-inline fun<T> MutableList<T>.add(block: () -> T) = add(block())
+inline fun <T> MutableCollection<T>.add(block: () -> T) = add(block())
+
+inline fun <T> MutableCollection<T>.addAll(block: () -> Collection<T>) = addAll(block())

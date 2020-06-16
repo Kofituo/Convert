@@ -176,7 +176,7 @@
     <string name="gram">Gram</string>
     <string name="gram_unit">g</string>
     <string name="troy_pound">Troy pound</string>
-    <string name="troy_poundUnit">Troy lb</string>
+    <string name="troy_poundUnit">troy lb</string>
     <string name="troy_ounce">Troy ounce</string>
     <string name="troyOunceUnit">oz t</string>
     <string name="pennyweight">Pennyweight</string>
@@ -418,7 +418,6 @@
     <string name="candle_unit">fc</string>
 
     <!--energy-->
-
     <string name="joule">Joule</string>
     <string name="joule_unit">J</string>
     <string name="tnt">TNT</string>
@@ -461,4 +460,19 @@
     <string name="rutherford_unit">Rd</string>
     <string name="curie">Curie</string>
     <string name="curie_unit">Ci</string>
+
+    <!--force-->
+    <string name="newton_unit">N</string>
+    <string name="gram_force">Gram-force</string>
+    <string name="gram_force_unit">gf</string>
+    <string name="poundal">Poundal</string>
+    <string name="poundal_unit">pdl</string>
+    <string name="pound_force">Pound-force</string>
+    <string name="pound_force_unit">lbf</string>
+    <string name="l_ton_force">Long ton-force</string>
+    <string name="ton_force_unit">tf</string>
+    <string name="s_ton_force">Short ton-force</string>
+    <string name="dyne">Dyne</string>
+    <string name="dyne_unit">dyn</string>
+    <string name="kip">Kip</string>
 </resources>

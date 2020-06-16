@@ -209,6 +209,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.radioactivity -> Radioactivity(requireContext()).getList()
 
+            R.id.force -> Force(requireContext()).getList()
+
             else -> mutableListOf()
         }
     }

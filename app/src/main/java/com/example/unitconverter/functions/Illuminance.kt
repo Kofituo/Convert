@@ -7,21 +7,22 @@ import com.example.unitconverter.subclasses.Positions
 
 class Illuminance(override val positions: Positions) : ConstantsAbstractClass() {
 
-    override fun getText(): String = amongLux() ?: luxConversions() ?: footCandleConversion()
-    ?: TODO()
+    override fun getText(): String =
+        amongPrefixes(0..8, amongLux) ?: luxConversions() ?: footCandleConversion()
+        ?: TODO()
 
-    private fun amongLux(): String? {
+    /*private fun amongLux(): String? {
         if (rangeAssertAnd(0..8))
             amongLux {
                 return innerAmongPrefix(it)
             }
         return null
-    }
+    }*/
 
     private fun luxMultiplePrefix(): Int {
-        amongLux {
-            innerMultiplePrefix(it)
-        }
+        //amongLux {
+        innerMultiplePrefix(amongLux)
+        //}
         return swapConversions()
     }
 

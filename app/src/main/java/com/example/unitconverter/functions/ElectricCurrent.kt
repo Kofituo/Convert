@@ -5,7 +5,10 @@ import com.example.unitconverter.subclasses.Positions
 
 class ElectricCurrent(override val positions: Positions) : ConstantsAbstractClass() {
 
-    override fun getText(): String = amongAmp() ?: ampConversion() ?: TODO()
+    override fun getText(): String =
+        amongPrefixes(0..5, ElectricCurrent.amongAmp()) ?: ampConversion() ?: TODO()
+
+/*
 
     private fun amongAmp(): String? {
         if (rangeAssertAnd(0..5))
@@ -15,6 +18,7 @@ class ElectricCurrent(override val positions: Positions) : ConstantsAbstractClas
         return null
     }
 
+*/
 
     private fun ampPrefix(): Int {
         current {

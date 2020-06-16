@@ -61,8 +61,8 @@ class InitializeFunction(private val viewId: Int) {
 
             R.id.radioactivity -> radioactivityConversions()
 
-            R.id.force -> {
-            }
+            R.id.force -> forceConversions()
+
             R.id.power -> {
             }
             R.id.density -> {
@@ -243,6 +243,12 @@ class InitializeFunction(private val viewId: Int) {
     private fun radioactivityConversions() {
         function = {
             Radioactivity(it).getText()
+        }
+    }
+
+    private fun forceConversions() {
+        function = {
+            Force(it).getText()
         }
     }
 }

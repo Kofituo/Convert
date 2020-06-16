@@ -10,9 +10,11 @@ import com.example.unitconverter.subclasses.Positions
 class HeatCapacity(override val positions: Positions) : ConstantsAbstractClass() {
 
     override fun getText(): String =
-        amongJoule() ?: jouleConversions() ?: calorieConversions() ?: btuConversion()
+        amongPrefixes(0..3, HeatCapacity.amongJoule) ?: jouleConversions() ?: calorieConversions()
+        ?: btuConversion()
         ?: TODO()
 
+/*
     private fun amongJoule(): String? {
         rangeAssertAnd(0..3) {
             HeatCapacity.amongJoule {
@@ -21,11 +23,12 @@ class HeatCapacity(override val positions: Positions) : ConstantsAbstractClass()
         }
         return null
     }
+*/
 
     private fun joulePrefixes(): Int {
-        HeatCapacity.amongJoule {
-            innerMultiplePrefix(it)
-        }
+        //HeatCapacity.amongJoule {
+        innerMultiplePrefix(HeatCapacity.amongJoule)
+        //}
         return swapConversions()
     }
 

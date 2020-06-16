@@ -9,11 +9,13 @@ import com.example.unitconverter.subclasses.Positions
 class Energy(override val positions: Positions) : ConstantsAbstractClass() {
 
     override fun getText(): String =
-        amongJoule() ?: jouleConversions() ?: amongTNT() ?: tntConversions()
-        ?: footPoundConversions() ?: electronVoltConversion() ?: amongWatt()
+        amongPrefixes(0..17, amongJoule) ?: jouleConversions() ?: amongPrefixes(18..26, amongTNT)
+        ?: tntConversions()
+        ?: footPoundConversions() ?: electronVoltConversion() ?: amongPrefixes(30..33, amongWatt)
         ?: thermalUnitConversion()
         ?: TODO()
 
+/*
     private fun amongJoule(): String? {
         rangeAssertAnd(0..17) {
             amongJoule {
@@ -21,8 +23,8 @@ class Energy(override val positions: Positions) : ConstantsAbstractClass() {
             }
         }
         return null
-    }
-
+    }*/
+/*
     private fun amongTNT(): String? {
         rangeAssertAnd(18..26) {
             amongTNT {
@@ -30,8 +32,8 @@ class Energy(override val positions: Positions) : ConstantsAbstractClass() {
             }
         }
         return null
-    }
-
+    }*/
+/*
     private fun amongWatt(): String? {
         rangeAssertAnd(30..33) {
             amongWatt {
@@ -39,26 +41,26 @@ class Energy(override val positions: Positions) : ConstantsAbstractClass() {
             }
         }
         return null
-    }
+        }*/
 
     private val joulePrefixes = {
-        amongJoule {
-            innerMultiplePrefix(it)
-        }
+        //amongJoule {
+        innerMultiplePrefix(amongJoule)
+        //}
         swapConversions()
     }
 
     private val tntPrefixes = {
-        amongTNT {
-            innerMultiplePrefix(it)
-        }
+        //amongTNT {
+        innerMultiplePrefix(amongTNT)
+        //}
         swapConversions()
     }
 
     private val wattPrefixes = {
-        amongWatt {
-            innerMultiplePrefix(it)
-        }
+        //amongWatt {
+        innerMultiplePrefix(amongWatt)
+        //}
         swapConversions()
     }
 

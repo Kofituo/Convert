@@ -1,6 +1,5 @@
 package com.example.unitconverter.constants
 
-import android.util.SparseIntArray
 import com.example.unitconverter.builders.buildSparseIntArray
 import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
 import com.example.unitconverter.constants.Length.footToMetre
@@ -12,18 +11,19 @@ object Illuminance {
 
     inline fun illuminance(block: Illuminance.() -> Unit) = apply(block)
 
-    inline fun amongLux(block: (SparseIntArray) -> Unit) =
-        buildSparseIntArray(9) {
-            append(0, 0)
-            append(1, 3)
-            append(2, -6)
-            append(3, 4)
-            append(4, -3)//milli //nox
-            append(5, -2) //correct
-            append(6, 2) //correct
-            append(7, 4)
-            append(8, 6)
-        }.also(block)
+    val amongLux
+        get() =
+            buildSparseIntArray(9) {
+                append(0, 0)
+                append(1, 3)
+                append(2, -6)
+                append(3, 4)
+                append(4, -3)//milli //nox
+                append(5, -2) //correct
+                append(6, 2) //correct
+                append(7, 4)
+                append(8, 6)
+            }
 
     val luxToFootCandle: BigDecimal get() = footToMetre.pow(-2, mathContext)
 

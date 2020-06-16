@@ -1,6 +1,5 @@
 package com.example.unitconverter.constants
 
-import android.util.SparseIntArray
 import com.example.unitconverter.builders.buildSparseIntArray
 import com.example.unitconverter.constants.BigDecimalsAddOns.divide
 import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
@@ -11,29 +10,30 @@ object Energy {
 
     inline fun energy(block: Energy.() -> Unit) = apply(block)
 
-    inline fun amongJoule(block: (SparseIntArray) -> Unit) =
-        buildPrefixMass().apply { append(size(), -7) }.let(block)
+    val amongJoule
+        get() = buildPrefixMass().apply { append(size(), -7) }
 
-    inline fun amongTNT(block: (SparseIntArray) -> Unit) =
-        buildSparseIntArray(7) {
-            append(18, -3)
-            append(19, 0)
-            append(20, 0)
-            append(21, 3)//kilo
-            append(22, 6)//mega //ton
-            append(23, 9)//giga //kilo ton
-            append(24, 12)//tera //mega ton
-            append(25, 15) // giga ton
-            append(26, 18)//tera ton
-        }.also(block)
+    val amongTNT
+        get() =
+            buildSparseIntArray(7) {
+                append(18, -3)
+                append(19, 0)
+                append(20, 0)
+                append(21, 3)//kilo
+                append(22, 6)//mega //ton
+                append(23, 9)//giga //kilo ton
+                append(24, 12)//tera //mega ton
+                append(25, 15) // giga ton
+                append(26, 18)//tera ton
+            }
 
-    inline fun amongWatt(block: (SparseIntArray) -> Unit) =
-        buildSparseIntArray(4) {
+    val amongWatt
+        get() = buildSparseIntArray(4) {
             append(30, 0)
             append(31, -3)
             append(32, 3)
             append(33, 6)
-        }.also(block)
+        }
 
     val jouleToCalorie get() = BigDecimal(4184)
 
