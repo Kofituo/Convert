@@ -1,8 +1,11 @@
 package com.example.unitconverter.functions
 
+import android.util.Log
 import com.example.unitconverter.constants.BigDecimalsAddOns.inverseOf
 import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
 import com.example.unitconverter.constants.Power
+import com.example.unitconverter.miscellaneous.isNotNull
+import com.example.unitconverter.miscellaneous.isNull
 import com.example.unitconverter.subclasses.Positions
 import java.math.BigDecimal
 import kotlin.math.absoluteValue
@@ -27,6 +30,7 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
         )
     }
 
+    //cal min to joule hour
     private inline fun finalTime(bigDecimal: () -> BigDecimal) =
         bigDecimal().let {
             val topExponent = timeMap.getOrElse(topPosition) {
@@ -35,6 +39,7 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
             val bottomExponent = timeMap.getOrElse(bottomPosition) {
                 0
             }
+            Log.e("tf", "$topExponent  $bottomExponent  $it")
             it.divide(BigDecimal(60).pow((topExponent - bottomExponent).absoluteValue), mathContext)
         }
 
@@ -59,15 +64,41 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
                     //to horsepower
                     correctHp { Power.wattToMetricHorsePower }
                 }
-                rangeAssertOr(23..25) -> {
+                rangeAssertOr(23..28) -> {
                     ///to calorie
-                    TODO()
-                    //correctTime { Power.wattToCalorie }
+                    val f = finalTime { Power.wattToCalorie }
+                    val p = scaleByThousand { f }
+                    val wattRatio: BigDecimal?
+                    Log.e("fin", "$p $f  $topPosition  $bottomPosition")
+                    if (rangeAssertOr(18..19)) {
+                        //joule to minute and hours conversion
+                        wattRatio = if (intAssertOr(18)
+                            && (intAssertOr(23) || intAssertOr(26))
+                        ) {
+                            Log.e("34", "45")
+                            inverseOf(Power.wattToCalorie)
+                        } else if (intAssertOr(19)
+                            && (rangeAssertOr(26..27) || rangeAssertOr(23..24))
+                        ) {
+                            Log.e("90", "45")
+                            inverseOf(Power.wattToCalorie)
+                        } else null
+                        ratio = scaleByThousand(wattRatio.isNotNull()) {
+                            finalTime {
+                                wattRatio ?: Power.wattToCalorie
+                            }
+                        }
+                        Log.e("wa", "$wattRatio")
+                        return basicFunction(if (wattRatio.isNull()) swapConversions() else -swapConversions())
+                    }
+                    p
                 }
                 else -> TODO()
             }
+            //cal per second to joule per hour
             if (rangeAssertOr(18..19)) {
                 //to minutes and to hours
+                Log.e("int", "intr")
                 ratio = finalTime { inverseOf(ratio) }
                 return basicFunction(-swapConversions())
             }
@@ -77,6 +108,15 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
         }
         return null
     }
+
+    private fun scaleByThousand(inverse: Boolean = false, bigDecimal: () -> BigDecimal) =
+        bigDecimal().let {
+            Log.e("sc", "$it")
+            when {
+                rangeAssertOr(26..28) -> it.scaleByPowerOfTen(if (inverse) -3 else 3)
+                else -> it
+            }
+        }
 
     private fun correctKilCalVal(bigDecimal: () -> BigDecimal) =
         bigDecimal().let {
