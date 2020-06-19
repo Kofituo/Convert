@@ -1,6 +1,6 @@
 package com.example.unitconverter.functions
 
-import android.util.Log
+import com.example.unitconverter.constants.BigDecimalsAddOns.inverseOf
 import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
 import com.example.unitconverter.constants.Power
 import com.example.unitconverter.subclasses.Positions
@@ -12,12 +12,8 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
     override fun getText(): String =
         amongWatt() ?: wattConversions() ?: amongCal() ?: amongHorsepower() ?: ""
 
-    private val minutesIndexes by lazy(LazyThreadSafetyMode.NONE) { intArrayOf(18, 24, 27, 30, 33) }
-
-    private val hoursIndexes by lazy(LazyThreadSafetyMode.NONE) { intArrayOf(19, 25, 28, 31, 34) }
-
-    private val timeMap
-        get() = mapOf(
+    private val timeMap by lazy(LazyThreadSafetyMode.NONE) {
+        mapOf(
             18 to 1,
             19 to 2,
             24 to 1,
@@ -29,6 +25,7 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
             33 to 1,
             34 to 2
         )
+    }
 
     private inline fun finalTime(bigDecimal: () -> BigDecimal) =
         bigDecimal().let {
@@ -38,12 +35,6 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
             val bottomExponent = timeMap.getOrElse(bottomPosition) {
                 0
             }
-            Log.e(
-                "final",
-                "$it  ${BigDecimal(60).pow(
-                    (topExponent - bottomExponent).absoluteValue
-                )}  $topExponent  $bottomExponent  tp $topPosition   $bottomPosition"
-            )
             it.divide(BigDecimal(60).pow((topExponent - bottomExponent).absoluteValue), mathContext)
         }
 
@@ -54,10 +45,6 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
                 return amongPrefixes(0..17, Power.amongWatt)
             }
             ratio = finalTime { ratio }
-            Log.e(
-                "ratioooooooooooooooooooW",
-                "$ratio   sw  ${swapConversions()} top $topPosition  bot $bottomPosition"
-            )
             return forMultiplePrefixes(
                 swapConversions().also { innerMultiplePrefix(Power.amongWatt) }
             )
@@ -70,13 +57,19 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
             ratio = when {
                 rangeAssertOr(20..22) -> {
                     //to horsepower
-                    TODO()
+                    correctHp { Power.wattToMetricHorsePower }
                 }
                 rangeAssertOr(23..25) -> {
                     ///to calorie
-                    correctTime { Power.wattToCalorie }
+                    TODO()
+                    //correctTime { Power.wattToCalorie }
                 }
                 else -> TODO()
+            }
+            if (rangeAssertOr(18..19)) {
+                //to minutes and to hours
+                ratio = finalTime { inverseOf(ratio) }
+                return basicFunction(-swapConversions())
             }
             return forMultiplePrefixes(
                 swapConversions().also { innerMultiplePrefix(Power.amongWatt) }
@@ -87,12 +80,9 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
 
     private fun correctKilCalVal(bigDecimal: () -> BigDecimal) =
         bigDecimal().let {
-            Log.e("it is ", "$it")
             when {
-                (topPosition - bottomPosition).absoluteValue <= 2 -> BigDecimal(1000).divide(
-                    it,
-                    mathContext
-                )
+                (topPosition - bottomPosition).absoluteValue <= 2 ->
+                    BigDecimal(1000).divide(it, mathContext)
                 else -> it.scaleByPowerOfTen(3)
             }
         }
