@@ -149,7 +149,7 @@ class Energy(override val context: Context) : RecyclerDataAbstractClass() {
                 }
             }
             putEntry {
-                this quantity getString(R.string.foot_pound)
+                this quantity getString(R.string.foot_pound_force)
                 this unit getString(R.string.foot_pound_unit)
             }
             putEntry {

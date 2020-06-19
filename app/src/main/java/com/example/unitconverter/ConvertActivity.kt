@@ -66,6 +66,14 @@ import kotlin.collections.LinkedHashMap
 class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface,
     DownloadCallback<String>, CoroutineScope by MainScope(), PreferenceFragment.PreferenceFragment {
 
+    override fun onResume() {
+        super.onResume()
+        showToast {
+            text = "ET 1 '${firstEditText.text}'  ET 2 '${secondEditText.text}'"
+            duration = Toast.LENGTH_SHORT
+        }
+    }
+
     private var swap = false
     private var randomColor = -1
     private var viewId = -1
@@ -166,10 +174,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     arguments = bundle
                     show(supportFragmentManager, "dialog")
                 }
-        }
-        showToast {
-            text = "On Create Called"
-            duration = Toast.LENGTH_SHORT
         }
     }
 

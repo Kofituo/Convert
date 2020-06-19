@@ -21,9 +21,6 @@ abstract class ConstantsAbstractClass {
         }
 
     protected var ratio: BigDecimal = BigDecimal.ONE
-        set(value) {
-            if (field != value) field = value
-        }
 
     protected var fixedValue: BigDecimal = BigDecimal.ZERO
         set(value) {

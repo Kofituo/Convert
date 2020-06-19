@@ -16,18 +16,18 @@ class DecimalPlaceHolder(view: View, int: Int) : RecyclerView.ViewHolder(view) {
     init {
         slider = view.findViewById<Slider>(R.id.slider)
             .apply {
-                addOnChangeListener { slider: Slider, value: Float, fromUser: Boolean ->
+                addOnChangeListener { _: Slider, value: Float, _: Boolean ->
                     sliderListener?.onTrackChanged(value)
                 }
                 val originalColor = ColorStateList.valueOf(int)
                 val lighterColor = ColorUtils.blendARGB(int, Color.WHITE, 0.55f)
-                trackColorActive = originalColor
-                trackColorInactive =
+                trackActiveTintList = originalColor
+                trackInactiveTintList =
                     ColorStateList.valueOf(ColorUtils.setAlphaComponent(lighterColor, 122))
-                thumbColor = originalColor
-                tickColorInactive = originalColor
-                haloColor = ColorStateList.valueOf(lighterColor)
-                tickColorActive = ColorStateList.valueOf(Color.WHITE)
+                thumbTintList = originalColor
+                tickInactiveTintList = originalColor
+                haloTintList = ColorStateList.valueOf(lighterColor)
+                tickActiveTintList = ColorStateList.valueOf(Color.WHITE)
             }
     }
 

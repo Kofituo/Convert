@@ -421,7 +421,7 @@
     <string name="joule">Joule</string>
     <string name="joule_unit">J</string>
     <string name="tnt">TNT</string>
-    <string name="foot_pound">Foot Pound-Force</string>
+    <string name="foot_pound_force">Foot-Pound Force</string>
     <string name="erg">Erg [CGS Unit]</string>
     <string name="erg_unit">erg</string>
     <string name="foot_pound_unit">ft-lbf</string>
@@ -431,7 +431,7 @@
     <string name="small_calorie">Small Calorie</string>
     <string name="large_calorie">Calorie</string>
     <string name="calorie_unit">cal</string>
-    <string name="british_thermal_unit">British Thermal Unit</string>
+    <string name="british_thermal_unit">British thermal unit</string>
     <string name="british_thermal_unit_unt">BTU (ISO)</string>
     <string name="watt_hour">Watt-hour</string>
     <string name="watt_hour_unit">W⋅h</string>
@@ -475,4 +475,14 @@
     <string name="dyne">Dyne</string>
     <string name="dyne_unit">dyn</string>
     <string name="kip">Kip</string>
+
+    <!--watt-->
+    <string name="watt">Watt</string>
+    <string name="watt_unit">W</string>
+    <string name="metric_horsepower">Metric Horsepower</string>
+    <string name="horsepower_unit">hp</string>
+    <string name="foot_pound">Foot-pounds</string>
+    <string name="btu">BTU</string>
+    <string name="imp_horsepower">Imperial Horsepower</string>
+    <string name="electric_horsepower">Electric Horsepower</string>
 </resources>

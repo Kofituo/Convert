@@ -63,8 +63,8 @@ class InitializeFunction(private val viewId: Int) {
 
             R.id.force -> forceConversions()
 
-            R.id.power -> {
-            }
+            R.id.power -> powerConversions()
+
             R.id.density -> {
             }
             R.id.flow -> {
@@ -249,6 +249,12 @@ class InitializeFunction(private val viewId: Int) {
     private fun forceConversions() {
         function = {
             Force(it).getText()
+        }
+    }
+
+    private fun powerConversions() {
+        function = {
+            Power(it).getText()
         }
     }
 }
