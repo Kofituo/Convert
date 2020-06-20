@@ -10,7 +10,8 @@ import java.math.BigDecimal
 
 class Power(override val positions: Positions) : ConstantsAbstractClass() {
 
-    override fun getText(): String = amongWatt() ?: wattConversions() ?: amongHorsepower() ?: ""
+    override fun getText(): String =
+        amongWatt() ?: wattConversions() ?: amongHorsepower() ?: amongCalories() ?: ""
 
     private val minutesIndexes by lazy(LazyThreadSafetyMode.NONE) {
         intArrayOf(18, 24, 27, 30, 33)
@@ -45,15 +46,17 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
     private fun amongCalories(): String? {
         rangeAssertAnd(23..28) {
             ratio = scaleByThousand { correctTime(ratio) }
+            Log.e("among", "$ratio  ${swapConversions()}")
             return result
         }
         return null
     }
 
-    private fun scaleByThousand(bigDecimal: () -> BigDecimal) =
+    private inline fun scaleByThousand(inverse: Boolean = false, bigDecimal: () -> BigDecimal) =
         bigDecimal().let {
+            Log.e("scale", "$it")
             when {
-                rangeAssertOr(26..28) -> it.scaleByPowerOfTen(3)
+                rangeAssertOr(26..28) -> it.scaleByPowerOfTen(if (inverse) -3 else 3)
                 else -> it
             }
         }
@@ -81,6 +84,7 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
         return null
     }
 
+
     private fun correctTime(bigDecimal: BigDecimal): BigDecimal {
         Log.e("start", "$bigDecimal")
         val topIsMinute = topPosition in minutesIndexes
@@ -91,29 +95,68 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
         val topIsHour = topPosition in hourIndexes
         Log.e("2", "2")
         if (bottomIsHour && topIsHour) return bigDecimal
-        when {
+
+        return when {
             !topIsMinute && !bottomIsMinute && !topIsHour && !bottomIsHour -> {
                 //it's none of them
                 Log.e("3", "3")
-                return bigDecimal
+                bigDecimal
             }
+            /**
+             * differentiate
+             * calorie per minute to joule per second from
+             * joule per minute to calorie per second
+             * */
             !topIsHour && !bottomIsHour -> {
                 //the unit to minutes
                 Log.e("4", "4")
-                return bigDecimal.divide(60, mathContext)
+                when {
+                    whichIsWhich(topIsMinute) -> {
+                        Log.e("4", "4.1")
+                        bigDecimal.multiply(60)
+                    }
+                    else -> {
+                        Log.e("4", "4.2")
+                        bigDecimal.divide(60, mathContext)
+                    }
+                }
             }
             !topIsMinute && !bottomIsMinute -> {
                 //the unit to hours
                 Log.e("5", "5")
-                return bigDecimal.divide(3600, mathContext)
+                when {
+                    whichIsWhich(topIsHour) -> {
+                        Log.e("5", "5.1")
+                        bigDecimal.multiply(3600)
+                    }
+                    else -> {
+                        Log.e("5", "5.2")
+                        bigDecimal.divide(3600, mathContext)
+                    }
+                }
+            }
+            else -> {
+                /**
+                 * differentiate say cal per minute to joule per hour from
+                 * joule per minute to cal per hour
+                 * */
+                //at this point its from min to hours
+                when {
+                    whichIsWhich(topIsMinute) -> {
+                        // minute to hour
+                        Log.e("6", "6  $ratio")
+                        bigDecimal.divide(60, mathContext)
+                    }
+                    else -> {
+                        //hour to minute
+                        Log.e("7", "7 $ratio")
+                        bigDecimal.multiply(60)
+                    }
+                }
             }
         }
-        /**
-         * differentiate say cal per minute to joule per hour from
-         * joule per minute to cal per hour
-         * */
-        //at this point its from min to hours
-        val whichIsHour: Int
+
+        /*val whichIsHour: Int
         val whichIsMinute =
             when {
                 topIsMinute -> {
@@ -124,7 +167,7 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
                     whichIsHour = topPosition
                     bottomPosition
                 }
-                else -> TODO()
+                else -> TODO() //redundant todo
             }
         //hour to min  19  24
         //min to hour 18   25
@@ -140,7 +183,23 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
                 Log.e("7", "7 $ratio")
                 bigDecimal.multiply(60)
             }
-        }
+        }*/
+    }
+
+    private fun whichIsWhich(topIs: Boolean): Boolean {
+        val whichIsOther: Int
+        val whichIsThis =
+            when {
+                topIs -> {
+                    whichIsOther = bottomPosition
+                    topPosition
+                }
+                else -> {
+                    whichIsOther = topPosition
+                    bottomPosition
+                }
+            }
+        return whichIsOther > whichIsThis
     }
 
     private inline fun correctHp(bigDecimal: () -> BigDecimal) =
