@@ -11,7 +11,8 @@ import java.math.BigDecimal
 class Power(override val positions: Positions) : ConstantsAbstractClass() {
 
     override fun getText(): String =
-        amongWatt() ?: wattConversions() ?: amongHorsepower() ?: amongCalories() ?: ""
+        amongWatt() ?: wattConversions() ?: amongHorsepower() ?: horsepowerConversions()
+        ?: amongCalories() ?: ""
 
     private val minutesIndexes by lazy(LazyThreadSafetyMode.NONE) {
         intArrayOf(18, 24, 27, 30, 33)
@@ -52,11 +53,11 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
         return null
     }
 
-    private inline fun scaleByThousand(inverse: Boolean = false, bigDecimal: () -> BigDecimal) =
+    private inline fun scaleByThousand(bigDecimal: () -> BigDecimal) =
         bigDecimal().let {
             Log.e("scale", "$it")
             when {
-                rangeAssertOr(26..28) -> it.scaleByPowerOfTen(if (inverse) -3 else 3)
+                rangeAssertOr(26..28) -> it.scaleByPowerOfTen(3)
                 else -> it
             }
         }
@@ -80,6 +81,20 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
             return forMultiplePrefixes(
                 swapConversions().also { innerMultiplePrefix(Power.amongWatt) }
             )
+        }
+        return null
+    }
+
+    private fun horsepowerConversions(): String? {
+        rangeAssertOr(20..22) {
+            when {
+                rangeAssertOr(23..28) -> {
+                    //to calorie per time
+                    ratio = scaleByThousand { Power.horsepowerToCalorie }
+                }
+            }
+            ratio = correctTime(correctHpInverse { ratio })
+            return result
         }
         return null
     }
@@ -208,6 +223,16 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
             when {
                 intAssertOr(21) -> it.multiply(Power.metricToImpHp)
                 intAssertOr(22) -> it.multiply(Power.metricToElectricHp)
+                else -> it
+            }
+        }
+
+    private inline fun correctHpInverse(bigDecimal: () -> BigDecimal) =
+        bigDecimal().let {
+            //from metric horsepower perspective
+            when {
+                intAssertOr(21) -> it.multiply(Power.metricToImpHpInv)
+                intAssertOr(22) -> it.multiply(Power.metricToElectricHpInv)
                 else -> it
             }
         }

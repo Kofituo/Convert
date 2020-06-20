@@ -17,8 +17,14 @@ object Power {
     val metricToImpHp: BigDecimal
         get() = wattToImpHorsePower.divide(wattToMetricHorsePower, mathContext)
 
+    val metricToImpHpInv: BigDecimal
+        get() = wattToMetricHorsePower.divide(wattToImpHorsePower, mathContext)
+
     val metricToElectricHp: BigDecimal
         get() = wattToElectricHorsePower.divide(wattToMetricHorsePower, mathContext)
+
+    val metricToElectricHpInv: BigDecimal
+        get() = wattToMetricHorsePower.divide(wattToElectricHorsePower, mathContext)
 
     val impToElectricHp: BigDecimal
         get() = wattToElectricHorsePower.divide(wattToImpHorsePower, mathContext)
