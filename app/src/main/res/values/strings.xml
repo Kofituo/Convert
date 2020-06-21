@@ -431,7 +431,7 @@
     <string name="small_calorie">Small Calorie</string>
     <string name="large_calorie">Calorie</string>
     <string name="calorie_unit">cal</string>
-    <string name="british_thermal_unit">British thermal unit</string>
+    <string name="british_thermal_unit">British thermal unit ᵢₛₒ</string>
     <string name="british_thermal_unit_unt">BTU (ISO)</string>
     <string name="watt_hour">Watt-hour</string>
     <string name="watt_hour_unit">W⋅h</string>

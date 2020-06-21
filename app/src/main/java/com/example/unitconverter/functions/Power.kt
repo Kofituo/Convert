@@ -1,6 +1,6 @@
 package com.example.unitconverter.functions
 
-import android.util.Log
+
 import com.example.unitconverter.constants.BigDecimalsAddOns.divide
 import com.example.unitconverter.constants.BigDecimalsAddOns.mathContext
 import com.example.unitconverter.constants.BigDecimalsAddOns.multiply
@@ -12,7 +12,8 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
 
     override fun getText(): String =
         amongWatt() ?: wattConversions() ?: amongHorsepower() ?: horsepowerConversions()
-        ?: amongCalories() ?: ""
+        ?: amongCalories() ?: calorieConversions() ?: amongTime(29..31) // foot pound
+        ?: footPoundConversion() ?: amongTime(32..34) ?: TODO()
 
     private val minutesIndexes by lazy(LazyThreadSafetyMode.NONE) {
         intArrayOf(18, 24, 27, 30, 33)
@@ -28,7 +29,7 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
                 return amongPrefixes(0..17, Power.amongWatt)
             }
             ratio = correctTime(ratio)
-            Log.e("ratio", "$ratio")
+            //Log.e("ratio", "$ratio")
             return forMultiplePrefixes(
                 swapConversions().also { innerMultiplePrefix(Power.amongWatt) }
             )
@@ -47,37 +48,52 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
     private fun amongCalories(): String? {
         rangeAssertAnd(23..28) {
             ratio = scaleByThousand { correctTime(ratio) }
-            Log.e("among", "$ratio  ${swapConversions()}")
+            //Log.e("among", "$ratio  ${swapConversions()}")
             return result
         }
         return null
     }
 
-    private inline fun scaleByThousand(bigDecimal: () -> BigDecimal) =
+    private fun amongTime(intRange: IntRange): String? {
+        rangeAssertAnd(intRange) {
+            ratio = correctTime(ratio)
+            return result
+        }
+        return null
+    }
+
+    private inline fun scaleByThousand(inverse: Boolean = false, bigDecimal: () -> BigDecimal) =
         bigDecimal().let {
-            Log.e("scale", "$it")
+            ///Log.e("scale", "$it")
             when {
-                rangeAssertOr(26..28) -> it.scaleByPowerOfTen(3)
+                rangeAssertOr(26..28) -> it.scaleByPowerOfTen(if (inverse) -3 else 3)
                 else -> it
             }
         }
 
     private fun wattConversions(): String? {
         rangeAssertOr(0..19) {
-            when {
+            ratio = when {
                 rangeAssertOr(20..22) -> {
                     //to horsepower
-                    ratio = correctHp { Power.wattToMetricHorsePower }
-                    Log.e("hp", "$ratio")
+                    correctHp { Power.wattToMetricHorsePower }
                 }
                 rangeAssertOr(23..28) -> {
                     //to calorie per time
-                    ratio = scaleByThousand { Power.wattToCalorie }
-                    Log.e("cal", "$ratio")
+                    scaleByThousand { Power.wattToCalorie }
                 }
+                rangeAssertOr(29..31) -> {
+                    //to foot pound
+                    Power.footPoundToWatt
+                }
+                rangeAssertOr(32..34) -> {
+                    //to btu
+                    Power.wattToBTU
+                }
+                else -> TODO()
             }
             ratio = correctTime(ratio)
-            Log.e("final", "$ratio")
+            //Log.e("final", "$ratio")
             return forMultiplePrefixes(
                 swapConversions().also { innerMultiplePrefix(Power.amongWatt) }
             )
@@ -87,34 +103,72 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
 
     private fun horsepowerConversions(): String? {
         rangeAssertOr(20..22) {
-            when {
+            ratio = when {
                 rangeAssertOr(23..28) -> {
                     //to calorie per time
-                    ratio = scaleByThousand { Power.horsepowerToCalorie }
+                    scaleByThousand { Power.horsepowerToCalorie }
                 }
+                rangeAssertOr(29..31) -> {
+                    //to foot-pound
+                    Power.footPoundToHorsepower
+                }
+                rangeAssertOr(32..34) -> {
+                    //to btu
+                    Power.horsepowerToBTU
+                }
+                else -> TODO()
             }
+            //Log.e("hp", "$ratio")
             ratio = correctTime(correctHpInverse { ratio })
             return result
         }
         return null
     }
 
+    private fun calorieConversions(): String? {
+        rangeAssertOr(23..28) {
+            ratio = when {
+                rangeAssertOr(29..31) -> {
+                    //to foot pound
+                    Power.footPoundToCalorie
+                }
+                rangeAssertOr(32..34) -> {
+                    //to btu
+                    Power.calorieToBTU
+                }
+                else -> TODO()
+            }
+            ratio = scaleByThousand(true) { correctTime(ratio) }
+            return result
+        }
+        return null
+    }
+
+    private fun footPoundConversion(): String? {
+        rangeAssertOr(29..31) {
+            rangeAssertOr(32..34) {
+                ratio = correctTime(Power.footPoundToBTU)
+                return result
+            }
+        }
+        return null
+    }
 
     private fun correctTime(bigDecimal: BigDecimal): BigDecimal {
-        Log.e("start", "$bigDecimal")
+        //Log.e("start", "$bigDecimal")
         val topIsMinute = topPosition in minutesIndexes
         val bottomIsMinute = bottomPosition in minutesIndexes
-        Log.e("1", "1")
+        //Log.e("1", "1")
         if (topIsMinute && bottomIsMinute) return bigDecimal
         val bottomIsHour = bottomPosition in hourIndexes
         val topIsHour = topPosition in hourIndexes
-        Log.e("2", "2")
+        //Log.e("2", "2")
         if (bottomIsHour && topIsHour) return bigDecimal
 
         return when {
             !topIsMinute && !bottomIsMinute && !topIsHour && !bottomIsHour -> {
                 //it's none of them
-                Log.e("3", "3")
+                //Log.e("3", "3")
                 bigDecimal
             }
             /**
@@ -124,28 +178,28 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
              * */
             !topIsHour && !bottomIsHour -> {
                 //the unit to minutes
-                Log.e("4", "4")
+                //Log.e("4", "4")
                 when {
                     whichIsWhich(topIsMinute) -> {
-                        Log.e("4", "4.1")
+                        //Log.e("4", "4.1")
                         bigDecimal.multiply(60)
                     }
                     else -> {
-                        Log.e("4", "4.2")
+                        //Log.e("4", "4.2")
                         bigDecimal.divide(60, mathContext)
                     }
                 }
             }
             !topIsMinute && !bottomIsMinute -> {
                 //the unit to hours
-                Log.e("5", "5")
+                //Log.e("5", "5")
                 when {
                     whichIsWhich(topIsHour) -> {
-                        Log.e("5", "5.1")
+                        //Log.e("5", "5.1")
                         bigDecimal.multiply(3600)
                     }
                     else -> {
-                        Log.e("5", "5.2")
+                        //Log.e("5", "5.2")
                         bigDecimal.divide(3600, mathContext)
                     }
                 }
@@ -159,12 +213,12 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
                 when {
                     whichIsWhich(topIsMinute) -> {
                         // minute to hour
-                        Log.e("6", "6  $ratio")
+                        //Log.e("6", "6  $ratio")
                         bigDecimal.divide(60, mathContext)
                     }
                     else -> {
                         //hour to minute
-                        Log.e("7", "7 $ratio")
+                        //Log.e("7", "7 $ratio")
                         bigDecimal.multiply(60)
                     }
                 }

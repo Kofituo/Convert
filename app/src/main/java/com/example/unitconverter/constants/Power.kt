@@ -35,4 +35,21 @@ object Power {
         get() = wattToCalorie.divide(wattToMetricHorsePower, mathContext)
 
     val footPoundToWatt get() = BigDecimal("1.35581794833140040")
+
+    val footPoundToHorsepower: BigDecimal
+        get() = footPoundToWatt.divide(wattToMetricHorsePower, mathContext)
+
+    val footPoundToCalorie: BigDecimal
+        get() = footPoundToWatt.divide(wattToCalorie, mathContext)
+
+    val wattToBTU get() = Energy.jouleToThermalUnit
+
+    val horsepowerToBTU: BigDecimal
+        get() = wattToBTU.divide(wattToMetricHorsePower, mathContext)
+
+    val calorieToBTU: BigDecimal
+        get() = wattToBTU.divide(wattToCalorie, mathContext)
+
+    val footPoundToBTU: BigDecimal
+        get() = wattToBTU.divide(footPoundToWatt, mathContext)
 }
