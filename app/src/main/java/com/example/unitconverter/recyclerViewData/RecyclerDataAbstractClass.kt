@@ -58,10 +58,11 @@ abstract class RecyclerDataAbstractClass {
 
     abstract fun getList(): MutableList<RecyclerDataClass>
 
-    protected fun getString(stringId: Int) = context.resources.getString(stringId)
+    protected inline fun getString(stringId: Int, block: String.() -> Unit = {}) =
+        context.resources.getString(stringId).apply(block)
 
-    protected inline fun getString(stringId: Int, block: String.() -> Unit) =
-        getString(stringId).apply(block)
+    /*protected inline fun getString(stringId: Int, block: String.() -> Unit) =
+        getString(stringId).apply(block)*/
 
     protected var start: Int = 0
 

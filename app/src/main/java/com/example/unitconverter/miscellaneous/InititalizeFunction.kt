@@ -65,8 +65,8 @@ class InitializeFunction(private val viewId: Int) {
 
             R.id.power -> powerConversions()
 
-            R.id.density -> {
-            }
+            R.id.density -> densityConversions()
+
             R.id.flow -> {
             }
             R.id.inductance -> {
@@ -255,6 +255,12 @@ class InitializeFunction(private val viewId: Int) {
     private fun powerConversions() {
         function = {
             Power(it).getText()
+        }
+    }
+
+    private fun densityConversions() {
+        function = {
+            Density(it).getText()
         }
     }
 }
