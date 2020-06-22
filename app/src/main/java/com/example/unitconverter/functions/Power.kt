@@ -26,7 +26,7 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
     private fun amongWatt(): String? {
         rangeAssertAnd(0..19) {
             rangeAssertAnd(0..17) {
-                return amongPrefixes(0..17, Power.amongWatt)
+                return amongPrefixes(0..17) { Power.amongWatt }
             }
             ratio = correctTime(ratio)
             //Log.e("ratio", "$ratio")

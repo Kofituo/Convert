@@ -9,11 +9,10 @@ import com.example.unitconverter.subclasses.Positions
 class Energy(override val positions: Positions) : ConstantsAbstractClass() {
 
     override fun getText(): String =
-        amongPrefixes(0..17, amongJoule) ?: jouleConversions() ?: amongPrefixes(18..26, amongTNT)
-        ?: tntConversions()
-        ?: footPoundConversions() ?: electronVoltConversion() ?: amongPrefixes(30..33, amongWatt)
-        ?: thermalUnitConversion()
-        ?: TODO()
+        amongPrefixes(0..17) { amongJoule } ?: jouleConversions()
+        ?: amongPrefixes(18..26) { amongTNT } ?: tntConversions() ?: footPoundConversions()
+        ?: electronVoltConversion() ?: amongPrefixes(30..33) { amongWatt }
+        ?: thermalUnitConversion() ?: TODO()
 
 /*
     private fun amongJoule(): String? {

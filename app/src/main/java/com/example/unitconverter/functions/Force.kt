@@ -8,8 +8,8 @@ import java.math.BigDecimal
 class Force(override val positions: Positions) : ConstantsAbstractClass() {
 
     override fun getText(): String =
-        amongPrefixes(0..17, Force.amongNewton) ?: newtonConversions()
-        ?: amongPrefixes(18..19, Force.gramToKg) ?: gramForceConversion() ?: amongPound()
+        amongPrefixes(0..17) { Force.amongNewton } ?: newtonConversions()
+        ?: amongPrefixes(18..19) { Force.gramToKg } ?: gramForceConversion() ?: amongPound()
         ?: poundalConversion() ?: TODO()
 
     private fun newtonConversions(): String? {

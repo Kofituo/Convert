@@ -91,9 +91,12 @@ abstract class ConstantsAbstractClass {
         }
     }
 
-    protected fun amongPrefixes(range: IntRange, sparseIntArray: SparseIntArray): String? {
+    protected inline fun amongPrefixes(
+        range: IntRange,
+        sparseIntArray: () -> SparseIntArray
+    ): String? {
         rangeAssertAnd(range) {
-            return innerAmongPrefix(sparseIntArray)
+            return innerAmongPrefix(sparseIntArray())
         }
         return null
     }

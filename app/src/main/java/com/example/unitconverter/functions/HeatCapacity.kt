@@ -10,7 +10,8 @@ import com.example.unitconverter.subclasses.Positions
 class HeatCapacity(override val positions: Positions) : ConstantsAbstractClass() {
 
     override fun getText(): String =
-        amongPrefixes(0..3, HeatCapacity.amongJoule) ?: jouleConversions() ?: calorieConversions()
+        amongPrefixes(0..3) { HeatCapacity.amongJoule } ?: jouleConversions()
+        ?: calorieConversions()
         ?: btuConversion()
         ?: TODO()
 
