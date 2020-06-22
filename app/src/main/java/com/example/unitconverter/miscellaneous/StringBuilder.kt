@@ -19,8 +19,7 @@ inline infix fun Value.value(string: CharSequence) {
 }
 
 inline infix fun Value.valueWithSpace(string: String) {
-    stringBuilder.append(string)
-    stringBuilder.append(" ")
+    stringBuilder.append(string).append(" ")
 }
 
 inline fun appendString(action: Value.() -> Unit) =
@@ -28,3 +27,9 @@ inline fun appendString(action: Value.() -> Unit) =
 
 inline fun appendString(capacity: Int, action: Value.() -> Unit) =
     Value(StringBuilder(capacity)).apply(action).stringBuilder.toString()
+
+inline fun Value.add(string: () -> String) =
+    stringBuilder.append(string())
+
+inline fun Value.addWithSpace(string: () -> String) =
+    stringBuilder.append(string()).append(" ")

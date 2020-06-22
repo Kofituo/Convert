@@ -485,4 +485,12 @@
     <string name="btu">BTU</string>
     <string name="imp_horsepower">Imperial Horsepower</string>
     <string name="electric_horsepower">Electric Horsepower</string>
+
+    <!--density-->
+    <string name="fluid_ounce">fl oz</string>
+    <string name="fluid_ounce_us">fluid ounce (US)</string>
+    <string name="fluid_ounce_uk">fluid ounce (UK)</string>
+    <string name="imp_gal">gallon (UK)</string>
+    <string name="gal_us">gallon (US)</string>
+    <string name="gall_unit">gal</string>
 </resources>

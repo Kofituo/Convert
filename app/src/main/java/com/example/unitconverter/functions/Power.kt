@@ -16,11 +16,11 @@ class Power(override val positions: Positions) : ConstantsAbstractClass() {
         ?: footPoundConversion() ?: amongTime(32..34) ?: TODO()
 
     private val minutesIndexes by lazy(LazyThreadSafetyMode.NONE) {
-        intArrayOf(18, 24, 27, 30, 33)
+        listOf(18, 24, 27, 30, 33)
     }
 
     private val hourIndexes by lazy(LazyThreadSafetyMode.NONE) {
-        intArrayOf(19, 25, 28, 31, 34)
+        listOf(19, 25, 28, 31, 34)
     }
 
     private fun amongWatt(): String? {
