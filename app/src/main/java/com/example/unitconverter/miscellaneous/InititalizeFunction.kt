@@ -16,134 +16,118 @@ class InitializeFunction(private val viewId: Int) {
     }
 
     private fun whichView() {
-        when (viewId) {
-            R.id.prefixes -> prefixConversions()
+        function = when (viewId) {
+            R.id.prefixes -> {
+                { Prefixes(it).getText() }
+            }
 
-            R.id.Temperature -> temperatureConversions()
+            R.id.Temperature -> {
+                { Temperature(it).getText() }
+            }
 
-            R.id.Area -> areaConversions()
+            R.id.Area -> {
+                { Area(it).getText() }
+            }
 
-            R.id.Mass -> massConversions()
+            R.id.Mass -> {
+                { Mass(it).getText() }
+            }
 
-            R.id.Volume -> volumeConversions()
+            R.id.Volume -> {
+                { Volume(it).getText() }
+            }
 
-            R.id.Length -> lengthConversions()
+            R.id.Length -> {
+                { Length(it).getText() }
+            }
 
-            R.id.Angle -> angleConversions()
+            R.id.Angle -> {
+                { Angle(it).getText() }
+            }
 
-            R.id.Pressure -> pressureConversions()
+            R.id.Pressure -> {
+                { Pressure(it).getText() }
+            }
 
-            R.id.Speed -> speedConversions()
+            R.id.Speed -> {
+                { Speed(it).getText() }
+            }
 
-            R.id.time -> timeConversions()
+            R.id.time -> {
+                { Time(it).getText() }
+            }
 
-            R.id.fuelEconomy -> fuelEconomyConversions()
+            R.id.fuelEconomy -> {
+                { FuelEconomy(it).getText() }
+            }
 
-            R.id.dataStorage -> dataStorageConversion()
+            R.id.dataStorage -> {
+                { DataStorage(it).apply { lazyMap = dataStorageMap }.getText() }
+            }
 
-            R.id.electric_current -> currentConversions()
+            R.id.electric_current -> {
+                { ElectricCurrent(it).getText() }
+            }
 
-            R.id.luminance -> luminanceConversions()
+            R.id.luminance -> {
+                { Luminance(it).apply { lazyMap = luminanceMap }.getText() }
+            }
 
-            R.id.Illuminance -> illuminance()
+            R.id.Illuminance -> {
+                {
+                    Illuminance(it).getText()
+                }
+            }
 
-            R.id.energy -> energyConversion()
+            R.id.energy -> {
+                { Energy(it).getText() }
+            }
 
-            R.id.heatCapacity -> heatCapacityConversions()
+            R.id.heatCapacity -> {
+                { HeatCapacity(it).getText() }
+            }
 
-            R.id.Angular_Velocity -> velocityConversions()
+            R.id.Angular_Velocity -> {
+                { Velocity(it).getText() }
+            }
 
-            R.id.angularAcceleration -> accelerationConversions()
+            R.id.angularAcceleration -> {
+                { Acceleration(it).getText() }
+            }
 
-            R.id.sound -> soundConversions()
+            R.id.sound -> {
+                { Sound(it).getText() }
+            }
 
-            R.id.resistance -> resistanceConversions()
+            R.id.resistance -> {
+                { Resistance(it).getText() }
+            }
 
-            R.id.radioactivity -> radioactivityConversions()
+            R.id.radioactivity -> {
+                { Radioactivity(it).getText() }
+            }
 
-            R.id.force -> forceConversions()
+            R.id.force -> {
+                { Force(it).getText() }
+            }
 
-            R.id.power -> powerConversions()
+            R.id.power -> {
+                { Power(it).getText() }
+            }
 
-            R.id.density -> densityConversions()
+            R.id.density -> {
+                { Density(it).getText() }
+            }
 
-            R.id.flow -> flowConversions()
+            R.id.flow -> {
+                { Flow(it).getText() }
+            }
 
             R.id.inductance -> {
+                { Inductance(it).getText() }
             }
-        }
-    }
 
-    private fun areaConversions() {
-        function = {
-            Area(it).getText()
-        }
-    }
-
-    private fun volumeConversions() {
-        function = {
-            Volume(it).getText()
-        }
-    }
-
-    private fun prefixConversions() {
-        function = {
-            Prefixes(it).getText()
-        }
-    }
-
-    private fun angleConversions() {
-        function = {
-            Angle(it).getText()
-        }
-    }
-
-    private fun fuelEconomyConversions() {
-        function = {
-            FuelEconomy(it).getText()
-        }
-    }
-
-    private fun lengthConversions() {
-        function = {
-            Length(it).getText()
-        }
-    }
-
-    private fun massConversions() {
-        function = {
-            Mass(it).getText()
-        }
-    }
-
-    private fun temperatureConversions() {
-        function = {
-            Temperature(it).getText()
-        }
-    }
-
-    private fun pressureConversions() {
-        function = {
-            Pressure(it).getText()
-        }
-    }
-
-    private fun speedConversions() {
-        function = {
-            Speed(it).getText()
-        }
-    }
-
-    private fun timeConversions() {
-        function = {
-            Time(it).getText()
-        }
-    }
-
-    private fun dataStorageConversion() {
-        function = {
-            Log.e("called", "called")
-            DataStorage(it).apply { lazyMap = dataStorageMap }.getText()
+            else -> TODO()
         }
     }
 
@@ -171,18 +155,6 @@ class InitializeFunction(private val viewId: Int) {
         }
     }
 
-    private fun currentConversions() {
-        function = {
-            ElectricCurrent(it).getText()
-        }
-    }
-
-    private fun luminanceConversions() {
-        function = {
-            Luminance(it).apply { lazyMap = luminanceMap }.getText()
-        }
-    }
-
     private val luminanceMap = lazy(LazyThreadSafetyMode.NONE) {
         buildMutableMap<Int, Int>(20) {
             (0..7).forEachIndexed { index, item ->
@@ -195,78 +167,6 @@ class InitializeFunction(private val viewId: Int) {
             (8..12).forEachIndexed(size) { index, item ->
                 put(item, index)
             }
-        }
-    }
-
-    private fun illuminance() {
-        function = {
-            Illuminance(it).getText()
-        }
-    }
-
-    private fun energyConversion() {
-        function = {
-            Energy(it).getText()
-        }
-    }
-
-    private fun heatCapacityConversions() {
-        function = {
-            HeatCapacity(it).getText()
-        }
-    }
-
-    private fun velocityConversions() {
-        function = {
-            Velocity(it).getText()
-        }
-    }
-
-    private fun accelerationConversions() {
-        function = {
-            Acceleration(it).getText()
-        }
-    }
-
-    private fun soundConversions() {
-        function = {
-            Sound(it).getText()
-        }
-    }
-
-    private fun resistanceConversions() {
-        function = {
-            Resistance(it).getText()
-        }
-    }
-
-    private fun radioactivityConversions() {
-        function = {
-            Radioactivity(it).getText()
-        }
-    }
-
-    private fun forceConversions() {
-        function = {
-            Force(it).getText()
-        }
-    }
-
-    private fun powerConversions() {
-        function = {
-            Power(it).getText()
-        }
-    }
-
-    private fun densityConversions() {
-        function = {
-            Density(it).getText()
-        }
-    }
-
-    private fun flowConversions() {
-        function = {
-            Flow(it).getText()
         }
     }
 }

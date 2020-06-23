@@ -493,4 +493,10 @@
     <string name="imp_gal">gallon (UK)</string>
     <string name="gal_us">gallon (US)</string>
     <string name="gall_unit">gal</string>
+
+    <!--inductance-->
+    <string name="henry">Henry</string>
+    <string name="henry_unit">H</string>
+    <string name="abhenry">Abhenry</string>
+    <string name="abhenry_unit">abH</string>
 </resources>
