@@ -127,6 +127,10 @@ class InitializeFunction(private val viewId: Int) {
                 { Inductance(it).getText() }
             }
 
+            R.id.resolution -> {
+                { Resolution(it).getText() }
+            }
+
             else -> TODO()
         }
     }

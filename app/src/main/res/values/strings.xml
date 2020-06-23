@@ -499,4 +499,8 @@
     <string name="henry_unit">H</string>
     <string name="abhenry">Abhenry</string>
     <string name="abhenry_unit">abH</string>
+
+    <!--resolution-->
+    <string name="pixel">Pixel</string>
+    <string name="pPer">p</string>
 </resources>

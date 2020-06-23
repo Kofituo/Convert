@@ -219,6 +219,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.inductance -> Inductance(requireContext()).getList()
 
+            R.id.resolution -> Resolution(requireContext()).getList()
+
             else -> mutableListOf()
         }
     }
