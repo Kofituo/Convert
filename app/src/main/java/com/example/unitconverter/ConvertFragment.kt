@@ -215,6 +215,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.density -> Density(requireContext()).getList()
 
+            R.id.flow -> Flow(requireContext()).getList()
+
             else -> mutableListOf()
         }
     }

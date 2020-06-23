@@ -5,6 +5,7 @@ package com.example.unitconverter.builders
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.ArrayMap
 import android.util.SparseIntArray
 import androidx.constraintlayout.widget.ConstraintSet
 import com.example.unitconverter.subclasses.KotlinConstraintSet
@@ -42,6 +43,11 @@ inline fun <K, V> buildMutableMap(action: MutableMap<K, V>.() -> Unit): MutableM
  * */
 inline fun <K, V> buildMutableMap(capacity: Int = 30, action: MutableMap<K, V>.() -> Unit = {}) =
     LinkedHashMap<K, V>(capacity).apply(action)
+
+inline fun <K, V> buildArrayMap(capacity: Int = 30, action: ArrayMap<K, V>.() -> Unit = {}) =
+    ArrayMap<K, V>(capacity).apply(action)
+
+
 
 data class MapValue<K, V>(var key: K? = null, var value: V? = null)
 
