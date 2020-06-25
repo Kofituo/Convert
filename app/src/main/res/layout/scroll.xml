@@ -601,13 +601,13 @@
             android:drawableTop="@drawable/ic_angular_velocity"
             android:drawablePadding="1dp"
             android:fontFamily="@font/roboto_slab"
-            app:metadata="@string/velocity_meta"
             android:gravity="center_horizontal"
             android:lineSpacingMultiplier="0.88"
             android:text="@string/angularVelocity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/scroll_card_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:metadata="@string/velocity_meta" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -637,7 +637,8 @@
             android:text="@string/angularAcceleration"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/scroll_card_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:metadata="@string/angularAcceleration_meta" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -668,7 +669,8 @@
             android:text="@string/sound"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/scroll_card_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:metadata="@string/sound_meta" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -697,7 +699,8 @@
             android:text="@string/resistance"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/scroll_card_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:metadata="@string/resistance_meta" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -729,7 +732,8 @@
             android:text="@string/radioactivity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/scroll_card_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:metadata="@string/radioactivity_meta" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -855,7 +859,8 @@
             android:text="@string/flow"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/scroll_card_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:metadata="@string/flow_meta" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView

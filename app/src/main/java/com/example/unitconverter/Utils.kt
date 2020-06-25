@@ -290,4 +290,39 @@ object Utils {
                 }
             }
         }
+
+    /**
+     * Use cover up toolbar for view
+     * */
+    /*fun Context.circleReveal(
+        view: View,
+        containsOverflow: Boolean,
+        isShow: Boolean
+    ) {
+        var width = view.width
+        width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) / 2
+        if (containsOverflow) width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material)
+        val centerX = width
+        val centerY = view.height / 2
+        val anim =
+            if (isShow)
+                ViewAnimationUtils.createCircularReveal(view, centerX, centerY, 0f, width.toFloat())
+            else
+                ViewAnimationUtils.createCircularReveal(view, centerX, centerY, width.toFloat(), 0f)
+        //anim.duration = 220
+        // make the view invisible when the animation is done
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                if (!isShow) {
+                    super.onAnimationEnd(animation)
+                    view.visibility = View.INVISIBLE
+                }
+            }
+        })
+        // make the view visible and start the animation
+        if (isShow) view.visibility = View.VISIBLE
+        // start the animation
+        Log.e("called","here g")
+        anim.start()
+    }*/
 }

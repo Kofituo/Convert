@@ -5,6 +5,6 @@
         android:drawable="@drawable/ic_magnifying_glass"
         android:duration="200" />
     <item
-        android:drawable="@drawable/ic_add_black_24dp"
+        android:drawable="@drawable/ic_bookmark"
         android:duration="200" />
 </animation-list>

@@ -5,7 +5,7 @@
         android:id="@+id/search_button"
         android:icon="@drawable/ic_magnifying_glass"
         app:showAsAction="ifRoom"
-        android:title="@string/settings" />
+        android:title="@string/search" />
     <item
         android:id="@+id/swap"
         android:icon="@drawable/ic_switch_vertical_orientation_arrows"

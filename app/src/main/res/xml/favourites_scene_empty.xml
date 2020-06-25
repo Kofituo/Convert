@@ -43,6 +43,16 @@
             motion:layout_constraintWidth_percent="0.7" />
 
         <Constraint
+            android:id="@id/cover_up_toolbar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            motion:layout_constraintBottom_toTopOf="@id/view"
+            android:visibility="invisible"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="@id/app_barGuideline" />
+
+        <Constraint
             android:id="@id/toolbar"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
@@ -85,6 +95,14 @@
             android:id="@id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            motion:layout_constraintBottom_toTopOf="@id/view"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@id/cover_up_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:visibility="invisible"
             motion:layout_constraintBottom_toTopOf="@id/view"
             motion:layout_constraintTop_toTopOf="parent" />
 

@@ -610,13 +610,13 @@
             android:drawableTop="@drawable/ic_angular_velocity"
             android:drawablePadding="1dp"
             android:fontFamily="@font/roboto_slab"
-            app:metadata="@string/velocity_meta"
             android:gravity="center_horizontal"
             android:lineSpacingMultiplier="0.88"
             android:text="@string/angularVelocity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/scroll_card_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:metadata="@string/velocity_meta" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -647,7 +647,8 @@
             android:text="@string/angularAcceleration"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/scroll_card_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:metadata="@string/angularAcceleration_meta" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -678,7 +679,8 @@
             android:text="@string/sound"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/scroll_card_text"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:metadata="@string/sound_meta" />
     </com.example.unitconverter.subclasses.MyCardView>
 
     <com.example.unitconverter.subclasses.MyCardView
@@ -707,6 +709,7 @@
             android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/resistance"
+            app:metadata="@string/resistance_meta"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp" />
@@ -736,6 +739,7 @@
             android:drawableTop="@drawable/ic_radiation"
             android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_slab"
+            app:metadata="@string/radioactivity_meta"
             android:gravity="center|bottom"
             android:text="@string/radioactivity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -840,7 +844,6 @@
     <com.example.unitconverter.subclasses.MyCardView
         android:id="@+id/flow"
         android:layout_width="0dp"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
         android:layout_height="0dp"
         android:layout_marginTop="15dp"
         android:clickable="true"
@@ -850,6 +853,7 @@
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:0.9"
         app:layout_constraintEnd_toStartOf="@id/inductance"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/resistance"
         app:layout_constraintWidth_percent="0.18">
@@ -861,6 +865,7 @@
             android:layout_margin="10dp"
             android:drawableTop="@drawable/ic_sea"
             android:drawablePadding="4dp"
+            app:metadata="@string/flow_meta"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center|bottom"
             android:text="@string/flow"

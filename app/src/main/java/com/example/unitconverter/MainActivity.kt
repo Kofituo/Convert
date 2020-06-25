@@ -11,8 +11,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.bugDetected
@@ -382,6 +384,15 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         return true
     }
 
+    fun allViews(viewGroup: ViewGroup, int: Int = 0) {
+        for (i in 0 until viewGroup.childCount) {
+            val view = viewGroup[i]
+            Log.e("view ${if (int == 0) i else "$int.$i"}", "$view")
+            if (view is ViewGroup)
+                allViews(view, i)
+        }
+    }
+
     override fun onBackPressed() {
         grid {
             selectionInProgress {
@@ -458,30 +469,34 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         .putExtra("$pkgName.favourites_list", favouritesList as Serializable)
                 }
                 startActivity(this)
-        }
+            }
         R.id.search_button -> {
             if (!useDefault) {
-                // store selected items
-                grid {
-                    val map = getArray()
-                    if (map.isEmpty()) {
-                        endSelection()
-                        return true
-                    }
-                    waitingArrayDeque.offerFirst(map)
-                    grid {
-                        endSelection()
-                    }
-                    showToast {
-                        stringId = R.string.added_favourites
-                        duration = Toast.LENGTH_LONG
-                    }
-                    map.clear() //for efficiency
-                }
+                // store selected item
+                storeSelectedItems()
             }
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun storeSelectedItems() {
+        grid {
+            val map = getArray()
+            if (map.isEmpty()) {
+                endSelection()
+                return
+            }
+            waitingArrayDeque.offerFirst(map)
+            grid {
+                endSelection()
+            }
+            showToast {
+                stringId = R.string.added_favourites
+                duration = Toast.LENGTH_LONG
+            }
+            map.clear() //for efficiency
+        }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

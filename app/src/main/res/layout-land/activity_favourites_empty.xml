@@ -23,6 +23,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight" />
 
+    <include
+        android:id="@+id/cover_up_toolbar"
+        layout="@layout/cover_up_toolbar"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/app_bar_text"
         android:layout_width="wrap_content"

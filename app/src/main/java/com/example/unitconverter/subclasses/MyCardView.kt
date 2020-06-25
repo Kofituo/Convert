@@ -35,13 +35,8 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
 
     private val checkBox: MaterialCheckBox
 
-    private lateinit var mParent: GridConstraintLayout
-
     init {
         // adding view programmatically so i don't have to get a huge xml file
-        post {
-            mParent = this.parent as GridConstraintLayout
-        }
         checkBox = MaterialCheckBox(context, attributeSet).apply {
             //default layout param are wrap content
             //so no need to reset them
@@ -53,7 +48,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
         }
 
         checkBox.setOnCheckedChangeListener { _, isChecked ->
-            mParent.apply {
+            (parent as GridConstraintLayout).apply {
                 if (isChecked) addToMap(this@MyCardView.name)
                 else removeFromMap(this@MyCardView.name)
             }
@@ -65,7 +60,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
      * */
     override fun callback() {
         Log.e("called", "called select  $this  \n${this.parent}")
-        mParent.initiateSelectItems()
+        (parent as GridConstraintLayout).initiateSelectItems()
         checkBox.apply {
             visibility = View.VISIBLE
             isChecked = true
@@ -73,7 +68,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
     }
 
     override fun addOneToFavourites() {
-        mParent.addOneToFavorites(name)
+        (parent as GridConstraintLayout).addOneToFavorites(name)
     }
 
     private var checkBoxIsEnabled = false

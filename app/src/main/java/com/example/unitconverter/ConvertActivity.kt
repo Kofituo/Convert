@@ -39,6 +39,7 @@ import com.example.unitconverter.builders.*
 import com.example.unitconverter.functions.Currency
 import com.example.unitconverter.miscellaneous.*
 import com.example.unitconverter.miscellaneous.ResetAfterNGets.Companion.resetAfter2Gets
+import com.example.unitconverter.miscellaneous.ResetAfterNGets.Companion.resetAfterGet
 import com.example.unitconverter.networks.DownloadCallback
 import com.example.unitconverter.networks.NetworkFragment
 import com.example.unitconverter.networks.Statuses
@@ -65,14 +66,6 @@ import kotlin.collections.LinkedHashMap
 @OptIn(ImplicitReflectionSerializer::class)
 class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface,
     DownloadCallback<String>, CoroutineScope by MainScope(), PreferenceFragment.PreferenceFragment {
-
-    override fun onResume() {
-        super.onResume()
-        showToast {
-            text = "ET 1 '${firstEditText.text}'  ET 2 '${secondEditText.text}'"
-            duration = Toast.LENGTH_SHORT
-        }
-    }
 
     private var swap = false
     private var randomColor = -1
@@ -121,11 +114,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         Log.e("vi", "$card")
         getLastConversions()
         firstEditText.apply {
-            setFilters(this)
+            //setFilters(this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
         }
         secondEditText.apply {
-            setFilters(this)
+            //setFilters(this)
             setRawInputType(Configuration.KEYBOARD_12KEY)
         }
         viewModel = viewModel {
@@ -175,6 +168,41 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     show(supportFragmentManager, "dialog")
                 }
         }
+        onCreateCalled = true
+    }
+
+    private var onCreateCalled by resetAfterGet(initialValue = false, resetValue = false)
+
+    override fun onResume() {
+        super.onResume()
+        if (onCreateCalled) {
+            setFilters(firstEditText)
+            setFilters(secondEditText)
+            showToast {
+                text = "corrected"
+                duration = Toast.LENGTH_SHORT
+            }
+        }
+        /*if (onCreateCalled) {
+            //correct edit text
+            val editText =
+                when {
+                    firstEditText.isFocused -> firstEditText
+                    secondEditText.isFocused -> secondEditText
+                    else -> return
+                }
+            showToast {
+                text = "corrected"
+                duration = Toast.LENGTH_SHORT
+            }
+            editText.apply {
+                val text =
+                    Editable.Factory.getInstance()
+                        .newEditable(text ?: return) // no null pointer error
+                this.text = null
+                this.text = text
+            }
+        }*/
     }
 
     private inline fun dialog(block: ConvertFragment.() -> Unit) =

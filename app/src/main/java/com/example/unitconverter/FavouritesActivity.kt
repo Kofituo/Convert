@@ -1,5 +1,8 @@
 package com.example.unitconverter
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
@@ -8,7 +11,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.LayoutInflater
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -32,6 +38,7 @@ import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.stringify
+
 
 class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem {
 
@@ -109,6 +116,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             (rootGroup as MotionLayout).progress = viewModel.favouritesProgress
         }
         viewModel.favouritesProgress // to reset the value
+        setSearchBar()
         onCreateCalled = true
     }
 
@@ -134,6 +142,23 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         }
     }
 
+    private lateinit var hiddenSearchIcon: MenuItem
+    private fun setSearchBar() {
+        cover_up_toolbar.apply {
+            this as Toolbar
+            inflateMenu(R.menu.menu_search)
+            hiddenSearchIcon =
+                menu.findItem(R.id.hidden_search)
+                    .apply {
+                        setOnActionExpandListener(searchStatusListener)
+                        icon = getDrawable(R.drawable.rounded_front)
+                        (actionView as SearchView)
+                            .findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+                            .hint = getString(R.string.search)
+                    }
+        }
+    }
+
     private inline fun recyclerView(block: RecyclerView.() -> Unit) =
         findViewById<RecyclerView>(R.id.view).apply(block)
 
@@ -146,9 +171,42 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.favourites_menu, menu)
         menu?.apply {
-            searchButton = findItem(R.id.search_button)
+            findItem(R.id.search_button).apply {
+                searchButton = this
+                ///setOnActionExpandListener(searchStatusListener)
+            }
         }
         return true
+    }
+
+    private inline val motionLayout
+        get() =
+            if (rootGroup is MotionLayout) rootGroup as MotionLayout else null
+
+    private inline val searchStatusListener
+        get() = object :
+            MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                motionLayout?.viewVisibility(R.id.app_bar_text, View.INVISIBLE, app_bar_text)
+                ///app_bar_text.requestLayout()
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, false)
+                motionLayout?.viewVisibility(R.id.app_bar_text, View.VISIBLE, app_bar_text)
+                Log.e("here", "pop")
+                ///app_bar_text.requestLayout()
+                return true
+            }
+        }
+
+    private fun MotionLayout.viewVisibility(viewId: Int, visibility: Int, view: View) {
+        getConstraintSet(R.id.end)
+            ?.setVisibility(viewId, visibility)
+        getConstraintSet(R.id.start)
+            ?.setVisibility(viewId, visibility)
+        view.requestLayout()
     }
 
     override fun onOptionsItemSelected(item: MenuItem) =
@@ -166,6 +224,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 }
             R.id.search_button -> {
                 if (initiated) {
+                    searchButton.actionView = null
                     //remove items from recycler view
                     favouritesAdapter
                         .apply {
@@ -183,6 +242,11 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                         }
                     binToSearch()
                     initiated = false
+                } else {
+                    /*searchButton.actionView =
+                        searchView ?: SearchView(this).apply { searchView = this }*/
+                    circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, true)
+                    hiddenSearchIcon.expandActionView()
                 }
                 true
             }
@@ -341,5 +405,36 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 }
             }
         }
+    }
+
+
+    @Suppress("SameParameterValue")
+    @SuppressLint("PrivateResource")
+    private fun circleReveal(viewId: Int, view: View, isShow: Boolean) {
+        var width = view.width
+        width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) / 2
+        width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material)
+        val centerX = width
+        val centerY = view.height / 2
+        val anim =
+            if (isShow)
+                ViewAnimationUtils.createCircularReveal(view, centerX, centerY, 0f, width.toFloat())
+            else
+                ViewAnimationUtils.createCircularReveal(view, centerX, centerY, width.toFloat(), 0f)
+        //anim.duration = 220
+        // make the view invisible when the animation is done
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                if (!isShow)
+                    if (motionLayout?.viewVisibility(viewId, View.INVISIBLE, view).isNull())
+                        view.visibility = View.INVISIBLE
+            }
+        })
+        // make the view visible and start the animation
+        if (isShow)
+            if (motionLayout?.viewVisibility(viewId, View.VISIBLE, view).isNull())
+                view.visibility = View.VISIBLE
+        // start the animation
+        anim.start()
     }
 }
