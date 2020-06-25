@@ -19,7 +19,12 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
 
     var initialSize: Int? = null
 
-    lateinit var dataSet: MutableList<FavouritesData>
+    lateinit var unSortedList: MutableList<FavouritesData>
+
+    private val dataSet
+        get() = sortedList ?: unSortedList
+
+    var sortedList: MySortedList<FavouritesData>? = null
 
     val currentSize get() = dataSet.size
 

@@ -150,7 +150,8 @@ class MyAdapter(
                     oldItem: RecyclerDataClass?,
                     newItem: RecyclerDataClass?
                 ) = oldItem == newItem
-            })
+            }, dataSet.size
+        )
 }
 /*
 fun add(data: RecyclerDataClass) = mSortedList.add(data)

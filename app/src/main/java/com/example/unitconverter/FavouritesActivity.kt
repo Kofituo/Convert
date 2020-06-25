@@ -22,17 +22,17 @@ import androidx.core.content.edit
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SortedList
 import androidx.transition.TransitionManager
 import com.example.unitconverter.AdditionItems.FavouritesCalledIt
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.builders.buildIntent
+import com.example.unitconverter.builders.buildMutableList
 import com.example.unitconverter.miscellaneous.*
-import com.example.unitconverter.subclasses.ConvertViewModel
-import com.example.unitconverter.subclasses.FavouritesAdapter
+import com.example.unitconverter.subclasses.*
 import com.example.unitconverter.subclasses.FavouritesAdapter.Companion.favouritesAdapter
-import com.example.unitconverter.subclasses.FavouritesData
 import kotlinx.android.synthetic.main.activity_favourites_empty.*
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
@@ -42,7 +42,7 @@ import kotlinx.serialization.stringify
 
 @Suppress("PLUGIN_WARNING")
 class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem,
-    MotionLayout.TransitionListener {
+    MotionLayout.TransitionListener, SearchView.OnQueryTextListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var favouritesAdapter: FavouritesAdapter
@@ -67,14 +67,14 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                     ?.apply {
                         @Suppress("UNCHECKED_CAST")
                         this as MutableList<FavouritesData>
+                        originalList = this
                         Log.e("this", "$this")
                         favouritesAdapter = favouritesAdapter {
-                            dataSet = this@apply//viewModel.getFavouritesData()
+                            unSortedList = this@apply//viewModel.getFavouritesData()
                             activity = this@FavouritesActivity
-                            initialSize = dataSet.size
+                            initialSize = unSortedList.size
                             setFavouritesItemListener(this@FavouritesActivity)
                         }
-                        Log.e("serial", "$this")
                         rootGroup
                             .addView(RecyclerView(this@FavouritesActivity)
                                 .apply {
@@ -157,13 +157,10 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                         icon = getDrawable(R.drawable.near_white)
                         (actionView as SearchView).apply {
                             maxWidth = Int.MAX_VALUE
-                            /*post { Log.e("la","${layoutParams.width}")
-                            layoutParams = layoutParams {
-                                width = ViewGroup.LayoutParams.MATCH_PARENT
-                            }}*/
                             searchEditText =
                                 findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
                                     .apply { hint = getString(R.string.search) }
+                            setOnQueryTextListener(this@FavouritesActivity)
                         }
                     }
         }
@@ -197,10 +194,20 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         get() = object :
             MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                start = System.currentTimeMillis()
                 motionLayout?.viewVisibility(R.id.app_bar_text, View.INVISIBLE, app_bar_text)
                 Log.e("here", "oop")
-                if (::favouritesAdapter.isInitialized)
-                    favouritesAdapter.disableSelection()
+                if (::favouritesAdapter.isInitialized) {
+                    favouritesAdapter.apply {
+                        disableSelection()
+                        //notifyItemRangeChanged(0, itemCount)
+                        notifyItemRangeChanged(0, itemCount)
+                        mSortedList.addAll(originalList)
+                        sortedList = MySortedList(mSortedList)
+                        searchBegan = true
+                    }
+                }
+                Log.e("bet", "${System.currentTimeMillis() - start}")
                 ///app_bar_text.requestLayout()
                 return true
             }
@@ -208,8 +215,15 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, false)
                 Log.e("here", "pop")
-                if (::favouritesAdapter.isInitialized)
-                    favouritesAdapter.enableSelection()
+                if (::favouritesAdapter.isInitialized) {
+                    favouritesAdapter.apply {
+                        enableSelection()
+                        sortedList = null
+                        mSortedList.clear()
+                        if (searchBegan)
+                            notifyItemRangeChanged(0, itemCount)
+                    }
+                }
                 return true
             }
         }
@@ -245,7 +259,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                                 forceChange = true
                                 endSelection()
                             }
-                            if (dataSet.isEmpty())
+                            if (unSortedList.isEmpty())
                                 rootGroup.apply {
                                     TransitionManager.beginDelayedTransition(this)
                                     removeView(recyclerView)
@@ -256,13 +270,15 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                     binToSearch()
                     initiated = false
                 } else {
+                    //search
                     motionLayout?.apply {
                         if (progress != 1f) {
-                            Log.e("called", "trans  $progress")
                             aboutToSearch = true
                             transitionToEnd()
-                        } else showSearchBar()
-                        removeConstrains(this)
+                        } else {
+                            showSearchBar()
+                            removeConstrains(this)
+                        }
                     } ?: showSearchBar()
                 }
                 true
@@ -366,7 +382,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 if (arrayHasChanged)
                     getSharedPreferences(MainActivity.FAVOURITES, Context.MODE_PRIVATE)
                         .edit {
-                            val new = dataSet.map { it.cardName }
+                            val new = unSortedList.map { it.cardName }
                             put<String> {
                                 key = "favouritesArray"
                                 @Suppress("UNCHECKED_CAST")
@@ -453,21 +469,17 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         // make the view invisible when the animation is done
         anim.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                Log.e("end", "end  ${hiddenSearchIcon.isActionViewExpanded}")
                 if (!isShow) {
                     if (motionLayout?.viewVisibility(viewId, View.INVISIBLE, view).isNull())
                         view.visibility = View.INVISIBLE
                     motionLayout?.viewVisibility(R.id.app_bar_text, View.VISIBLE, app_bar_text)
                 }
                 val isCollapsed = !hiddenSearchIcon.isActionViewExpanded
-                if (isCollapsed && constraintsHaveChanged) {
-                    Log.e("has", "cah  ")
+                if (isCollapsed && constraintsHaveChanged)
                     addConstraints(motionLayout ?: return)
-                }
             }
 
             override fun onAnimationStart(animation: Animator?) {
-                Log.e("called", "starrt")
             }
         })
         // make the view visible and start the animation
@@ -493,6 +505,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             showSearchBar()
             //removeConstrains(p0)
             Log.e("com", "pl")
+            removeConstrains(p0)
             aboutToSearch = false
         }
         //p0.removeTransitionListener(this) //doesn't work
@@ -535,4 +548,53 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     }
 
     private var aboutToSearch = false
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
+    }
+
+    private var searchBegan = false
+
+    private var start = 0L
+    override fun onQueryTextChange(newText: String?): Boolean {
+        Log.e("1", "1  $newText  ${newText?.length}")
+        if (!::favouritesAdapter.isInitialized || newText.isNull())
+            return false
+        favouritesAdapter.apply {
+            val filteredList = filter(originalList, newText)
+            Log.e("fil", "$filteredList")
+            Utils.replaceAll(filteredList, mSortedList)
+            recyclerView.scrollToPosition(0)
+        }
+        Log.e("end", "${System.currentTimeMillis() - start}")
+        return true
+    }
+
+    private lateinit var originalList: Collection<FavouritesData>
+
+    private val mSortedList by lazy(LazyThreadSafetyMode.NONE) {
+        SortedList(
+            FavouritesData::class.java,
+            FavouritesSortedList(favouritesAdapter),
+            originalList.size
+        )
+    }
+
+    private fun filter(
+        dataSet: Collection<FavouritesData>,
+        searchText: CharSequence
+    ): Collection<FavouritesData> {
+        if (searchText.isBlank()) return dataSet //fast return
+        val mainText = searchText.trim()
+
+        return buildMutableList {
+            for (i in dataSet) {
+                val text = i.cardName!!
+                val meta = i.metadata!!
+                if (text.contains(mainText, ignoreCase = true) ||
+                    meta.contains(mainText, ignoreCase = true)
+                ) add(i)
+            }
+        }
+    }
 }

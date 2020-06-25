@@ -13,6 +13,7 @@ import android.util.SparseBooleanArray
 import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
+import androidx.recyclerview.widget.SortedList
 import com.example.unitconverter.builders.buildMutableList
 import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.builders.put
@@ -325,4 +326,18 @@ object Utils {
         Log.e("called","here g")
         anim.start()
     }*/
+
+    fun <T> replaceAll(dataSet: Collection<T>, sortedList: SortedList<T>) {
+        sortedList.apply {
+            beginBatchedUpdates()
+            //its in reverse so the indexing isn't affected
+            //if it were 0 to size when we remove 0 1 now becomes original 2 and so on
+            for (i in size() - 1 downTo 0)
+                if (!dataSet.contains(this[i]))
+                    this.remove(this[i])
+            addAll(dataSet)
+            endBatchedUpdates()
+
+        }
+    }
 }
