@@ -45,6 +45,16 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
 
     var forceChange = false
 
+    private var enable = true
+
+    fun disableSelection() {
+        enable = false
+    }
+
+    fun enableSelection() {
+        enable = true
+    }
+
     fun endSelection() {
         longClicked = false
     }
@@ -89,6 +99,8 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
                         favouritesItem.startActivity(dataSet[pos])
                 }
                 setOnLongClickListener {
+                    Log.e("cll", "view  $enable")
+                    if (!enable) return@setOnLongClickListener false
                     favouritesItem.selectionInitiated()
                     longClicked = true
                     performClick()

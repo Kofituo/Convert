@@ -11,4 +11,5 @@
     <color name="adaptive_white_black">#ffffff</color>
     <color name="scroll_card">#FFFDE7</color>
     <color name="scroll_card_text">#EB2B2313</color>
+    <color name="near_white">#FFF5EB</color>
 </resources>

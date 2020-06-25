@@ -40,7 +40,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.stringify
 
 
-class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem {
+@Suppress("PLUGIN_WARNING")
+class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem,
+    MotionLayout.TransitionListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var favouritesAdapter: FavouritesAdapter
@@ -102,7 +104,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(false)
+            setDisplayShowTitleEnabled((rootGroup !is MotionLayout))
         }
         window {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -112,8 +114,9 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 else resources.getColor(android.R.color.transparent)
             setBackgroundDrawable(resources.getDrawable(R.drawable.test, null))
         }
-        if (rootGroup is MotionLayout) {
-            (rootGroup as MotionLayout).progress = viewModel.favouritesProgress
+        motionLayout?.apply {
+            progress = viewModel.favouritesProgress
+            setTransitionListener(this@FavouritesActivity)
         }
         viewModel.favouritesProgress // to reset the value
         setSearchBar()
@@ -151,13 +154,22 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 menu.findItem(R.id.hidden_search)
                     .apply {
                         setOnActionExpandListener(searchStatusListener)
-                        icon = getDrawable(R.drawable.rounded_front)
-                        (actionView as SearchView)
-                            .findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
-                            .hint = getString(R.string.search)
+                        icon = getDrawable(R.drawable.near_white)
+                        (actionView as SearchView).apply {
+                            maxWidth = Int.MAX_VALUE
+                            /*post { Log.e("la","${layoutParams.width}")
+                            layoutParams = layoutParams {
+                                width = ViewGroup.LayoutParams.MATCH_PARENT
+                            }}*/
+                            searchEditText =
+                                findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+                                    .apply { hint = getString(R.string.search) }
+                        }
                     }
         }
     }
+
+    private lateinit var searchEditText: EditText
 
     private inline fun recyclerView(block: RecyclerView.() -> Unit) =
         findViewById<RecyclerView>(R.id.view).apply(block)
@@ -171,10 +183,8 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.favourites_menu, menu)
         menu?.apply {
-            findItem(R.id.search_button).apply {
-                searchButton = this
-                ///setOnActionExpandListener(searchStatusListener)
-            }
+            searchButton = findItem(R.id.search_button)
+            ///setOnActionExpandListener(searchStatusListener)
         }
         return true
     }
@@ -188,15 +198,18 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 motionLayout?.viewVisibility(R.id.app_bar_text, View.INVISIBLE, app_bar_text)
+                Log.e("here", "oop")
+                if (::favouritesAdapter.isInitialized)
+                    favouritesAdapter.disableSelection()
                 ///app_bar_text.requestLayout()
                 return true
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, false)
-                motionLayout?.viewVisibility(R.id.app_bar_text, View.VISIBLE, app_bar_text)
                 Log.e("here", "pop")
-                ///app_bar_text.requestLayout()
+                if (::favouritesAdapter.isInitialized)
+                    favouritesAdapter.enableSelection()
                 return true
             }
         }
@@ -243,10 +256,14 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                     binToSearch()
                     initiated = false
                 } else {
-                    /*searchButton.actionView =
-                        searchView ?: SearchView(this).apply { searchView = this }*/
-                    circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, true)
-                    hiddenSearchIcon.expandActionView()
+                    motionLayout?.apply {
+                        if (progress != 1f) {
+                            Log.e("called", "trans  $progress")
+                            aboutToSearch = true
+                            transitionToEnd()
+                        } else showSearchBar()
+                        removeConstrains(this)
+                    } ?: showSearchBar()
                 }
                 true
             }
@@ -297,45 +314,47 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             forceChange = true
             endSelection()
         }
-
     }
 
     override fun onBackPressed() {
-        if (initiated) {
-            favouritesAdapter.apply {
-                getMap().apply {
-                    if (isNotEmpty()) {
-                        val max = keys.max()!! + 1
-                        //dummy null filled arrays so that only the selected items would call item changed
-                        val old = ArrayList<FavouritesData?>(size)
-                        val new = ArrayList<FavouritesData?>(size)
-                        for (i in 0 until max) {
-                            old.add(null)
-                            new.add(if (i in keys) FavouritesData() else null)
+        when {
+            initiated -> {
+                favouritesAdapter.apply {
+                    getMap().apply {
+                        if (isNotEmpty()) {
+                            val max = keys.max()!! + 1
+                            //dummy null filled arrays so that only the selected items would call item changed
+                            val old = ArrayList<FavouritesData?>(size)
+                            val new = ArrayList<FavouritesData?>(size)
+                            for (i in 0 until max) {
+                                old.add(null)
+                                new.add(if (i in keys) FavouritesData() else null)
+                            }
+                            clear()
+                            forceChange = true
+                            oldList = old
+                            newList = new
+                            DiffUtil
+                                .calculateDiff(diffUtil)
+                                .dispatchUpdatesTo(favouritesAdapter)
+                            endSelection()
                         }
-                        clear()
-                        forceChange = true
-                        oldList = old
-                        newList = new
-                        DiffUtil
-                            .calculateDiff(diffUtil)
-                            .dispatchUpdatesTo(favouritesAdapter)
-                        endSelection()
+                    }
+                }
+                initiated = false
+                searchButton.apply {
+                    icon = getDrawable(R.drawable.remove_to_search)
+                    title = getString(R.string.search)
+                    (icon as AnimationDrawable).apply {
+                        setEnterFadeDuration(300)
+                        setExitFadeDuration(500)
+                        start()
                     }
                 }
             }
-            initiated = false
-            searchButton.apply {
-                icon = getDrawable(R.drawable.remove_to_search)
-                title = getString(R.string.search)
-                (icon as AnimationDrawable).apply {
-                    setEnterFadeDuration(300)
-                    setExitFadeDuration(500)
-                    start()
-                }
-            }
-        } else
-            super.onBackPressed()
+            hiddenSearchIcon.isActionViewExpanded -> hiddenSearchIcon.collapseActionView()
+            else -> super.onBackPressed()
+        }
     }
 
     @UnstableDefault
@@ -360,6 +379,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 }
             }
         }
+        viewModel.searchIsExpanded = hiddenSearchIcon.isActionViewExpanded
         super.onPause()
     }
 
@@ -390,7 +410,8 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
     override fun onResume() {
         super.onResume()
-        if (adapterIsInit && onCreateCalled) {
+        val createCalled = onCreateCalled
+        if (adapterIsInit && createCalled) {
             //Log.e("init", "on create $onCreateCalled")
             favouritesAdapter.apply {
                 viewModel.selectedFavourites.apply {
@@ -403,6 +424,13 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                         viewModel.selectedFavourites = null
                     }
                 }
+            }
+        }
+        if (createCalled && viewModel.searchIsExpanded) {
+            cover_up_toolbar.post {
+                circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, true)
+                hiddenSearchIcon.expandActionView()
+                removeConstrains(motionLayout ?: return@post)
             }
         }
     }
@@ -421,13 +449,25 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 ViewAnimationUtils.createCircularReveal(view, centerX, centerY, 0f, width.toFloat())
             else
                 ViewAnimationUtils.createCircularReveal(view, centerX, centerY, width.toFloat(), 0f)
-        //anim.duration = 220
+        anim.duration = 250
         // make the view invisible when the animation is done
         anim.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                if (!isShow)
+                Log.e("end", "end  ${hiddenSearchIcon.isActionViewExpanded}")
+                if (!isShow) {
                     if (motionLayout?.viewVisibility(viewId, View.INVISIBLE, view).isNull())
                         view.visibility = View.INVISIBLE
+                    motionLayout?.viewVisibility(R.id.app_bar_text, View.VISIBLE, app_bar_text)
+                }
+                val isCollapsed = !hiddenSearchIcon.isActionViewExpanded
+                if (isCollapsed && constraintsHaveChanged) {
+                    Log.e("has", "cah  ")
+                    addConstraints(motionLayout ?: return)
+                }
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+                Log.e("called", "starrt")
             }
         })
         // make the view visible and start the animation
@@ -437,4 +477,62 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         // start the animation
         anim.start()
     }
+
+    override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+    }
+
+    override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+    }
+
+    override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
+    }
+
+    override fun onTransitionCompleted(p0: MotionLayout, p1: Int) {
+        Log.e("how", "many")
+        if (aboutToSearch) {
+            showSearchBar()
+            //removeConstrains(p0)
+            Log.e("com", "pl")
+            aboutToSearch = false
+        }
+        //p0.removeTransitionListener(this) //doesn't work
+    }
+
+    private var constraintsHaveChanged by
+    ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
+
+    private fun removeConstrains(motionLayout: MotionLayout) {
+        motionLayout.getConstraintSet(R.id.start).apply {
+            connect(R.id.toolbar, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            connect(
+                R.id.cover_up_toolbar,
+                ConstraintSet.TOP,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.TOP
+            )
+            constraintsHaveChanged = true
+        }
+    }
+
+    private fun addConstraints(motionLayout: MotionLayout) {
+        motionLayout.apply {
+            getConstraintSet(R.id.start).apply {
+                connect(R.id.toolbar, ConstraintSet.TOP, R.id.app_barGuideline, ConstraintSet.TOP)
+                connect(
+                    R.id.cover_up_toolbar,
+                    ConstraintSet.TOP,
+                    R.id.app_barGuideline,
+                    ConstraintSet.TOP
+                )
+            }
+            constraintsHaveChanged = false
+        }
+    }
+
+    private fun showSearchBar() {
+        circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, true)
+        hiddenSearchIcon.expandActionView()
+    }
+
+    private var aboutToSearch = false
 }

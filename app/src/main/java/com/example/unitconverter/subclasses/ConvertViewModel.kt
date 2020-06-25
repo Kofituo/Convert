@@ -53,4 +53,6 @@ class ConvertViewModel : ViewModel() {
         mGroupToEnabledID = null
         defaultIdToIsChecked = null
     }
+
+    var searchIsExpanded = false
 }

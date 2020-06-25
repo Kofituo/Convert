@@ -4,6 +4,5 @@
     android:id="@+id/cover_up_toolbar"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:background="@color/adaptive_white_black"
-    app:collapseIcon="@drawable/ic_arrow_back_black_24dp"
-    app:titleTextColor="@color/colorPrimary" />
+    android:background="@color/near_white"
+    app:collapseIcon="@drawable/ic_arrow_back_black_24dp" />

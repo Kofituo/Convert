@@ -43,7 +43,6 @@
     <include
         android:id="@+id/cover_up_toolbar"
         layout="@layout/cover_up_toolbar"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

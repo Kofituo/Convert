@@ -18,32 +18,41 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:layout_marginBottom="7dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.DayNight"
+        app:title="@string/favourite" />
 
     <include
         android:id="@+id/cover_up_toolbar"
         layout="@layout/cover_up_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginBottom="7dp"
+        app:layout_constraintBottom_toTopOf="@+id/view"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/app_bar_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="55dp"
-        android:text="@string/favourite"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="21sp"
-        app:layout_constraintBottom_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="@+id/toolbar"
-        app:layout_constraintTop_toTopOf="@id/toolbar" />
+    <!--
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/app_bar_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="55dp"
+            android:text="@string/favourite"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="21sp"
+            app:layout_constraintBottom_toBottomOf="@id/toolbar"
+            app:layout_constraintStart_toStartOf="@+id/toolbar"
+            app:layout_constraintTop_toTopOf="@id/toolbar" />
+    -->
 
     <!--TODO-->
 </androidx.constraintlayout.widget.ConstraintLayout>
