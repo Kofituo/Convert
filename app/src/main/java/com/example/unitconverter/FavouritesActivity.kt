@@ -120,6 +120,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         }
         viewModel.favouritesProgress // to reset the value
         setSearchBar()
+        initializeRecycler()
         onCreateCalled = true
     }
 
@@ -189,44 +190,6 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     private inline val motionLayout
         get() =
             if (rootGroup is MotionLayout) rootGroup as MotionLayout else null
-
-    private inline val searchStatusListener
-        get() = object :
-            MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                start = System.currentTimeMillis()
-                motionLayout?.viewVisibility(R.id.app_bar_text, View.INVISIBLE, app_bar_text)
-                Log.e("here", "oop")
-                if (::favouritesAdapter.isInitialized) {
-                    favouritesAdapter.apply {
-                        disableSelection()
-                        //notifyItemRangeChanged(0, itemCount)
-                        notifyItemRangeChanged(0, itemCount)
-                        mSortedList.addAll(originalList)
-                        sortedList = MySortedList(mSortedList)
-                        searchBegan = true
-                    }
-                }
-                Log.e("bet", "${System.currentTimeMillis() - start}")
-                ///app_bar_text.requestLayout()
-                return true
-            }
-
-            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, false)
-                Log.e("here", "pop")
-                if (::favouritesAdapter.isInitialized) {
-                    favouritesAdapter.apply {
-                        enableSelection()
-                        sortedList = null
-                        mSortedList.clear()
-                        if (searchBegan)
-                            notifyItemRangeChanged(0, itemCount)
-                    }
-                }
-                return true
-            }
-        }
 
     private fun MotionLayout.viewVisibility(viewId: Int, visibility: Int, view: View) {
         getConstraintSet(R.id.end)
@@ -555,18 +518,76 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
     private var searchBegan = false
 
+    private inline val searchStatusListener
+        get() = object :
+            MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                start = System.currentTimeMillis()
+                motionLayout?.viewVisibility(R.id.app_bar_text, View.INVISIBLE, app_bar_text)
+                Log.e("here", "oop")
+                if (::favouritesAdapter.isInitialized) {
+                    favouritesAdapter.apply {
+                        disableSelection()
+                        /*notifyItemRangeChanged(0, itemCount)
+                        mSortedList.addAll(originalList)
+                        sortedList = MySortedList(mSortedList)
+                        searchBegan = true*/
+                    }
+                }
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, false)
+                Log.e("here", "pop")
+                if (::favouritesAdapter.isInitialized) {
+                    favouritesAdapter.apply {
+                        enableSelection()
+                        Utils.replaceAll(originalList, mSortedList)
+                        useOriginalList()
+                    }
+                }
+                return true
+            }
+        }
+
     private var start = 0L
+    private var emptyCount = 0
+
+    private val mySortedList by lazy(LazyThreadSafetyMode.NONE) {
+        MySortedList(mSortedList)
+    }
+
+    private fun initializeRecycler() {
+        if (::favouritesAdapter.isInitialized) {
+            mSortedList.addAll(originalList)
+            favouritesAdapter.apply {
+                sortedList = mySortedList
+            }
+        }
+    }
+
     override fun onQueryTextChange(newText: String?): Boolean {
         Log.e("1", "1  $newText  ${newText?.length}")
         if (!::favouritesAdapter.isInitialized || newText.isNull())
             return false
-        favouritesAdapter.apply {
-            val filteredList = filter(originalList, newText)
-            Log.e("fil", "$filteredList")
-            Utils.replaceAll(filteredList, mSortedList)
-            recyclerView.scrollToPosition(0)
+        val filteredList = filter(originalList, newText)
+        Utils.replaceAll(filteredList, mSortedList)
+        if (newText.isEmpty()) {
+            Log.e("2", "2")
+            if (emptyCount++ == 0) {
+                Log.e("3", "#")
+                return false
+            }
+            favouritesAdapter.useOriginalList()
+            Log.e("4", "$")
+        } else {
+            favouritesAdapter.apply {
+                useFilteredList()
+                recyclerView.scrollToPosition(0)
+            }
+            Log.e("end", "${System.currentTimeMillis() - start}")
         }
-        Log.e("end", "${System.currentTimeMillis() - start}")
         return true
     }
 
@@ -590,9 +611,9 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         return buildMutableList {
             for (i in dataSet) {
                 val text = i.cardName!!
-                val meta = i.metadata!!
-                if (text.contains(mainText, ignoreCase = true) ||
-                    meta.contains(mainText, ignoreCase = true)
+                //val meta = i.metadata!!
+                if (text.contains(mainText, ignoreCase = true) //||
+                //meta.contains(mainText, ignoreCase = true)
                 ) add(i)
             }
         }

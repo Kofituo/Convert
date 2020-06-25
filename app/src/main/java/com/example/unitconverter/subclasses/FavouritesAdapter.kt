@@ -21,12 +21,28 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
 
     lateinit var unSortedList: MutableList<FavouritesData>
 
+    private var useFilteredList = false
+
+    fun useFilteredList() {
+        if (!useFilteredList) {
+            useFilteredList = true
+            notifyItemRangeChanged(0, itemCount)
+        }
+    }
+
+    fun useOriginalList() {
+        if (useFilteredList) {
+            useFilteredList = false
+            notifyItemRangeChanged(0, itemCount)
+        }
+    }
+
     private val dataSet
-        get() = sortedList ?: unSortedList
+        get() = if (useFilteredList) sortedList else unSortedList
 
-    var sortedList: MySortedList<FavouritesData>? = null
+    lateinit var sortedList: MySortedList<FavouritesData>
 
-    val currentSize get() = dataSet.size
+    val currentSize get() = sortedList.size
 
     lateinit var activity: Activity
 
