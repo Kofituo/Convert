@@ -2,7 +2,6 @@ package com.example.unitconverter
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
@@ -407,27 +406,31 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         }
         if (createCalled && viewModel.searchIsExpanded) {
             cover_up_toolbar.post {
-                circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, true)
+                circleReveal(cover_up_toolbar, true)
                 hiddenSearchIcon.expandActionView()
                 removeConstrains(motionLayout ?: return@post)
             }
         }
     }
 
-
-    @Suppress("SameParameterValue")
-    @SuppressLint("PrivateResource")
-    private fun circleReveal(viewId: Int, view: View, isShow: Boolean) {
-        var width = view.width
+    private fun circleReveal(view: View, isShow: Boolean) {
+        val viewId = R.id.cover_up_toolbar
+        /*var width = view.width
         width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) / 2
-        width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material)
-        val centerX = width
-        val centerY = view.height / 2
+        width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material)*/
+        val location = determinePosition()
+        /*val centerX = width
+        val centerY = view.height / 2*/
+        val centerX = location.centerX
+        val centerY = location.centerY
+        Log.e("x", "${determinePosition()}  $centerX  $centerY")
         val anim =
             if (isShow)
-                ViewAnimationUtils.createCircularReveal(view, centerX, centerY, 0f, width.toFloat())
+                ViewAnimationUtils
+                    .createCircularReveal(view, centerX, centerY, 0f, centerX.toFloat())
             else
-                ViewAnimationUtils.createCircularReveal(view, centerX, centerY, width.toFloat(), 0f)
+                ViewAnimationUtils
+                    .createCircularReveal(view, centerX, centerY, centerX.toFloat(), 0f)
         anim.duration = 250
         // make the view invisible when the animation is done
         anim.addListener(object : AnimatorListenerAdapter() {
@@ -506,7 +509,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     }
 
     private fun showSearchBar() {
-        circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, true)
+        circleReveal(cover_up_toolbar, true)
         hiddenSearchIcon.expandActionView()
     }
 
@@ -516,8 +519,6 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         return false
     }
 
-    private var searchBegan = false
-
     private inline val searchStatusListener
         get() = object :
             MenuItem.OnActionExpandListener {
@@ -525,20 +526,13 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 start = System.currentTimeMillis()
                 motionLayout?.viewVisibility(R.id.app_bar_text, View.INVISIBLE, app_bar_text)
                 Log.e("here", "oop")
-                if (::favouritesAdapter.isInitialized) {
-                    favouritesAdapter.apply {
-                        disableSelection()
-                        /*notifyItemRangeChanged(0, itemCount)
-                        mSortedList.addAll(originalList)
-                        sortedList = MySortedList(mSortedList)
-                        searchBegan = true*/
-                    }
-                }
+                if (::favouritesAdapter.isInitialized)
+                    favouritesAdapter.disableSelection()
                 return true
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                circleReveal(R.id.cover_up_toolbar, cover_up_toolbar, false)
+                circleReveal(cover_up_toolbar, false)
                 Log.e("here", "pop")
                 if (::favouritesAdapter.isInitialized) {
                     favouritesAdapter.apply {
@@ -582,10 +576,8 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             favouritesAdapter.useOriginalList()
             Log.e("4", "$")
         } else {
-            favouritesAdapter.apply {
-                useFilteredList()
-                recyclerView.scrollToPosition(0)
-            }
+            favouritesAdapter.useFilteredList()
+            recyclerView.scrollToPosition(0)
             Log.e("end", "${System.currentTimeMillis() - start}")
         }
         return true
@@ -611,11 +603,28 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         return buildMutableList {
             for (i in dataSet) {
                 val text = i.cardName!!
-                //val meta = i.metadata!!
-                if (text.contains(mainText, ignoreCase = true) //||
-                //meta.contains(mainText, ignoreCase = true)
+                val meta = i.metadata!!
+                if (text.contains(mainText, ignoreCase = true)
+                    || meta.contains(mainText, ignoreCase = true)
                 ) add(i)
             }
         }
     }
+
+    private fun determinePosition(): ViewLocation {
+        val itemWindowLocation = IntArray(2)
+        val menuItemView = findViewById<View>(R.id.search_button)
+        menuItemView.getLocationInWindow(itemWindowLocation)
+
+        val toolbarWindowLocation = IntArray(2)
+        toolbar.getLocationInWindow(toolbarWindowLocation)
+
+        val itemX = itemWindowLocation[0] - toolbarWindowLocation[0]
+        val itemY = itemWindowLocation[1] - toolbarWindowLocation[1]
+        val centerX = itemX + menuItemView.width / 2
+        val centerY = itemY + menuItemView.height / 2
+        return ViewLocation(centerX, centerY)
+    }
+
+    private data class ViewLocation(val centerX: Int, val centerY: Int)
 }
