@@ -451,7 +451,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                                 this as MyCardView
                                 val textView = (this@run.getChildAt(1) as DataTextView)
                                 favouritesBuilder {
-                                    drawableId = drawableIds[this@run.id]
+                                    drawableId = drawableIds[this@run.id] ?: -1
                                     topText = textView.text
                                     metadata = textView.metadata
                                     cardId = this@run.id

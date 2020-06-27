@@ -250,7 +250,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             //Log.e("dat after", "$dataSetToList")
             newList = dataSetToList
             oldList = FlattenMap.addNullsToList(dataSetToList, position, itemsInGroup)
-            //Log.e("da befre", "$oldList")
+            //Log.e("da before", "$oldList")
             apply(this@PreferencesAdapter)
         }
     }

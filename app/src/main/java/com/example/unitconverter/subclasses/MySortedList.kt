@@ -2,7 +2,7 @@ package com.example.unitconverter.subclasses
 
 import androidx.recyclerview.widget.SortedList
 
-class MySortedList<T>(private val sortedList: SortedList<T>) : MutableList<T> {
+class MySortedList<T>(val sortedList: SortedList<T>) : MutableList<T> {
 
     override val size: Int
         get() = sortedList.size()

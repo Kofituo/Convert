@@ -21,7 +21,6 @@ import androidx.core.content.edit
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SortedList
 import androidx.transition.TransitionManager
 import com.example.unitconverter.AdditionItems.FavouritesCalledIt
 import com.example.unitconverter.AdditionItems.TextMessage
@@ -37,6 +36,9 @@ import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.stringify
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 
 @Suppress("PLUGIN_WARNING")
@@ -261,7 +263,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     override fun startActivity(data: FavouritesData) {
         buildIntent<ConvertActivity> {
             putExtra(TextMessage, data.topText)
-            putExtra(ViewIdMessage, data.cardId!!)
+            putExtra(ViewIdMessage, data.cardId)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(this)
         }
@@ -523,7 +525,6 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         get() = object :
             MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                start = System.currentTimeMillis()
                 motionLayout?.viewVisibility(R.id.app_bar_text, View.INVISIBLE, app_bar_text)
                 Log.e("here", "oop")
                 if (::favouritesAdapter.isInitialized)
@@ -533,12 +534,25 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 circleReveal(cover_up_toolbar, false)
-                Log.e("here", "pop")
+                Log.e(
+                    "here",
+                    "pop  ${(0 until sortedArray.size).map { sortedArray[it].cardName }}"
+                )
                 if (::favouritesAdapter.isInitialized) {
                     favouritesAdapter.apply {
                         enableSelection()
-                        Utils.replaceAll(originalList, mSortedList)
-                        useOriginalList()
+                        Log.e(
+                            "fsort",
+                            "${(0 until sortedList.size).map { sortedList[it].cardName }}"
+                        )
+                        Log.e("ori", "${originalList.map { it.cardName }}")
+                        //Utils.replaceAll(originalList, sortedList) //since it calls query with empty string
+                        /*updateRecyclerView<FavouritesData> {
+                            oldList = dataSet.toList()
+                            Utils.replaceAll(originalList, sortedList)
+                            newList = originalList
+                            useOriginalList()
+                        }*/
                     }
                 }
                 return true
@@ -548,50 +562,63 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     private var start = 0L
     private var emptyCount = 0
 
-    private val mySortedList by lazy(LazyThreadSafetyMode.NONE) {
-        MySortedList(mSortedList)
-    }
+    private lateinit var sortedArray: SortedArray<FavouritesData>
+
+    private inline val String.lowerCase get() = toLowerCase(Locale.getDefault())
 
     private fun initializeRecycler() {
         if (::favouritesAdapter.isInitialized) {
-            mSortedList.addAll(originalList)
-            favouritesAdapter.apply {
-                sortedList = mySortedList
+            val comparator = Comparator<FavouritesData> { o1, o2 ->
+                o1.cardName!!.lowerCase.compareTo(o2.cardName!!.lowerCase)
             }
+            sortedArray = SortedArray(comparator, originalList.size)
+            //.apply { addAll(originalList) }
+            favouritesAdapter.sortedList = sortedArray
         }
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        Log.e("1", "1  $newText  ${newText?.length}")
+        start = System.currentTimeMillis()
+        Log.e("1", "1  $newText  ${newText?.length}  ${hiddenSearchIcon.isActionViewExpanded}")
         if (!::favouritesAdapter.isInitialized || newText.isNull())
-            return false
+            return true
         val filteredList = filter(originalList, newText)
-        Utils.replaceAll(filteredList, mSortedList)
+        Log.e("list", "${filteredList.map { it.cardName }}")
+        //Utils.replaceAll(filteredList, sortedArray)
+        Log.e("sort", "${(0 until sortedArray.size).map { sortedArray[it].cardName }}")
         if (newText.isEmpty()) {
+            Utils.replaceAll(filteredList, sortedArray)
             Log.e("2", "2")
             if (emptyCount++ == 0) {
                 Log.e("3", "#")
-                return false
+                return true
             }
-            favouritesAdapter.useOriginalList()
+            favouritesAdapter.apply {
+                useOriginalList()
+                notifyItemRangeChanged(0, itemCount)
+            }
+            /*updateRecyclerView<FavouritesData> {
+                oldList = favouritesAdapter.dataSet.toList() // due to some nasty bug in edit text
+                Log.e("123","${(oldList as List<FavouritesData>).map { it.cardName }}  ${favouritesAdapter.useFilteredList}")
+                favouritesAdapter.useOriginalList()
+                newList = originalList
+                Log.e("456","${(newList as List<FavouritesData>).map { it.cardName }}  ${favouritesAdapter.useFilteredList}")
+            }*/
             Log.e("4", "$")
         } else {
-            favouritesAdapter.useFilteredList()
+            updateRecyclerView<FavouritesData> {
+                oldList = favouritesAdapter.dataSet.toList()
+                favouritesAdapter.useFilteredList()
+                Utils.replaceAll(filteredList, sortedArray)
+                newList = sortedArray
+            }
             recyclerView.scrollToPosition(0)
-            Log.e("end", "${System.currentTimeMillis() - start}")
         }
+        Log.e("end", "${System.currentTimeMillis() - start}")
         return true
     }
 
-    private lateinit var originalList: Collection<FavouritesData>
-
-    private val mSortedList by lazy(LazyThreadSafetyMode.NONE) {
-        SortedList(
-            FavouritesData::class.java,
-            FavouritesSortedList(favouritesAdapter),
-            originalList.size
-        )
-    }
+    private lateinit var originalList: List<FavouritesData>
 
     private fun filter(
         dataSet: Collection<FavouritesData>,
@@ -615,10 +642,8 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         val itemWindowLocation = IntArray(2)
         val menuItemView = findViewById<View>(R.id.search_button)
         menuItemView.getLocationInWindow(itemWindowLocation)
-
         val toolbarWindowLocation = IntArray(2)
         toolbar.getLocationInWindow(toolbarWindowLocation)
-
         val itemX = itemWindowLocation[0] - toolbarWindowLocation[0]
         val itemY = itemWindowLocation[1] - toolbarWindowLocation[1]
         val centerX = itemX + menuItemView.width / 2
@@ -627,4 +652,21 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     }
 
     private data class ViewLocation(val centerX: Int, val centerY: Int)
+
+    private val favouritesIsInit get() = ::favouritesAdapter.isInitialized
+
+    private inline fun <T> updateRecyclerView(lists: RecyclerLists<T>.() -> Unit) {
+        if (favouritesIsInit)
+            RecyclerViewUpdater<T>().apply {
+                RecyclerLists<T>().apply(lists).also {
+                    this.oldList = it.oldList!!
+                    this.newList = it.newList!!
+                    Log.e("up", "date")
+                }
+                apply(favouritesAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>)
+            }
+        else error("no adapter")
+    }
+
+    data class RecyclerLists<T>(var oldList: List<T>? = null, var newList: List<T>? = null)
 }

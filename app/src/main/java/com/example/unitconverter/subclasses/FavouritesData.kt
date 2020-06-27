@@ -4,10 +4,10 @@ import java.io.Serializable
 
 
 data class FavouritesData(
-    var drawableId: Int? = null,
+    var drawableId: Int = -1,
     var topText: CharSequence? = null,
     var metadata: String? = null,
-    var cardId: Int? = null,
+    var cardId: Int = -1,
     var cardName: String? = null
 ) : Serializable {
     companion object {

@@ -24,25 +24,21 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
     private var useFilteredList = false
 
     fun useFilteredList() {
-        if (!useFilteredList) {
-            useFilteredList = true
-            notifyItemRangeChanged(0, itemCount)
-        }
+        useFilteredList = true
+        //notifyItemRangeChanged(0, itemCount)
     }
 
     fun useOriginalList() {
-        if (useFilteredList) {
-            useFilteredList = false
-            notifyItemRangeChanged(0, itemCount)
-        }
+        useFilteredList = false
+        //notifyItemRangeChanged(0, itemCount)
     }
 
-    private val dataSet
+    val dataSet
         get() = if (useFilteredList) sortedList else unSortedList
 
-    lateinit var sortedList: MySortedList<FavouritesData>
+    lateinit var sortedList: SortedArray<FavouritesData>
 
-    val currentSize get() = sortedList.size
+    val currentSize get() = dataSet.size
 
     lateinit var activity: Activity
 
@@ -56,10 +52,10 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
     private val selectedItems = LinkedHashMap<Int, FavouritesData>(30)
 
     fun removeItems(): Boolean {
-        oldList = ArrayList(dataSet)
-        val result = dataSet.removeAll(selectedItems.values)
+        oldList = ArrayList(unSortedList)
+        val result = unSortedList.removeAll(selectedItems.values)
         if (result) selectedItems.clear()
-        newList = dataSet
+        newList = unSortedList
         DiffUtil.calculateDiff(diffUtil).dispatchUpdatesTo(this)
         return result
     }
@@ -139,7 +135,13 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
             }
         )
 
-    override fun getItemCount(): Int = dataSet.size
+    override fun getItemCount(): Int {
+        Log.e(
+            "size",
+            "${sortedList.size}  ${unSortedList.size}   ${dataSet.size}  ${dataSet === unSortedList}"
+        )
+        return dataSet.size
+    }
 
     private var rippleDrawable: Drawable? = null
         get() {
@@ -152,11 +154,12 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.apply {
             dataSet[position].apply {
+                Log.e("pos", "$cardName  $position")
                 imageView.setImageDrawable(
                     cacheDrawable[drawableId]
-                        ?: activity.resources.getDrawable(drawableId!!, null)
+                        ?: activity.resources.getDrawable(drawableId, null)
                             .apply {
-                                cacheDrawable[drawableId!!] = this
+                                cacheDrawable[drawableId] = this
                             }
                 )
                 imageView.contentDescription = topText

@@ -13,7 +13,6 @@ import android.util.SparseBooleanArray
 import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
-import androidx.recyclerview.widget.SortedList
 import com.example.unitconverter.builders.buildMutableList
 import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.builders.put
@@ -292,52 +291,50 @@ object Utils {
             }
         }
 
-    /**
-     * Use cover up toolbar for view
-     * */
-    /*fun Context.circleReveal(
-        view: View,
-        containsOverflow: Boolean,
-        isShow: Boolean
-    ) {
-        var width = view.width
-        width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) / 2
-        if (containsOverflow) width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material)
-        val centerX = width
-        val centerY = view.height / 2
-        val anim =
-            if (isShow)
-                ViewAnimationUtils.createCircularReveal(view, centerX, centerY, 0f, width.toFloat())
-            else
-                ViewAnimationUtils.createCircularReveal(view, centerX, centerY, width.toFloat(), 0f)
-        //anim.duration = 220
-        // make the view invisible when the animation is done
-        anim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                if (!isShow) {
-                    super.onAnimationEnd(animation)
-                    view.visibility = View.INVISIBLE
-                }
-            }
-        })
-        // make the view visible and start the animation
-        if (isShow) view.visibility = View.VISIBLE
-        // start the animation
-        Log.e("called","here g")
-        anim.start()
-    }*/
-
-    fun <T> replaceAll(dataSet: Collection<T>, sortedList: SortedList<T>) {
+    fun <T> replaceAll(dataSet: Collection<T>, sortedList: MutableList<T>) {
         sortedList.apply {
-            beginBatchedUpdates()
             //its in reverse so the indexing isn't affected
             //if it were 0 to size when we remove 0 1 now becomes original 2 and so on
-            for (i in size() - 1 downTo 0)
+            for (i in size - 1 downTo 0)
                 if (!dataSet.contains(this[i]))
                     this.remove(this[i])
+            //Log.e("data","${dataSet.map {(it as FavouritesData ).cardName}}  ")
+            //Log.e("before","${map {(it as FavouritesData ).cardName}}  ")
             addAll(dataSet)
-            endBatchedUpdates()
-
         }
     }
 }
+/**
+ * Use cover up toolbar for view
+ * */
+/*fun Context.circleReveal(
+    view: View,
+    containsOverflow: Boolean,
+    isShow: Boolean
+) {
+    var width = view.width
+    width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) / 2
+    if (containsOverflow) width -= resources.getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material)
+    val centerX = width
+    val centerY = view.height / 2
+    val anim =
+        if (isShow)
+            ViewAnimationUtils.createCircularReveal(view, centerX, centerY, 0f, width.toFloat())
+        else
+            ViewAnimationUtils.createCircularReveal(view, centerX, centerY, width.toFloat(), 0f)
+    //anim.duration = 220
+    // make the view invisible when the animation is done
+    anim.addListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationEnd(animation: Animator) {
+            if (!isShow) {
+                super.onAnimationEnd(animation)
+                view.visibility = View.INVISIBLE
+            }
+        }
+    })
+    // make the view visible and start the animation
+    if (isShow) view.visibility = View.VISIBLE
+    // start the animation
+    Log.e("called","here g")
+    anim.start()
+}*/
