@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import com.example.unitconverter.AdditionItems.TextMessage
+import com.example.unitconverter.AdditionItems.ToolbarColor
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.bugDetected
 import com.example.unitconverter.AdditionItems.endAnimation
@@ -474,10 +475,25 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             if (!useDefault) {
                 // store selected item
                 storeSelectedItems()
+            } else {
+                onSearchRequested()
             }
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onSearchRequested(): Boolean {
+        buildIntent<SearchActivity> {
+            val color =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    getColor(R.color.front_page)
+                else
+                    resources.getColor(R.color.front_page)
+            putExtra(ToolbarColor, color)
+            startActivity(this)
+        }
+        return true
     }
 
     private fun storeSelectedItems() {
@@ -544,6 +560,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             stringId = R.string.added_favourites
             duration = Toast.LENGTH_SHORT
         }
+    }
+
+    override fun convertInfo(viewId: Int) {
+        InfoFragment().show(supportFragmentManager, "CONVERT_INFO")
     }
 
     private val drawableIds by lazy(LazyThreadSafetyMode.NONE) {

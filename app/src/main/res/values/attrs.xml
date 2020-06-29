@@ -3,4 +3,7 @@
     <declare-styleable name="DataTextView">
         <attr name="metadata" format="string" />
     </declare-styleable>
+    <declare-styleable name="ScaleTransition">
+        <attr name="Scale_disappearedScale" format="float" />
+    </declare-styleable>
 </resources>

@@ -17,7 +17,7 @@ import com.example.unitconverter.miscellaneous.isNull
 
 class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
 
-    var initialSize: Int? = null
+    var initialSize = -1
 
     lateinit var unSortedList: MutableList<FavouritesData>
 
@@ -81,7 +81,10 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
         favouritesItem.selectionInitiated()
     }
 
-    fun getMap() = selectedItems
+    /**
+     * Selected Items
+     * */
+    fun getSelectedItemsMap() = selectedItems
 
     companion object {
         inline fun favouritesAdapter(block: FavouritesAdapter.() -> Unit) =

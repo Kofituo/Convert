@@ -74,6 +74,8 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
                 .setSelectionLister(this@MyPopupWindow)
             findViewById<QuickActionCardView>(R.id.favourite)
                 .setSelectionLister(this@MyPopupWindow)
+            findViewById<QuickActionCardView>(R.id.info)
+                .setSelectionLister(this@MyPopupWindow)
         }
 
         setOnDismissListener {
@@ -88,6 +90,8 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
         popupListener.callback()
 
     override fun addOneToFavorites() = popupListener.addOneToFavourites()
+
+    override fun convertInfo() = popupListener.convertInfo()
 
     override fun isShowing(): Boolean = mWindow.isShowing
 
@@ -320,5 +324,6 @@ class MyPopupWindow(private val context: Context, private val anchor: View, resI
     interface PopupListener {
         fun callback()
         fun addOneToFavourites()
+        fun convertInfo()
     }
 }

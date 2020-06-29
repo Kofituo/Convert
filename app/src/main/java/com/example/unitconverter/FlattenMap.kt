@@ -1,7 +1,5 @@
 package com.example.unitconverter
 
-import android.util.Log
-
 object FlattenMap {
 
     const val GROUP = 0
@@ -70,12 +68,12 @@ object FlattenMap {
         return array
     }
 
-    fun addNullsToList(
-        oldList: Collection<Int>,
+    fun <T> addNullsToList(
+        oldList: Collection<T>,
         changedIndex: Int,
         numberOfNewItems: Int
-    ): ArrayList<Int?> {
-        val array = ArrayList<Int?>(oldList.size + 4)
+    ): ArrayList<T?> {
+        val array = ArrayList<T?>(oldList.size + 4)
         for (i in oldList) {
             array.add(i)
             if (i == changedIndex) (0 until numberOfNewItems).forEach { _ -> array.add(null) }

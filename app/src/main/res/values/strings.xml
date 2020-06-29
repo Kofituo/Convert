@@ -63,6 +63,7 @@
     <string name="menu_button">Menu</string>
     <string name="arrow">Arrow</string>
     <string name="info">Convert\ninfo</string>
+    <string name="convert_info">About Quantity</string>
     <string name="selectItems">Select\nitems</string>
     <string name="convert">Convert</string>
     <string name="data_storage">Data Storage</string>
@@ -116,6 +117,11 @@
     <string name="decimal_place">DECIMAL PLACE</string>
     <string name="updating_currencies_rates">Updating Currencies And Rates</string>
     <string name="added_favourites">Added To Favourites</string>
+    <string name="quantity">Quantity:</string>
+    <string name="definition">Definition:</string>
+    <string name="measured_with">Measuring Tools:</string>
+    <string name="units">Units:</string>
+    <string name="did_you_know">Did You Know:</string>
     <!--    for the prefixes-->
     <string name="yotta">Yotta</string>
     <string name="yotta_symbol">Y</string>

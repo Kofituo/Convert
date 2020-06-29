@@ -25,4 +25,6 @@ class RecyclerViewUpdater<T> : DiffUtil.Callback() {
     fun apply(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
         DiffUtil.calculateDiff(this).dispatchUpdatesTo(adapter)
     }
+
+    data class RecyclerLists<T>(var oldList: List<T>? = null, var newList: List<T>? = null)
 }

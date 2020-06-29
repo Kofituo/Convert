@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.*
 import android.view.LayoutInflater
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -105,7 +106,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled((rootGroup !is MotionLayout))
+            setDisplayShowTitleEnabled(rootGroup !is MotionLayout)
         }
         window {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -159,16 +160,13 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                         icon = getDrawable(R.drawable.near_white)
                         (actionView as SearchView).apply {
                             maxWidth = Int.MAX_VALUE
-                            searchEditText =
-                                findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
-                                    .apply { hint = getString(R.string.search) }
+                            findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+                                .apply { hint = getString(R.string.search) }
                             setOnQueryTextListener(this@FavouritesActivity)
                         }
                     }
         }
     }
-
-    private lateinit var searchEditText: EditText
 
     private inline fun recyclerView(block: RecyclerView.() -> Unit) =
         findViewById<RecyclerView>(R.id.view).apply(block)
@@ -300,23 +298,27 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         when {
             initiated -> {
                 favouritesAdapter.apply {
-                    getMap().apply {
+                    getSelectedItemsMap().apply {
                         if (isNotEmpty()) {
                             val max = keys.max()!! + 1
                             //dummy null filled arrays so that only the selected items would call item changed
-                            val old = ArrayList<FavouritesData?>(size)
+                            /*val old = ArrayList<FavouritesData?>(size)
                             val new = ArrayList<FavouritesData?>(size)
                             for (i in 0 until max) {
                                 old.add(null)
                                 new.add(if (i in keys) FavouritesData() else null)
-                            }
+                            }*/
+                            val keys = IntArray(keys.size)
+                            this.keys.forEachIndexed { index, i -> keys[index] = i }
+                            Log.e("keys", "$keys")
                             clear()
                             forceChange = true
-                            oldList = old
-                            newList = new
-                            DiffUtil
+                            /*oldList = old
+                            newList = new*/
+                            keys.forEach { notifyItemChanged(it) }
+                            /*DiffUtil
                                 .calculateDiff(diffUtil)
-                                .dispatchUpdatesTo(favouritesAdapter)
+                                .dispatchUpdatesTo(favouritesAdapter)*/
                             endSelection()
                         }
                     }
@@ -342,7 +344,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     override fun onPause() {
         if (adapterIsInit) {
             favouritesAdapter.apply {
-                val arrayHasChanged = initialSize!! != currentSize
+                val arrayHasChanged = initialSize != currentSize
                 if (arrayHasChanged)
                     getSharedPreferences(MainActivity.FAVOURITES, Context.MODE_PRIVATE)
                         .edit {
@@ -353,7 +355,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                                 value = Json.stringify(new as ArrayList<String>)
                             }
                         }
-                getMap().apply {
+                getSelectedItemsMap().apply {
                     if (isNotEmpty())
                         viewModel.selectedFavourites = this
                 }
@@ -379,7 +381,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                     //forceChange = true
                     oldList = old
                     newList = new
-                    getMap().putAll(map)
+                    getSelectedItemsMap().putAll(map)
                     DiffUtil
                         .calculateDiff(diffUtil)
                         .dispatchUpdatesTo(favouritesAdapter)
@@ -398,6 +400,10 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                     if (this.isNotNull()) {
                         //selection occurred
                         //Log.e("finally", "finally  ${viewModel.selectedFavourites}")
+                        showToast {
+                            text = "recycler"
+                            duration = Toast.LENGTH_LONG
+                        }
                         recyclerView.post {
                             refreshFromMap(this)
                         }
@@ -534,14 +540,15 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 circleReveal(cover_up_toolbar, false)
-                Log.e(
-                    "here",
-                    "pop  ${(0 until sortedArray.size).map { sortedArray[it].cardName }}"
-                )
+                if (::sortedArray.isInitialized)
+                    Log.e(
+                        "here",
+                        "pop  ${(0 until sortedArray.size).map { sortedArray[it].cardName }}"
+                    )
                 if (::favouritesAdapter.isInitialized) {
                     favouritesAdapter.apply {
                         enableSelection()
-                        Log.e(
+                        if (::sortedArray.isInitialized) Log.e(
                             "fsort",
                             "${(0 until sortedList.size).map { sortedList[it].cardName }}"
                         )
@@ -567,7 +574,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     private inline val String.lowerCase get() = toLowerCase(Locale.getDefault())
 
     private fun initializeRecycler() {
-        if (::favouritesAdapter.isInitialized) {
+        if (favouritesIsInit) {
             val comparator = Comparator<FavouritesData> { o1, o2 ->
                 o1.cardName!!.lowerCase.compareTo(o2.cardName!!.lowerCase)
             }
@@ -582,12 +589,12 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         Log.e("1", "1  $newText  ${newText?.length}  ${hiddenSearchIcon.isActionViewExpanded}")
         if (!::favouritesAdapter.isInitialized || newText.isNull())
             return true
-        val filteredList = filter(originalList, newText)
-        Log.e("list", "${filteredList.map { it.cardName }}")
+        ///val filteredList = filter(originalList, newText)
+        //Log.e("list", "${filteredList.map { it.cardName }}")
         //Utils.replaceAll(filteredList, sortedArray)
         Log.e("sort", "${(0 until sortedArray.size).map { sortedArray[it].cardName }}")
         if (newText.isEmpty()) {
-            Utils.replaceAll(filteredList, sortedArray)
+            //Utils.replaceAll(filteredList, sortedArray)
             Log.e("2", "2")
             if (emptyCount++ == 0) {
                 Log.e("3", "#")
@@ -606,6 +613,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             }*/
             Log.e("4", "$")
         } else {
+            val filteredList = filter(originalList, newText)
             updateRecyclerView<FavouritesData> {
                 oldList = favouritesAdapter.dataSet.toList()
                 favouritesAdapter.useFilteredList()
@@ -655,10 +663,10 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
     private val favouritesIsInit get() = ::favouritesAdapter.isInitialized
 
-    private inline fun <T> updateRecyclerView(lists: RecyclerLists<T>.() -> Unit) {
+    private inline fun <T> updateRecyclerView(lists: RecyclerViewUpdater.RecyclerLists<T>.() -> Unit) {
         if (favouritesIsInit)
             RecyclerViewUpdater<T>().apply {
-                RecyclerLists<T>().apply(lists).also {
+                RecyclerViewUpdater.RecyclerLists<T>().apply(lists).also {
                     this.oldList = it.oldList!!
                     this.newList = it.newList!!
                     Log.e("up", "date")
@@ -667,6 +675,4 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             }
         else error("no adapter")
     }
-
-    data class RecyclerLists<T>(var oldList: List<T>? = null, var newList: List<T>? = null)
 }

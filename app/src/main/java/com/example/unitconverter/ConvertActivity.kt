@@ -25,6 +25,7 @@ import androidx.transition.TransitionManager
 import com.example.unitconverter.AdditionItems.Author
 import com.example.unitconverter.AdditionItems.FavouritesCalledIt
 import com.example.unitconverter.AdditionItems.TextMessage
+import com.example.unitconverter.AdditionItems.ToolbarColor
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.pkgName
@@ -75,7 +76,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private val bundle = Bundle()
     private lateinit var viewName: String
     lateinit var function: (Positions) -> String
-    private inline val isTemperature: Boolean get() = viewId == R.id.Temperature
+    private inline val isTemperature get() = viewId == R.id.Temperature
     private lateinit var viewModel: ConvertViewModel
     private inline val isCurrency get() = viewId == R.id.Currency
     private lateinit var networkFragment: NetworkFragment
@@ -171,7 +172,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         onCreateCalled = true
     }
 
-    private var onCreateCalled by resetAfterGet(initialValue = false, resetValue = false)
+    private var onCreateCalled by resetAfterGet(initialValue = true, resetValue = false)
 
     override fun onResume() {
         super.onResume()
@@ -183,26 +184,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 duration = Toast.LENGTH_SHORT
             }
         }
-        /*if (onCreateCalled) {
-            //correct edit text
-            val editText =
-                when {
-                    firstEditText.isFocused -> firstEditText
-                    secondEditText.isFocused -> secondEditText
-                    else -> return
-                }
-            showToast {
-                text = "corrected"
-                duration = Toast.LENGTH_SHORT
-            }
-            editText.apply {
-                val text =
-                    Editable.Factory.getInstance()
-                        .newEditable(text ?: return) // no null pointer error
-                this.text = null
-                this.text = text
-            }
-        }*/
     }
 
     private inline fun dialog(block: ConvertFragment.() -> Unit) =
@@ -378,8 +359,20 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 }
                 true
             }
+            R.id.search_button -> {
+                onSearchRequested()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onSearchRequested(): Boolean {
+        buildIntent<SearchActivity> {
+            putExtra(ToolbarColor, randomColor)
+            startActivity(this)
+        }
+        return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

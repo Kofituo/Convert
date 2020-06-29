@@ -3,7 +3,6 @@ package com.example.unitconverter.subclasses
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.Toast
 import com.example.unitconverter.AdditionItems.animationEnd
 import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.popupWindow
@@ -43,7 +42,7 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) :
                     selectItems.addOneToFavorites()
                 }
                 R.id.info -> {
-                    Toast.makeText(context, "Info clicked", Toast.LENGTH_SHORT).show()
+                    selectItems.convertInfo()
                 }
             }
             ///pw.dismiss()
@@ -58,6 +57,7 @@ class QuickActionCardView(context: Context, attributeSet: AttributeSet) :
     interface SelectItems {
         fun initiateSelections()
         fun addOneToFavorites()
+        fun convertInfo()
     }
 
     fun setSelectionLister(selectItems: SelectItems) {

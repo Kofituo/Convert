@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/all_round">
 
     <androidx.constraintlayout.widget.Guideline
@@ -10,21 +10,21 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.03" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/topGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.01" />
+        app:layout_constraintGuide_percent="0.025" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/rightGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent=".97" />
+        app:layout_constraintGuide_percent=".95" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/select_unit"
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="serif"
         android:padding="5dp"
-        android:text="@string/select_unit"
+        android:text="@string/convert_info"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="20sp"
@@ -46,51 +46,28 @@
         android:layout_height="1dp"
         android:layout_marginTop="3dp"
         android:background="#33AAAAAA"
-        app:layout_constraintBottom_toTopOf="@id/search_bar"
+        app:layout_constraintBottom_toTopOf="@id/content_scroll"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/select_unit" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/search_bar"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/content_scroll"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:hint="@string/search"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:boxCornerRadiusBottomStart="10dp"
-        app:boxCornerRadiusTopEnd="10dp"
-        app:boxCornerRadiusTopStart="10dp"
-        app:hintTextColor="?android:attr/textColorPrimary"
-        app:layout_constraintBottom_toTopOf="@id/recycler_view"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toTopOf="@id/viewDivider2"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/viewDivider1">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/searchEditText"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLength="20"
-            android:maxLines="1"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent"
+            android:text="a verty long tjext which i dint even careiiiiiiiiiil of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either " />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="1dp"
-        android:background="@color/adaptive_white_black"
-        android:layoutAnimation="@anim/convert_recycler_layout_animation"
-        android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@id/viewDivider2"
-        app:layout_constraintEnd_toEndOf="@id/rightGuide"
-        app:layout_constraintHeight_percent="0.7"
-        app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/search_bar" />
+    </androidx.core.widget.NestedScrollView>
 
     <View
         android:id="@+id/viewDivider2"
@@ -101,7 +78,7 @@
         app:layout_constraintBottom_toTopOf="@id/cancel_button"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/recycler_view" />
+        app:layout_constraintTop_toBottomOf="@id/content_scroll" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cancel_button"

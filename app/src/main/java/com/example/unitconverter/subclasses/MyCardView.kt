@@ -71,6 +71,10 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
         (parent as GridConstraintLayout).addOneToFavorites(name)
     }
 
+    override fun convertInfo() {
+        (parent as GridConstraintLayout).convertInfo(id)
+    }
+
     private var checkBoxIsEnabled = false
 
     fun enableCheckBox() {

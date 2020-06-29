@@ -28,6 +28,9 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
     var color: Int? = null
     var visibleItemsPerGroup: MutableMap<Int, Int> = LinkedHashMap(dataSet.size)
     lateinit var separators: PreferenceFragment.Separators
+    private val headerToIndex: LinkedHashMap<Int, String>
+    var dataSetCopy: ArrayMap<String, MutableCollection<PreferenceData>>
+    var groupsExpanded: SparseBooleanArray
 
     /**
      * At start say the first 5 views are all groups
@@ -41,8 +44,15 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
     init {
         //fill map
         var index = 0
-        dataSet.map {
-            visibleItemsPerGroup[index++] = it.value.size
+        headerToIndex = LinkedHashMap(dataSet.size)
+        dataSetCopy = ArrayMap(dataSet.size)
+        groupsExpanded = SparseBooleanArray(dataSet.size)
+        dataSet.forEach {
+            visibleItemsPerGroup[index] = it.value.size
+            headerToIndex[index] = it.key
+            dataSetCopy[it.key] = ArrayList(it.value.size)
+            groupsExpanded.append(index, false)
+            index++
         }
         visibleItemsPerGroup.apply { put(index - 1, 1) }//for the last element
     }
@@ -177,27 +187,27 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             else -> null
         }
 
-    private val headerToIndex =
+    /*private val headerToIndex: LinkedHashMap<Int, String> =
         LinkedHashMap<Int, String>(dataSet.size).apply {
             var index = 0
             dataSet.forEach {
                 put(index++, it.key)
             }
-        }
+        }*/
 
-    var dataSetCopy =
+    /*var dataSetCopy: ArrayMap<String, MutableCollection<PreferenceData>> =
         ArrayMap<String, MutableCollection<PreferenceData>>(dataSet.size).apply {
             dataSet.forEach {
                 put(it.key, mutableListOf())
             }
-        }
+        }*/
 
-    var groupsExpanded = SparseBooleanArray(dataSet.size).apply {
+    /*var groupsExpanded: SparseBooleanArray = SparseBooleanArray(dataSet.size).apply {
         var index = 0
         dataSet.forEach { _ ->
             append(index++, false)
         }
-    }
+    }*/
 
     private fun expand(groupPosition: Int, originalPosition: Int) {
         val visibleItems = visibleItemsPerGroup[groupPosition] ?: error("check code $groupPosition")
