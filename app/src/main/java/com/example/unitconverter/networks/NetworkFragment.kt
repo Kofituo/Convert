@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.unitconverter.builders.add
 import com.example.unitconverter.miscellaneous.isNotNull
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.IOException
@@ -16,16 +15,11 @@ import java.net.URL
 import java.util.*
 import javax.net.ssl.HttpsURLConnection
 import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.forEach
-import kotlin.collections.isNotEmpty
-import kotlin.collections.toTypedArray
 
 class NetworkFragment : Fragment() {
 
     private var callback: DownloadCallback<*>? = null
-    lateinit var urls: MutableList<String>
+    lateinit var urls: List<String>
     private lateinit var downloadTask: DownloadTask
 
     companion object {
@@ -69,6 +63,7 @@ class NetworkFragment : Fragment() {
         ) {
             callback?.also {
                 cancelDownload()
+                Log.e("start", "down  ${urls.size}")
                 @Suppress("UNCHECKED_CAST")
                 it as DownloadCallback<String>
                 downloadTask = DownloadTask(it).apply {
@@ -100,25 +95,31 @@ class NetworkFragment : Fragment() {
             val exception: Exception? = null
         )
 
+        var timeOut = 5555
         override fun onPreExecute() {
             if (callback.networkAvailable() != true) {
                 // If no connectivity, cancel task and update Callback with null data.
                 callback.updateFromDownload(null, null)
                 cancel(true)
             }
+            callback.onProgressUpdate(Statuses.CONNECTING)
         }
 
         override fun doInBackground(vararg params: String): List<Result> {
             val resultArray = ArrayList<Result>(params.size)
+            Log.e("pre", "pre ex  ${params.map { it }}")
             if (!isCancelled && params.isNotEmpty()) {
                 runBlocking {
-                    params.forEach {
+                    params.forEachIndexed { index, it ->
+                        Log.e("eac", "$index")
                         //concurrent op
-                        launch(Dispatchers.Default) {
+                        launch {
+                            Log.e("launch", "pop  ${params.size}  $index")
                             resultArray.add {
                                 try {
                                     val url = URL(it)
                                     val resultString = downloadUrl(url)
+                                    Log.e("were", "result $resultString")
                                     if (resultString != null) {
                                         Result(it, resultString)
                                     } else {
@@ -151,12 +152,13 @@ class NetworkFragment : Fragment() {
                 }
                 sortedList.forEach {
                     it.exception?.also { exception ->
-                        passException(it.url,exception)
+                        passException(it.url, exception)
                     }
                     it.resultValue?.also { resultValue ->
                         updateFromDownload(it.url, resultValue)
                     }
                 }
+                Log.e("sort", "$sortedList")
                 finishDownloading()
             }
         }
@@ -180,7 +182,7 @@ class NetworkFragment : Fragment() {
                     // Timeout for reading InputStream arbitrarily set to 3000ms.
                     readTimeout = 3000
                     // Timeout for connection.connect() arbitrarily set to 3000ms.
-                    connectTimeout = 5555
+                    connectTimeout = timeOut
                     // For this use case, set HTTP method to GET.
                     requestMethod = "GET"
                     // Already true by default but setting just in case; needs to be true since this request

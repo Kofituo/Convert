@@ -29,4 +29,8 @@ class Mass(override val context: Context) : RecyclerDataAbstractClass() {
         add(R.string.planck_mass, R.string.planck_mass_unit)
         add(R.string.solar_mass, R.string.solar_mass_unit)
     }
+
+    companion object {
+        fun getInstance(context: Context) = Mass(context)
+    }
 }

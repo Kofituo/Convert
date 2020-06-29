@@ -1,9 +1,5 @@
 package com.example.unitconverter.networks
 
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import java.lang.Exception
-
 interface DownloadCallback<T> {
 
     /**
@@ -21,7 +17,7 @@ interface DownloadCallback<T> {
      * Indicate to callback handler any progress update.
      * @param progressCode must be one of the constants defined in DownloadCallback.Progress.
      */
-    fun onProgressUpdate(progressCode: Int)
+    fun onProgressUpdate(progressCode: Int) {}
 
     /**
      * Indicates that the download operation has finished. This method is called even if the
@@ -29,5 +25,5 @@ interface DownloadCallback<T> {
      */
     fun finishDownloading()
 
-    fun passException(url: String?,exception: Exception)
+    fun passException(url: String?, exception: Exception)
 }

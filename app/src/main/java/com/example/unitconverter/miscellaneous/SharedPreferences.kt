@@ -25,12 +25,14 @@ inline fun editPreferences(
 
 inline fun <reified T> SharedPreferences.Editor.put(block: SharedPreferencesEdit<T>.() -> Unit): SharedPreferences.Editor =
     SharedPreferencesEdit<T>().apply(block).run {
+        @Suppress("UNCHECKED_CAST")
         when (T::class) {
             Boolean::class -> putBoolean(key, value as Boolean)
             String::class -> putString(key, value as? String)
             Int::class -> putInt(key, value as Int)
             Long::class -> putLong(key, value as Long)
             Float::class -> putFloat(key, value as Float)
+            Set::class -> putStringSet(key, value as? Set<String>)
             else -> TODO()
         }
     }
@@ -47,6 +49,7 @@ inline fun <reified T> SharedPreferences.get(key: String, block: T.() -> Unit = 
         Int::class -> (getInt(key, -1) as T).apply(block)
         Long::class -> (getLong(key, -1) as T).apply(block)
         Float::class -> (getFloat(key, -1f) as T).apply(block)
+        MutableSet::class -> (getStringSet(key, null) as T).apply(block)
         else -> TODO()
     }
 

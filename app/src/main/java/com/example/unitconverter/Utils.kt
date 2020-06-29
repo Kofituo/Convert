@@ -303,6 +303,10 @@ object Utils {
             addAll(dataSet)
         }
     }
+
+    fun hoursToMilliSeconds(hours: Int) = 3_600_000 * hours
+
+    fun daysToMilliSeconds(days: Int) = hoursToMilliSeconds(24 * days)
 }
 /**
  * Use cover up toolbar for view

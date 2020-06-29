@@ -5,16 +5,17 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.drawable.AnimationDrawable
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.*
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ToolbarColor
 import com.example.unitconverter.AdditionItems.ViewIdMessage
@@ -29,6 +30,7 @@ import com.example.unitconverter.AdditionItems.popupWindow
 import com.example.unitconverter.AdditionItems.statusBarHeight
 import com.example.unitconverter.AdditionItems.viewsMap
 import com.example.unitconverter.Utils.app_bar_bottom
+import com.example.unitconverter.Utils.daysToMilliSeconds
 import com.example.unitconverter.Utils.getNameToViewMap
 import com.example.unitconverter.Utils.name
 import com.example.unitconverter.Utils.reversed
@@ -39,6 +41,9 @@ import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.builders.put
 import com.example.unitconverter.builders.putAll
 import com.example.unitconverter.miscellaneous.*
+import com.example.unitconverter.networks.DownloadCallback
+import com.example.unitconverter.networks.NetworkFragment
+import com.example.unitconverter.networks.Token
 import com.example.unitconverter.subclasses.*
 import com.example.unitconverter.subclasses.FavouritesData.Companion.favouritesBuilder
 import kotlinx.android.synthetic.main.front_page_activity.*
@@ -50,13 +55,15 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.stringify
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashMap
+import kotlin.collections.set
 
 //change manifest setting to backup allow true
 @UnstableDefault
 @OptIn(ImplicitReflectionSerializer::class)
 class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface,
-    GridConstraintLayout.Selection, CoroutineScope by MainScope() {
+    GridConstraintLayout.Selection, CoroutineScope by MainScope(), DownloadCallback<String> {
 
     private val downTime get() = SystemClock.uptimeMillis()
     private val eventTime get() = SystemClock.uptimeMillis() + 10
@@ -112,11 +119,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         setContentView(R.layout.front_page_activity)
         setSupportActionBar(app_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        /*window.statusBarColor =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                getColor(R.color.front_page)
-            else resources.getColor(R.color.front_page)*/
-
         h = resources.displayMetrics.heightPixels / 2
         w = resources.displayMetrics.widthPixels / 2
         Log.e(
@@ -179,8 +181,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 apply()
             }
         }
+        initialiseDidYouKnow()
         onCreateCalled = true
-
         grid setSelectionListener this
     }
 
@@ -332,6 +334,11 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 key = "recentlyUsedBoolean"
                 value = recentlyUsedBool
             }
+            if (::completedOnes.isInitialized)
+                put<Set<String>> {
+                    key = "completedUpdates"
+                    value = completedOnes
+                }
             if (waitingArrayDeque.isNotEmpty()) {
                 //Log.e("fav", "$favouritesCalled")
                 if (!favouritesCalled)
@@ -385,14 +392,14 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         return true
     }
 
-    fun allViews(viewGroup: ViewGroup, int: Int = 0) {
+    /*fun allViews(viewGroup: ViewGroup, int: Int = 0) {
         for (i in 0 until viewGroup.childCount) {
             val view = viewGroup[i]
             Log.e("view ${if (int == 0) i else "$int.$i"}", "$view")
             if (view is ViewGroup)
                 allViews(view, i)
         }
-    }
+    }*/
 
     override fun onBackPressed() {
         grid {
@@ -466,8 +473,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         "$favouritesList  $waitingArrayDeque  " +
                                 "${waitingArrayDeque.size == favouritesList.size}"
                     )*/
-                    this@buildIntent
-                        .putExtra("$pkgName.favourites_list", favouritesList as Serializable)
+                    putExtra("$pkgName.favourites_list", favouritesList as Serializable)
                 }
                 startActivity(this)
             }
@@ -562,8 +568,140 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
     }
 
-    override fun convertInfo(viewId: Int) {
-        InfoFragment().show(supportFragmentManager, "CONVERT_INFO")
+    override fun convertInfo(viewId: Int, viewName: String) {
+        InfoFragment().apply {
+            arguments = Bundle(2).apply {
+                putInt("viewId", viewId)
+                putString("viewName", viewName)
+            }
+            show(supportFragmentManager, "CONVERT_INFO")
+        }
+    }
+
+    lateinit var didYouKnowUrls: MutableList<String>
+    lateinit var completedOnes: MutableSet<String>
+
+    private var lastUpdate: Long? = null
+
+    private fun initialiseDidYouKnow() {
+        /**
+         * Get which did you know are up to date after 7 days
+         * */
+        sharedPreferences {
+            get<Long>("lastCompleteUpdateTime") {
+                //null is for first time app opens or when download doesn't finish
+                lastUpdate =
+                    if (this == -1L || timeIsMoreThanNDays(this, 15)) null else this
+            }
+            if (lastUpdate.isNull()) {
+                /**
+                 * Get the ones which weren't updated
+                 * */
+                completedOnes = get("completedUpdates") ?: HashSet(originalMap.size)
+                val onesToUpdate = originalMap.keys subtract completedOnes
+                didYouKnowUrls = onesToUpdate.map {
+                    appendString {
+                        add { "${Token.Repository}/currency_conversions/contents/didYouKnow/$it.json" }
+                    }
+                } as MutableList<String>
+                Log.e("url", "$didYouKnowUrls")
+                downloadData(didYouKnowUrls)
+            }
+        }
+    }
+
+    @Suppress("SameParameterValue")
+    private fun timeIsMoreThanNDays(previousTime: Long, numberOfDays: Int): Boolean {
+        val difference = System.currentTimeMillis() - previousTime
+        return difference > daysToMilliSeconds(numberOfDays)
+    }
+
+    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
+
+    private var networkIsAvailable = false
+
+    private lateinit var networkFragment: NetworkFragment
+
+    //private var retry = false
+
+    private fun downloadData(list: List<String>) {
+        setNetworkCallback()
+        networkFragment =
+            NetworkFragment.createFragment(supportFragmentManager) { urls = list }
+        networkFragment.startDownload()
+    }
+
+    private var retry by ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
+
+    private fun setNetworkCallback() {
+        if (!::networkCallback.isInitialized) {
+            (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+                .apply {
+                    networkCallback = object : ConnectivityManager.NetworkCallback() {
+                        override fun onAvailable(network: Network) {
+                            networkIsAvailable = true
+                            if (retry)
+                                networkFragment.startDownload()
+                        }
+
+                        override fun onLost(network: Network) {
+                            networkIsAvailable = false
+                        }
+                    }
+                    registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
+                }
+        }
+    }
+
+    private var i = 0
+    override fun updateFromDownload(url: String?, result: String?) {
+        Log.e("i 5times", "i ${i++}")
+        //if it's null did you know would be blank and inform the user there
+        if (url.isNotNull() && result.isNotNull()) {
+            val viewName = url.substringAfterLast('/')
+            Log.e("result", "$result")
+            editPreferences {
+                put<String> {
+                    key = "did_you_know$viewName"
+                    value = result
+                }
+                apply()
+            }
+            didYouKnowUrls.remove(url)
+            completedOnes.add(url)
+        } else retry = true
+    }
+
+    override fun networkAvailable(): Boolean = networkIsAvailable
+
+    override fun finishDownloading() {
+        if (didYouKnowUrls.isEmpty()) {
+            //means all has been updated
+            editPreferences {
+                put<Set<String>> {
+                    key = "completedUpdates"
+                    value = null //so that next time it would start at fresh
+                }
+                put<Long> {
+                    key = "lastCompleteUpdateTime"
+                    value = System.currentTimeMillis()
+                }
+                apply()
+            }
+            networkFragment.cancelDownload()
+        } else
+            if (networkIsAvailable)
+                launch {
+                    //wait for sometime before we retry
+                    Log.e("chec", "delay ")
+                    delay(4500)
+                    networkFragment.startDownload()
+                }
+    }
+
+    override fun passException(url: String?, exception: Exception) {
+        //retry = true
+        Log.e("url", "$url", exception)
     }
 
     private val drawableIds by lazy(LazyThreadSafetyMode.NONE) {

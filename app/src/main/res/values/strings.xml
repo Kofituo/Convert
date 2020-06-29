@@ -2,11 +2,17 @@
     <string name="app_name">Unit Converter</string>
 
     <string name="header">Unit\nConverter</string>
+    <string name="first_bracket">(</string>
+    <string name="second_bracket">)</string>
     <string name="temperature">Temperature</string>
+    <string name="temp_def">Temperature is a physical property of matter that quantitatively expresses hot and cold</string>
+    <string name="temp_instr">Thermometer eg. Galileo thermometer, Gas thermometer, Pyrometer, Liquid Thermometer, Resistance Thermometer, etc</string>
     <string name="temp_meta">The Degree Of Heat Present In A Body</string>
     <string name="search">Search</string>
     <string name="area">Area</string>
     <string name="area_meta">The Measurement Of A Surface</string>
+    <string name="area_def">Area is the quantity that expresses the extent of a two-dimensional figure or shape or planar lamina, in the plane</string>
+    <string name="area_instr">Planimeter</string>
     <string name="sort">Sort</string>
     <string name="sort_by">Sort By</string>
     <string name="cancel">Cancel</string>
@@ -89,8 +95,15 @@
     <string name="swap">Swap</string>
     <string name="mass">Mass</string>
     <string name="mass_meta">The Quantity Of Matter Contained In A Body</string>
+    <string name="mass_definition">The quantity of matter which a body contains, as measured by its acceleration
+        under a given force or by the force exerted on it by a gravitational field</string>
+    <string name="mass_instrument">Balance, Weighing Scales, Inertial Balance</string>
     <string name="length">Length</string>
     <string name="length_meta">A Measure Of Distance</string>
+    <string name="length_instr">Scale Ruler, Caliper, Diagonal scale, Feeler gauge, Gauge blocks,
+        Gunter\'s chain, Measuring rod, Meter stick, Metric scale, Micrometer, Opisometer or Curvimeter,
+        Ruler, Stadimeter, Surveyor\'s wheel, Tape measure, Thread pitch gauge, Ultrasonic thickness gauge,
+        Yard stick</string>
     <string name="resistance">Resistance</string>
     <string name="resistance_meta">Opposition To The Flow Of Electric Current</string>
     <string name="power">Power</string>

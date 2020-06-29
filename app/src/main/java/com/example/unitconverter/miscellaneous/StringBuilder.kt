@@ -28,8 +28,11 @@ inline fun appendString(action: Value.() -> Unit) =
 inline fun appendString(capacity: Int, action: Value.() -> Unit) =
     Value(StringBuilder(capacity)).apply(action).stringBuilder.toString()
 
-inline fun Value.add(string: () -> String) =
+inline fun Value.add(string: () -> CharSequence) =
     stringBuilder.append(string())
 
-inline fun Value.addWithSpace(string: () -> String) =
+inline fun Value.addWithSpace(string: () -> CharSequence) =
     stringBuilder.append(string()).append(" ")
+
+inline fun Appendable.addLn(string: () -> CharSequence) =
+    appendln(string())

@@ -31,6 +31,7 @@ import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.filters
+import com.example.unitconverter.Utils.hoursToMilliSeconds
 import com.example.unitconverter.Utils.insertCommas
 import com.example.unitconverter.Utils.lengthFilter
 import com.example.unitconverter.Utils.minusSign
@@ -129,7 +130,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         if (isCurrency) {
             //update the map
             if (firstTime.isNull() ||
-                (System.currentTimeMillis() - firstTime!!) > 3600_000 * 3 // 3hours
+                (System.currentTimeMillis() - firstTime!!) > hoursToMilliSeconds(22) // 22hours
                 || currenciesList.isNullOrEmpty()
             ) {
                 Log.e("time", "time ${System.currentTimeMillis()} $firstTime $currenciesList")

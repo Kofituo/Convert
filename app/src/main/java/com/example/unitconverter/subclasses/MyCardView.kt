@@ -72,7 +72,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
     }
 
     override fun convertInfo() {
-        (parent as GridConstraintLayout).convertInfo(id)
+        (parent as GridConstraintLayout).convertInfo(id, name)
     }
 
     private var checkBoxIsEnabled = false

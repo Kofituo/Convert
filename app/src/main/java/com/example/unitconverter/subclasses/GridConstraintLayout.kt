@@ -192,10 +192,10 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
 
     fun addOneToFavorites(viewName: String) = selection.addOneToFavourites(viewName)
 
-    fun convertInfo(viewId: Int) = selection.convertInfo(viewId)
+    fun convertInfo(viewId: Int, viewName: String) = selection.convertInfo(viewId, viewName)
     interface Selection {
         fun changeSearchButton(useDefault: Boolean)
         fun addOneToFavourites(viewName: String)
-        fun convertInfo(viewId: Int)
+        fun convertInfo(viewId: Int, viewName: String)
     }
 }

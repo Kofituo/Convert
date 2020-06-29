@@ -118,5 +118,8 @@ abstract class RecyclerDataAbstractClass {
 
     fun String.toLC() = toLowerCase(locale)
 
+    companion object {
+        fun getI(context: Context) = this
+    }
     protected data class Data(var quantity: String? = null, var unit: CharSequence? = null)
 }

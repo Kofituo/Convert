@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
-    android:interpolator="@android:interpolator/fast_out_linear_in"
-    android:transitionOrdering="sequential">
-    <transition xmlns:app="http://schemas.android.com/apk/res-auto"
-        class="com.example.unitconverter.miscellaneous.ScaleTransition"
-        app:Scale_disappearedScale="0.7" />
-    <fade />
-</transitionSet>
