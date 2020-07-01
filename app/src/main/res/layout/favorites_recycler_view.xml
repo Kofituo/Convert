@@ -81,11 +81,4 @@
         app:layout_constraintHeight_percent="0.01"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/metadata" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/end_guide"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9" />
 </com.example.unitconverter.subclasses.IdConstrainLayout>

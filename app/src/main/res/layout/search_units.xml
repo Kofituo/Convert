@@ -4,63 +4,53 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingStart="28dp"
-    android:paddingEnd="28dp">
+    android:paddingStart="27dp"
+    android:paddingEnd="27dp">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_percent="0.01" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/topGuide"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05" />
-
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="@string/favourite"
-        android:src="@drawable/ic_add_box_black_24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@id/divider"
-        app:layout_constraintHorizontal_bias="0.3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/topGuide"
-        app:layout_constraintWidth_percent="0.05" />
+        app:layout_constraintGuide_percent="0.1" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/top_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:fontFamily="sans-serif-thin"
+        android:maxLines="1"
         android:text="@string/favourite"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="?android:attr/textColorPrimary"
-        android:textSize="19sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/metadata"
+        app:layout_constraintBottom_toTopOf="@id/units"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/divider"
         app:layout_constraintTop_toTopOf="@id/topGuide" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/metadata"
+        android:id="@+id/units"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="3dp"
+        android:ellipsize="end"
         android:fontFamily="sans-serif-light"
         android:maxLines="1"
         android:text="@string/add_to_favourites"
         android:textColor="?android:attr/textColorPrimary"
         app:autoSizeMaxTextSize="19sp"
         app:autoSizeMinTextSize="14sp"
+        app:autoSizeStepGranularity="2sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@id/view_divider"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,11 +62,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
-        android:background="@android:color/darker_gray"
+        android:background="#D5D3D3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.01"
+        app:layout_constraintHeight_percent="0.008"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/metadata" />
-
+        app:layout_constraintTop_toBottomOf="@id/units" />
 </com.example.unitconverter.subclasses.IdConstrainLayout>

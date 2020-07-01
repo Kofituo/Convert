@@ -10,14 +10,12 @@ class ChildViewHolder(childView: View, private val int: Int) : RecyclerView.View
     View.OnClickListener, View.OnTouchListener {
 
     private var childClickListener: ChildClickListener? = null
-    private var pairs: MutableList<MyRadioButton?> = ArrayList(2)
 
     val titleButton: MyRadioButton = childView.findViewById(R.id.decimal_notation)
     private var isChecked = false
 
     init {
         titleButton.apply {
-            pairs.add(this)
             buttonTintList = ColorStateList.valueOf(int)
             setOnClickListener(this@ChildViewHolder)
             setOnTouchListener(this@ChildViewHolder)

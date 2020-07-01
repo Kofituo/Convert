@@ -628,20 +628,22 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
     private lateinit var originalList: List<FavouritesData>
 
-    private fun filter(
-        dataSet: Collection<FavouritesData>,
-        searchText: CharSequence
-    ): Collection<FavouritesData> {
-        if (searchText.isBlank()) return dataSet //fast return
-        val mainText = searchText.trim()
+    companion object {
+        fun filter(
+            dataSet: Collection<FavouritesData>,
+            searchText: CharSequence
+        ): Collection<FavouritesData> {
+            if (searchText.isBlank()) return dataSet //fast return
+            val mainText = searchText.trim()
 
-        return buildMutableList {
-            for (i in dataSet) {
-                val text = i.cardName!!
-                val meta = i.metadata!!
-                if (text.contains(mainText, ignoreCase = true)
-                    || meta.contains(mainText, ignoreCase = true)
-                ) add(i)
+            return buildMutableList {
+                for (i in dataSet) {
+                    val text = i.cardName!!
+                    val meta = i.metadata
+                    if (text.contains(mainText, ignoreCase = true)
+                        || meta?.contains(mainText, ignoreCase = true) == true
+                    ) add(i)
+                }
             }
         }
     }

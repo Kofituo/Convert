@@ -16,10 +16,7 @@ import android.widget.TextView
 import androidx.core.view.get
 import androidx.fragment.app.DialogFragment
 import com.example.unitconverter.miscellaneous.*
-import com.example.unitconverter.recyclerViewData.Area
-import com.example.unitconverter.recyclerViewData.Length
-import com.example.unitconverter.recyclerViewData.Mass
-import com.example.unitconverter.recyclerViewData.Temperature
+import com.example.unitconverter.recyclerViewData.*
 import com.google.android.material.button.MaterialButton
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.Json
@@ -36,7 +33,6 @@ class InfoFragment : DialogFragment() {
     private lateinit var viewName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getInt("viewId")
         sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE)
         aboutQuantity = aboutQuantity()
     }
@@ -84,10 +80,12 @@ class InfoFragment : DialogFragment() {
                 didYouKnow = map[index]
             }
         }
+        val list: List<RecyclerDataClass>
+        val unit: CharSequence
         return when (arguments?.getInt("viewId")) {
             R.id.Mass -> {
-                val list = Mass(requireContext()).getList()
-                val unit = getUnitsWithPrefix(list, 17)
+                list = Mass(requireContext()).getList()
+                unit = getUnitsWithPrefix(list, 17)
                 AboutQuantity(
                     R.string.mass.gS,
                     R.string.mass_definition.gS,
@@ -96,9 +94,8 @@ class InfoFragment : DialogFragment() {
                     didYouKnow
                 )
             }
-
             R.id.Temperature -> {
-                val unit = getUnits(Temperature(requireContext()).getList())
+                unit = getUnits(Temperature(requireContext()).getList())
                 AboutQuantity(
                     R.string.temperature.gS,
                     R.string.temp_def.gS,
@@ -107,9 +104,8 @@ class InfoFragment : DialogFragment() {
                     didYouKnow
                 )
             }
-
             R.id.Area -> {
-                val unit = getUnitsWithPrefix(Area(requireContext()).getList(), 7)
+                unit = getUnitsWithPrefix(Area(requireContext()).getList(), 7)
                 AboutQuantity(
                     R.string.area.gS,
                     R.string.area_def.gS,
@@ -119,7 +115,7 @@ class InfoFragment : DialogFragment() {
                 )
             }
             R.id.Length -> {
-                val unit = getUnitsWithPrefix(Length(requireContext()).getList(), 17)
+                unit = getUnitsWithPrefix(Length(requireContext()).getList(), 17)
                 AboutQuantity(
                     R.string.length.gS,
                     R.string.length_meta.gS,
@@ -128,29 +124,155 @@ class InfoFragment : DialogFragment() {
                     didYouKnow
                 )
             }
-            R.id.Volume -> null
-
-            R.id.Angle -> null
-
-            R.id.time -> null
-
-            R.id.Pressure -> null
-
-            R.id.Speed -> null
-
-            R.id.fuelEconomy -> null
-
-            R.id.dataStorage -> null
-
-            R.id.electric_current -> null
-
-            R.id.luminance -> null
-
-            R.id.Illuminance -> null
-
-            R.id.energy -> null
-
-            R.id.heatCapacity -> null
+            R.id.Volume -> {
+                list = Volume(requireContext()).getList()
+                unit = appendString {
+                    add { getUnitsWithPrefix(list.subList(0, 1), 1) }
+                    add { getUnitsWithPrefix(list.subList(8, list.size), 8) }
+                }
+                AboutQuantity(
+                    R.string.volume.gS,
+                    R.string.volume_def.gS,
+                    R.string.volume_instr.gS,
+                    unit,
+                    didYouKnow
+                )
+            }
+            R.id.Angle -> {
+                unit = getUnits(Angle(requireContext()).getList())
+                AboutQuantity(
+                    R.string.angle.gS,
+                    R.string.angle_def.gS,
+                    R.string.angle_instr.gS,
+                    unit,
+                    didYouKnow
+                )
+            }
+            R.id.time -> {
+                unit = getUnitsWithPrefix(Time(requireContext()).getList(), 17)
+                AboutQuantity(
+                    R.string.time.gS,
+                    R.string.time_def.gS,
+                    R.string.time_instr.gS,
+                    unit,
+                    didYouKnow
+                )
+            }
+            R.id.Pressure -> {
+                list = Pressure(requireContext()).getList()
+                unit = appendString {
+                    add { addOne(list[0]) }
+                    add { addOne(list[17]) }
+                    add { addOne(list[18]) }
+                    add { getUnitsWithPrefix(list.subList(21, list.size), 9) }
+                }
+                AboutQuantity(
+                    R.string.pressure.gS,
+                    R.string.pressure_def.gS,
+                    R.string.pressure_instr.gS,
+                    unit,
+                    didYouKnow
+                )
+            }
+            R.id.Speed -> {
+                list = Speed(requireContext()).getList()
+                unit = appendString {
+                    add { getUnitsWithPrefix(list.subList(0, 23), 17) }
+                    add { ", " }
+                    add { getUnits(list.subList(28, list.size)) }
+                }
+                AboutQuantity(
+                    R.string.speed.gS,
+                    R.string.speed_def.gS,
+                    R.string.speed_instr.gS,
+                    unit,
+                    didYouKnow
+                )
+            }
+            R.id.fuelEconomy -> {
+                list = FuelEconomy(requireContext()).getList()
+                unit = appendString {
+                    add { addOne(list[0]) }
+                    add { getUnits(list.subList(5, 12)) }
+                    add { addOne(list[15]) }
+                    add { addOne(list[list.size - 1]) }
+                }
+                AboutQuantity(
+                    R.string.fuel_economy.gS,
+                    R.string.fuel_def.gS,
+                    R.string.fuel_instr.gS,
+                    unit,
+                    didYouKnow
+                )
+            }
+            R.id.dataStorage -> {
+                list = DataStorage(requireContext()).getList()
+                unit = getUnits(list.subList(0, 3))
+                AboutQuantity(
+                    R.string.data_storage.gS,
+                    R.string.data_meta.gS,
+                    R.string.data_instr.gS,
+                    unit,
+                    didYouKnow
+                )
+            }
+            R.id.electric_current -> {
+                list = ElectricCurrent(requireContext()).getList()
+                unit = addOne(list[0]).append(addOne(list[list.size - 1], true))
+                AboutQuantity(
+                    R.string.electric_current.gS,
+                    R.string.current_def.gS,
+                    R.string.current_instr.gS,
+                    unit,
+                    didYouKnow
+                )
+            }
+            R.id.luminance -> {
+                list = Luminance(requireContext()).getList()
+                unit = getUnitsWithPrefix(list.subList(0, 13), 6)
+                AboutQuantity(
+                    R.string.luminance.gS,
+                    R.string.luminance_meta.gS,
+                    R.string.luminance_instr.gS,
+                    unit,
+                    didYouKnow
+                )
+            }
+            R.id.Illuminance -> {
+                list = Illuminance(requireContext()).getList()
+                unit = appendString {
+                    add { getUnitsWithPrefix(list.subList(0, 5), 3) }
+                    add { ", " }
+                    add { addOne(list[9]).append(addOne(list[10], true)) }
+                }
+                AboutQuantity(
+                    R.string.illuminance.gS,
+                    R.string.illuminance_meta.gS,
+                    R.string.luminance_instr.gS,
+                    unit,
+                    didYouKnow
+                )
+            }
+            R.id.energy -> {
+                list = Energy(requireContext()).getList()
+                unit = appendString {
+                    add { getUnitsWithPrefix(list.subList(0, 23), 17) }
+                    add { ", " }
+                    add { getUnits(list.subList(27, 31)) }
+                    '['
+                }
+                AboutQuantity(
+                    R.string.energy.gS,
+                    R.string.energy_def.gS,
+                    R.string.energy_instr.gS,
+                    unit, didYouKnow
+                )
+            }
+            R.id.heatCapacity -> {
+                list = HeatCapacity(requireContext()).getList()
+                unit = getUnitsWithPrefix(list, 4)
+                null
+            }
 
             R.id.Angular_Velocity -> null
 
@@ -189,6 +311,21 @@ class InfoFragment : DialogFragment() {
         }
     }
 
+    private fun addOne(recyclerDataClass: RecyclerDataClass, isEnd: Boolean = false) =
+        recyclerDataClass.run {
+            StringBuilder().apply {
+                put {
+                    addWithSpace { quantity }
+                    add { R.string.first_bracket.gS }
+                    add { correspondingUnit }
+                    add { R.string.second_bracket.gS }
+                    if (!isEnd)
+                        add { ", " }
+                }
+            }
+        }
+
+
     private fun getUnitsWithPrefix(
         recyclerDataClassList: List<RecyclerDataClass>,
         changeIndex: Int
@@ -205,7 +342,7 @@ class InfoFragment : DialogFragment() {
                     }
                 }
             }
-            val rest = getUnits(subList(changeIndex, size - 1))
+            val rest = getUnits(subList(changeIndex, size))
             return first.append(rest).toString()
         }
     }
@@ -224,8 +361,8 @@ class InfoFragment : DialogFragment() {
                 appendln()
                 addWithSpace { increaseSize(boldText(R.string.units.gS)) }
                 addLn { it.units }
-                appendln()
                 it.didYouKnow?.apply {
+                    appendln()
                     addWithSpace { increaseSize(italicsAndBold(R.string.did_you_know.gS)) }
                     add { this }
                 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/top_color">
+        <shape
+            android:shape="rectangle"
+            android:tint="@color/colorPrimary">
+
+        </shape>
+        <!--set the top color programmatically-->
+    </item>
+    <item android:gravity="bottom|left">
+        <shape android:shape="rectangle">
+            <corners android:topLeftRadius="25dp" />
+            <solid android:color="@color/adaptive_white_black" />
+
+        </shape>
+    </item>
+</layer-list><!--
+
+    <?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/top_color">
+    <shape android:shape="rectangle"
+        android:tint="@color/colorPrimary"/>
+    &lt;!&ndash;set the top color programmatically&ndash;&gt;
+</item>
+<item android:gravity="bottom|left">
+    <shape android:shape="rectangle">
+        <corners
+            android:topLeftRadius="22dp"
+            android:topRightRadius="22dp"
+            />
+        <solid android:color="@color/adaptive_white_black" />
+        <size
+            android:height="18dp" />
+    </shape>
+</item>
+</layer-list>-->

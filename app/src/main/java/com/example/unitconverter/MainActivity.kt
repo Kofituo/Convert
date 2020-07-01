@@ -17,7 +17,6 @@ import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.unitconverter.AdditionItems.TextMessage
-import com.example.unitconverter.AdditionItems.ToolbarColor
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.bugDetected
 import com.example.unitconverter.AdditionItems.endAnimation
@@ -53,6 +52,7 @@ import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.stringify
+import java.io.FileNotFoundException
 import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashSet
@@ -105,10 +105,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private val sharedPreferences by defaultPreferences()
 
     private lateinit var mSelectedOrderArray: Map<String, Int>
-
-    companion object {
-        const val FAVOURITES = "$pkgName.favourites_activity_list"
-    }
 
     private val waitingArrayDeque by lazy(LazyThreadSafetyMode.NONE) {
         ArrayDeque<String>(30)
@@ -181,7 +177,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 apply()
             }
         }
-        initialiseDidYouKnow()
+        //initialiseDidYouKnow()
         onCreateCalled = true
         grid setSelectionListener this
     }
@@ -491,12 +487,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun onSearchRequested(): Boolean {
         buildIntent<SearchActivity> {
-            val color =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                    getColor(R.color.front_page)
-                else
-                    resources.getColor(R.color.front_page)
-            putExtra(ToolbarColor, color)
+            putExtra("MAIN_ACTIVITY", true)
             startActivity(this)
         }
         return true
@@ -592,6 +583,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 //null is for first time app opens or when download doesn't finish
                 lastUpdate =
                     if (this == -1L || timeIsMoreThanNDays(this, 15)) null else this
+                Log.e("thi", "$this")
             }
             if (lastUpdate.isNull()) {
                 /**
@@ -631,16 +623,14 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         networkFragment.startDownload()
     }
 
-    private var retry by ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
-
     private fun setNetworkCallback() {
         if (!::networkCallback.isInitialized) {
-            (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-                .apply {
+            (getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager)
+                ?.apply {
                     networkCallback = object : ConnectivityManager.NetworkCallback() {
                         override fun onAvailable(network: Network) {
                             networkIsAvailable = true
-                            if (retry)
+                            if (didYouKnowUrls.isNotEmpty() && ::networkFragment.isInitialized)
                                 networkFragment.startDownload()
                         }
 
@@ -669,13 +659,13 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
             didYouKnowUrls.remove(url)
             completedOnes.add(url)
-        } else retry = true
+        }
     }
 
     override fun networkAvailable(): Boolean = networkIsAvailable
 
     override fun finishDownloading() {
-        if (didYouKnowUrls.isEmpty()) {
+        if (completedOnes.size == originalMap.size) {
             //means all has been updated
             editPreferences {
                 put<Set<String>> {
@@ -693,138 +683,149 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             if (networkIsAvailable)
                 launch {
                     //wait for sometime before we retry
-                    Log.e("chec", "delay ")
+                    Log.e("chec", "delay ${didYouKnowUrls.isNotEmpty()} ")
                     delay(4500)
-                    networkFragment.startDownload()
+                    if (didYouKnowUrls.isNotEmpty())
+                        networkFragment.startDownload()
+                    else networkFragment.cancelDownload()
                 }
     }
 
     override fun passException(url: String?, exception: Exception) {
         //retry = true
-        Log.e("url", "$url", exception)
+        if (exception is FileNotFoundException) {
+            //networkFragment.cancelDownload()
+            Log.e("called", "canceled")
+            //remove the one i have'nt yet filled
+            didYouKnowUrls.remove(url)
+        }
+        Log.e("url", "$url  $exception")
     }
 
-    private val drawableIds by lazy(LazyThreadSafetyMode.NONE) {
-        buildMutableMap<Int, Int>(30) {
-            put {
-                key = R.id.Temperature
-                value = R.drawable.ic_temperature
-            }
-            put {
-                key = R.id.Area
-                value = R.drawable.ic_area
-            }
-            put {
-                key = R.id.Mass
-                value = R.drawable.ic_dumb_bell
-            }
-            put {
-                key = R.id.Volume
-                value = R.drawable.ic_cylinder
-            }
-            put {
-                key = R.id.Length
-                value = R.drawable.ic_ruler
-            }
-            put {
-                key = R.id.Angle
-                value = R.drawable.ic_angle1
-            }
-            put {
-                key = R.id.Pressure
-                value = R.drawable.ic_blood_pressure1
-            }
-            put {
-                key = R.id.Speed
-                value = R.drawable.ic_fast
-            }
-            put {
-                key = R.id.time
-                value = R.drawable.ic_circular_clock
-            }
-            put {
-                key = R.id.fuelEconomy
-                value = R.drawable.ic_gas_station
-            }
-            put {
-                key = R.id.dataStorage
-                value = R.drawable.ic_hard_drive
-            }
-            put {
-                key = R.id.electric_current
-                value = R.drawable.ic_lab
-            }
-            put {
-                key = R.id.luminance
-                value = R.drawable.ic_light_bulb
-            }
-            put {
-                key = R.id.Illuminance
-                value = R.drawable.ic_light_bulb_illuminance
-            }
-            put {
-                key = R.id.energy
-                value = R.drawable.ic_science
-            }
-            put {
-                key = R.id.Currency
-                value = R.drawable.ic_exchange
-            }
-            put {
-                key = R.id.heatCapacity
-                value = R.drawable.ic_flame
-            }
-            put {
-                key = R.id.Angular_Velocity
-                value = R.drawable.ic_angular_velocity
-            }
-            put {
-                key = R.id.angularAcceleration
-                value = R.drawable.ic_angular_acceleration
-            }
-            put {
-                key = R.id.sound
-                value = R.drawable.ic_speaker
-            }
-            put {
-                key = R.id.resistance
-                value = R.drawable.ic_resistor
-            }
-            put {
-                key = R.id.radioactivity
-                value = R.drawable.ic_radiation
-            }
-            put {
-                key = R.id.force
-                value = R.drawable.force
-            }
-            put {
-                key = R.id.power
-                value = R.drawable.ic_fuse_box
-            }
-            put {
-                key = R.id.density
-                value = R.drawable.ic_ice
-            }
-            put {
-                key = R.id.flow
-                value = R.drawable.ic_sea
-            }
-            put {
-                key = R.id.inductance
-                value = R.drawable.ic_inductor
-            }
-            put {
-                key = R.id.resolution
-                value = R.drawable.ic_monitor
-            }
-            put {
-                key = R.id.cooking
-                value = R.drawable.ic_cooking
-            }
-            put {
-                key = R.id.number_base
-                value = R.drawable.ic_ten
+    companion object {
+        const val FAVOURITES = "$pkgName.favourites_activity_list"
+        val drawableIds by lazy(LazyThreadSafetyMode.NONE) {
+            buildMutableMap<Int, Int>(30) {
+                put {
+                    key = R.id.Temperature
+                    value = R.drawable.ic_temperature
+                }
+                put {
+                    key = R.id.Area
+                    value = R.drawable.ic_area
+                }
+                put {
+                    key = R.id.Mass
+                    value = R.drawable.ic_dumb_bell
+                }
+                put {
+                    key = R.id.Volume
+                    value = R.drawable.ic_cylinder
+                }
+                put {
+                    key = R.id.Length
+                    value = R.drawable.ic_ruler
+                }
+                put {
+                    key = R.id.Angle
+                    value = R.drawable.ic_angle1
+                }
+                put {
+                    key = R.id.Pressure
+                    value = R.drawable.ic_blood_pressure1
+                }
+                put {
+                    key = R.id.Speed
+                    value = R.drawable.ic_fast
+                }
+                put {
+                    key = R.id.time
+                    value = R.drawable.ic_circular_clock
+                }
+                put {
+                    key = R.id.fuelEconomy
+                    value = R.drawable.ic_gas_station
+                }
+                put {
+                    key = R.id.dataStorage
+                    value = R.drawable.ic_hard_drive
+                }
+                put {
+                    key = R.id.electric_current
+                    value = R.drawable.ic_lab
+                }
+                put {
+                    key = R.id.luminance
+                    value = R.drawable.ic_light_bulb
+                }
+                put {
+                    key = R.id.Illuminance
+                    value = R.drawable.ic_light_bulb_illuminance
+                }
+                put {
+                    key = R.id.energy
+                    value = R.drawable.ic_science
+                }
+                put {
+                    key = R.id.Currency
+                    value = R.drawable.ic_exchange
+                }
+                put {
+                    key = R.id.heatCapacity
+                    value = R.drawable.ic_flame
+                }
+                put {
+                    key = R.id.Angular_Velocity
+                    value = R.drawable.ic_angular_velocity
+                }
+                put {
+                    key = R.id.angularAcceleration
+                    value = R.drawable.ic_angular_acceleration
+                }
+                put {
+                    key = R.id.sound
+                    value = R.drawable.ic_speaker
+                }
+                put {
+                    key = R.id.resistance
+                    value = R.drawable.ic_resistor
+                }
+                put {
+                    key = R.id.radioactivity
+                    value = R.drawable.ic_radiation
+                }
+                put {
+                    key = R.id.force
+                    value = R.drawable.force
+                }
+                put {
+                    key = R.id.power
+                    value = R.drawable.ic_fuse_box
+                }
+                put {
+                    key = R.id.density
+                    value = R.drawable.ic_ice
+                }
+                put {
+                    key = R.id.flow
+                    value = R.drawable.ic_sea
+                }
+                put {
+                    key = R.id.inductance
+                    value = R.drawable.ic_inductor
+                }
+                put {
+                    key = R.id.resolution
+                    value = R.drawable.ic_monitor
+                }
+                put {
+                    key = R.id.cooking
+                    value = R.drawable.ic_cooking
+                }
+                put {
+                    key = R.id.number_base
+                    value = R.drawable.ic_ten
+                }
             }
         }
     }

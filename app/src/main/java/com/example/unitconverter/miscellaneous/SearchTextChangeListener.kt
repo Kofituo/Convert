@@ -45,20 +45,22 @@ class SearchTextChangeListener(
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
-    private fun filter(
-        dataSet: MutableList<RecyclerDataClass>,
-        searchText: CharSequence
-    ): MutableList<RecyclerDataClass> {
-        if (searchText.isBlank()) return dataSet //fast return
-        val mainText = searchText.trim()
+    companion object {
+        fun filter(
+            dataSet: Collection<RecyclerDataClass>,
+            searchText: CharSequence
+        ): Collection<RecyclerDataClass> {
+            if (searchText.isBlank()) return dataSet //fast return
+            val mainText = searchText.trim()
 
-        return buildMutableList {
-            for (i in dataSet) {
-                val text = i.quantity
-                val unit = i.correspondingUnit
-                if (text.contains(mainText, ignoreCase = true) ||
-                    unit.contains(mainText, ignoreCase = true)
-                ) add(i)
+            return buildMutableList {
+                for (i in dataSet) {
+                    val text = i.quantity
+                    val unit = i.correspondingUnit
+                    if (text.contains(mainText, ignoreCase = true) ||
+                        unit.contains(mainText, ignoreCase = true)
+                    ) add(i)
+                }
             }
         }
     }

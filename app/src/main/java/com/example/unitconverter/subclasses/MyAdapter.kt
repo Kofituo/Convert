@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
+import com.example.unitconverter.Utils
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.miscellaneous.inflate
 import com.example.unitconverter.miscellaneous.layoutParams
@@ -103,8 +104,9 @@ class MyAdapter(
 
     fun add(dataSet: MutableList<RecyclerDataClass>) = mSortedList.addAll(dataSet)
 
-    fun replaceAll(dataSet: MutableList<RecyclerDataClass>) {
-        mSortedList.apply {
+    fun replaceAll(dataSet: Collection<RecyclerDataClass>) {
+        Utils.replaceAll(dataSet, mSortedList)
+        /*mSortedList.apply {
             beginBatchedUpdates()
             //its in reverse so the indexing isn't affected
             //if it were 0 to size when we remove 0 1 now becomes original 2 and so on
@@ -113,7 +115,7 @@ class MyAdapter(
                     this.remove(this[i])
             addAll(dataSet)
             endBatchedUpdates()
-        }
+        }*/
     }
 
     interface OnRadioButtonsClickListener {
@@ -125,32 +127,12 @@ class MyAdapter(
     }
 
     private val mSortedList =
-        SortedList(RecyclerDataClass::class.java,
-            object : SortedList.Callback<RecyclerDataClass>() {
-                override fun areItemsTheSame(item1: RecyclerDataClass, item2: RecyclerDataClass) =
-                    item1.quantity == item2.quantity &&
-                            item1.correspondingUnit == item2.correspondingUnit
-
-                override fun onMoved(fromPosition: Int, toPosition: Int) =
-                    notifyItemMoved(fromPosition, toPosition)
-
-                override fun onChanged(position: Int, count: Int) =
-                    notifyItemRangeChanged(position, count)
-
-                override fun onInserted(position: Int, count: Int) =
-                    notifyItemRangeInserted(position, count)
-
-                override fun onRemoved(position: Int, count: Int) =
-                    notifyItemRangeRemoved(position, count)
-
-                override fun compare(o1: RecyclerDataClass, o2: RecyclerDataClass) =
-                    comparator.compare(o1, o2)
-
-                override fun areContentsTheSame(
-                    oldItem: RecyclerDataClass?,
-                    newItem: RecyclerDataClass?
-                ) = oldItem == newItem
-            }, dataSet.size
+        SortedList(
+            RecyclerDataClass::class.java,
+            SortedRecyclerDataCallback(
+                this as RecyclerView.Adapter<RecyclerView.ViewHolder>,
+                comparator
+            ), dataSet.size
         )
 }
 /*

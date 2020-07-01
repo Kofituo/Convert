@@ -13,6 +13,7 @@ import android.util.SparseBooleanArray
 import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
+import androidx.recyclerview.widget.SortedList
 import com.example.unitconverter.builders.buildMutableList
 import com.example.unitconverter.builders.buildMutableMap
 import com.example.unitconverter.builders.put
@@ -291,8 +292,8 @@ object Utils {
             }
         }
 
-    fun <T> replaceAll(dataSet: Collection<T>, sortedList: MutableList<T>) {
-        sortedList.apply {
+    fun <T> replaceAll(dataSet: Collection<T>, listToAddItemsTo: MutableList<T>) {
+        listToAddItemsTo.apply {
             //its in reverse so the indexing isn't affected
             //if it were 0 to size when we remove 0 1 now becomes original 2 and so on
             for (i in size - 1 downTo 0)
@@ -302,6 +303,23 @@ object Utils {
             //Log.e("before","${map {(it as FavouritesData ).cardName}}  ")
             addAll(dataSet)
         }
+    }
+
+    fun <T> replaceAll(dataSet: Collection<T>, sortedList: SortedList<T>) {
+        sortedList.apply {
+            beginBatchedUpdates()
+            //its in reverse so the indexing isn't affected
+            //if it were 0 to size when we remove 0 1 now becomes original 2 and so on
+            for (i in size() - 1 downTo 0)
+                if (!dataSet.contains(this[i]))
+                    this.remove(this[i])
+            addAll(dataSet)
+            endBatchedUpdates()
+        }
+    }
+
+    inline fun <T> SortedList<T>.forEach(action: (T) -> Unit) {
+        for (element in (0 until size())) action(get(element))
     }
 
     fun hoursToMilliSeconds(hours: Int) = 3_600_000 * hours

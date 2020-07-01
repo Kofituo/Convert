@@ -64,13 +64,12 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/content"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:fontFamily="sans-serif-light"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="16sp"
-            android:layout_height="match_parent"
-            android:text="a verty long tjext which i dint even careiiiiiiiiiil of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either a verty long tjext which i dint even care of \n.welll we move \n either " />
-
+            android:textIsSelectable="true"
+            android:textSize="15sp" />
     </androidx.core.widget.NestedScrollView>
 
     <View
@@ -89,8 +88,11 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/close"
         android:layout_margin="3dp"
-        android:text="@string/cancel"
+        app:strokeColor="?android:attr/textColorPrimary"
         android:textColor="?android:attr/textColorPrimary"
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"

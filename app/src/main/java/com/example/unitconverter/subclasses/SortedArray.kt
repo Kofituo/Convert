@@ -5,7 +5,7 @@ import java.util.*
 
 class SortedArray<T> : ArrayList<T> {
 
-    var comparator: Comparator<T>? = null
+    private var comparator: Comparator<T>? = null
 
     constructor(initialCapacity: Int) : super(initialCapacity)
     constructor() : super()
@@ -50,5 +50,9 @@ class SortedArray<T> : ArrayList<T> {
 
     override fun contains(element: T): Boolean {
         return Collections.binarySearch(this, element, comparator) > -1
+    }
+
+    override fun indexOf(element: T): Int {
+        return Collections.binarySearch(this, element, comparator)
     }
 }
