@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.FlattenMap
 import com.example.unitconverter.R
 import com.example.unitconverter.RecyclerDataClass
 import com.example.unitconverter.miscellaneous.inflate
 import com.example.unitconverter.miscellaneous.isNull
+import com.example.unitconverter.miscellaneous.showToast
 import java.io.Serializable
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
@@ -123,6 +125,13 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
 
     @OptIn(ExperimentalTime::class)
     override fun onQuantityClick(position: Int) {
+        if (position < 0) {
+            activity.showToast {
+                text = "-1 pos"
+                duration = Toast.LENGTH_LONG
+            }
+            return
+        }
         val time = measureTime {
             val data = FlattenMap.getChildData(listData, position)
             if (data is FavouritesData)

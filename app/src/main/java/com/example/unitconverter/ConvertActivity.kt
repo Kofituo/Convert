@@ -1,17 +1,21 @@
 package com.example.unitconverter
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.text.*
+import android.text.style.StyleSpan
 import android.util.ArrayMap
 import android.util.Log
 import android.view.*
@@ -24,6 +28,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
 import com.example.unitconverter.AdditionItems.Author
 import com.example.unitconverter.AdditionItems.FavouritesCalledIt
+import com.example.unitconverter.AdditionItems.SearchActivityCalledIt
 import com.example.unitconverter.AdditionItems.SearchActivityExtra
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ToolbarColor
@@ -85,6 +90,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (intent.getBooleanExtra(SearchActivityCalledIt, false))
+            overridePendingTransition(R.anim.scale_out, android.R.anim.fade_out)
         setContentView(R.layout.activity_convert)
         setSupportActionBar(convert_app_bar)
         supportActionBar?.apply {
@@ -182,14 +189,20 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             if (searchData.isNotNull()) {
                 searchData as RecyclerDataClass
                 firstBox.hint = searchData.quantity
-                topTextView.text = searchData.correspondingUnit
+                val text = searchData.correspondingUnit
+                topTextView.text =
+                    if (getBooleanExtra("IsSpans", false)) {
+                        removeExtra("IsSpans")
+                        SpannableString(text).apply {
+                            setSpan(StyleSpan(Typeface.BOLD), 0, length, 0)
+                        }
+                    } else text
                 positionArray["topPosition"] = searchData.id
-                //firstBox.requestFocusFromTouch()
-                firstEditText.requestFocus()
-                Log.e("se", "search")
+                firstBox.requestFocus()
                 val sharedPreferences by sharedPreference {
                     pkgName + viewName
                 }
+                //for the convert fragment
                 sharedPreferences.edit {
                     put<Int> {
                         key = "topButton"
@@ -696,6 +709,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             put<Boolean> {
                 key = "topIsSpans"
                 value = topTextViewText is SpannedString
+                Log.e("val", "$value")
             }
 
             val bottomTextViewText = bottomTextView.text
@@ -752,6 +766,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     override fun onPause() {
         super.onPause()
+        if (intent.getBooleanExtra(SearchActivityCalledIt, false) && isFinishing) {
+            val animator: Animator = ScaleTransition.mergeAnimators(
+                ObjectAnimator.ofFloat(convert_parent, View.SCALE_X, 0.3f),
+                ObjectAnimator.ofFloat(convert_parent, View.SCALE_Y, 0.3f)
+            )
+            animator.start()
+        }
         saveData()
     }
 

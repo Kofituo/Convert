@@ -4,7 +4,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unitconverter.RecyclerDataClass
-import com.example.unitconverter.builders.buildMutableList
+import com.example.unitconverter.Utils.containsIgnoreCase
+import com.example.unitconverter.builders.addAll
 import com.example.unitconverter.subclasses.MyAdapter
 
 class SearchTextChangeListener(
@@ -17,7 +18,7 @@ class SearchTextChangeListener(
      * */
     private var called = false
     override fun afterTextChanged(s: Editable) {
-        val filteredList = filter(dataSet, s)
+        val filteredList = filter<MutableList<RecyclerDataClass>>(dataSet, s)
         adapter.replaceAll(filteredList) // so the list would be updated to work with item count
         /**
          * scroll to the selected position if there's no text
@@ -46,19 +47,21 @@ class SearchTextChangeListener(
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
     companion object {
-        fun filter(
-            dataSet: Collection<RecyclerDataClass>,
-            searchText: CharSequence
-        ): Collection<RecyclerDataClass> {
-            if (searchText.isBlank()) return dataSet //fast return
+        inline fun <reified T : MutableCollection<RecyclerDataClass>> filter(
+            dataSet: List<RecyclerDataClass>,
+            searchText: CharSequence,
+            returnList: T = ArrayList<RecyclerDataClass>(dataSet.size) as T
+        ): T {
+            if (searchText.isBlank())
+                return returnList.apply { addAll { dataSet } }
             val mainText = searchText.trim()
 
-            return buildMutableList(dataSet.size) {
+            return returnList.apply {
                 for (i in dataSet) {
                     val text = i.quantity
                     val unit = i.correspondingUnit
-                    if (text.contains(mainText, ignoreCase = true) ||
-                        unit.contains(mainText, ignoreCase = true)
+                    if (unit.containsIgnoreCase(mainText) ||
+                        text.containsIgnoreCase(mainText)
                     ) add(i)
                 }
             }

@@ -318,6 +318,40 @@ object Utils {
         }
     }
 
+    fun CharSequence.containsIgnoreCase(what: CharSequence): Boolean {
+        val otherLength = what.length
+        if (otherLength == 0) return true // Empty string is contained
+        val firstLo = Character.toLowerCase(what[0])
+        val firstUp = Character.toUpperCase(what[0])
+        for (i in length - otherLength downTo 0) {
+            // Quick check before calling the more expensive regionMatches()
+            // method:
+            val ch = get(i)
+            if (ch != firstLo && ch != firstUp) continue
+            if (regionMatches(i, what, 0, otherLength, ignoreCase = true)) return true
+        }
+        return false
+    }
+
+    /**
+     * fun filter(
+    dataSet: Collection<RecyclerDataClass>,
+    searchText: CharSequence
+    ): Collection<RecyclerDataClass> {
+    if (searchText.isBlank()) return dataSet //fast return
+    val mainText = searchText.trim()
+
+    return buildMutableList(dataSet.size) {
+    for (i in dataSet) {
+    val text = i.quantity
+    val unit = i.correspondingUnit
+    if (text.contains(mainText, ignoreCase = true) ||
+    unit.contains(mainText, ignoreCase = true)
+    ) add(i)
+    }
+    }
+    }
+     * */
     inline fun <T> SortedList<T>.forEach(action: (T) -> Unit) {
         for (element in (0 until size())) action(get(element))
     }

@@ -27,8 +27,9 @@ import com.example.unitconverter.AdditionItems.FavouritesCalledIt
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.pkgName
+import com.example.unitconverter.Utils.containsIgnoreCase
+import com.example.unitconverter.builders.addAll
 import com.example.unitconverter.builders.buildIntent
-import com.example.unitconverter.builders.buildMutableList
 import com.example.unitconverter.miscellaneous.*
 import com.example.unitconverter.subclasses.*
 import com.example.unitconverter.subclasses.FavouritesAdapter.Companion.favouritesAdapter
@@ -613,7 +614,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             }*/
             Log.e("4", "$")
         } else {
-            val filteredList = filter(originalList, newText)
+            val filteredList = filter<MutableCollection<FavouritesData>>(originalList, newText)
             updateRecyclerView<FavouritesData> {
                 oldList = favouritesAdapter.dataSet.toList()
                 favouritesAdapter.useFilteredList()
@@ -629,19 +630,21 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     private lateinit var originalList: List<FavouritesData>
 
     companion object {
-        fun filter(
-            dataSet: Collection<FavouritesData>,
-            searchText: CharSequence
-        ): Collection<FavouritesData> {
-            if (searchText.isBlank()) return dataSet //fast return
+        inline fun <reified T : MutableCollection<FavouritesData>> filter(
+            dataSet: List<FavouritesData>,
+            searchText: CharSequence,
+            returnList: T = ArrayList<RecyclerDataClass>(dataSet.size) as T
+        ): T {
+            if (searchText.isBlank())
+                return returnList.apply { addAll { dataSet } } //fast return
             val mainText = searchText.trim()
 
-            return buildMutableList {
+            return returnList.apply {
                 for (i in dataSet) {
                     val text = i.cardName!!
                     val meta = i.metadata
-                    if (text.contains(mainText, ignoreCase = true)
-                        || meta?.contains(mainText, ignoreCase = true) == true
+                    if (text.containsIgnoreCase(mainText)
+                        || meta?.containsIgnoreCase(mainText) == true
                     ) add(i)
                 }
             }

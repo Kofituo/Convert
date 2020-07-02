@@ -5,7 +5,7 @@ import java.io.Serializable
 
 data class RecyclerDataClass(
     val quantity: String,
-    val correspondingUnit: CharSequence,
+    var correspondingUnit: CharSequence,
     val id: Int,
     var view: View? = null
 ) : Serializable

@@ -9,6 +9,7 @@ import android.transition.Transition
 import android.transition.TransitionValues
 import android.transition.Visibility
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import com.example.unitconverter.AdditionItems
@@ -115,7 +116,10 @@ class ScaleTransition : Visibility {
         view: View,
         startValues: TransitionValues?,
         endValues: TransitionValues?
-    ): Animator = createAnimation(view, mDisappearedScale, 1f, startValues)
+    ): Animator {
+        Log.e("appe", "$view")
+        return createAnimation(view, mDisappearedScale, 1f, startValues)
+    }
 
     override fun onDisappear(
         sceneRoot: ViewGroup,
