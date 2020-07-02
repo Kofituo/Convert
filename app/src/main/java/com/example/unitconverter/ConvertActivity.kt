@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
 import com.example.unitconverter.AdditionItems.Author
 import com.example.unitconverter.AdditionItems.FavouritesCalledIt
+import com.example.unitconverter.AdditionItems.SearchActivityExtra
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ToolbarColor
 import com.example.unitconverter.AdditionItems.ViewIdMessage
@@ -170,7 +171,34 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                     show(supportFragmentManager, "dialog")
                 }
         }
+        selectFirstBox()
         onCreateCalled = true
+    }
+
+    private fun selectFirstBox() {
+        intent {
+            val searchData =
+                getSerializableExtra(SearchActivityExtra)
+            if (searchData.isNotNull()) {
+                searchData as RecyclerDataClass
+                firstBox.hint = searchData.quantity
+                topTextView.text = searchData.correspondingUnit
+                positionArray["topPosition"] = searchData.id
+                //firstBox.requestFocusFromTouch()
+                firstEditText.requestFocus()
+                Log.e("se", "search")
+                val sharedPreferences by sharedPreference {
+                    pkgName + viewName
+                }
+                sharedPreferences.edit {
+                    put<Int> {
+                        key = "topButton"
+                        value = searchData.id
+                    }
+                }
+                removeExtra(SearchActivityExtra)//to reset it in case of rotation
+            }
+        }
     }
 
     private var onCreateCalled by resetAfterGet(initialValue = true, resetValue = false)
@@ -180,6 +208,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         if (onCreateCalled) {
             setFilters(firstEditText)
             setFilters(secondEditText)
+            resetEditTexts()
             showToast {
                 text = "corrected"
                 duration = Toast.LENGTH_SHORT
@@ -1019,22 +1048,26 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         "thi",
                         "called  ${preferencesSelected.values} $decimalFormatSymbols"
                     )
-                    val editText =
-                        when {
-                            firstEditText.isFocused -> firstEditText
-                            secondEditText.isFocused -> secondEditText
-                            else -> return
-                        }
-                    editText.apply {
-                        val text = SpannableStringBuilder(text)
-                        if (text.isNotEmpty()) {
-                            val cursorPosition = selectionEnd
-                            this.text = null
-                            this.text = text
-                            setSelection(cursorPosition)
-                        }
-                    }
+                    resetEditTexts()
                 }
+        }
+    }
+
+    private fun resetEditTexts() {
+        val editText =
+            when {
+                firstEditText.isFocused -> firstEditText
+                secondEditText.isFocused -> secondEditText
+                else -> return
+            }
+        editText.apply {
+            val text = SpannableStringBuilder(text)
+            if (text.isNotEmpty()) {
+                val cursorPosition = selectionEnd
+                this.text = null
+                this.text = text
+                setSelection(cursorPosition)
+            }
         }
     }
 }

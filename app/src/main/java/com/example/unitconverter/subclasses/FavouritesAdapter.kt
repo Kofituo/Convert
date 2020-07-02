@@ -209,7 +209,7 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
 
     interface FavouritesItem {
         fun startActivity(data: FavouritesData)
-        fun selectionInitiated()
-        fun sizeIsZero()
+        fun selectionInitiated() {}
+        fun sizeIsZero() {}
     }
 }

@@ -53,7 +53,7 @@ class SearchTextChangeListener(
             if (searchText.isBlank()) return dataSet //fast return
             val mainText = searchText.trim()
 
-            return buildMutableList {
+            return buildMutableList(dataSet.size) {
                 for (i in dataSet) {
                     val text = i.quantity
                     val unit = i.correspondingUnit

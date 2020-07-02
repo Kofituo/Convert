@@ -43,6 +43,6 @@ class SearchQuantityHolder(val view: View) : RecyclerView.ViewHolder(view), View
     }
 
     interface Quantity {
-        fun onQuantityClick(positions: Int)
+        fun onQuantityClick(position: Int)
     }
 }

@@ -48,6 +48,13 @@ class SortedArray<T> : ArrayList<T> {
         return result
     }
 
+    fun unSaveAdd(elements: Collection<T>) {
+        super.addAll(elements)
+        Collections.sort(this, comparator)
+    }
+
+    //inline fun unSaveAdd(element:()->Collection<T>) = unSaveAdd (element())
+
     override fun contains(element: T): Boolean {
         return Collections.binarySearch(this, element, comparator) > -1
     }

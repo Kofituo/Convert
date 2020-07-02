@@ -52,6 +52,7 @@ object AdditionItems {
     const val FavouritesCalledIt = "$pkgName.favourites_favourites_called_it"
     const val ToolbarColor = "$pkgName.toolbarColor"
     const val Author = "Kofi Otuo"
+    const val SearchActivityExtra = "$pkgName.searchActivity"
 
     fun endAnimation(): Boolean {
         animateStart?.apply {

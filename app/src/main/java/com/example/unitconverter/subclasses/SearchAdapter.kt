@@ -1,6 +1,7 @@
 package com.example.unitconverter.subclasses
 
 import android.app.Activity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +13,14 @@ import com.example.unitconverter.RecyclerDataClass
 import com.example.unitconverter.miscellaneous.inflate
 import com.example.unitconverter.miscellaneous.isNull
 import java.io.Serializable
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
     SearchQuantityHolder.Quantity {
 
     lateinit var listData: Map<String, Collection<Serializable>>
+    private lateinit var favouritesItem: FavouritesAdapter.FavouritesItem
 
     private val favData = 200
     override fun getItemViewType(position: Int): Int {
@@ -31,7 +35,7 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
 
     private var inflater: LayoutInflater? = null
 
-    class Header(view: View) : RecyclerView.ViewHolder(view) {
+    private class Header(view: View) : RecyclerView.ViewHolder(view) {
         val header: TextView = view.findViewById(R.id.group_header)
     }
 
@@ -117,6 +121,25 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
         }
     }
 
-    override fun onQuantityClick(positions: Int) {
+    @OptIn(ExperimentalTime::class)
+    override fun onQuantityClick(position: Int) {
+        val time = measureTime {
+            val data = FlattenMap.getChildData(listData, position)
+            if (data is FavouritesData)
+                favouritesItem.startActivity(data)
+            else unitClick.onUnitClick((data as RecyclerDataClass).view as MyCardView, data)
+        }
+        Log.e("time", "$time")
+    }
+
+    fun itemClickedListener(favouritesItem: FavouritesAdapter.FavouritesItem, unitItem: UnitItem) {
+        this.favouritesItem = favouritesItem
+        this.unitClick = unitItem
+    }
+
+    private lateinit var unitClick: UnitItem
+
+    interface UnitItem {
+        fun onUnitClick(view: MyCardView, recyclerDataClass: RecyclerDataClass)
     }
 }
