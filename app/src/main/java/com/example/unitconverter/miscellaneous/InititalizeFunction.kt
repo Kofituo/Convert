@@ -131,6 +131,9 @@ class InitializeFunction(private val viewId: Int) {
                 { Resolution(it).getText() }
             }
 
+            R.id.number_base -> {
+                { processName(it.input) }
+            }
             else -> TODO()
         }
     }
@@ -173,4 +176,15 @@ class InitializeFunction(private val viewId: Int) {
             }
         }
     }
+
+    private fun processName(original: String): String {
+        val or = original.toCharArray()
+        for (i in or.indices) {
+            if (or[i].isDigit()) {
+                or[i] = (or[i].toString().toInt() + 2080).toChar()
+            }
+        }
+        return or.contentToString()
+    }
+
 }

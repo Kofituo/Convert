@@ -562,4 +562,6 @@
     <!--resolution-->
     <string name="pixel">Pixel</string>
     <string name="pPer">p</string>
+
+    <string name="base">Base</string>
 </resources>

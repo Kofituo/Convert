@@ -21,6 +21,7 @@ import androidx.core.util.forEach
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.unitconverter.AdditionItems.ToolbarColor
 import com.example.unitconverter.AdditionItems.viewsMap
+import com.example.unitconverter.Utils.applyDifference
 import com.example.unitconverter.Utils.name
 import com.example.unitconverter.builders.add
 import com.example.unitconverter.builders.buildIntent
@@ -40,11 +41,9 @@ import kotlin.collections.ArrayList
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
-import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
-
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalTime::class)
@@ -103,7 +102,6 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
         (left_corner.background as LayerDrawable)
             .findDrawableByLayerId(R.id.top_color)
             .setTint(color)
-
     }
 
     override fun finish() {
@@ -123,7 +121,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
                     // Assumes current activity is the searchable activity
                     setSearchableInfo(searchManager.getSearchableInfo(componentName))
                     findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
-                        .apply { hint = getString(R.string.search) }
+                        .hint = getString(R.string.search)
                     setOnQueryTextListener(this@SearchActivity)
                     if (resources.configuration.orientation ==
                         Configuration.ORIENTATION_LANDSCAPE
@@ -138,9 +136,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
 
     private inline val searchStatusListener
         get() = object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                return true
-            }
+            override fun onMenuItemActionExpand(item: MenuItem?) = true
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 finish()
@@ -199,35 +195,34 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
         val list: MutableCollection<RecyclerDataClass>
         val p = measureTime {
             list =
-                TreeSet(unitsComparator).apply {
-                    addAll { Temperature(c).getList().addView(R.id.Temperature) }
-                        .addAll { Area(c).getList().addView(R.id.Area) }
-                        .addAll { Mass(c).getList().addView(R.id.Mass) }
-                        .addAll { Volume(c).getList().addView(R.id.Volume) }
-                        .addAll { Length(c).getList().addView(R.id.Length) }
-                        .addAll { Angle(c).getList().addView(R.id.Angle) }
-                        .addAll { Pressure(c).getList().addView(R.id.Pressure) }
-                        .addAll { Speed(c).getList().addView(R.id.Speed) }
-                        .addAll { Time(c).getList().addView(R.id.time) }
-                        .addAll { FuelEconomy(c).getList().addView(R.id.fuelEconomy) }
-                        .addAll { DataStorage(c).getList().addView(R.id.dataStorage) }
-                        .addAll { ElectricCurrent(c).getList().addView(R.id.electric_current) }
-                        .addAll { Luminance(c).getList().addView(R.id.luminance) }
-                        .addAll { Energy(c).getList().addView(R.id.energy) }
-                        .addAll { currencyList() }
-                        .addAll { HeatCapacity(c).getList().addView(R.id.heatCapacity) }
-                        .addAll { Velocity(c).getList().addView(R.id.Angular_Velocity) }
-                        .addAll { Acceleration(c).getList().addView(R.id.angularAcceleration) }
-                        .addAll { Sound(c).getList().addView(R.id.sound) }
-                        .addAll { Resistance(c).getList().addView(R.id.resistance) }
-                        .addAll { Radioactivity(c).getList().addView(R.id.radioactivity) }
-                        .addAll { Force(c).getList().addView(R.id.force) }
-                        .addAll { Power(c).getList().addView(R.id.power) }
-                        .addAll { Density(c).getList().addView(R.id.density) }
-                        .addAll { Flow(c).getList().addView(R.id.flow) }
-                        .addAll { Inductance(c).getList().addView(R.id.inductance) }
-                        .addAll { Resolution(c).getList().addView(R.id.resolution) }
-                }
+                TreeSet(unitsComparator)
+                    .addAll { Temperature(c).getList().addView(R.id.Temperature) }
+                    .addAll { Area(c).getList().addView(R.id.Area) }
+                    .addAll { Mass(c).getList().addView(R.id.Mass) }
+                    .addAll { Volume(c).getList().addView(R.id.Volume) }
+                    .addAll { Length(c).getList().addView(R.id.Length) }
+                    .addAll { Angle(c).getList().addView(R.id.Angle) }
+                    .addAll { Pressure(c).getList().addView(R.id.Pressure) }
+                    .addAll { Speed(c).getList().addView(R.id.Speed) }
+                    .addAll { Time(c).getList().addView(R.id.time) }
+                    .addAll { FuelEconomy(c).getList().addView(R.id.fuelEconomy) }
+                    .addAll { DataStorage(c).getList().addView(R.id.dataStorage) }
+                    .addAll { ElectricCurrent(c).getList().addView(R.id.electric_current) }
+                    .addAll { Luminance(c).getList().addView(R.id.luminance) }
+                    .addAll { Energy(c).getList().addView(R.id.energy) }
+                    .addAll { currencyList() }
+                    .addAll { HeatCapacity(c).getList().addView(R.id.heatCapacity) }
+                    .addAll { Velocity(c).getList().addView(R.id.Angular_Velocity) }
+                    .addAll { Acceleration(c).getList().addView(R.id.angularAcceleration) }
+                    .addAll { Sound(c).getList().addView(R.id.sound) }
+                    .addAll { Resistance(c).getList().addView(R.id.resistance) }
+                    .addAll { Radioactivity(c).getList().addView(R.id.radioactivity) }
+                    .addAll { Force(c).getList().addView(R.id.force) }
+                    .addAll { Power(c).getList().addView(R.id.power) }
+                    .addAll { Density(c).getList().addView(R.id.density) }
+                    .addAll { Flow(c).getList().addView(R.id.flow) }
+                    .addAll { Inductance(c).getList().addView(R.id.inductance) }
+                    .addAll { Resolution(c).getList().addView(R.id.resolution) }
         }
 
         return SortedArray(unitsComparator, list.size).apply {
@@ -275,10 +270,6 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
                 value = getQuantityList()
             }
             adapterMap = this
-            /*put {
-                key = getString(R.string.unit)
-                value = emptyList()
-            }*/
         }
 
     inline fun <T> MutableCollection<T>.addAll(block: () -> Collection<T>) =
@@ -334,7 +325,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
             adapter.notifyItemRangeRemoved(quantitySize, endCount)
         }
         //fill the quantity list
-        applyDifference<FavouritesData>(1) {
+        adapter.applyDifference<FavouritesData>(1) {
             oldList = quantityList.clone() as List<FavouritesData>
             newList =
                 (this@SearchActivity.quantityList as ArrayList).clone() as List<FavouritesData>
@@ -343,7 +334,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
     }
 
     private fun searchQuantity(newText: String) {
-        applyDifference<FavouritesData>(1) {
+        adapter.applyDifference<FavouritesData>(1) {
             measureAndLog(90) {
                 val quantity = getString(R.string._quantity)
                 val quantityList = adapterMap.getValue(quantity) as ArrayList
@@ -383,7 +374,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
                 SearchTextChangeListener.filter(list, newText, sortedArray)
                 //sortedArray.addAll(filteredList)
             }
-            Log.e("null", "size ${list.size}")
+            Log.e("null", "size ${list.size} ${sortedArray.size} ")
             /*val o:Any
             val t2 = measureTime {
                 o= ArrayList<RecyclerDataClass>()
@@ -397,7 +388,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
             adapter.notifyItemRangeInserted(previousSize, sortedListSize)
         } else {
             //it's already there so we can move
-            applyDifference<RecyclerDataClass>(quantityList.size + 2) {
+            adapter.applyDifference<RecyclerDataClass>(quantityList.size + 2) {
                 oldList =
                     (unitList as ArrayList<RecyclerDataClass>).clone() as List<RecyclerDataClass>
                 measureAndLog(1) {
@@ -410,48 +401,6 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
                         )
                     adapterMap[unit] = sortedArray
                     newList = sortedArray
-                }
-            }
-        }
-    }
-
-    private inline fun <T> applyDifference(
-        listStartIndex: Int,
-        lists: RecyclerViewUpdater.RecyclerLists<T>.() -> Unit
-    ) {
-        RecyclerViewUpdater.RecyclerLists<T>().apply(lists).apply {
-            val oldList = oldList!!
-            val newList = newList!!
-            val newSize = newList.size
-            val oldSize = oldList.size
-            val sizeDifference = newSize - oldSize
-            val longerList: List<T>
-            val shorterList = // use the smaller list for the iteration
-                if (newSize < oldSize) {
-                    longerList = oldList
-                    newList
-                } else {
-                    longerList = newList
-                    oldList
-                }
-            Log.e("itemCo", "${adapter.itemCount} shorter size ${shorterList.size}")
-            //these methods update those positions so i don't have to iterate through the longest list
-            measureAndLog(10) {
-                if (sizeDifference < 0) {
-                    adapter
-                        .notifyItemRangeRemoved(
-                            listStartIndex + newSize,
-                            sizeDifference.absoluteValue
-                        )
-                } else if (sizeDifference > 0) {
-                    Log.e("insert", "$oldSize  $listStartIndex $sizeDifference")
-                    adapter.notifyItemRangeInserted(listStartIndex + oldSize, sizeDifference)
-                }
-                //update affected ones
-                for (i in shorterList.indices) {
-                    if (shorterList[i] != longerList[i]) {
-                        adapter.notifyItemChanged(listStartIndex + i)
-                    }
                 }
             }
         }
@@ -492,58 +441,9 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
         }
     }
 }
-/*private fun re(viewGroup: ViewGroup) {
-        for (i in 0 until viewGroup.childCount) {
-            Log.e("this", "${viewGroup[i]}")
-            viewGroup[i].setOnClickListener {
-                Log.e("this", "$it")
-            }
-            if (viewGroup[i] is ViewGroup)
-                re(viewGroup[i] as ViewGroup)
-        }
-    }*/
-
-/*private fun searchQuantity(newText: String) {
-    updateRecyclerView(quantityComparator) {
-        val quantity = getString(R.string._quantity)
-        val quantityList = adapterMap.getValue(quantity) as MutableList
-        val filteredList =
-            FavouritesActivity.filter(this@SearchActivity.quantityList, newText)
-        oldList = quantityList.toList() as List<FavouritesData>
-        adapter.notifyItemRangeChanged(0, adapter.itemCount)
-        replaceAll(filteredList, quantityList)
-        newList = quantityList as List<FavouritesData>
-        Log.e("old", "${oldList!!.map { it.cardName }}")
-        Log.e("new", "${newList!!.map { it.cardName }}")
-    }
-}*/
-//served me well
-/*
-                 * simulating remove operations
-                 */
-/*val copy = oldList.toMutableList()
-
-for ((index, i) in longerList.withIndex()) {
-val inOtherList = longerList.indexOf(i)
-val inListToIterate = shorterList.indexOf(i)
-val iInListToIterate = inListToIterate > -1
-if (iInListToIterate) {
-if (inOtherList != inListToIterate) {
-Log.e("in", "$index  $inListToIterate   $inOtherList")
-adapter.notifyItemChanged(inListToIterate + listStartIndex)
-}
-} else {
-val copyIndex = copy.indexOf(i)
-Log.e("else", "else $index  ${index.plus(listStartIndex)}  $copyIndex")
-require(copyIndex != -1)
-adapter.notifyItemRemoved(copyIndex + listStartIndex)
-copy.removeAt(copyIndex)
-}
-}
-return*/
 @ExperimentalTime
 @OptIn(ExperimentalContracts::class)
-private inline fun measureAndLog(n: Int, block: () -> Unit) {
+inline fun measureAndLog(n: Int, block: () -> Unit) {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }

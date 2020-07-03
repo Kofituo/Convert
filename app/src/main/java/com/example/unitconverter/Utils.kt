@@ -13,6 +13,7 @@ import android.util.SparseBooleanArray
 import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import com.example.unitconverter.builders.buildMutableList
 import com.example.unitconverter.builders.buildMutableMap
@@ -20,6 +21,8 @@ import com.example.unitconverter.builders.put
 import com.example.unitconverter.miscellaneous.DecimalFormatFactory
 import com.example.unitconverter.miscellaneous.hasValue
 import com.example.unitconverter.miscellaneous.isNotNull
+import com.example.unitconverter.miscellaneous.isNull
+import com.example.unitconverter.subclasses.RecyclerViewUpdater
 import com.google.android.material.textfield.TextInputEditText
 import java.math.BigDecimal
 import java.text.DecimalFormat
@@ -28,7 +31,9 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
+import kotlin.math.absoluteValue
 import kotlin.math.round
+import kotlin.time.ExperimentalTime
 
 object Utils {
     //it is set right from the start
@@ -318,7 +323,8 @@ object Utils {
         }
     }
 
-    fun CharSequence.containsIgnoreCase(what: CharSequence): Boolean {
+    fun CharSequence?.containsIgnoreCase(what: CharSequence): Boolean {
+        if (this.isNull()) return false
         val otherLength = what.length
         if (otherLength == 0) return true // Empty string is contained
         val firstLo = Character.toLowerCase(what[0])
@@ -333,25 +339,6 @@ object Utils {
         return false
     }
 
-    /**
-     * fun filter(
-    dataSet: Collection<RecyclerDataClass>,
-    searchText: CharSequence
-    ): Collection<RecyclerDataClass> {
-    if (searchText.isBlank()) return dataSet //fast return
-    val mainText = searchText.trim()
-
-    return buildMutableList(dataSet.size) {
-    for (i in dataSet) {
-    val text = i.quantity
-    val unit = i.correspondingUnit
-    if (text.contains(mainText, ignoreCase = true) ||
-    unit.contains(mainText, ignoreCase = true)
-    ) add(i)
-    }
-    }
-    }
-     * */
     inline fun <T> SortedList<T>.forEach(action: (T) -> Unit) {
         for (element in (0 until size())) action(get(element))
     }
@@ -359,7 +346,47 @@ object Utils {
     fun hoursToMilliSeconds(hours: Int) = 3_600_000 * hours
 
     fun daysToMilliSeconds(days: Int) = hoursToMilliSeconds(24 * days)
+
+    @OptIn(ExperimentalTime::class)
+    inline fun <T> RecyclerView.Adapter<RecyclerView.ViewHolder>.applyDifference(
+        listStartIndex: Int,
+        lists: RecyclerViewUpdater.RecyclerLists<T>.() -> Unit
+    ) {
+        RecyclerViewUpdater.RecyclerLists<T>().apply(lists).apply {
+            val oldList = oldList!!
+            val newList = newList!!
+            val newSize = newList.size
+            val oldSize = oldList.size
+            val sizeDifference = newSize - oldSize
+            val longerList: List<T>
+            val shorterList = // use the smaller list for the iteration
+                if (newSize < oldSize) {
+                    longerList = oldList
+                    newList
+                } else {
+                    longerList = newList
+                    oldList
+                }
+            Log.e("itemCo", "$itemCount shorter size ${shorterList.size}")
+            //these methods update those positions so i don't have to iterate through the longest list
+            measureAndLog(10) {
+                if (sizeDifference < 0) {
+                    notifyItemRangeRemoved(listStartIndex + newSize, sizeDifference.absoluteValue)
+                } else if (sizeDifference > 0) {
+                    Log.e("insert", "$oldSize  $listStartIndex $sizeDifference")
+                    notifyItemRangeInserted(listStartIndex + oldSize, sizeDifference)
+                }
+                //update affected ones
+                for (i in shorterList.indices) {
+                    if (shorterList[i] != longerList[i]) {
+                        notifyItemChanged(listStartIndex + i)
+                    }
+                }
+            }
+        }
+    }
 }
+//others
 /**
  * Use cover up toolbar for view
  * */
@@ -394,3 +421,52 @@ object Utils {
     Log.e("called","here g")
     anim.start()
 }*/
+/*private fun re(viewGroup: ViewGroup) {
+        for (i in 0 until viewGroup.childCount) {
+            Log.e("this", "${viewGroup[i]}")
+            viewGroup[i].setOnClickListener {
+                Log.e("this", "$it")
+            }
+            if (viewGroup[i] is ViewGroup)
+                re(viewGroup[i] as ViewGroup)
+        }
+    }*/
+
+/*private fun searchQuantity(newText: String) {
+    updateRecyclerView(quantityComparator) {
+        val quantity = getString(R.string._quantity)
+        val quantityList = adapterMap.getValue(quantity) as MutableList
+        val filteredList =
+            FavouritesActivity.filter(this@SearchActivity.quantityList, newText)
+        oldList = quantityList.toList() as List<FavouritesData>
+        adapter.notifyItemRangeChanged(0, adapter.itemCount)
+        replaceAll(filteredList, quantityList)
+        newList = quantityList as List<FavouritesData>
+        Log.e("old", "${oldList!!.map { it.cardName }}")
+        Log.e("new", "${newList!!.map { it.cardName }}")
+    }
+}*/
+//served me well
+/*
+                 * simulating remove operations
+                 */
+/*val copy = oldList.toMutableList()
+
+for ((index, i) in longerList.withIndex()) {
+val inOtherList = longerList.indexOf(i)
+val inListToIterate = shorterList.indexOf(i)
+val iInListToIterate = inListToIterate > -1
+if (iInListToIterate) {
+if (inOtherList != inListToIterate) {
+Log.e("in", "$index  $inListToIterate   $inOtherList")
+adapter.notifyItemChanged(inListToIterate + listStartIndex)
+}
+} else {
+val copyIndex = copy.indexOf(i)
+Log.e("else", "else $index  ${index.plus(listStartIndex)}  $copyIndex")
+require(copyIndex != -1)
+adapter.notifyItemRemoved(copyIndex + listStartIndex)
+copy.removeAt(copyIndex)
+}
+}
+return*/

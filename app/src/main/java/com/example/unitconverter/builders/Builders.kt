@@ -114,3 +114,4 @@ SparseIntArray().apply(builderAction)
 inline fun <T> MutableCollection<T>.add(block: () -> T) = add(block())
 
 inline fun <T> MutableCollection<T>.addAll(block: () -> Collection<T>) = addAll(block())
+

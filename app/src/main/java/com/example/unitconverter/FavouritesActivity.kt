@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.*
 import android.view.LayoutInflater
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -19,7 +18,6 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.edit
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
@@ -52,10 +50,8 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var rootGroup: ConstraintLayout
     private val adapterIsInit get() = ::favouritesAdapter.isInitialized
-    private var onCreateCalled by ResetAfterNGets.resetAfterGet(
-        initialValue = false,
-        resetValue = false
-    )
+    private var onCreateCalled
+            by ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
 
     private val viewModel by viewModels<ConvertViewModel>()
 
@@ -301,25 +297,12 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 favouritesAdapter.apply {
                     getSelectedItemsMap().apply {
                         if (isNotEmpty()) {
-                            val max = keys.max()!! + 1
-                            //dummy null filled arrays so that only the selected items would call item changed
-                            /*val old = ArrayList<FavouritesData?>(size)
-                            val new = ArrayList<FavouritesData?>(size)
-                            for (i in 0 until max) {
-                                old.add(null)
-                                new.add(if (i in keys) FavouritesData() else null)
-                            }*/
                             val keys = IntArray(keys.size)
                             this.keys.forEachIndexed { index, i -> keys[index] = i }
                             Log.e("keys", "$keys")
                             clear()
                             forceChange = true
-                            /*oldList = old
-                            newList = new*/
                             keys.forEach { notifyItemChanged(it) }
-                            /*DiffUtil
-                                .calculateDiff(diffUtil)
-                                .dispatchUpdatesTo(favouritesAdapter)*/
                             endSelection()
                         }
                     }
@@ -366,27 +349,20 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         super.onPause()
     }
 
-    private fun refreshFromMap(map: MutableMap<Int, FavouritesData>) {
-        favouritesAdapter.apply {
-            map.apply {
-                if (isNotEmpty()) {
-                    startSelection()
-                    val max = keys.max()!! + 1
-                    //dummy null filled arrays so that only the selected items would call item changed
-                    val old = ArrayList<FavouritesData?>(size)
-                    val new = ArrayList<FavouritesData?>(size)
-                    for (i in 0 until max) {
-                        old.add(null)
-                        new.add(if (i in keys) FavouritesData() else null)
+    private fun refreshRecyclerView() {
+        favouritesAdapter.also {
+            viewModel.selectedFavourites.apply {
+                if (!this.isNullOrEmpty()) {
+                    //selection occurred
+                    it.startSelection()
+                    val keys = IntArray(keys.size)
+                    this.keys.forEachIndexed { index, i -> keys[index] = i }
+                    it.getSelectedItemsMap().putAll(this)
+                    keys.forEach { pos: Int ->
+                        it.notifyItemChanged(pos)
                     }
-                    //forceChange = true
-                    oldList = old
-                    newList = new
-                    getSelectedItemsMap().putAll(map)
-                    DiffUtil
-                        .calculateDiff(diffUtil)
-                        .dispatchUpdatesTo(favouritesAdapter)
                 }
+                viewModel.selectedFavourites = null
             }
         }
     }
@@ -394,25 +370,9 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     override fun onResume() {
         super.onResume()
         val createCalled = onCreateCalled
-        if (adapterIsInit && createCalled) {
-            //Log.e("init", "on create $onCreateCalled")
-            favouritesAdapter.apply {
-                viewModel.selectedFavourites.apply {
-                    if (this.isNotNull()) {
-                        //selection occurred
-                        //Log.e("finally", "finally  ${viewModel.selectedFavourites}")
-                        showToast {
-                            text = "recycler"
-                            duration = Toast.LENGTH_LONG
-                        }
-                        recyclerView.post {
-                            refreshFromMap(this)
-                        }
-                        viewModel.selectedFavourites = null
-                    }
-                }
-            }
-        }
+        if (adapterIsInit && createCalled)
+            recyclerView.post { refreshRecyclerView() }
+
         if (createCalled && viewModel.searchIsExpanded) {
             cover_up_toolbar.post {
                 circleReveal(cover_up_toolbar, true)
@@ -447,7 +407,11 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 if (!isShow) {
                     if (motionLayout?.viewVisibility(viewId, View.INVISIBLE, view).isNull())
                         view.visibility = View.INVISIBLE
-                    motionLayout?.viewVisibility(R.id.app_bar_text, View.VISIBLE, app_bar_text)
+                    motionLayout?.viewVisibility(
+                        R.id.app_bar_text,
+                        View.VISIBLE,
+                        app_bar_text
+                    )
                 }
                 val isCollapsed = !hiddenSearchIcon.isActionViewExpanded
                 if (isCollapsed && constraintsHaveChanged)
@@ -491,7 +455,12 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
     private fun removeConstrains(motionLayout: MotionLayout) {
         motionLayout.getConstraintSet(R.id.start).apply {
-            connect(R.id.toolbar, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            connect(
+                R.id.toolbar,
+                ConstraintSet.TOP,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.TOP
+            )
             connect(
                 R.id.cover_up_toolbar,
                 ConstraintSet.TOP,
@@ -505,7 +474,12 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
     private fun addConstraints(motionLayout: MotionLayout) {
         motionLayout.apply {
             getConstraintSet(R.id.start).apply {
-                connect(R.id.toolbar, ConstraintSet.TOP, R.id.app_barGuideline, ConstraintSet.TOP)
+                connect(
+                    R.id.toolbar,
+                    ConstraintSet.TOP,
+                    R.id.app_barGuideline,
+                    ConstraintSet.TOP
+                )
                 connect(
                     R.id.cover_up_toolbar,
                     ConstraintSet.TOP,
@@ -541,28 +515,8 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 circleReveal(cover_up_toolbar, false)
-                if (::sortedArray.isInitialized)
-                    Log.e(
-                        "here",
-                        "pop  ${(0 until sortedArray.size).map { sortedArray[it].cardName }}"
-                    )
-                if (::favouritesAdapter.isInitialized) {
-                    favouritesAdapter.apply {
-                        enableSelection()
-                        if (::sortedArray.isInitialized) Log.e(
-                            "fsort",
-                            "${(0 until sortedList.size).map { sortedList[it].cardName }}"
-                        )
-                        Log.e("ori", "${originalList.map { it.cardName }}")
-                        //Utils.replaceAll(originalList, sortedList) //since it calls query with empty string
-                        /*updateRecyclerView<FavouritesData> {
-                            oldList = dataSet.toList()
-                            Utils.replaceAll(originalList, sortedList)
-                            newList = originalList
-                            useOriginalList()
-                        }*/
-                    }
-                }
+                if (::favouritesAdapter.isInitialized)
+                    favouritesAdapter.enableSelection()
                 return true
             }
         }
@@ -587,12 +541,12 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
     override fun onQueryTextChange(newText: String?): Boolean {
         start = System.currentTimeMillis()
-        Log.e("1", "1  $newText  ${newText?.length}  ${hiddenSearchIcon.isActionViewExpanded}")
+        Log.e(
+            "1",
+            "1  $newText  ${newText?.length}  ${hiddenSearchIcon.isActionViewExpanded}"
+        )
         if (!::favouritesAdapter.isInitialized || newText.isNull())
             return true
-        ///val filteredList = filter(originalList, newText)
-        //Log.e("list", "${filteredList.map { it.cardName }}")
-        //Utils.replaceAll(filteredList, sortedArray)
         Log.e("sort", "${(0 until sortedArray.size).map { sortedArray[it].cardName }}")
         if (newText.isEmpty()) {
             //Utils.replaceAll(filteredList, sortedArray)
@@ -603,18 +557,13 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             }
             favouritesAdapter.apply {
                 useOriginalList()
+                //when changing the data structure used in the recycler view call notify item range change
                 notifyItemRangeChanged(0, itemCount)
             }
-            /*updateRecyclerView<FavouritesData> {
-                oldList = favouritesAdapter.dataSet.toList() // due to some nasty bug in edit text
-                Log.e("123","${(oldList as List<FavouritesData>).map { it.cardName }}  ${favouritesAdapter.useFilteredList}")
-                favouritesAdapter.useOriginalList()
-                newList = originalList
-                Log.e("456","${(newList as List<FavouritesData>).map { it.cardName }}  ${favouritesAdapter.useFilteredList}")
-            }*/
             Log.e("4", "$")
         } else {
-            val filteredList = filter<MutableCollection<FavouritesData>>(originalList, newText)
+            val filteredList =
+                filter<MutableCollection<FavouritesData>>(originalList, newText)
             updateRecyclerView<FavouritesData> {
                 oldList = favouritesAdapter.dataSet.toList()
                 favouritesAdapter.useFilteredList()
@@ -644,7 +593,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                     val text = i.cardName!!
                     val meta = i.metadata
                     if (text.containsIgnoreCase(mainText)
-                        || meta?.containsIgnoreCase(mainText) == true
+                        || meta.containsIgnoreCase(mainText)
                     ) add(i)
                 }
             }

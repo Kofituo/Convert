@@ -15,6 +15,9 @@ class ConvertViewModel : ViewModel() {
 
     var whichButton = -1
 
+    /**
+     * position selected to data it holds
+     * */
     var selectedFavourites: MutableMap<Int, FavouritesData>? = null
 
     val favouritesProgress by resetAfterGet(0f, 1f)
