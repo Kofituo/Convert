@@ -135,30 +135,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             settingColours(randomInt)
             randomInt = randomColor
         }
-        if (isCurrency) {
-            //update the map
-            if (firstTime.isNull() ||
-                (System.currentTimeMillis() - firstTime!!) > hoursToMilliSeconds(22) // 22hours
-                || currenciesList.isNullOrEmpty()
-            ) {
-                Log.e("time", "time ${System.currentTimeMillis()} $firstTime $currenciesList")
-                setNetworkListener()
-                networkFragment =
-                    NetworkFragment
-                        .createFragment(supportFragmentManager) {
-                            urls = urlArray
-                        }
-                launch {
-                    delay(400)
-                    networkFragment.startDownload() //it's too quick
-                }
-            }
-            if (!currenciesList.isNullOrEmpty()) //use old map for now
-                bundle.putSerializable("for_currency", currenciesList as Serializable)
-            currencyConversion()
-        } else {
+        if (!getCurrencyData())
             function = InitializeFunction(viewId).function
-        }
         getTextWhileTyping()
         top_button.setOnClickListener {
             if (!dialog.isAdded)
@@ -180,6 +158,32 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
         selectFirstBox()
         onCreateCalled = true
+    }
+
+    private fun getCurrencyData(): Boolean {
+        if (isCurrency) {
+            //update the map
+            if (firstTime.isNull() ||
+                (System.currentTimeMillis() - firstTime!!) > hoursToMilliSeconds(22) // 22hours
+                || currenciesList.isNullOrEmpty()
+            ) {
+                Log.e("time", "time ${System.currentTimeMillis()} $firstTime $currenciesList")
+                setNetworkListener()
+                networkFragment =
+                    NetworkFragment
+                        .createFragment(supportFragmentManager) {
+                            urls = urlArray
+                        }
+                launch {
+                    delay(400)
+                    networkFragment.startDownload() //it's too quick
+                }
+            }
+            if (!currenciesList.isNullOrEmpty()) //use old map for now
+                bundle.putSerializable("for_currency", currenciesList as Serializable)
+            currencyConversion()
+        }
+        return isCurrency
     }
 
     private fun selectFirstBox() {
@@ -369,6 +373,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private var preferenceFragment: PreferenceFragment? = null
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        @Suppress("EXPERIMENTAL_API_USAGE")
         return when (item.itemId) {
             android.R.id.home -> {
                 finish()
@@ -403,6 +408,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 onSearchRequested()
                 true
             }
+            R.id.feedback -> MainActivity.sendFeedback(this)
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -673,19 +680,20 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    private fun getCurrencyList(string: String): MutableList<RecyclerDataClass> {
-        Json.parseMap<String, String>(string).apply {
-            val list = ArrayList<RecyclerDataClass>(size)
-            var start = 0
-            forEach {
-                list.add {
-                    RecyclerDataClass(it.key, it.value, start++)
+    companion object {
+        fun getCurrencyList(string: String): MutableList<RecyclerDataClass> {
+            Json.parseMap<String, String>(string).apply {
+                val list = ArrayList<RecyclerDataClass>(size)
+                var start = 0
+                forEach {
+                    list.add {
+                        RecyclerDataClass(it.key, it.value, start++)
+                    }
                 }
+                return list
             }
-            return list
         }
     }
-
     private fun getRatesList(string: String) = Json.parseMap<String, String>(string)
 
     private fun saveData() {

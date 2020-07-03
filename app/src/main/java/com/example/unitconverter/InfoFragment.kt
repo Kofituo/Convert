@@ -46,6 +46,7 @@ class InfoFragment : DialogFragment() {
         LayoutInflater.from(context).inflate {
             resourceId = R.layout.convert_info //root is by default set to null
         }.apply {
+
             dialog.setContentView(this)
             cancelButton = findViewById(R.id.cancel_button)
             layoutParams<ViewGroup.LayoutParams> {
@@ -249,8 +250,7 @@ class InfoFragment : DialogFragment() {
                     R.string.illuminance.gS,
                     R.string.illuminance_meta.gS,
                     R.string.luminance_instr.gS,
-                    unit,
-                    didYouKnow
+                    unit, didYouKnow
                 )
             }
             R.id.energy -> {
@@ -259,7 +259,6 @@ class InfoFragment : DialogFragment() {
                     add { getUnitsWithPrefix(list.subList(0, 23), 17) }
                     add { ", " }
                     add { getUnits(list.subList(27, 31)) }
-                    '['
                 }
                 AboutQuantity(
                     R.string.energy.gS,
@@ -268,16 +267,57 @@ class InfoFragment : DialogFragment() {
                     unit, didYouKnow
                 )
             }
+            R.id.Currency -> {
+                val sharedPreferences by sharedPreferences {
+                    buildString {
+                        append(AdditionItems.pkgName)
+                        append(viewName)
+                        append(AdditionItems.Author) // to prevent name clashes with the fragment
+                    }
+                }
+                var units: String? = null
+                sharedPreferences.get<String?>("list_of_currencies") {
+                    if (this.isNotNull()) {
+                        units = getUnits(ConvertActivity.getCurrencyList(this))
+                    }
+                }
+                AboutQuantity(
+                    R.string.currency.gS,
+                    R.string.currency_meta.gS,
+                    R.string.currency_instr.gS,
+                    units, didYouKnow
+                )
+            }
             R.id.heatCapacity -> {
                 list = HeatCapacity(requireContext()).getList()
                 unit = getUnitsWithPrefix(list, 4)
-                null
+                AboutQuantity(
+                    R.string.heatCapacity.gS,
+                    R.string.heat_cap_def.gS,
+                    R.string.heat_cap_instr.gS,
+                    unit, didYouKnow
+                )
             }
 
-            R.id.Angular_Velocity -> null
+            R.id.Angular_Velocity -> {
+                unit = getUnits(Velocity(requireContext()).getList())
+                AboutQuantity(
+                    R.string.angularVelocity.gS,
+                    R.string.velocity_def.gS,
+                    R.string.velocity_instr.gS,
+                    unit, didYouKnow
+                )
+            }
 
-            R.id.angularAcceleration -> null
-
+            R.id.angularAcceleration -> {
+                unit = getUnits(Acceleration(requireContext()).getList())
+                AboutQuantity(
+                    R.string.angularAcceleration.gS,
+                    R.string.angularAcceleration_meta.gS,
+                    R.string.velocity_instr.gS,
+                    unit, didYouKnow
+                )
+            }
             R.id.sound -> null
 
             R.id.resistance -> null
@@ -359,8 +399,10 @@ class InfoFragment : DialogFragment() {
                 addWithSpace { increaseSize(boldText(R.string.measured_with.gS)) }
                 addLn { it.instruments }
                 appendln()
-                addWithSpace { increaseSize(boldText(R.string.units.gS)) }
-                addLn { it.units }
+                it.units?.let {
+                    addWithSpace { increaseSize(boldText(R.string.units.gS)) }
+                    addLn { it }
+                }
                 it.didYouKnow?.apply {
                     appendln()
                     addWithSpace { increaseSize(italicsAndBold(R.string.did_you_know.gS)) }

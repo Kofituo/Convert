@@ -190,7 +190,8 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
         }
     }
 
-    val diffUtil = object : DiffUtil.Callback() {
+    private inline val diffUtil
+        get() = object : DiffUtil.Callback() {
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
             oldList[oldItemPosition]?.cardId == newList[newItemPosition]?.cardId

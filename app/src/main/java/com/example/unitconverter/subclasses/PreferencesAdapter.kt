@@ -95,7 +95,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             FlattenMap.UNSPECIFIED -> {
                 //for the slider
                 val view = fastInflater.inflate {
-                    resourceId = R.layout.decimal_place
+                    resourceId = R.layout.preference_slider
                     root = parent
                 }
                 viewHolder =

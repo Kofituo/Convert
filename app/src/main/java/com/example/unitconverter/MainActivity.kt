@@ -1,6 +1,7 @@
 package com.example.unitconverter
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Rect
@@ -9,6 +10,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.net.Uri
 import android.os.*
 import android.util.Log
 import android.view.Menu
@@ -17,6 +19,7 @@ import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.unitconverter.AdditionItems.MyEmail
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
 import com.example.unitconverter.AdditionItems.bugDetected
@@ -497,6 +500,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
             true
         }
+        R.id.feedback -> sendFeedback(this)
+
         else -> super.onOptionsItemSelected(item)
     }
 
@@ -843,5 +848,19 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 }
             }
         }
+
+        fun sendFeedback(context: Context) =
+            Intent(Intent.ACTION_SENDTO).run {
+                data = Uri.parse("mailto:") //for only email apps
+                putExtra(Intent.EXTRA_EMAIL, MyEmail)
+                putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.app_name))
+                resolveActivity(context.packageManager)?.let {
+                    context.startActivity(this)
+                } ?: context.showToast {
+                    stringId = R.string.no_email_app
+                    duration = Toast.LENGTH_SHORT
+                }
+                true
+            }
     }
-}
+    }

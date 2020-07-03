@@ -2,6 +2,9 @@
     <string name="app_name">Unit Converter</string>
 
     <string name="header">Unit\nConverter</string>
+    <string name="no_email_app">No Email Apps Available</string>
+    <string name="report_bug">Report A Bug</string>
+    <string name="about">About</string>
     <string name="first_bracket">(</string>
     <string name="close">Close</string>
     <string name="second_bracket">)</string>
@@ -97,6 +100,13 @@
     <string name="data_meta">The Amount Of Information In A Storage Medium</string>
     <string name="data_instr">Software utilities</string>
     <string name="heatCapacity">Heat Capacity</string>
+    <string name="heat_cap_def">
+        Heat capacity or thermal capacity is a physical property of matter, defined
+        as the amount of heat to be supplied to a given mass of a material to produce a unit change in its temperature
+    </string>
+    <string name="heat_cap_instr">
+        Constant-volume calorimeter (Bomb calorimeter), Constant-pressure calorimeter (Enthalpy-meter)
+    </string>
     <string name="heat_meta">Heat To Raise The Temperature Of A Body By One Degree</string>
     <string name="number_base">Number Base</string>
     <string name="number_base_meta">The Number Of Digits In A Number System</string>
@@ -116,6 +126,11 @@
     <string name="pressure_instr">Barometer (For atmospheric pressure), Manometer, Tire-pressure gauge</string>
     <string name="pressure_meta">The Perpendicular Force Per Unit Area</string>
     <string name="angularVelocity">Angular Velocity</string>
+    <string name="velocity_def">
+         Angular velocity refers to how fast an object
+        rotates or revolves relative to another point, i.e. how fast the angular position or orientation of an object changes with time
+    </string>
+    <string name="velocity_instr">Stroboscope, Tachometer</string>
     <string name="velocity_meta">How Fast An Object Rotates Relative To Another Point</string>
     <string name="energy">Energy</string>
     <string name="energy_def">Energy is the quantitative property that must be transferred to
@@ -124,6 +139,7 @@
     <string name="energy_meta">The Capacity For Doing Work</string>
     <string name="currency">Currency</string>
     <string name="currency_meta">Money Used As A Medium Of Exchange</string>
+    <string name="currency_instr">Money counters</string>
     <string name="swap">Swap</string>
     <string name="mass">Mass</string>
     <string name="mass_meta">The Quantity Of Matter Contained In A Body</string>

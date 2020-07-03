@@ -195,6 +195,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         view.requestLayout()
     }
 
+    @Suppress("EXPERIMENTAL_API_USAGE")
     override fun onOptionsItemSelected(item: MenuItem) =
         when (item.itemId) {
             android.R.id.home -> {
@@ -242,6 +243,8 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 }
                 true
             }
+            R.id.feedback -> MainActivity.sendFeedback(this)
+
             else -> super.onOptionsItemSelected(item)
         }
 

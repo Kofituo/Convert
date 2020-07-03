@@ -42,7 +42,7 @@ object AdditionItems {
 
     //var viewArray: ArrayList<View> = arrayListOf()
     var card: MyCardView? = null
-    var cardY: Float = 1f
+    var cardY = 1f
     var longPress: Boolean = false
     var mProgress = 0f
     var bugDetected = false
@@ -54,6 +54,7 @@ object AdditionItems {
     const val Author = "Kofi Otuo"
     const val SearchActivityExtra = "$pkgName.searchActivity"
     const val SearchActivityCalledIt = "$pkgName.searchActivityCalledIt"
+    val MyEmail = listOf("otuokofi.otuo@gmail.com").toTypedArray()
 
     fun endAnimation(): Boolean {
         animateStart?.apply {
