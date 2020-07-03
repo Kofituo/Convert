@@ -1,5 +1,6 @@
 package com.example.unitconverter.miscellaneous
 
+var count = 0
 val colors by lazy(LazyThreadSafetyMode.NONE) {
     listOf(
         "#29B6F6", "#FFD54F", "#DCE775",
@@ -29,11 +30,18 @@ val colors by lazy(LazyThreadSafetyMode.NONE) {
         "#C8D9AE", "#474747", "#A8A7A7",
         "#F7DB4F", "#2F9599", "#EC2049",
         "#A7226E", "#F26B38", "#594F4F",
-        "#F9CDAD", "#C8C8A9"
+        "#F9CDAD", "#C8C8A9", "#A8956C",
+        "#774305", "#5E1C49", "#3D7C8D",
+        "#FE6438", "#30511E", "#E2B9B0",
+        "#A4977F", "#8BDBD8", "#755030",
+        "#C08451", "#908A7C", "#775E64",
+        "#FE6669", "#7D6C72", "#AACBB9"
     )
 }
+
+/**TODO**/
 val nighColors by lazy(LazyThreadSafetyMode.NONE) {
     listOf(
-        "#EC407A","#DCB579","#474747"
+        "#EC407A", "#DCB579", "#474747", "#7D6C72", "#5E1C49", "#C08451"
     )
 }

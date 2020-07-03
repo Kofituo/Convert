@@ -39,8 +39,7 @@
             motion:layout_constraintBottom_toTopOf="@id/toolbar"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintWidth_percent="0.7" />
+            motion:layout_constraintTop_toTopOf="parent" />
 
         <Constraint
             android:id="@id/cover_up_toolbar"
@@ -91,8 +90,7 @@
             android:alpha="0"
             motion:layout_constraintBottom_toTopOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
-            motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintWidth_percent="0.7" />
+            motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
             android:id="@id/toolbar"
             android:layout_width="match_parent"

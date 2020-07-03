@@ -221,6 +221,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
 
             R.id.resolution -> Resolution(requireContext()).getList()
 
+            R.id.number_base -> NumberBase(requireContext()).getList()
+
             else -> mutableListOf()
         }
     }

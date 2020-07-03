@@ -71,6 +71,15 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
         //getUnitsList()
     }
 
+    private fun setCornerColors() {
+        (right_corner.background as LayerDrawable)
+            .findDrawableByLayerId(R.id.top_color)
+            .setTint(color)
+        (left_corner.background as LayerDrawable)
+            .findDrawableByLayerId(R.id.top_color)
+            .setTint(color)
+    }
+
     private lateinit var hiddenSearch: MenuItem
 
     private fun setColors() {
@@ -96,12 +105,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
                 height = (screenHeight * 0.09).roundToInt()
             }
         }
-        (right_corner.background as LayerDrawable)
-            .findDrawableByLayerId(R.id.top_color)
-            .setTint(color)
-        (left_corner.background as LayerDrawable)
-            .findDrawableByLayerId(R.id.top_color)
-            .setTint(color)
+        setCornerColors()
     }
 
     override fun finish() {
@@ -223,6 +227,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
                     .addAll { Flow(c).getList().addView(R.id.flow) }
                     .addAll { Inductance(c).getList().addView(R.id.inductance) }
                     .addAll { Resolution(c).getList().addView(R.id.resolution) }
+                    .addAll { NumberBase(c).getList().addView(R.id.number_base) }
         }
 
         return SortedArray(unitsComparator, list.size).apply {
@@ -375,14 +380,6 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
                 //sortedArray.addAll(filteredList)
             }
             Log.e("null", "size ${list.size} ${sortedArray.size} ")
-            /*val o:Any
-            val t2 = measureTime {
-                o= ArrayList<RecyclerDataClass>()
-                val filteredList =
-                    SearchTextChangeListener.filter(list, newText)
-                replaceAll(filteredList,o)
-                Collections.sort(o,unitsComparator)
-            }*/
             adapterMap[unit] = sortedArray
             val sortedListSize = sortedArray.size + 1 // for the header
             adapter.notifyItemRangeInserted(previousSize, sortedListSize)

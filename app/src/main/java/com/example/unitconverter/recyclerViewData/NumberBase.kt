@@ -19,8 +19,119 @@ class NumberBase(override val context: Context) : RecyclerDataAbstractClass() {
                     addWithSpace { base }
                     add { decimalFormat.format(2) }
                 }
-                CharArray(1).contentToString()
-                unit
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(3) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(4) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(5) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(6) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(7) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(8) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(9) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(10) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(11) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(12) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(13) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(14) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(15) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(16) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(32) }
+                }
+                unit = ""
+            }
+            putEntry {
+                quantity = appendString {
+                    addWithSpace { base }
+                    add { decimalFormat.format(36) }
+                }
+                unit = ""
             }
         }
 }

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.LayerDrawable
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -177,9 +178,23 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 apply()
             }
         }
-        //initialiseDidYouKnow()
+        setCornerColors()
         onCreateCalled = true
         grid setSelectionListener this
+    }
+
+    private fun setCornerColors() {
+        val color =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                getColor(R.color.front_page)
+            else
+                resources.getColor(R.color.front_page)
+        (right_corner.background as LayerDrawable)
+            .findDrawableByLayerId(R.id.top_color)
+            .setTint(color)
+        (left_corner.background as LayerDrawable)
+            .findDrawableByLayerId(R.id.top_color)
+            .setTint(color)
     }
 
     private fun motionLayoutTuning(savedInstanceState: Bundle?) {

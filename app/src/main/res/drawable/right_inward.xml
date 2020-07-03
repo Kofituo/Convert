@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/top_color">
-        <shape
-            android:shape="rectangle"
-            android:tint="@color/colorPrimary">
+        <shape android:shape="rectangle">
 
         </shape>
         <!--set the top color programmatically-->

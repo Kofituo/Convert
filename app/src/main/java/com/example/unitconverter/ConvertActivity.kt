@@ -1,6 +1,5 @@
 package com.example.unitconverter
 
-import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
@@ -9,6 +8,7 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.LayerDrawable
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -20,8 +20,8 @@ import android.util.ArrayMap
 import android.util.Log
 import android.view.*
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
@@ -93,7 +93,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         if (intent.getBooleanExtra(SearchActivityCalledIt, false))
             overridePendingTransition(R.anim.scale_out, android.R.anim.fade_out)
         setContentView(R.layout.activity_convert)
-        setSupportActionBar(convert_app_bar)
+        setSupportActionBar(convert_app_bar as Toolbar?)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
@@ -222,10 +222,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             setFilters(firstEditText)
             setFilters(secondEditText)
             resetEditTexts()
-            showToast {
-                text = "corrected"
-                duration = Toast.LENGTH_SHORT
-            }
         }
     }
 
@@ -386,6 +382,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 buildIntent<ConvertActivity> {
                     putExtra(TextMessage, "Prefix")
                     putExtra(ViewIdMessage, R.id.prefixes)
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(this)
                 }
             R.id.preferences -> {
@@ -470,21 +467,17 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         randomColor = if (colorInt == 0) Color.parseColor(colors.random()) else colorInt
         window {
             statusBarColor = randomColor
-            /*statusBarColor =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                    resources.getColor(android.R.color.transparent, null)
-                else resources.getColor(android.R.color.transparent)*/
             decorView.apply {
                 post {
                     if (Build.VERSION.SDK_INT > 22) systemUiVisibility =
                         systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 }
             }
-            //setBackgroundDrawable(getDrawable(R.drawable.test))
         }
         Log.e("color", String.format("#%06X", (0xffffff and randomColor)))
         randomColor.also {
-            convert_parent.setBackgroundColor(it)
+            setCornerColors(it)
+            background_view.setBackgroundColor(it)
             firstBox.boxStrokeColor = it
             secondBox.boxStrokeColor = it
             ColorStateList.valueOf(12)
@@ -498,6 +491,15 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 rippleColor = colorStateList
             }
         }
+    }
+
+    private fun setCornerColors(colorInt: Int) {
+        (right_corner.background as LayerDrawable)
+            .findDrawableByLayerId(R.id.top_color)
+            .setTint(colorInt)
+        (left_corner.background as LayerDrawable)
+            .findDrawableByLayerId(R.id.top_color)
+            .setTint(colorInt)
     }
 
     override fun onDestroy() {
@@ -767,11 +769,10 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     override fun onPause() {
         super.onPause()
         if (intent.getBooleanExtra(SearchActivityCalledIt, false) && isFinishing) {
-            val animator: Animator = ScaleTransition.mergeAnimators(
+            ScaleTransition.mergeAnimators(
                 ObjectAnimator.ofFloat(convert_parent, View.SCALE_X, 0.3f),
                 ObjectAnimator.ofFloat(convert_parent, View.SCALE_Y, 0.3f)
-            )
-            animator.start()
+            ).start()
         }
         saveData()
     }

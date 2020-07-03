@@ -5,14 +5,12 @@
     android:id="@+id/convert_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#7d9182"
     tools:context=".ConvertActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/convert_app_bar"
         android:layout_width="match_parent"
         android:layout_height="62dp"
-        android:elevation="4dp"
         android:gravity="center"
         android:paddingBottom="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
@@ -44,11 +42,26 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.3" />
 
+    <View
+        android:id="@+id/left_corner"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/left_inward"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/convert_app_bar" />
+
+    <View
+        android:id="@+id/right_corner"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/right_inward"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/convert_app_bar" />
+
     <com.example.unitconverter.subclasses.ConvertScrollView
         android:id="@+id/convertScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/rounded_front"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -194,4 +207,15 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.example.unitconverter.subclasses.ConvertScrollView>
+
+    <View
+        android:id="@+id/background_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="-1dp"
+        app:layout_constraintBottom_toBottomOf="@id/convert_app_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
