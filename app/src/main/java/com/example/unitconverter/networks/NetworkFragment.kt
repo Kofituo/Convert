@@ -8,6 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.unitconverter.builders.add
 import com.example.unitconverter.miscellaneous.isNotNull
+import com.example.unitconverter.miscellaneous.isNull
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.IOException
@@ -110,31 +113,79 @@ class NetworkFragment : Fragment() {
             Log.e("pre", "pre ex  ${params.map { it }}")
             if (!isCancelled && params.isNotEmpty()) {
                 runBlocking {
-                    params.forEachIndexed { index, it ->
-                        Log.e("eac", "$index")
-                        //concurrent op
-                        launch {
-                            Log.e("launch", "pop  ${params.size}  $index")
-                            resultArray.add {
-                                try {
-                                    val url = URL(it)
-                                    val resultString = downloadUrl(url)
-                                    Log.e("were", "result $resultString")
-                                    if (resultString != null) {
-                                        Result(it, resultString)
-                                    } else {
-                                        throw IOException("No response received")
-                                    }
-                                } catch (e: Exception) {
-                                    Result(it, exception = e)
-                                }
-                            }
-                        }
-                    }
+                    //execute 4 at a time
+                    executeFourATime(params, resultArray, 4, null)
                 }
             }
             return resultArray
         }
+
+        var time = 0
+
+        /**
+         * Start with 4 and continue with one at a time
+         * */
+        private fun CoroutineScope.executeFourATime(
+            list: Array<out String>?,
+            resultArray: MutableCollection<Result>,
+            numberToReproduce: Int,
+            listIterator: Iterator<String>? = null
+        ) {
+            Log.e("time", "${time++} ")
+            if (listIterator.isNull()) {
+                //it's the first time
+                if (list!!.size >= numberToReproduce) {
+                    val jobList = ArrayList<Job>(numberToReproduce)
+                    val iterator = list.iterator()
+                    for (i in 0 until numberToReproduce)
+                        jobList.add(performDownload(resultArray, iterator.next()))
+                    jobList.forEach {
+                        it.invokeOnCompletion {
+                            Log.e("com", "pl")
+                            if (jobList.all { job: Job -> job.isCompleted })
+                                executeFourATime(null, resultArray, 1, iterator)
+                        }
+                    }
+                } else
+                    list.forEach { performDownload(resultArray, it) }
+            } else {
+                //recursive
+                if (!listIterator.hasNext()) return
+                val jobList = ArrayList<Job>(numberToReproduce)
+
+                for (i in 0 until numberToReproduce)
+                    jobList.add(performDownload(resultArray, listIterator.next()))
+                jobList.forEach {
+                    it.invokeOnCompletion {
+                        if (jobList.all { job: Job -> job.isCompleted })
+                            executeFourATime(null, resultArray, 1, listIterator)
+                    }
+                }
+            }
+        }
+
+        private fun CoroutineScope.performDownload(
+            resultArray: MutableCollection<Result>,
+            string: String
+        ) =
+            //concurrent op
+            launch {
+                resultArray.add {
+                    try {
+                        val url = URL(string)
+                        Log.e("url", string)
+                        val resultString = downloadUrl(url)
+                        Log.e("were", "result $resultString")
+                        if (resultString != null) {
+                            Result(string, resultString)
+                        } else {
+                            throw IOException("No response received")
+                        }
+                    } catch (e: Exception) {
+                        Result(string, exception = e)
+                    }
+                }
+            }
 
         /**
          * Updates the DownloadCallback with the result.
@@ -208,3 +259,25 @@ class NetworkFragment : Fragment() {
         }
     }
 }
+
+/*params.forEachIndexed { index, it ->
+                        Log.e("eac", "$index")
+                        //concurrent op
+                        launch {
+                            Log.e("launch", "pop  ${params.size}  $index")
+                            resultArray.add {
+                                try {
+                                    val url = URL(it)
+                                    val resultString = downloadUrl(url)
+                                    Log.e("were", "result $resultString")
+                                    if (resultString != null) {
+                                        Result(it, resultString)
+                                    } else {
+                                        throw IOException("No response received")
+                                    }
+                                } catch (e: Exception) {
+                                    Result(it, exception = e)
+                                }
+                            }
+                        }
+                    }*/

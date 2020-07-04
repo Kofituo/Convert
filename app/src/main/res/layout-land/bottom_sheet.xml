@@ -72,27 +72,29 @@
         android:id="@+id/order"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:gravity="top"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:fontFamily="sans-serif-medium"
         android:text="@string/order"
-        android:textSize="17sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@id/secondGroup"
         app:layout_constraintEnd_toStartOf="@id/viewDivider1"
-        app:layout_constraintHorizontal_weight=".2"
+        app:layout_constraintHorizontal_weight="0.2"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toBottomOf="@id/firstGroup" />
 
     <View
         android:id="@+id/viewDivider1"
         android:layout_width="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="4dp"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toBottomOf="@id/order"
+        app:layout_constraintBottom_toTopOf="@id/secondGroup"
         app:layout_constraintEnd_toEndOf="@id/rightGuide"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/order"
-        app:layout_constraintTop_toBottomOf="@id/firstGroup"
-        app:layout_constraintVertical_bias="0.56" />
+        app:layout_constraintTop_toBottomOf="@id/firstGroup" />
 
     <RadioGroup
         android:id="@+id/secondGroup"

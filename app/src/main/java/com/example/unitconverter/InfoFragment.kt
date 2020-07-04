@@ -10,6 +10,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -70,11 +71,14 @@ class InfoFragment : DialogFragment() {
     private fun aboutQuantity(): AboutQuantity? {
         var didYouKnow: String? = null
         viewName = arguments?.getString("viewName")!!
+        Log.e("viewName", viewName)
         sharedPreferences.get<String?>("did_you_know$viewName") {
+            Log.e("imfo ", "val $this")
             if (this.isNotNull()) {
                 /**
                  * its in a form of a map so select at random
                  */
+                Log.e("here n", this)
                 val map =
                     Json.parseMap<String, String>(this).mapKeys { it.key.toInt() }
                 val index = Random.nextInt(0, map.size)
@@ -429,6 +433,6 @@ class InfoFragment : DialogFragment() {
 
     private fun italicsAndBold(charSequence: CharSequence) =
         SpannableString(charSequence).apply {
-            setSpan(StyleSpan(Typeface.BOLD), 0, length, 0)
+            setSpan(StyleSpan(Typeface.BOLD_ITALIC), 0, length, 0)
         }
 }

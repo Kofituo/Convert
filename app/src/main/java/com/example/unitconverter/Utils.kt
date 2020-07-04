@@ -47,7 +47,7 @@ object Utils {
 
     val zero get() = decimalFormatSymbols!!.zeroDigit
 
-    var isEngineering: Boolean? = null
+    var isEngineering: Boolean = false
 
     var pattern: String? = null
 
@@ -133,7 +133,7 @@ object Utils {
     fun String.insertCommas(): String = toBigDecimal().insertCommas()
 
     fun BigDecimal.insertCommas(): String {
-        if (isEngineering != true)
+        if (!isEngineering)
             return decimalFormat.format(this).run {
                 if (endsWith(decimalSeparator)) {
                     substringBeforeLast(decimalSeparator)
@@ -221,7 +221,7 @@ object Utils {
         return arrayOf(filter, lengthFilter())
     }
 
-    fun lengthFilter() = InputFilter.LengthFilter(77)//for atm
+    fun lengthFilter() = InputFilter.LengthFilter(68)//for atm
 
     fun <K, V> Map<K, V>.toJson(): String {
         if (isEmpty()) return "[]"

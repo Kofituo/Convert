@@ -13,125 +13,125 @@ class NumberBase(override val context: Context) : RecyclerDataAbstractClass() {
     private val base = getString(R.string.base)
 
     override fun getList() =
-        buildRecyclerList(30) {
+        buildRecyclerList(17) {
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(2) }
                 }
-                unit = ""
+                unit = "₂"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(3) }
                 }
-                unit = ""
+                unit = "₃"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(4) }
                 }
-                unit = ""
+                unit = "₄"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(5) }
                 }
-                unit = ""
+                unit = "₅"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(6) }
                 }
-                unit = ""
+                unit = "₆"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(7) }
                 }
-                unit = ""
+                unit = "₇"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(8) }
                 }
-                unit = ""
+                unit = "₈"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(9) }
                 }
-                unit = ""
+                unit = "₉"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(10) }
                 }
-                unit = ""
+                unit = "₁₀"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(11) }
                 }
-                unit = ""
+                unit = "₁₁"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(12) }
                 }
-                unit = ""
+                unit = "₁₂"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(13) }
                 }
-                unit = ""
+                unit = "₁₃"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(14) }
                 }
-                unit = ""
+                unit = "₁₄"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(15) }
                 }
-                unit = ""
+                unit = "₁₅"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(16) }
                 }
-                unit = ""
+                unit = "₁₆"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(32) }
                 }
-                unit = ""
+                unit = "₃₂"
             }
             putEntry {
                 quantity = appendString {
                     addWithSpace { base }
                     add { decimalFormat.format(36) }
                 }
-                unit = ""
+                unit = "₃₆"
             }
         }
 }

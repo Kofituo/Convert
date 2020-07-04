@@ -182,6 +182,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
         }
         setCornerColors()
+        ///initialiseDidYouKnow()
         onCreateCalled = true
         grid setSelectionListener this
     }
@@ -352,6 +353,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 put<Set<String>> {
                     key = "completedUpdates"
                     value = completedOnes
+                    Log.e("complete", "$completedOnes")
                 }
             if (waitingArrayDeque.isNotEmpty()) {
                 //Log.e("fav", "$favouritesCalled")
@@ -592,25 +594,26 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     lateinit var didYouKnowUrls: MutableList<String>
     lateinit var completedOnes: MutableSet<String>
 
-    private var lastUpdate: Long? = null
+    private var lastUpdate = -1L
 
     private fun initialiseDidYouKnow() {
         /**
-         * Get which did you know are up to date after 7 days
+         * Get which did you know are up to date after 15 days
          * */
         sharedPreferences {
             get<Long>("lastCompleteUpdateTime") {
                 //null is for first time app opens or when download doesn't finish
                 lastUpdate =
-                    if (this == -1L || timeIsMoreThanNDays(this, 15)) null else this
+                    if (this == -1L || timeIsMoreThanNDays(this, 15)) -1 else this
                 Log.e("thi", "$this")
             }
-            if (lastUpdate.isNull()) {
+            if (lastUpdate == -1L) {
                 /**
                  * Get the ones which weren't updated
                  * */
                 completedOnes = get("completedUpdates") ?: HashSet(originalMap.size)
                 val onesToUpdate = originalMap.keys subtract completedOnes
+                Log.e("one", "$onesToUpdate\n $completedOnes")
                 didYouKnowUrls = onesToUpdate.map {
                     appendString {
                         add { "${Token.Repository}/currency_conversions/contents/didYouKnow/$it.json" }
@@ -668,17 +671,21 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         Log.e("i 5times", "i ${i++}")
         //if it's null did you know would be blank and inform the user there
         if (url.isNotNull() && result.isNotNull()) {
-            val viewName = url.substringAfterLast('/')
+            val viewName =
+                url.substringAfterLast('/')
+                    .substringBefore(".json")
             Log.e("result", "$result")
             editPreferences {
                 put<String> {
                     key = "did_you_know$viewName"
                     value = result
+                    Log.e("vieM", viewName)
                 }
                 apply()
             }
+            Log.e("share", "${sharedPreferences.getString("did_you_know$viewName", "nothing")}")
             didYouKnowUrls.remove(url)
-            completedOnes.add(url)
+            completedOnes.add(viewName)
         }
     }
 
@@ -719,7 +726,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             //remove the one i have'nt yet filled
             didYouKnowUrls.remove(url)
         }
-        Log.e("url", "$url  $exception")
+        Log.e("url", "$exception")
     }
 
     companion object {
@@ -863,4 +870,4 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 true
             }
     }
-    }
+}

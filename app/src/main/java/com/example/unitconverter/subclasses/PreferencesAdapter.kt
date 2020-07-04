@@ -408,10 +408,11 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
             3, 7 -> {
                 //handle case for the default
                 var previousIdToReEnable: Int? = null
-                val otherGroupsMap = mGroupToEnabledID.map {
-                    val value = it.value
-                    value.keyAt(index) to value.valueAt(index)
-                }.toMap()
+                val otherGroupsMap =
+                    mGroupToEnabledID.map {
+                        val value = it.value
+                        value.keyAt(index) to value.valueAt(index)
+                    }.toMap()
                 //Log.e("mp", "$mGroupToEnabledID index $index")
                 var otherDefaultToDisable: Int? = null
                 for ((i, isEnabled) in otherGroupsMap) {

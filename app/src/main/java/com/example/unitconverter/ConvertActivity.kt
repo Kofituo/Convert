@@ -87,6 +87,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private lateinit var viewModel: ConvertViewModel
     private inline val isCurrency get() = viewId == R.id.Currency
     private lateinit var networkFragment: NetworkFragment
+    private val isNumberBase get() = viewId == R.id.number_base
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,11 +126,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         getLastConversions()
         firstEditText.apply {
             //setFilters(this)
-            setRawInputType(Configuration.KEYBOARD_12KEY)
+            if (!isNumberBase)
+                setRawInputType(Configuration.KEYBOARD_12KEY)
         }
         secondEditText.apply {
             //setFilters(this)
-            setRawInputType(Configuration.KEYBOARD_12KEY)
+            if (!isNumberBase)
+                setRawInputType(Configuration.KEYBOARD_12KEY)
         }
         viewModel = viewModel {
             settingColours(randomInt)
@@ -223,8 +226,13 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     override fun onResume() {
         super.onResume()
         if (onCreateCalled) {
-            setFilters(firstEditText)
-            setFilters(secondEditText)
+            if (isNumberBase) {
+                removeFilters(firstEditText)
+                removeFilters(secondEditText)
+            } else {
+                setFilters(firstEditText)
+                setFilters(secondEditText)
+            }
             resetEditTexts()
         }
     }
@@ -243,7 +251,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private fun setFilters(editText: TextInputEditText) {
         editText.filters =
-            if (isTemperature) temperatureFilters(editText) else filters(editText)
+            when {
+                isTemperature -> temperatureFilters(editText)
+                isNumberBase -> arrayOf(lengthFilter())
+                else -> filters(editText)
+            }
     }
 
     override fun texts(text: CharSequence, unit: CharSequence) {
@@ -325,8 +337,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    private var topPosition: Int = 0
-    private var bottomPosition: Int = 0
+    private var topPosition: Int = -1
+    private var bottomPosition: Int = -1
     private fun getPositions(): Boolean? {
         if (positionArray.valueAt(0) == -1 ||
             positionArray.valueAt(1) == -1
@@ -521,10 +533,14 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         return if (x.isEmpty()) ""
         else {
             val getPosition = getPositions()
-            if (getPosition.isNull()) x.insertCommas()
+            if (getPosition.isNull()) if (isNumberBase) x else x.insertCommas()
             else if (!getPosition) ""
             else f(Positions(topPosition, bottomPosition, x))
         }
+    }
+
+    private fun numberBaseConversion() {
+
     }
 
     private fun removeFilters(editText: EditText) {
@@ -532,39 +548,75 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     inner class CommonWatcher(
-        editText: EditText,
+        private val editText: EditText,
         private val secondEditText: TextInputEditText
     ) :
         SeparateThousands(editText) {
         override fun afterTextChanged(s: Editable?) {
+            if (s.isNull()) return
             val start = System.currentTimeMillis()
-            Log.e("came", "$s   ${secondEditText.text} $groupingSeparator de $decimalSeparator")
+            Log.e("came", "$s  ${secondEditText.text} $groupingSeparator de $decimalSeparator")
+            if (getNumberBases(s, editText, secondEditText, this)) return
             super.afterTextChanged(s)
-            Log.e("act", "act")
-            s?.apply {
+            s.apply {
                 if (length == 1 && get(0) == minusSign) {
                     secondEditText.text = null // to prevent Unparseable number "-"error
                     return
                 }
                 removeCommas(decimalSeparator)?.also {
                     Log.e("may be Problem", it)
-                    secondEditText.apply {
-                        removeFilters(this)
-                        val result = callBack(function, it)
-                        this as DisableEditText
-                        shouldDisable(Utils.decimalFormatSymbols?.exponentSeparator!! in result)
-                        setText(result)
-                        setFilters(this)
-                    }
-                    var k = 0
-                    for (i in secondEditText.text!!) if (i.isDigit()) k++
-                    Log.e(
-                        "finish",
-                        "${System.currentTimeMillis() - start} ${secondEditText.text} ${secondEditText.text?.length}" +
-                                " len $k"
-                    )
+                    setTexts(it, secondEditText)
+                    Log.e("finish", "${System.currentTimeMillis() - start}")
                 }
             }
+        }
+    }
+
+    private fun setTexts(string: String, secondEditText: TextInputEditText): String {
+        secondEditText.apply {
+            removeFilters(this)
+            val result = callBack(function, string)
+            this as DisableEditText
+            shouldDisable(Utils.decimalFormatSymbols?.exponentSeparator!! in result)
+            setText(result)
+            setFilters(this)
+            return result
+        }
+    }
+
+    private fun getNumberBases(
+        string: CharSequence,
+        currentEditText: EditText,
+        secondEditText: TextInputEditText,
+        currentEditTextWatcher: TextWatcher
+    ): Boolean {
+        if (isNumberBase) {
+            val result = setTexts(string.toString(), secondEditText)
+            currentEditText.removeTextChangedListener(currentEditTextWatcher)
+            if (topPosition != -1 && bottomPosition != -1 && result.isEmpty()) {
+                //means wrong input string
+                Log.e("here", "result")
+                val text = currentEditText.text ?: return isNumberBase
+                val redText = SpannableString(text).apply {
+                    setSpan(RedUnderline(resources), 0, text.length, 0)
+                }
+                setTextWithCursorPosition(currentEditText, redText)
+            } else //remove the spans since it's correct
+                currentEditText.apply {
+                    if (text is Spanned) {
+                        setTextWithCursorPosition(this, text.toString())
+                    }
+                }
+            currentEditText.addTextChangedListener(currentEditTextWatcher)
+        }
+        return isNumberBase
+    }
+
+    private fun setTextWithCursorPosition(editText: EditText, text: CharSequence) {
+        editText.apply {
+            val cursorPosition = selectionEnd
+            setText(text)
+            setSelection(cursorPosition)
         }
     }
 
@@ -575,9 +627,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             firstWatcher = CommonWatcher(this, secondEditText)
             setOnFocusChangeListener { _, hasFocus ->
                 firstBoolean = hasFocus
-                //Log.e("3", "3 firstHasFocus $firstBoolean  secondHasFocus $secondBoolean")
                 if (hasFocus) {
-                    ///Log.e("pp", "$firstBoolean ")
                     addTextChangedListener(firstWatcher)
                     secondEditText.removeTextChangedListener(secondCommonWatcher)
                     reverse = false
@@ -694,6 +744,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
         }
     }
+
     private fun getRatesList(string: String) = Json.parseMap<String, String>(string)
 
     private fun saveData() {
@@ -1070,7 +1121,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         "isTrue",
                         "${Utils.isEngineering}  $pattern  $preferencesSelected"
                     )
-                    if (Utils.isEngineering != true) {
+                    if (!Utils.isEngineering) {
                         Utils.pattern = setDecimalPlaces(pattern!!, sliderValue)
                         Log.e("set", "set  ${Utils.pattern}")
                     }

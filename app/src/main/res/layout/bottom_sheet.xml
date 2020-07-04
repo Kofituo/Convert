@@ -74,9 +74,10 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/order"
         android:layout_width="0dp"
+        android:fontFamily="sans-serif-medium"
         android:layout_height="wrap_content"
         android:text="@string/order"
-        android:textSize="17sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@id/secondGroup"
         app:layout_constraintEnd_toStartOf="@id/viewDivider1"
         app:layout_constraintHorizontal_weight="0.2"

@@ -71,20 +71,7 @@ object FlattenMap {
     }
 */
 
-    fun <T, N> getChildData(map: Map<N, Collection<T>>, position: Int): T {
-        var index = 0
-        for ((_, list) in map) {
-            index++
-            list.forEach {
-                if (position == index)
-                    return it
-                index++
-            }
-        }
-        error("this is not a child $position  $map")
-    }
-
-    /*fun <T, N> getChildDataForSortedList(map: Map<N, SortedList<T>>, position: Int): T {
+    /*private fun <T, N> getChildData(map: Map<N, Collection<T>>, position: Int): T {
         var index = 0
         for ((_, list) in map) {
             index++
@@ -96,6 +83,33 @@ object FlattenMap {
         }
         error("this is not a child $position  $map")
     }*/
+
+    //faster than the above version since it does'nt iterate all the list
+    fun <T, N> getChildData(map: Map<N, Collection<T>>, position: Int): T {
+        require(position >= 0)
+        var index = -1
+        for ((_, list) in map) {
+            val listSize = list.size
+            index += listSize + 1 //plus 1 for the header
+            if (index >= position) {
+                val positionInList =
+                    position - (index - listSize) - 1 //minus 1 because the size is always 1 ahead the index
+                return if (list is List) list[positionInList] else list[positionInList]
+            }
+        }
+        error("this is not a child position $position  map $map")
+    }
+
+    @Suppress("UNREACHABLE_CODE")
+    private operator fun <T> Collection<T>.get(position: Int): T {
+        TODO("I haven't used collection in any yet")
+        if (position >= 0)
+            forEachIndexed { index, item ->
+                if (index == position)
+                    return item
+            }
+        error("Collection Is Empty")
+    }
 
     fun <T, S> convertMapToList(map: Map<S, Collection<T>>, startIndex: Int = 0): ArrayList<Int> {
         val array = ArrayList<Int>(map.size + 8)
