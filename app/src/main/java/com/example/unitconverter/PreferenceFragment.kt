@@ -43,7 +43,7 @@ class PreferenceFragment : DialogFragment() {
 
     //to prevent unwanted saving and refreshes
     private val sharedPreferences by sharedPreferences {
-        AdditionItems.pkgName + viewName + "for_preferences"
+        AdditionItems.pkgName + "for_preferences"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +54,7 @@ class PreferenceFragment : DialogFragment() {
         sharedPreferences.apply {
             viewModel.apply {
                 if (groupToCheckedId.isNull())
-                    get<String?>("preferences_for_activity") {
+                    get<String?>("$viewName.preferences_for_activity") {
                         groupToCheckedId =
                             if (this.hasValue()) Json.parseMap(this)
                             else buildMutableMap(4) {
@@ -65,7 +65,7 @@ class PreferenceFragment : DialogFragment() {
                             }
                     }
                 if (sliderValue.isNull())
-                    get<Float>("preference_slider_value") {
+                    get<Float>("$viewName.preference_slider_value") {
                         sliderValue = if (this == -1f) 5f else this
                     }
             }
@@ -74,7 +74,7 @@ class PreferenceFragment : DialogFragment() {
                 viewModel.mGroupToEnabledID = buildMutableMap(3)
                 //either all is there or none is there
                 for (i in 1..3) {
-                    get<String?>("mGroupToEnabledID$i") {
+                    get<String?>("$viewName.mGroupToEnabledID$i") {
                         if (this.hasValue()) {
                             val sparseBooleanArray = SparseBooleanArray(2)
                             Json.parseMap<Int, Boolean>(this).forEach {
@@ -198,21 +198,32 @@ class PreferenceFragment : DialogFragment() {
                 val checkedChange = groupToCheckedId != viewModel.initialMap
                 val sliderValueChanged = viewModel.initialSliderValue != sliderValue
                 if (checkedChange || sliderValueChanged) {
+                    val modifiedOnes =
+                        sharedPreferences
+                            .get<Set<String>?>("modified_preferences")?.toMutableSet()
+                            ?: mutableSetOf()
+                    modifiedOnes.add(viewName)
                     sharedPreferences.edit {
                         if (checkedChange)
                             put<String> {
-                                key = "preferences_for_activity"
+                                key = "$viewName.preferences_for_activity"
                                 value = Json.stringify(groupToCheckedId)
                             }
                         if (sliderValueChanged)
                             put<Float> {
-                                key = "preference_slider_value"
+                                key = "$viewName.preference_slider_value"
                                 value = sliderValue
                             }
+                        put<Set<String>> {
+                            key = "modified_preferences"
+                            value = modifiedOnes
+                        }
+
                         for (i in 1..3) {
                             put<String> {
-                                key = "mGroupToEnabledID$i"
-                                value = Json.stringify(mGroupToEnabledID[i]!!.toMap())
+                                key = "$viewName.mGroupToEnabledID$i"
+                                value =
+                                    Json.stringify(mGroupToEnabledID[i]!!.toMap()) //for my custom group to enabled id
                             }
                         }
                     }

@@ -246,6 +246,8 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             }
             R.id.feedback -> MainActivity.sendFeedback(this)
 
+            R.id.settings -> buildIntent<SettingsActivity> { startActivity(this) }
+
             else -> super.onOptionsItemSelected(item)
         }
 

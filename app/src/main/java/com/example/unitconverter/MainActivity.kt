@@ -98,6 +98,13 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         ArrayDeque<String>(30)
     }
 
+    private val isNightMode
+        get() =
+            resources
+                ?.configuration
+                ?.uiMode
+                ?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
     @OptIn(ExperimentalTime::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         Handler().post { measureAndLog(1234) { initializeInterAds() } }
@@ -107,11 +114,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         setSupportActionBar(app_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         val rect = Rect()
-        val isNightMode =
-            resources
-                ?.configuration
-                ?.uiMode
-                ?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         window?.decorView?.apply {
             post {
                 getWindowVisibleDisplayFrame(rect)
@@ -171,12 +173,13 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 
 
-    private fun showInterAd() {
-        if (!::interstitialAd.isInitialized) return
+    private fun showInterAd(): Boolean {
+        if (!::interstitialAd.isInitialized) return false
         val shouldLoad = Random.nextBoolean()
         Log.e("load", "${interstitialAd.isLoaded}  $shouldLoad  ++")
-        if (interstitialAd.isLoaded && shouldLoad)
-            interstitialAd.show()
+        val willShow = interstitialAd.isLoaded && shouldLoad
+        if (willShow) interstitialAd.show()
+        return willShow
     }
 
     private var adFailedToLoad
@@ -458,6 +461,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
         R.id.prefixes -> {
             buildIntent<ConvertActivity> {
+                showInterAd()
                 putExtra(TextMessage, "Prefix")
                 putExtra(ViewIdMessage, R.id.prefixes)
                 startActivity(this)
@@ -468,17 +472,21 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             if (!useDefault) {
                 // store selected item
                 storeSelectedItems()
-            } else {
-                onSearchRequested()
-            }
+            } else onSearchRequested()
+
             true
         }
         R.id.feedback -> sendFeedback(this)
 
         R.id.upgrade -> onUpgradeClick()
 
+        R.id.settings -> buildIntent<SettingsActivity> { startActivity(this) }
+
+
         else -> super.onOptionsItemSelected(item)
     }
+
+    private var adShowed by ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
 
     override fun onSearchRequested(): Boolean {
         buildIntent<SearchActivity> {
@@ -638,7 +646,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 /**
                  * Get the ones which weren't updated
                  * */
-                completedOnes = get("completedUpdates") ?: HashSet(originalMap.size)
+                completedOnes =
+                    get<Set<String>?>("completedUpdates")?.toMutableSet()
+                        ?: HashSet(originalMap.size)
                 val onesToUpdate = originalMap.keys subtract completedOnes
                 Log.e("one", "$onesToUpdate\n $completedOnes")
                 didYouKnowUrls = onesToUpdate.map {

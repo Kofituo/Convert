@@ -1,35 +1,48 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
-
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
-
+    <PreferenceCategory app:title="@string/theme">
         <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
+            app:defaultValue="default"
+            app:entries="@array/theme_reply_entries"
+            app:entryValues="@array/theme_reply_values"
+            app:key="theme"
+            app:title="@string/choose_theme"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
+    <PreferenceCategory app:title="@string/conversion">
 
         <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
-
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
-
+            app:key="retain"
+            app:persistent="false"
+            app:title="@string/retain_pref" />
+        <ListPreference
+            app:defaultValue="decimal"
+            app:entries="@array/notation_entries"
+            app:entryValues="@array/notation_values"
+            app:key="notation"
+            app:persistent="false"
+            app:title="@string/notation"
+            app:useSimpleSummaryProvider="true" />
+        <SeekBarPreference
+            android:max="10"
+            app:defaultValue="5"
+            app:key="sliderValue"
+            app:min="0"
+            app:persistent="false"
+            app:seekBarIncrement="1"
+            app:showSeekBarValue="true"
+            app:summary="@string/decimal_place_summary"
+            app:title="@string/decimal_places" />
     </PreferenceCategory>
 
+    <Preference
+        app:icon="@drawable/ic_info"
+        app:title="@string/about">
+        <intent
+            android:targetClass="com.example.unitconverter.About"
+            android:targetPackage="com.example.unitconverter" />
+    </Preference>
 </PreferenceScreen>

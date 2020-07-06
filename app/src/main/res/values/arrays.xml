@@ -1,12 +1,31 @@
 <resources>
     <!-- Reply Preference -->
-    <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
+    <string-array name="theme_reply_entries">
+        <item>@string/system_default</item>
+        <item>@string/dark_theme</item>
+        <item>@string/light_theme</item>
     </string-array>
 
-    <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
+    <string-array name="theme_reply_values">
+        <item>default</item>
+        <item>dark</item>
+        <item>light</item>
+    </string-array>
+
+    <string-array name="notation_values">
+        <item>decimal</item>
+        <item>scientific</item>
+        <item>eng</item>
+    </string-array>
+
+    <string-array name="notation_entries">
+        <item>@string/decimal_notation</item>
+        <item>@string/scientific_notation</item>
+        <item>@string/engineering_notation</item>
+    </string-array>
+
+    <string-array name="hmm">
+        <item>yes</item>
+        <item>no</item>
     </string-array>
 </resources>

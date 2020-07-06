@@ -95,6 +95,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private val isNumberBase get() = viewId == R.id.number_base
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //restoreUiMode()
         super.onCreate(savedInstanceState)
         if (intent.getBooleanExtra(SearchActivityCalledIt, false))
             overridePendingTransition(R.anim.scale_out, android.R.anim.fade_out)
@@ -268,6 +269,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private var onCreateCalled by resetAfterGet(initialValue = true, resetValue = false)
 
     override fun onResume() {
+        //restoreUiMode()
         super.onResume()
         if (onCreateCalled) {
             if (isNumberBase) {
@@ -466,10 +468,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
             R.id.feedback -> MainActivity.sendFeedback(this)
 
-            R.id.search -> {
-                showInterAd()
-                true
+            R.id.settings -> buildIntent<SettingsActivity> {
+                startActivity(this)
+                finish()
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

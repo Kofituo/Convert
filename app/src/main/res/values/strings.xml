@@ -102,6 +102,7 @@
     <string name="convert_info">About Quantity</string>
     <string name="selectItems">Select\nitems</string>
     <string name="convert">Convert</string>
+    <string name="conversion">Conversions</string>
     <string name="data_storage">Data Storage</string>
     <string name="data_meta">The Amount Of Information In A Storage Medium</string>
     <string name="data_instr">Software utilities</string>
@@ -177,12 +178,17 @@
     <string name="currency_reset">Currencies Have Been Reset</string>
     <string name="currency_and_rates_success">Currencies And Rates Updated</string>
     <string name="rates_success">Conversion Rates Updated</string>
+    <string name="auto_save">Auto save</string>
+    <string name="save_changes">Update Changes?</string>
+    <string name="auto_save_sum">Save changes automatically</string>
     <string name="connecting">Connecting …</string>
     <string name="notation">Notation</string>
     <string name="grouping_separator">GROUPING SEPARATOR</string>
     <string name="decimal_separator">DECIMAL SEPARATOR</string>
     <string name="exponent_separator">EXPONENT SEPARATOR</string>
     <string name="decimal_place">DECIMAL PLACE</string>
+    <string name="decimal_places">Decimal Places</string>
+    <string name="decimal_place_summary">Max Number Of Decimal Places</string>
     <string name="updating_currencies_rates">Updating Currencies And Rates</string>
     <string name="added_favourites">Added To Favourites</string>
     <string name="quantity">Quantity:</string>
@@ -612,17 +618,17 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
+    <string name="theme">App Theme</string>
     <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="choose_theme">Choose Theme</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <string name="system_default">System Default</string>
+    <string name="dark_theme">Dark</string>
+    <string name="light_theme">Light</string>
+    <string name="clear_preferences">Clear All Preferences</string>
+    <string name="retain_pref">Retain Already Set Preferences</string>
 </resources>

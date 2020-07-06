@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/green"
-        app:layout_constraintBottom_toTopOf="@+id/image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,14 +20,14 @@
         android:id="@+id/image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="14dp"
         android:contentDescription="@string/about"
         android:src="@drawable/ic_infinity"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintWidth_percent="0.3" />
+        app:layout_constraintTop_toTopOf="@+id/guide"
+        app:layout_constraintWidth_percent="0.3"
+        tools:layout_editor_absoluteY="56dp" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/version"
@@ -51,5 +50,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/version"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.17" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.12" />
 </androidx.constraintlayout.widget.ConstraintLayout>
