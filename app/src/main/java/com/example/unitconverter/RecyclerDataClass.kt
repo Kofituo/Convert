@@ -4,8 +4,8 @@ import android.view.View
 import java.io.Serializable
 
 data class RecyclerDataClass(
-    val quantity: String,
-    var correspondingUnit: CharSequence,
-    val id: Int,
+    val topText: String,
+    var bottomText: CharSequence,
+    var id: Int = -1,
     var view: View? = null
 ) : Serializable

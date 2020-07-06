@@ -2,12 +2,17 @@
     <string name="app_name">Unit Converter</string>
 
     <string name="header">Unit\nConverter</string>
+    <string name="version_number">Unit Converter\nVersion 1.0.0</string>
     <string name="no_email_app">No Email Apps Available</string>
     <string name="report_bug">Report A Bug</string>
     <string name="about">About</string>
     <string name="upgrade">Upgrade</string>
     <string name="first_bracket">(</string>
     <string name="close">Close</string>
+    <string name="share">Share</string>
+    <string name="share_meta">Invite Friends</string>
+    <string name="rate">Rate</string>
+    <string name="rate_meta">Review App On Playstore</string>
     <string name="second_bracket">)</string>
     <string name="temperature">Temperature</string>
     <string name="temp_def">Temperature is a physical property of matter that quantitatively expresses hot and cold</string>
@@ -190,6 +195,26 @@
     <string name="premium_version">Premium Version No Ads $ 1.99</string>
     <string name="cup_of_coffee">Buy Me A Coffee $ 2.99</string>
     <string name="support_team">Support Development Team $ 9.99</string>
+    <string name="drop">Drop</string>
+    <string name="drop_unit">dr</string>
+    <string name="pinch">Pinch</string>
+    <string name="pinch_unit">pn</string>
+    <string name="coffee_spoon">Coffeespoon</string>
+    <string name="coffee_unit">csp</string>
+    <string name="teaspoon">Teaspoon</string>
+    <string name="teaspoon_unit">tsp</string>
+    <string name="tablespoon">Tablespoon</string>
+    <string name="tablespoon_unit">tbsp</string>
+    <string name="dessertspoon">Dessertspoon</string>
+    <string name="dessertspoon_unit">dssp</string>
+    <string name="Fluid_ounce">Fluid Ounce</string>
+    <string name="teacup">Teacup</string>
+    <string name="teacup_unit">tcf</string>
+    <string name="cup">Cup</string>
+    <string name="cup_unit">C</string>
+    <string name="wineglass">Wineglass</string>
+    <string name="wineglass_unit">wgf</string>
+
     <!--    for the prefixes-->
     <string name="yotta">Yotta</string>
     <string name="yotta_symbol">Y</string>
@@ -566,7 +591,7 @@
     <string name="electric_horsepower">Electric Horsepower</string>
 
     <!--density-->
-    <string name="fluid_ounce">fl oz</string>
+    <string name="fluid_ounce">fl.oz</string>
     <string name="fluid_ounce_us">fluid ounce (US)</string>
     <string name="fluid_ounce_uk">fluid ounce (UK)</string>
     <string name="imp_gal">gallon (UK)</string>

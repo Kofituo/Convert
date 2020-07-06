@@ -131,6 +131,9 @@ class InitializeFunction(private val viewId: Int) {
                 { Resolution(it).getText() }
             }
 
+            R.id.cooking -> {
+                { Cooking(it).getText() }
+            }
             R.id.number_base -> {
                 { NumberBase(it).getText() }
             }

@@ -190,7 +190,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
 
     private val unitsComparator = Comparator<RecyclerDataClass> { o1, o2 ->
         val locale = Locale.getDefault()
-        o1.quantity.toLowerCase(locale).compareTo(o2.quantity.toLowerCase(locale))
+        o1.topText.toLowerCase(locale).compareTo(o2.topText.toLowerCase(locale))
     }
 
     private fun getUnitsList(): SortedArray<RecyclerDataClass> {
@@ -415,7 +415,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
     override fun onUnitClick(view: MyCardView, recyclerDataClass: RecyclerDataClass) {
         buildIntent<ConvertActivity> {
             val textViewText = (view.getChildAt(1) as TextView).text
-            val unit = recyclerDataClass.correspondingUnit
+            val unit = recyclerDataClass.bottomText
             val unitIsSpans = unit is Spanned
             putExtra(AdditionItems.TextMessage, textViewText)
             putExtra(AdditionItems.SearchActivityCalledIt, true)
@@ -425,7 +425,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
                 recyclerDataClass.also {
                     it.view = null
                     if (unitIsSpans) {
-                        it.correspondingUnit = unit.toString()
+                        it.bottomText = unit.toString()
                         putExtra("IsSpans", true)
                     }
                 }) //to make it serializable
@@ -433,7 +433,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
             startActivity(this)
             recyclerDataClass.view = view //reset it
             if (unitIsSpans)
-                recyclerDataClass.correspondingUnit = unit
+                recyclerDataClass.bottomText = unit
         }
     }
 }

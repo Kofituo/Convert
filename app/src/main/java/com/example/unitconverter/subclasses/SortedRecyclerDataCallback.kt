@@ -10,8 +10,8 @@ class SortedRecyclerDataCallback(
 ) :
     SortedList.Callback<RecyclerDataClass>() {
     override fun areItemsTheSame(item1: RecyclerDataClass, item2: RecyclerDataClass) =
-        item1.quantity == item2.quantity &&
-                item1.correspondingUnit == item2.correspondingUnit
+        item1.topText == item2.topText &&
+                item1.bottomText == item2.bottomText
 
     override fun onMoved(fromPosition: Int, toPosition: Int) =
         adapter.notifyItemMoved(fromPosition, toPosition)

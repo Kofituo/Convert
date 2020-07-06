@@ -93,13 +93,13 @@ class MyAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.radioButton.apply {
             text =
-                if (useFilteredList) mSortedList[position].quantity else dataSet[position].quantity
+                if (useFilteredList) mSortedList[position].topText else dataSet[position].topText
             myId = if (useFilteredList) mSortedList[position].id else dataSet[position].id
             isChecked = lastPosition == myId
         }
         holder.radioTextView.text =
-            if (useFilteredList) mSortedList[position].correspondingUnit
-            else dataSet[position].correspondingUnit
+            if (useFilteredList) mSortedList[position].bottomText
+            else dataSet[position].bottomText
     }
 
     fun add(dataSet: MutableList<RecyclerDataClass>) = mSortedList.addAll(dataSet)

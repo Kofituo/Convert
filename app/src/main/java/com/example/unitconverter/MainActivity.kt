@@ -100,9 +100,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     @OptIn(ExperimentalTime::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        Handler().post { measureAndLog(1234) { initializeInterAds() } }
         super.onCreate(savedInstanceState)
         //use recycler view instead
-        setContentView(R.layout.front_page_activity)
+        measureAndLog(11111) { setContentView(R.layout.front_page_activity) }
         setSupportActionBar(app_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         val rect = Rect()
@@ -163,12 +164,12 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
         setCornerColors()
         //initialiseDidYouKnow()
-        measureAndLog(1234) { initializeInterAds() }
         onCreateCalled = true
         grid setSelectionListener this
         val end = intent.getLongExtra("start", -1)
         Log.e("time", "${end - System.currentTimeMillis()}")
     }
+
 
     private fun showInterAd() {
         if (!::interstitialAd.isInitialized) return
@@ -187,7 +188,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         // probably at on resume
         interstitialAd = InterstitialAd(this)
         interstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        launch { interstitialAd.loadAd(ConvertActivity.adRequest) }
+        interstitialAd.loadAd(ConvertActivity.adRequest)
         interstitialAd.adListener =
             object : AdListener() {
                 override fun onAdClosed() {

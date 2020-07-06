@@ -103,8 +103,8 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
                     is SearchUnitHolder -> {
                         data as RecyclerDataClass
                         holder.apply {
-                            units.text = data.correspondingUnit
-                            mainTextView.text = data.quantity
+                            units.text = data.bottomText
+                            mainTextView.text = data.topText
                         }
                     }
                     is SearchQuantityHolder -> {

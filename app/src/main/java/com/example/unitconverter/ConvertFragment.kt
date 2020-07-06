@@ -46,7 +46,7 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
     private lateinit var positionKey: String
     private val comparator =
         Comparator { first: RecyclerDataClass, second: RecyclerDataClass ->
-            first.quantity.compareTo(second.quantity)
+            first.topText.compareTo(second.topText)
         }
     private var start = 0L
 
@@ -220,6 +220,8 @@ class ConvertFragment : DialogFragment(), MyAdapter.OnRadioButtonsClickListener 
             R.id.inductance -> Inductance(requireContext()).getList()
 
             R.id.resolution -> Resolution(requireContext()).getList()
+
+            R.id.cooking -> Cooking(requireContext()).getList()
 
             R.id.number_base -> NumberBase(requireContext()).getList()
 

@@ -347,9 +347,9 @@ class InfoFragment : DialogFragment() {
     private fun getUnits(recyclerDataClassList: List<RecyclerDataClass>): String {
         return recyclerDataClassList.joinToString {
             appendString {
-                addWithSpace { it.quantity }
+                addWithSpace { it.topText }
                 add { R.string.first_bracket.gS }
-                add { it.correspondingUnit }
+                add { it.bottomText }
                 add { R.string.second_bracket.gS }
             }
         }
@@ -359,9 +359,9 @@ class InfoFragment : DialogFragment() {
         recyclerDataClass.run {
             StringBuilder().apply {
                 put {
-                    addWithSpace { quantity }
+                    addWithSpace { topText }
                     add { R.string.first_bracket.gS }
-                    add { correspondingUnit }
+                    add { bottomText }
                     add { R.string.second_bracket.gS }
                     if (!isEnd)
                         add { ", " }
@@ -378,9 +378,9 @@ class InfoFragment : DialogFragment() {
             val first = get(0).let {
                 StringBuilder().apply {
                     put {
-                        addWithSpace { it.quantity }
+                        addWithSpace { it.topText }
                         add { R.string.first_bracket.gS }
-                        add { it.correspondingUnit }
+                        add { it.bottomText }
                         add { R.string.second_bracket.gS }
                         add { ", " }
                     }

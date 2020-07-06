@@ -239,8 +239,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 getSerializableExtra(SearchActivityExtra)
             if (searchData.isNotNull()) {
                 searchData as RecyclerDataClass
-                firstBox.hint = searchData.quantity
-                val text = searchData.correspondingUnit
+                firstBox.hint = searchData.topText
+                val text = searchData.bottomText
                 topTextView.text =
                     if (getBooleanExtra("IsSpans", false)) {
                         removeExtra("IsSpans")
@@ -1059,7 +1059,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         var index = 0
                         //if there's a difference in  currency
                         !list.all {
-                            it.quantity == this[index++].quantity //compare only quantity to be fast
+                            it.topText == this[index++].topText //compare only quantity to be fast
                         }
                     }
                 //Log.e("should", "clear $shouldClear")

@@ -58,8 +58,8 @@ class SearchTextChangeListener(
 
             return returnList.apply {
                 for (i in dataSet) {
-                    val text = i.quantity
-                    val unit = i.correspondingUnit
+                    val text = i.topText
+                    val unit = i.bottomText
                     if (unit.containsIgnoreCase(mainText) ||
                         text.containsIgnoreCase(mainText)
                     ) add(i)
