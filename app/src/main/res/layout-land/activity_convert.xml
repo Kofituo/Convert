@@ -27,9 +27,9 @@
         android:layout_marginStart="55dp"
         android:splitMotionEvents="false"
         android:text="@string/mass"
-        android:textColor="?android:attr/textColorPrimary"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="21sp"
         app:layout_constraintBottom_toBottomOf="@id/convert_app_bar"
         app:layout_constraintStart_toStartOf="@+id/convert_app_bar"
@@ -99,8 +99,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:paddingStart="20dp"
                     android:letterSpacing="0.06"
+                    android:paddingStart="20dp"
                     android:paddingEnd="60dp"
                     android:textSize="18sp" />
 
@@ -127,9 +127,9 @@
                 <com.example.unitconverter.subclasses.DisableEditText
                     android:id="@+id/secondEditText"
                     android:layout_width="match_parent"
-                    android:letterSpacing="0.06"
                     android:layout_height="wrap_content"
                     android:inputType="text"
+                    android:letterSpacing="0.06"
                     android:paddingStart="20dp"
                     android:paddingEnd="60dp"
                     android:textSize="18sp" />
@@ -178,9 +178,9 @@
                 app:icon="@drawable/arrow_down"
                 app:layout_constraintBottom_toBottomOf="@+id/firstBox"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:strokeColor="?android:attr/textColorPrimary"
                 app:layout_constraintStart_toEndOf="@id/firstBox"
                 app:layout_constraintTop_toTopOf="@id/topGuide"
+                app:strokeColor="?android:attr/textColorPrimary"
                 app:strokeWidth="2dp" />
 
             <com.google.android.material.button.MaterialButton
@@ -200,9 +200,9 @@
                 app:icon="@drawable/arrow_down"
                 app:layout_constraintBottom_toBottomOf="@+id/secondBox"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:strokeColor="?android:attr/textColorPrimary"
                 app:layout_constraintStart_toEndOf="@id/secondBox"
                 app:layout_constraintTop_toTopOf="@id/secondBox"
+                app:strokeColor="?android:attr/textColorPrimary"
                 app:strokeWidth="2dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -217,5 +217,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/ad_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

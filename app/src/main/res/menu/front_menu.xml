@@ -36,4 +36,9 @@
         android:title="@string/about"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/upgrade"
+        android:title="@string/upgrade"
+        app:showAsAction="never" />
+
 </menu>

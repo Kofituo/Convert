@@ -273,6 +273,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
      * @param  position refers to the position clicked
      * */
     override fun onGroupClick(position: Int, holder: GroupViewHolder) {
+        if (position < 0) return
         val initialPosition =
             FlattenMap.getGroupPosition(dataSetCopy, position) ?: error("check code $position")
         if (!groupsExpanded[initialPosition]) {
@@ -293,6 +294,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
 
     //to make sure recently added is'nt removed
     override fun onChildClicked(position: Int, radioId: Int, buttonView: MyRadioButton) {
+        if (position < 0) return
         val groupPosition = FlattenMap.getChildData(dataSetCopy, position).groupNumber
         val previousButton = groupToCheckedButton[groupPosition]
         if (previousButton.isNotNull()) {

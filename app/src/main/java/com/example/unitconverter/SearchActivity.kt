@@ -68,7 +68,6 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
         }
         setColors()
         setRecyclerView()
-        //getUnitsList()
     }
 
     private fun setCornerColors() {
@@ -438,6 +437,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
         }
     }
 }
+
 @ExperimentalTime
 @OptIn(ExperimentalContracts::class)
 inline fun measureAndLog(n: Int, block: () -> Unit) {

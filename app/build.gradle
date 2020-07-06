@@ -44,6 +44,7 @@ dependencies {
     //remove these later on
     implementation 'org.jsoup:jsoup:1.10.3'
     //
+    implementation 'com.google.android.gms:play-services-ads:19.2.0'
     implementation 'androidx.collection:collection-ktx:1.1.0'
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta7'

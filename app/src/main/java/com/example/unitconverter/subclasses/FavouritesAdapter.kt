@@ -105,6 +105,7 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
                 metadataTextView = findViewById(R.id.metadata)
                 setOnClickListener {
                     val pos = this@ViewHolder.adapterPosition
+                    if (pos < 0) return@setOnClickListener
                     if (longClicked)
                         selectedItems.apply {
                             if (containsKey(pos)) {
@@ -193,16 +194,16 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
     private inline val diffUtil
         get() = object : DiffUtil.Callback() {
 
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-            oldList[oldItemPosition]?.cardId == newList[newItemPosition]?.cardId
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                oldList[oldItemPosition]?.cardId == newList[newItemPosition]?.cardId
 
-        override fun getOldListSize(): Int = oldList.size
+            override fun getOldListSize(): Int = oldList.size
 
-        override fun getNewListSize(): Int = newList.size
+            override fun getNewListSize(): Int = newList.size
 
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-            oldList[oldItemPosition] == newList[newItemPosition]
-    }
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                oldList[oldItemPosition] == newList[newItemPosition]
+        }
 
     fun setFavouritesItemListener(favouritesItem: FavouritesItem) {
         this.favouritesItem = favouritesItem

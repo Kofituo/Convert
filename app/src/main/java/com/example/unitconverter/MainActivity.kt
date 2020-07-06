@@ -19,6 +19,7 @@ import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import com.example.unitconverter.AdditionItems.MyEmail
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ViewIdMessage
@@ -49,6 +50,8 @@ import com.example.unitconverter.networks.NetworkFragment
 import com.example.unitconverter.networks.Token
 import com.example.unitconverter.subclasses.*
 import com.example.unitconverter.subclasses.FavouritesData.Companion.favouritesBuilder
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.InterstitialAd
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.*
@@ -62,6 +65,8 @@ import java.util.*
 import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
+import kotlin.random.Random
+import kotlin.time.ExperimentalTime
 
 //change manifest setting to backup allow true
 @UnstableDefault
@@ -75,36 +80,15 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     private val yPoint = 0f
     private val metaState = 0
     private val motionEventDown
-        get() = MotionEvent.obtain(
-            downTime,
-            eventTime,
-            MotionEvent.ACTION_DOWN,
-            xPoint,
-            yPoint,
-            metaState
-        )
+        get() = MotionEvent
+            .obtain(downTime, eventTime, MotionEvent.ACTION_DOWN, xPoint, yPoint, metaState)
     private val motionEventUp: MotionEvent
-        get() = MotionEvent.obtain(
-            downTime,
-            eventTime,
-            MotionEvent.ACTION_UP,
-            xPoint,
-            yPoint,
-            metaState
-        )
+        get() = MotionEvent
+            .obtain(downTime, eventTime, MotionEvent.ACTION_UP, xPoint, yPoint, metaState)
 
     private val motionEventMove: MotionEvent
-        get() = MotionEvent.obtain(
-            downTime,
-            eventTime,
-            MotionEvent.ACTION_MOVE,
-            xPoint,
-            yPoint,
-            metaState
-        )
-
-    private var h = 0
-    private var w = 0
+        get() = MotionEvent
+            .obtain(downTime, eventTime, MotionEvent.ACTION_MOVE, xPoint, yPoint, metaState)
 
     private val sharedPreferences by defaultPreferences()
 
@@ -114,17 +98,13 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         ArrayDeque<String>(30)
     }
 
+    @OptIn(ExperimentalTime::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //use recycler view instead
         setContentView(R.layout.front_page_activity)
         setSupportActionBar(app_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        h = resources.displayMetrics.heightPixels / 2
-        w = resources.displayMetrics.widthPixels / 2
-        Log.e(
-            "id",
-            "${dataStorage.id} ${resources.displayMetrics.widthPixels}  ${resources.displayMetrics.density}"
-        )
         val rect = Rect()
         val isNightMode =
             resources
@@ -182,10 +162,47 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
         }
         setCornerColors()
-        ///initialiseDidYouKnow()
+        //initialiseDidYouKnow()
+        measureAndLog(1234) { initializeInterAds() }
         onCreateCalled = true
         grid setSelectionListener this
+        val end = intent.getLongExtra("start", -1)
+        Log.e("time", "${end - System.currentTimeMillis()}")
     }
+
+    private fun showInterAd() {
+        if (!::interstitialAd.isInitialized) return
+        val shouldLoad = Random.nextBoolean()
+        Log.e("load", "${interstitialAd.isLoaded}  $shouldLoad  ++")
+        if (interstitialAd.isLoaded && shouldLoad)
+            interstitialAd.show()
+    }
+
+    private var adFailedToLoad
+            by ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
+
+    lateinit var interstitialAd: InterstitialAd
+    private fun initializeInterAds() {
+        //display the ad after some time
+        // probably at on resume
+        interstitialAd = InterstitialAd(this)
+        interstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        launch { interstitialAd.loadAd(ConvertActivity.adRequest) }
+        interstitialAd.adListener =
+            object : AdListener() {
+                override fun onAdClosed() {
+                    if (!interstitialAd.isLoaded) {
+                        //means it was inter that was closed
+                        interstitialAd.loadAd(ConvertActivity.adRequest)
+                    }
+                }
+
+                override fun onAdFailedToLoad(p0: Int) {
+                    adFailedToLoad = true
+                }
+            }
+    }
+
 
     private fun setCornerColors() {
         val color =
@@ -445,54 +462,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 startActivity(this)
             }
         }
-        R.id.favourite ->
-            buildIntent<FavouritesActivity> {
-                sharedPreferences(favouritesPreferences) {
-                    get<String?>("favouritesArray") {
-                        favouritesCalled = true
-                        if (this.hasValue()) {
-                            //Log.e("has ", "value  $waitingArrayDeque")
-                            //already sorted in reverse order
-                            val deque = Json.parse(DeserializeStringDeque, this)
-                            waitingArrayDeque.offerLast(deque)
-                                .apply {
-                                    if (isEmpty()) {
-                                        startActivity(this@buildIntent)
-                                        return true
-                                    }
-                                    //Log.e("called Linked", "$this  \n$deque $waitingArrayDeque")
-                                }
-                        }
-                    }
-                }
-                if (waitingArrayDeque.isNotEmpty()) {
-                    //send the list to the activity
-                    val favouritesList: List<FavouritesData?>
-                    getNameToViewMap().apply {
-                        favouritesList = waitingArrayDeque.map {
-                            val view = this[it] //shouldn't be null though
-                            view?.run {
-                                this as MyCardView
-                                val textView = (this@run.getChildAt(1) as DataTextView)
-                                favouritesBuilder {
-                                    drawableId = drawableIds[this@run.id] ?: -1
-                                    topText = textView.text
-                                    metadata = textView.metadata
-                                    cardId = this@run.id
-                                    cardName = this@run.name
-                                }
-                            }
-                        }
-                    }
-                    /*Log.e(
-                        "just before",
-                        "$favouritesList  $waitingArrayDeque  " +
-                                "${waitingArrayDeque.size == favouritesList.size}"
-                    )*/
-                    putExtra("$pkgName.favourites_list", favouritesList as Serializable)
-                }
-                startActivity(this)
-            }
+        R.id.favourite -> onFavouritesClicked()
         R.id.search_button -> {
             if (!useDefault) {
                 // store selected item
@@ -504,6 +474,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
         R.id.feedback -> sendFeedback(this)
 
+        R.id.upgrade -> onUpgradeClick()
+
         else -> super.onOptionsItemSelected(item)
     }
 
@@ -512,6 +484,11 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             putExtra("MAIN_ACTIVITY", true)
             startActivity(this)
         }
+        return true
+    }
+
+    private fun onUpgradeClick(): Boolean {
+        Upgrade().show(supportFragmentManager, "UPGRADE")
         return true
     }
 
@@ -546,8 +523,54 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     private var useDefault = true
 
+    private fun onFavouritesClicked() =
+        buildIntent<FavouritesActivity> {
+            showInterAd()
+            sharedPreferences(favouritesPreferences) {
+                get<String?>("favouritesArray") {
+                    favouritesCalled = true
+                    if (this.hasValue()) {
+                        //Log.e("has ", "value  $waitingArrayDeque")
+                        //already sorted in reverse order
+                        val deque = Json.parse(DeserializeStringDeque, this)
+                        waitingArrayDeque.offerLast(deque)
+                            .apply {
+                                if (isEmpty()) {
+                                    startActivity(this@buildIntent)
+                                    return true
+                                }
+                                //Log.e("called Linked", "$this  \n$deque $waitingArrayDeque")
+                            }
+                    }
+                }
+            }
+            if (waitingArrayDeque.isNotEmpty()) {
+                //send the list to the activity
+                val favouritesList: List<FavouritesData?>
+                getNameToViewMap().apply {
+                    favouritesList = waitingArrayDeque.map {
+                        val view = this[it] //shouldn't be null though
+                        view?.run {
+                            this as MyCardView
+                            val textView = (this@run.getChildAt(1) as DataTextView)
+                            favouritesBuilder {
+                                drawableId = drawableIds[this@run.id] ?: -1
+                                topText = textView.text
+                                metadata = textView.metadata
+                                cardId = this@run.id
+                                cardName = this@run.name
+                            }
+                        }
+                    }
+                }
+                putExtra("$pkgName.favourites_list", favouritesList as Serializable)
+            }
+            startActivity(this)
+        }
+
     override fun changeSearchButton(useDefault: Boolean) {
         this.useDefault = useDefault
+        Log.e("unse", "$useDefault")
         if (useDefault)
             searchButton.apply {
                 icon = getDrawable(R.drawable.add_to_search)
@@ -556,6 +579,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     setEnterFadeDuration(300)
                     setExitFadeDuration(300)
                     start()
+                    Handler().postDelayed({
+                        icon = getDrawable(R.drawable.ic_magnifying_glass)
+                    }, 600)
                 }
             } else searchButton.apply {
             title = getString(R.string.add_to_favourites)
@@ -648,21 +674,28 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     private fun setNetworkCallback() {
         if (!::networkCallback.isInitialized) {
-            (getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager)
-                ?.apply {
-                    networkCallback = object : ConnectivityManager.NetworkCallback() {
-                        override fun onAvailable(network: Network) {
-                            networkIsAvailable = true
-                            if (didYouKnowUrls.isNotEmpty() && ::networkFragment.isInitialized)
-                                networkFragment.startDownload()
-                        }
-
-                        override fun onLost(network: Network) {
-                            networkIsAvailable = false
+            getSystemService<ConnectivityManager>()?.apply {
+                networkCallback = object : ConnectivityManager.NetworkCallback() {
+                    override fun onAvailable(network: Network) {
+                        networkIsAvailable = true
+                        if (didYouKnowUrls.isNotEmpty() && ::networkFragment.isInitialized)
+                            networkFragment.startDownload()
+                        if (adFailedToLoad) {
+                            Log.e("fak,", "retr")
+                            if (::interstitialAd.isInitialized)
+                                launch {
+                                    if (!interstitialAd.isLoaded)
+                                        interstitialAd.loadAd(ConvertActivity.adRequest)
+                                }
                         }
                     }
-                    registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
+
+                    override fun onLost(network: Network) {
+                        networkIsAvailable = false
+                    }
                 }
+                registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
+            }
         }
     }
 

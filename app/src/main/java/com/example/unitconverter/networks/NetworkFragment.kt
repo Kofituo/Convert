@@ -135,31 +135,28 @@ class NetworkFragment : Fragment() {
             if (listIterator.isNull()) {
                 //it's the first time
                 if (list!!.size >= numberToReproduce) {
-                    val jobList = ArrayList<Job>(numberToReproduce)
                     val iterator = list.iterator()
-                    for (i in 0 until numberToReproduce)
-                        jobList.add(performDownload(resultArray, iterator.next()))
-                    jobList.forEach {
-                        it.invokeOnCompletion {
-                            Log.e("com", "pl")
-                            if (jobList.all { job: Job -> job.isCompleted })
-                                executeFourATime(null, resultArray, 1, iterator)
-                        }
-                    }
+                    innerExecution(resultArray, numberToReproduce, iterator)
                 } else
                     list.forEach { performDownload(resultArray, it) }
-            } else {
-                //recursive
-                if (!listIterator.hasNext()) return
-                val jobList = ArrayList<Job>(numberToReproduce)
+            } else //recursive
+                innerExecution(resultArray, numberToReproduce, listIterator)
+        }
 
-                for (i in 0 until numberToReproduce)
-                    jobList.add(performDownload(resultArray, listIterator.next()))
-                jobList.forEach {
-                    it.invokeOnCompletion {
-                        if (jobList.all { job: Job -> job.isCompleted })
-                            executeFourATime(null, resultArray, 1, listIterator)
-                    }
+        private fun CoroutineScope.innerExecution(
+            resultArray: MutableCollection<Result>,
+            numberToReproduce: Int,
+            listIterator: Iterator<String>
+        ) {
+            if (!listIterator.hasNext()) return
+            val jobList = ArrayList<Job>(numberToReproduce)
+
+            for (i in 0 until numberToReproduce)
+                jobList.add(performDownload(resultArray, listIterator.next()))
+            jobList.forEach {
+                it.invokeOnCompletion {
+                    if (jobList.all { job: Job -> job.isCompleted })
+                        executeFourATime(null, resultArray, 1, listIterator)
                 }
             }
         }

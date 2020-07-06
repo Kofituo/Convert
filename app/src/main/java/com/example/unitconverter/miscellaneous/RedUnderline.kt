@@ -8,13 +8,13 @@ import android.graphics.drawable.Drawable
 
 import android.text.style.DynamicDrawableSpan
 
-
+//borrowed
 class RedUnderline(resources: Resources, color: Int, lineWidth: Int, waveSize: Int) :
     DynamicDrawableSpan(ALIGN_BASELINE) {
     private var width = 0
-    var lineWidth: Int
-    var waveSize: Int
-    var color: Int
+    private var lineWidth: Int
+    private var waveSize: Int
+    private var color: Int
 
     constructor(resources: Resources) : this(resources, Color.RED, 1, 3)
 

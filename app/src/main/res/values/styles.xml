@@ -53,11 +53,8 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="sortStyle" parent="Theme.MaterialComponents.DayNight">
-        <item name="colorPrimary">#03dac6</item>
-    </style>
-
-    <style name="convertPage" parent="Theme.MaterialComponents.DayNight">
-
+    <style name="splash" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:statusBarColor">@color/adaptive_white_black</item>
     </style>
 </resources>

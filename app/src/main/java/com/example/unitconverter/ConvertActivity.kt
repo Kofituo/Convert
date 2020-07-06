@@ -1,7 +1,6 @@
 package com.example.unitconverter
 
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
@@ -24,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.edit
+import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
 import com.example.unitconverter.AdditionItems.Author
@@ -33,7 +33,6 @@ import com.example.unitconverter.AdditionItems.SearchActivityExtra
 import com.example.unitconverter.AdditionItems.TextMessage
 import com.example.unitconverter.AdditionItems.ToolbarColor
 import com.example.unitconverter.AdditionItems.ViewIdMessage
-import com.example.unitconverter.AdditionItems.card
 import com.example.unitconverter.AdditionItems.pkgName
 import com.example.unitconverter.Utils.dpToInt
 import com.example.unitconverter.Utils.filters
@@ -56,6 +55,10 @@ import com.example.unitconverter.subclasses.Constraints
 import com.example.unitconverter.subclasses.ConvertViewModel
 import com.example.unitconverter.subclasses.DisableEditText
 import com.example.unitconverter.subclasses.Positions
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.InterstitialAd
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -70,6 +73,8 @@ import java.net.SocketTimeoutException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
+import kotlin.random.Random
+import kotlin.time.ExperimentalTime
 
 @OptIn(ImplicitReflectionSerializer::class)
 class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterface,
@@ -106,7 +111,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             bottom_button.setLeftPadding(this, -3) //converts it to dp
             top_button.setLeftPadding(this, -3)
         }
-
         dialog = ConvertFragment()
         // for setting the text
         intent {
@@ -121,18 +125,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 bundle.putInt("viewId", this)
             }
         }
-        Log.e("id", "$viewId")
-        Log.e("vi", "$card")
         getLastConversions()
-        firstEditText.apply {
-            //setFilters(this)
-            if (!isNumberBase)
-                setRawInputType(Configuration.KEYBOARD_12KEY)
-        }
-        secondEditText.apply {
-            //setFilters(this)
-            if (!isNumberBase)
-                setRawInputType(Configuration.KEYBOARD_12KEY)
+
+        if (!isNumberBase) {
+            firstEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
+            secondEditText.setRawInputType(Configuration.KEYBOARD_12KEY)
         }
         viewModel = viewModel {
             settingColours(randomInt)
@@ -160,8 +157,55 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 }
         }
         selectFirstBox()
+        initializeAds()
         onCreateCalled = true
     }
+
+    lateinit var adView: AdView
+    private var adFailedToLoad by resetAfterGet(initialValue = false, resetValue = false)
+
+    @OptIn(ExperimentalTime::class)
+    private fun initializeAds() {
+        measureAndLog(7898) {
+            launch {
+                adView = findViewById(R.id.ad_view)
+                adView.loadAd(adRequest)
+                adView.adListener = adListListener
+                setNetworkListener()
+                initializeInterAds()
+            }
+        }
+    }
+
+    private lateinit var interstitialAd: InterstitialAd
+
+    private fun CoroutineScope.initializeInterAds() {
+        //display the ad after some time
+        // probably at on resume
+        interstitialAd = InterstitialAd(this@ConvertActivity)
+        interstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        interstitialAd.loadAd(adRequest)
+        interstitialAd.adListener = adListListener
+    }
+
+    private val adListListener
+        get() = object : AdListener() {
+
+            override fun onAdClosed() {
+                if (!interstitialAd.isLoaded) {
+                    //means it was inter that was closed
+                    interstitialAd.loadAd(adRequest)
+                }
+            }
+
+            override fun onAdFailedToLoad(p0: Int) {
+                adFailedToLoad = true
+                Log.e("here", "false  ${p0 == AdRequest.ERROR_CODE_NETWORK_ERROR} $p0")
+                super.onAdFailedToLoad(p0)
+            }
+
+        }
+
 
     private fun getCurrencyData(): Boolean {
         if (isCurrency) {
@@ -422,16 +466,31 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
             R.id.feedback -> MainActivity.sendFeedback(this)
 
+            R.id.search -> {
+                showInterAd()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    private var showAdCount = 0
     override fun onSearchRequested(): Boolean {
+        showInterAd()
         buildIntent<SearchActivity> {
             putExtra(ToolbarColor, randomColor)
             startActivity(this)
         }
         return true
+    }
+
+    private fun showInterAd(): Boolean {
+        if (!::interstitialAd.isInitialized) return false
+        val shouldLoad = Random.nextBoolean()
+        Log.e("load", "${interstitialAd.isLoaded}  $shouldLoad  $showAdCount++")
+        val shouldShow = interstitialAd.isLoaded && shouldLoad
+        if (shouldShow) interstitialAd.show()
+        return shouldShow
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -523,6 +582,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     override fun onDestroy() {
         super.onDestroy()
+        if (::adView.isInitialized) adView.destroy()
         cancel()
     }
 
@@ -533,14 +593,14 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         return if (x.isEmpty()) ""
         else {
             val getPosition = getPositions()
-            if (getPosition.isNull()) if (isNumberBase) x else x.insertCommas()
-            else if (!getPosition) ""
-            else f(Positions(topPosition, bottomPosition, x))
+            when {
+                getPosition.isNull() && isNumberBase ->
+                    f(Positions(topPosition, bottomPosition, x))
+                getPosition.isNull() -> x.insertCommas()
+                !getPosition -> ""
+                else -> f(Positions(topPosition, bottomPosition, x))
+            }
         }
-    }
-
-    private fun numberBaseConversion() {
-
     }
 
     private fun removeFilters(editText: EditText) {
@@ -554,6 +614,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         SeparateThousands(editText) {
         override fun afterTextChanged(s: Editable?) {
             if (s.isNull()) return
+            if (secondEditText.isFocused) return // should'nt be though
             val start = System.currentTimeMillis()
             Log.e("came", "$s  ${secondEditText.text} $groupingSeparator de $decimalSeparator")
             if (getNumberBases(s, editText, secondEditText, this)) return
@@ -585,28 +646,25 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     private fun getNumberBases(
-        string: CharSequence,
+        currentText: CharSequence,
         currentEditText: EditText,
         secondEditText: TextInputEditText,
         currentEditTextWatcher: TextWatcher
     ): Boolean {
         if (isNumberBase) {
-            val result = setTexts(string.toString(), secondEditText)
+            val result = setTexts(currentText.toString(), secondEditText)
             currentEditText.removeTextChangedListener(currentEditTextWatcher)
             if (topPosition != -1 && bottomPosition != -1 && result.isEmpty()) {
                 //means wrong input string
                 Log.e("here", "result")
-                val text = currentEditText.text ?: return isNumberBase
-                val redText = SpannableString(text).apply {
-                    setSpan(RedUnderline(resources), 0, text.length, 0)
+                ///val text = currentEditText.text ?: return isNumberBase
+                val redText = SpannableString(currentText).apply {
+                    setSpan(RedUnderline(resources), 0, currentText.length, 0)
                 }
                 setTextWithCursorPosition(currentEditText, redText)
             } else //remove the spans since it's correct
-                currentEditText.apply {
-                    if (text is Spanned) {
-                        setTextWithCursorPosition(this, text.toString())
-                    }
-                }
+                if (currentText is Spanned)
+                    setTextWithCursorPosition(currentEditText, currentText.toString())
             currentEditText.addTextChangedListener(currentEditTextWatcher)
         }
         return isNumberBase
@@ -743,6 +801,26 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 return list
             }
         }
+
+        val adRequest: AdRequest
+            get() =
+                AdRequest
+                    .Builder()
+                    .addKeyword("Insurance")
+                    .addKeyword("health")
+                    .addKeyword("banking")
+                    .addKeyword("business")
+                    .addKeyword("internet")
+                    .addKeyword("wellness")
+                    .addKeyword("Marketing and Advertising")
+                    .addKeyword("legal")
+                    .addKeyword("forex")
+                    .addKeyword("online education")
+                    .addKeyword("education")
+                    .addKeyword("home")
+                    .addKeyword("telecom")
+                    .addKeyword("automobile dealership")
+                    .build()
     }
 
     private fun getRatesList(string: String) = Json.parseMap<String, String>(string)
@@ -827,12 +905,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     override fun onPause() {
         super.onPause()
-        if (intent.getBooleanExtra(SearchActivityCalledIt, false) && isFinishing) {
-            ScaleTransition.mergeAnimators(
-                ObjectAnimator.ofFloat(convert_parent, View.SCALE_X, 0.3f),
-                ObjectAnimator.ofFloat(convert_parent, View.SCALE_Y, 0.3f)
-            ).start()
-        }
+        if (isFinishing && !showInterAd())  //don't play animation if the add is about to show
+            if (intent.getBooleanExtra(SearchActivityCalledIt, false))
+                ScaleTransition.mergeAnimators(
+                    ObjectAnimator.ofFloat(convert_parent, View.SCALE_X, 0.3f),
+                    ObjectAnimator.ofFloat(convert_parent, View.SCALE_Y, 0.3f)
+                ).start()
         saveData()
     }
 
@@ -1004,28 +1082,30 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     private fun setNetworkListener() {
         if (!::networkCallback.isInitialized) {
-            (getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-                .apply {
-                    networkCallback = object : ConnectivityManager.NetworkCallback() {
-                        override fun onAvailable(network: Network) {
-                            networkIsAvailable = true
-                            if (retry == true) {
-                                networkFragment.startDownload()
-                                Log.e("try", "try")
-                            }
-                            Log.e("ava", "called")
-                        }
-
-                        override fun onLost(network: Network) {
-                            Log.e("lost", "lost")
-                            networkIsAvailable = false
+            getSystemService<ConnectivityManager>()?.apply {
+                networkCallback = object : ConnectivityManager.NetworkCallback() {
+                    override fun onAvailable(network: Network) {
+                        networkIsAvailable = true
+                        if (retry == true)
+                            networkFragment.startDownload()
+                        if (adFailedToLoad) {
+                            Log.e("fak,", "retr")
+                            if (::interstitialAd.isInitialized && ::adView.isInitialized) //does'nt harm to check for null
+                                launch {
+                                    adView.loadAd(adRequest)
+                                    if (!interstitialAd.isLoaded)
+                                        interstitialAd.loadAd(adRequest)
+                                }
                         }
                     }
-                    registerNetworkCallback(
-                        NetworkRequest.Builder().build(),
-                        networkCallback
-                    )
+
+                    override fun onLost(network: Network) {
+                        Log.e("lost", "lost")
+                        networkIsAvailable = false
+                    }
                 }
+                registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
+            }
         }
     }
 

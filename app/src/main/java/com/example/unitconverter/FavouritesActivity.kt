@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.*
 import android.view.LayoutInflater
@@ -255,6 +256,9 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             setEnterFadeDuration(300)
             setExitFadeDuration(500)
             start()
+            Handler().postDelayed({
+                icon = getDrawable(R.drawable.ic_magnifying_glass)
+            }, 812)
         }
     }
 

@@ -5,6 +5,7 @@
     <string name="no_email_app">No Email Apps Available</string>
     <string name="report_bug">Report A Bug</string>
     <string name="about">About</string>
+    <string name="upgrade">Upgrade</string>
     <string name="first_bracket">(</string>
     <string name="close">Close</string>
     <string name="second_bracket">)</string>
@@ -186,6 +187,9 @@
     <string name="_quantity">Quantities</string>
     <string name="unit">Units</string>
     <string name="did_you_know">Did You Know:</string>
+    <string name="premium_version">Premium Version No Ads $ 1.99</string>
+    <string name="cup_of_coffee">Buy Me A Coffee $ 2.99</string>
+    <string name="support_team">Support Development Team $ 9.99</string>
     <!--    for the prefixes-->
     <string name="yotta">Yotta</string>
     <string name="yotta_symbol">Y</string>
