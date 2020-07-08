@@ -27,6 +27,7 @@
     <string name="sort_by">Sort By</string>
     <string name="cancel">Cancel</string>
     <string name="decimal_notation">Decimal Notation</string>
+    <string name="some">thing</string>
     <string name="scientific_notation">Scientific Notation</string>
     <string name="engineering_notation">Engineering notation</string>
     <string name="done">Done</string>
@@ -48,20 +49,43 @@
     <string name="angle_meta">The Figure Between Two Intersecting Rays Or Planes</string>
     <string name="density">Density</string>
     <string name="density_meta">The Mass Of A Body Per Unit Volume</string>
+    <string name="density_instr">
+        Aerometer (liquids), Dasymeter (gases), Gas collecting tube, Hydrometer (liquids), Pycnometer (liquids)
+    </string>
     <string name="title">Title</string>
     <string name="illuminance">Illuminance</string>
     <string name="illuminance_meta">The Total Luminous Flux Per Unit Area</string>
     <string name="favourite">Favourites</string>
     <string name="radioactivity">Radioactivity</string>
     <string name="radioactivity_meta">Activity Of A Quantity Of Radioactive Material</string>
+    <string name="radio_def">
+        The emission of ionizing radiation or particles caused by the spontaneous disintegration of atomic nuclei
+    </string>
+    <string name="radio_instr">
+        Bubble chamber, Cloud chamber, Dosimeter, Geiger counter, Microchannel plate detector,
+        Photographic plate, Photostimulable phosphors, Scintillation counter, Lucas cell
+    </string>
     <string name="force">Force</string>
     <string name="force_meta">A Push Or Pull</string>
+    <string name="force_instr">
+        Force gauge, Spring scale, Strain gauge, Torsion balance, Tribometer
+    </string>
     <string name="sound">Sound</string>
     <string name="sound_meta">Vibration That Propagates As An Acoustic Wave</string>
+    <string name="sound_instr">
+        Microphone, hydrophone, Shock tube, Sound level meter, Seismometer
+    </string>
     <string name="inductance">Inductance</string>
     <string name="inductance_meta">Resistance Of A Circuit Element To Changes In Current</string>
+    <string name="inductance_def">
+        Inductance is the tendency of an electrical conductor to oppose a change in the electric current flowing through it
+    </string>
+    <string name="inductance_instr">Inductance meter</string>
     <string name="flow">Flow</string>
     <string name="flow_meta">Volume Of Fluid Which Passes Per Unit Time</string>
+    <string name="flow_instr">
+        Gas meter, Mass flow meter, Metering pump, Water meter
+    </string>
     <string name="settings">Settings</string>
     <string name="cooking">Cooking</string>
     <string name="cooking_meta">Quantities Involved In Food Preparation</string>
@@ -161,8 +185,14 @@
         Yard stick</string>
     <string name="resistance">Resistance</string>
     <string name="resistance_meta">Opposition To The Flow Of Electric Current</string>
+    <string name="resistance_instr">
+        Ohmmeter, Time-domain reflectometer, Wheatstone bridge
+    </string>
     <string name="power">Power</string>
     <string name="power_meta">The Rate Of Doing Work Or Transferring Heat</string>
+    <string name="power_instr">
+        Wattmeter, Optical power meter, Microwave power meter
+    </string>
     <string name="luminance">Luminance</string>
     <string name="luminance_meta">Luminous Intensity Per Unit Area In A Given Direction</string>
     <string name="luminance_instr">Photometers</string>

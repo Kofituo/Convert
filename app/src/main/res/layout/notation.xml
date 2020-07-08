@@ -19,7 +19,7 @@
         android:id="@+id/rightGuide"
         app:layout_constraintGuide_percent="0.97" />
 
-    <com.example.unitconverter.subclasses.MyRadioButton
+    <com.otuolabs.unitconverter.subclasses.MyRadioButton
         android:id="@+id/decimal_notation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

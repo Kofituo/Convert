@@ -1,0 +1,1003 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.otuolabs.unitconverter.subclasses.GridConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/grid"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layoutAnimation="@anim/fall_down_layout_animation"
+    android:splitMotionEvents="false">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.013" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.987" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topGuide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.012" />
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Temperature"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/Area"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toTopOf="@id/topGuide"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_temperature"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/temperature"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/temp_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Area"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/Mass"
+        app:layout_constraintStart_toEndOf="@id/Temperature"
+        app:layout_constraintTop_toTopOf="@id/topGuide"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="-2dp"
+            android:layout_marginBottom="-2dp"
+            android:drawableTop="@drawable/ic_area"
+            android:drawablePadding="7dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center"
+            android:text="@string/area"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/area_meta" />
+
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Mass"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/Volume"
+        app:layout_constraintStart_toEndOf="@id/Area"
+        app:layout_constraintTop_toTopOf="@id/topGuide"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_dumb_bell"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/mass"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/mass_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Volume"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/Length"
+        app:layout_constraintStart_toEndOf="@id/Mass"
+        app:layout_constraintTop_toTopOf="@id/topGuide"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_cylinder"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/volume"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/volume_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Length"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/Volume"
+        app:layout_constraintTop_toBottomOf="@id/topGuide"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_ruler"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/length"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/length_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Angle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/Pressure"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/Temperature"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_angle1"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/angle"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/angle_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Pressure"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/Speed"
+        app:layout_constraintStart_toEndOf="@id/Angle"
+        app:layout_constraintTop_toBottomOf="@id/Area"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_blood_pressure1"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/pressure"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/pressure_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Speed"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/time"
+        app:layout_constraintStart_toEndOf="@id/Pressure"
+        app:layout_constraintTop_toBottomOf="@id/Mass"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_fast"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/speed"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/speed_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/time"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/fuelEconomy"
+        app:layout_constraintStart_toEndOf="@id/Speed"
+        app:layout_constraintTop_toBottomOf="@id/Volume"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_circular_clock"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/time"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/time_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/fuelEconomy"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/time"
+        app:layout_constraintTop_toBottomOf="@id/Length"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_gas_station"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:lineSpacingMultiplier="0.86"
+            android:text="@string/fuel_economy"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/fuel_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/dataStorage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/electric_current"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/Angle"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_hard_drive"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:lineSpacingMultiplier="0.88"
+            android:text="@string/data_storage"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/data_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/electric_current"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/luminance"
+        app:layout_constraintStart_toEndOf="@id/dataStorage"
+        app:layout_constraintTop_toBottomOf="@id/Pressure"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_lab"
+            android:drawablePadding="4dp"
+            android:fontFamily="@font/roboto_slab"
+            android:lineSpacingMultiplier="0.88"
+            android:text="@string/electric_current"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="13sp"
+            app:metadata="@string/current_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/luminance"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/Illuminance"
+        app:layout_constraintStart_toEndOf="@id/electric_current"
+        app:layout_constraintTop_toBottomOf="@id/Speed"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_light_bulb"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:lineSpacingMultiplier="0.88"
+            android:text="@string/luminance"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/luminance_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Illuminance"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/energy"
+        app:layout_constraintStart_toEndOf="@id/luminance"
+        app:layout_constraintTop_toBottomOf="@id/time"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_light_bulb_illuminance"
+            android:drawablePadding="9dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/illuminance"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/illuminance_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/energy"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/Illuminance"
+        app:layout_constraintTop_toBottomOf="@id/fuelEconomy"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_science"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/energy"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/energy_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Currency"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/heatCapacity"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/dataStorage"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_exchange"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/currency"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/currency_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/heatCapacity"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/Angular_Velocity"
+        app:layout_constraintStart_toEndOf="@id/Currency"
+        app:layout_constraintTop_toBottomOf="@id/electric_current"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_flame"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center_horizontal"
+            android:lineSpacingMultiplier="0.88"
+            android:text="@string/heatCapacity"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/heat_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/Angular_Velocity"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:maxWidth="100dp"
+        android:maxHeight="60dp"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/angularAcceleration"
+        app:layout_constraintStart_toEndOf="@id/heatCapacity"
+        app:layout_constraintTop_toBottomOf="@id/luminance"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_angular_velocity"
+            android:drawablePadding="1dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center_horizontal"
+            android:lineSpacingMultiplier="0.88"
+            android:text="@string/angularVelocity"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/velocity_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/angularAcceleration"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/sound"
+        app:layout_constraintStart_toEndOf="@id/Angular_Velocity"
+        app:layout_constraintTop_toBottomOf="@id/Illuminance"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
+            android:drawableTop="@drawable/ic_angular_acceleration"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:lineSpacingMultiplier="0.88"
+            android:text="@string/angularAcceleration"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/angularAcceleration_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/sound"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/angularAcceleration"
+        app:layout_constraintTop_toBottomOf="@id/energy"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_speaker"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:text="@string/sound"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/sound_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/resistance"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/radioactivity"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/Currency"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_resistor"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/resistance"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/resistance_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/radioactivity"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/force"
+        app:layout_constraintStart_toEndOf="@id/resistance"
+        app:layout_constraintTop_toBottomOf="@id/heatCapacity"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_radiation"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:text="@string/radioactivity"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/radioactivity_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/force"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/power"
+        app:layout_constraintStart_toEndOf="@id/radioactivity"
+        app:layout_constraintTop_toBottomOf="@id/Angular_Velocity"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/force"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/force"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/force_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/power"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/density"
+        app:layout_constraintStart_toEndOf="@id/force"
+        app:layout_constraintTop_toBottomOf="@id/angularAcceleration"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_fuse_box"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:text="@string/power"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/power_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/density"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/power"
+        app:layout_constraintTop_toBottomOf="@id/sound"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_ice"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:text="@string/density"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/density_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/flow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/inductance"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/resistance"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_sea"
+            android:drawablePadding="4dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:text="@string/flow"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/flow_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/inductance"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/resolution"
+        app:layout_constraintStart_toEndOf="@id/flow"
+        app:layout_constraintTop_toBottomOf="@id/radioactivity"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_inductor"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:text="@string/inductance"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/inductance_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/resolution"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/cooking"
+        app:layout_constraintStart_toEndOf="@id/inductance"
+        app:layout_constraintTop_toBottomOf="@id/force"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_monitor"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:text="@string/resolution"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/resolution_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/cooking"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toStartOf="@id/number_base"
+        app:layout_constraintStart_toEndOf="@id/resolution"
+        app:layout_constraintTop_toBottomOf="@id/power"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_cooking"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:text="@string/cooking"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/cooking_meta" />
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+
+    <com.otuolabs.unitconverter.subclasses.MyCardView
+        android:id="@+id/number_base"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/scroll_card"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:0.9"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintStart_toEndOf="@id/cooking"
+        app:layout_constraintTop_toBottomOf="@id/density"
+        app:layout_constraintWidth_percent="0.18">
+
+        <com.otuolabs.unitconverter.subclasses.DataTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:drawableTop="@drawable/ic_ten"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:gravity="center|bottom"
+            android:text="@string/number_base"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/scroll_card_text"
+            android:textSize="14sp"
+            app:metadata="@string/number_base_meta" />
+
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
+</com.otuolabs.unitconverter.subclasses.GridConstraintLayout>

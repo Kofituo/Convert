@@ -14,24 +14,21 @@
 
     <PreferenceCategory app:title="@string/conversion">
 
-        <SwitchPreferenceCompat
-            app:key="retain"
-            app:persistent="false"
-            app:title="@string/retain_pref" />
         <ListPreference
             app:defaultValue="decimal"
             app:entries="@array/notation_entries"
             app:entryValues="@array/notation_values"
             app:key="notation"
-            app:persistent="false"
+            app:persistent="true"
             app:title="@string/notation"
             app:useSimpleSummaryProvider="true" />
+
         <SeekBarPreference
             android:max="10"
             app:defaultValue="5"
             app:key="sliderValue"
             app:min="0"
-            app:persistent="false"
+            app:persistent="true"
             app:seekBarIncrement="1"
             app:showSeekBarValue="true"
             app:summary="@string/decimal_place_summary"
@@ -42,7 +39,7 @@
         app:icon="@drawable/ic_info"
         app:title="@string/about">
         <intent
-            android:targetClass="com.example.unitconverter.About"
-            android:targetPackage="com.example.unitconverter" />
+            android:targetClass="com.otuolabs.unitconverter.About"
+            android:targetPackage="com.otuolabs.unitconverter" />
     </Preference>
 </PreferenceScreen>

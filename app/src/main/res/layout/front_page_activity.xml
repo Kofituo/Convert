@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.unitconverter.subclasses.MyMotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.otuolabs.unitconverter.subclasses.MyMotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/motion"
     android:layout_width="match_parent"
@@ -63,7 +63,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
-    <com.example.unitconverter.subclasses.MyNestedScrollView
+    <com.otuolabs.unitconverter.subclasses.MyNestedScrollView
         android:id="@+id/scrollable"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:splitMotionEvents="false" />
 
-    </com.example.unitconverter.subclasses.MyNestedScrollView>
+    </com.otuolabs.unitconverter.subclasses.MyNestedScrollView>
 
     <View
         android:id="@+id/background_view"
@@ -106,4 +106,4 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.3" />
 
-</com.example.unitconverter.subclasses.MyMotionLayout>
+</com.otuolabs.unitconverter.subclasses.MyMotionLayout>

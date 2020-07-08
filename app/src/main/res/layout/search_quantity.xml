@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.unitconverter.subclasses.IdConstrainLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -70,4 +70,4 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="370dp" />
-</com.example.unitconverter.subclasses.IdConstrainLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

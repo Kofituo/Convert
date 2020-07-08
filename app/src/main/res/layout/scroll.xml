@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.example.unitconverter.subclasses.GridConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.otuolabs.unitconverter.subclasses.GridConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/grid"
     android:layout_width="match_parent"
@@ -29,7 +29,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.01" />
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Temperature"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="@id/topGuide"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -59,9 +59,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/temp_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Area"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -76,7 +76,7 @@
         app:layout_constraintTop_toTopOf="@id/topGuide"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -91,9 +91,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/area_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Mass"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -109,7 +109,7 @@
         app:layout_constraintWidth_percent="0.3">
 
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -124,9 +124,9 @@
             android:textSize="14sp"
             app:metadata="@string/mass_meta" />
 
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Volume"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -141,7 +141,7 @@
         app:layout_constraintTop_toBottomOf="@id/Temperature"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -155,9 +155,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/volume_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Length"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -173,7 +173,7 @@
         app:layout_constraintTop_toBottomOf="@id/Area"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -187,9 +187,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/length_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Angle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -204,7 +204,7 @@
         app:layout_constraintTop_toBottomOf="@id/Mass"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
@@ -218,9 +218,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/angle_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Pressure"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -235,7 +235,7 @@
         app:layout_constraintTop_toBottomOf="@id/Volume"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -249,9 +249,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/pressure_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Speed"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -267,7 +267,7 @@
         app:layout_constraintTop_toBottomOf="@id/Length"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -281,9 +281,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/speed_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/time"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -298,7 +298,7 @@
         app:layout_constraintTop_toBottomOf="@id/Angle"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -312,9 +312,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/time_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/fuelEconomy"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -329,7 +329,7 @@
         app:layout_constraintTop_toBottomOf="@id/Pressure"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -345,9 +345,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/fuel_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/dataStorage"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -363,7 +363,7 @@
         app:layout_constraintTop_toBottomOf="@id/Speed"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -379,9 +379,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/data_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/electric_current"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -396,7 +396,7 @@
         app:layout_constraintTop_toBottomOf="@id/time"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -411,9 +411,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="13sp"
             app:metadata="@string/current_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/luminance"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -428,7 +428,7 @@
         app:layout_constraintTop_toBottomOf="@id/fuelEconomy"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -444,9 +444,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/luminance_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Illuminance"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -462,7 +462,7 @@
         app:layout_constraintTop_toBottomOf="@id/dataStorage"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -476,9 +476,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/illuminance_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/energy"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -493,7 +493,7 @@
         app:layout_constraintTop_toBottomOf="@id/electric_current"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -506,9 +506,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/energy_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Currency"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -525,7 +525,7 @@
 
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -539,9 +539,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/currency_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/heatCapacity"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -557,7 +557,7 @@
         app:layout_constraintTop_toBottomOf="@id/Illuminance"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -572,9 +572,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/heat_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/Angular_Velocity"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -591,7 +591,7 @@
         app:layout_constraintTop_toBottomOf="@id/energy"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -606,9 +606,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/velocity_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/angularAcceleration"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -623,7 +623,7 @@
         app:layout_constraintTop_toBottomOf="@id/Currency"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -637,9 +637,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/angularAcceleration_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/sound"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -655,7 +655,7 @@
         app:layout_constraintTop_toBottomOf="@id/heatCapacity"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -669,9 +669,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/sound_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/resistance"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -686,7 +686,7 @@
         app:layout_constraintTop_toBottomOf="@id/Angular_Velocity"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -699,9 +699,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/resistance_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/radioactivity"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -718,7 +718,7 @@
         app:layout_constraintTop_toBottomOf="@id/angularAcceleration"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -732,9 +732,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/radioactivity_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/force"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -750,7 +750,7 @@
         app:layout_constraintTop_toBottomOf="@id/sound"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -763,9 +763,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/force_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/power"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -781,7 +781,7 @@
         app:layout_constraintTop_toBottomOf="@id/resistance"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -795,9 +795,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/power_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/density"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -814,7 +814,7 @@
         app:layout_constraintTop_toBottomOf="@id/radioactivity"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -827,9 +827,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/density_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/flow"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -845,7 +845,7 @@
         app:layout_constraintTop_toBottomOf="@id/force"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -859,9 +859,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/flow_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/inductance"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -877,7 +877,7 @@
         app:layout_constraintTop_toBottomOf="@id/power"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -891,9 +891,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/inductance_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/resolution"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -910,7 +910,7 @@
         app:layout_constraintTop_toBottomOf="@id/density"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -924,9 +924,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/resolution_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/cooking"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -942,7 +942,7 @@
         app:layout_constraintTop_toBottomOf="@id/flow"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -956,9 +956,9 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/cooking_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-    <com.example.unitconverter.subclasses.MyCardView
+    <com.otuolabs.unitconverter.subclasses.MyCardView
         android:id="@+id/number_base"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -974,7 +974,7 @@
         app:layout_constraintTop_toBottomOf="@id/inductance"
         app:layout_constraintWidth_percent="0.3">
 
-        <com.example.unitconverter.subclasses.DataTextView
+        <com.otuolabs.unitconverter.subclasses.DataTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -988,6 +988,6 @@
             android:textColor="@color/scroll_card_text"
             android:textSize="14sp"
             app:metadata="@string/number_base_meta" />
-    </com.example.unitconverter.subclasses.MyCardView>
+    </com.otuolabs.unitconverter.subclasses.MyCardView>
 
-</com.example.unitconverter.subclasses.GridConstraintLayout>
+</com.otuolabs.unitconverter.subclasses.GridConstraintLayout>

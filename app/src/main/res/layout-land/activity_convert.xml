@@ -58,7 +58,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/convert_app_bar" />
 
-    <com.example.unitconverter.subclasses.ConvertScrollView
+    <com.otuolabs.unitconverter.subclasses.ConvertScrollView
         android:id="@+id/convertScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -94,7 +94,7 @@
                 app:layout_constraintTop_toTopOf="@id/topGuide"
                 app:layout_constraintWidth_percent="0.85">
 
-                <com.example.unitconverter.subclasses.DisableEditText
+                <com.otuolabs.unitconverter.subclasses.DisableEditText
                     android:id="@+id/firstEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                 app:layout_constraintTop_toBottomOf="@id/firstBox"
                 app:layout_constraintWidth_percent="0.85">
 
-                <com.example.unitconverter.subclasses.DisableEditText
+                <com.otuolabs.unitconverter.subclasses.DisableEditText
                     android:id="@+id/secondEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -206,7 +206,7 @@
                 app:strokeWidth="2dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.example.unitconverter.subclasses.ConvertScrollView>
+    </com.otuolabs.unitconverter.subclasses.ConvertScrollView>
 
     <View
         android:id="@+id/background_view"
@@ -217,7 +217,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
     <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/ad_view"
         android:layout_width="wrap_content"
@@ -225,7 +224,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        ads:adUnitId="ca-app-pub-4310207592097894/6369703391"
         ads:layout_constraintBottom_toBottomOf="parent"
         ads:layout_constraintEnd_toEndOf="parent"
         ads:layout_constraintStart_toStartOf="parent" />
