@@ -39,7 +39,7 @@ class ChildViewHolder(childView: View, private val int: Int) : RecyclerView.View
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        v?.performClick()
+        //v?.performClick()
         return isChecked
     }
 }
