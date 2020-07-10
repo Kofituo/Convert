@@ -20,8 +20,7 @@ class ChildViewHolder(childView: View, private val int: Int) : RecyclerView.View
             setOnClickListener(this@ChildViewHolder)
             setOnTouchListener(this@ChildViewHolder)
             setOnCheckedChangeListener { _, isChecked ->
-                if (this@ChildViewHolder.isChecked != isChecked)
-                    this@ChildViewHolder.isChecked = isChecked
+                 this@ChildViewHolder.isChecked = isChecked
             }
         }
     }
