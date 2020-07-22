@@ -20,15 +20,13 @@ import android.view.*
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.edit
 import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
-import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.InterstitialAd
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -48,6 +46,7 @@ import com.otuolabs.unitconverter.Utils.lengthFilter
 import com.otuolabs.unitconverter.Utils.minusSign
 import com.otuolabs.unitconverter.Utils.removeCommas
 import com.otuolabs.unitconverter.Utils.temperatureFilters
+import com.otuolabs.unitconverter.ads.AdsManager
 import com.otuolabs.unitconverter.builders.*
 import com.otuolabs.unitconverter.functions.Currency
 import com.otuolabs.unitconverter.miscellaneous.*
@@ -72,7 +71,6 @@ import java.net.SocketTimeoutException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
-import kotlin.random.Random
 
 @Suppress("DEPRECATION")
 @OptIn(ImplicitReflectionSerializer::class)
@@ -92,6 +90,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private inline val isCurrency get() = viewId == R.id.Currency
     private lateinit var networkFragment: NetworkFragment
     private val isNumberBase get() = viewId == R.id.number_base
+    private val activityCallbacks: ActivityCallbacks? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //restoreUiMode()
@@ -157,45 +156,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                 }
         }
         selectFirstBox()
-        initializeAds()
+        AdsManager.initializeBannerAd(convert_parent as ConstraintLayout)
         onCreateCalled = true
     }
-
-    private lateinit var adView: AdView
-    private var adFailedToLoad by resetAfterGet(initialValue = false, resetValue = false)
-
-    private fun initializeAds() {
-        launch {
-            adView = findViewById(R.id.ad_view)
-            adView.loadAd(adRequest)
-            adView.adListener = adListListener
-            setNetworkListener()
-            interstitialAd = InterstitialAd(this@ConvertActivity)
-            interstitialAd.adUnitId = "ca-app-pub-4310207592097894/5534122118"
-            interstitialAd.loadAd(adRequest)
-            interstitialAd.adListener = adListListener
-        }
-    }
-
-    private lateinit var interstitialAd: InterstitialAd
-
-    private val adListListener
-        get() = object : AdListener() {
-
-            override fun onAdClosed() {
-                if (!interstitialAd.isLoaded) {
-                    //means it was inter that was closed
-                    interstitialAd.loadAd(adRequest)
-                }
-            }
-
-            override fun onAdFailedToLoad(p0: Int) {
-                adFailedToLoad = true
-                super.onAdFailedToLoad(p0)
-            }
-
-        }
-
 
     private fun getCurrencyData(): Boolean {
         if (isCurrency) {
@@ -259,6 +222,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     override fun onResume() {
         //restoreUiMode()
         super.onResume()
+        AdsManager.bannerAdCallbackListener.onResume()
         if (onCreateCalled) {
             if (isNumberBase) {
                 removeFilters(firstEditText)
@@ -463,20 +427,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     override fun onSearchRequested(): Boolean {
-        showInterAd()
+        AdsManager.showInterstitialAd()
         buildIntent<SearchActivity> {
             putExtra(ToolbarColor, randomColor)
             startActivity(this)
         }
         return true
-    }
-
-    private fun showInterAd(): Boolean {
-        if (!::interstitialAd.isInitialized) return false
-        val shouldLoad = Random.nextBoolean()
-        val shouldShow = interstitialAd.isLoaded && shouldLoad
-        if (shouldShow) interstitialAd.show()
-        return shouldShow
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -567,8 +523,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     override fun onDestroy() {
         super.onDestroy()
-        if (::adView.isInitialized) adView.destroy()
         cancel()
+        AdsManager.bannerAdCallbackListener.onDestroy()
     }
 
     private inline fun window(block: Window.() -> Unit) = window?.apply(block)
@@ -783,24 +739,25 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
 
         val adRequest: AdRequest
-            get() =
-                AdRequest
-                        .Builder()
-                        .addKeyword("Insurance")
-                        .addKeyword("health")
-                        .addKeyword("banking")
-                        .addKeyword("business")
-                        .addKeyword("internet")
-                        .addKeyword("wellness")
-                        .addKeyword("Marketing and Advertising")
-                        .addKeyword("legal")
-                        .addKeyword("forex")
-                        .addKeyword("online education")
-                        .addKeyword("education")
-                        .addKeyword("home")
-                        .addKeyword("telecom")
-                        .addKeyword("automobile dealership")
-                        .build()
+                by lazy {
+                    AdRequest
+                            .Builder()
+                            .addKeyword("Insurance")
+                            .addKeyword("health")
+                            .addKeyword("banking")
+                            .addKeyword("business")
+                            .addKeyword("internet")
+                            .addKeyword("wellness")
+                            .addKeyword("Marketing and Advertising")
+                            .addKeyword("legal")
+                            .addKeyword("forex")
+                            .addKeyword("online education")
+                            .addKeyword("education")
+                            .addKeyword("home")
+                            .addKeyword("telecom")
+                            .addKeyword("automobile dealership")
+                            .build()
+                }
     }
 
     private fun getRatesList(string: String) = Json.parseMap<String, String>(string)
@@ -884,7 +841,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
 
     override fun onPause() {
         super.onPause()
-        if (isFinishing && !showInterAd())  //don't play animation if the add is about to show
+        AdsManager.bannerAdCallbackListener.onPause()
+        if (isFinishing && !AdsManager.showInterstitialAd())  //don't play animation if the add is about to show
             if (intent.getBooleanExtra(SearchActivityCalledIt, false))
                 ScaleTransition.mergeAnimators(
                         ObjectAnimator.ofFloat(convert_parent, View.SCALE_X, 0.3f),
@@ -1065,14 +1023,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         networkIsAvailable = true
                         if (retry == true)
                             networkFragment.startDownload()
-                        if (adFailedToLoad) {
-                            if (::interstitialAd.isInitialized && ::adView.isInitialized) //does'nt harm to check for null
-                                launch {
-                                    adView.loadAd(adRequest)
-                                    if (!interstitialAd.isLoaded)
-                                        interstitialAd.loadAd(adRequest)
-                                }
-                        }
                     }
 
                     override fun onLost(network: Network) {
@@ -1116,6 +1066,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     override fun passException(url: String?, exception: Exception) {
         //means error occurred
         retry = true // post retry
+        if (!isCurrency) return
         when (exception) {
             is SocketTimeoutException ->
                 showSnack {

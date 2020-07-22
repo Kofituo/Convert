@@ -10,54 +10,54 @@ object Token {
     suspend fun init() = withContext(Dispatchers.Default) {
         buildMutableList<Int>(40) {
             runBlocking {
-                add(290)
-                add(331)
+                add(289)
+                add(282)
+                add(286)
+                add(285)
+                add(334)
+                add(334)
+                add(282)
                 add(281)
+            }
+            runBlocking {
+                add(331)
                 add(283)
+                add(332)
+                add(335)
+                add(284)
                 add(290)
                 add(285)
-                add(331)
                 add(282)
             }
             runBlocking {
                 add(288)
+                add(289)
+                add(332)
                 add(287)
-                add(289)
-                add(288)
-                add(282)
-                add(288)
-                add(335)
-                add(286)
-            }
-            runBlocking {
                 add(283)
-                add(281)
-                add(334)
                 add(332)
+                add(334)
+                add(333)
+                add(287)
+            }
+            runBlocking {
+                add(286)
                 add(290)
-                add(286)
-                add(331)
-                add(331)
-            }
-            runBlocking {
-                add(289)
-                add(282)
-                add(334)
-                add(289)
-                add(330)
-                add(335)
-                add(284)
-                add(334)
-            }
-            runBlocking {
-                add(289)
-                add(284)
-                add(332)
-                add(284)
-                add(334)
+                add(290)
                 add(285)
-                add(286)
+                add(287)
+                add(287)
+                add(333)
+                add(283)
+                add(330)
+            }
+            runBlocking {
                 add(335)
+                add(289)
+                add(288)
+                add(331)
+                add(331)
+                add(282)
             }
         }
     }
@@ -67,9 +67,10 @@ object Token {
             val array = init()
             val stringBuilder = StringBuilder(array.size)
             array.forEach { stringBuilder.append((it - 233).toChar()) }
-            stringBuilder.toString()
+            "8154ee10b2cf394178c62ced6599466d2af87bb1"
         }
     }
     const val Repository = "https://api.github.com/repos/otuounitc"
     //password Jeremiah01 to sha-256
+    //token 8154ee10b2cf394178c62ced6599466d2af87bb1
 }
