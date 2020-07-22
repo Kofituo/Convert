@@ -12,15 +12,16 @@ import android.net.Network
 import android.net.NetworkRequest
 import android.net.Uri
 import android.os.*
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.getSystemService
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.InterstitialAd
+import androidx.preference.PreferenceManager
 import com.otuolabs.unitconverter.AdditionItems.MyEmail
 import com.otuolabs.unitconverter.AdditionItems.TextMessage
 import com.otuolabs.unitconverter.AdditionItems.ViewIdMessage
@@ -41,6 +42,7 @@ import com.otuolabs.unitconverter.Utils.name
 import com.otuolabs.unitconverter.Utils.reversed
 import com.otuolabs.unitconverter.Utils.toJson
 import com.otuolabs.unitconverter.Utils.values
+import com.otuolabs.unitconverter.ads.AdsManager
 import com.otuolabs.unitconverter.builders.buildIntent
 import com.otuolabs.unitconverter.builders.buildMutableMap
 import com.otuolabs.unitconverter.builders.put
@@ -64,7 +66,6 @@ import java.util.*
 import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
-import kotlin.random.Random
 
 //change manifest setting to backup allow true
 @UnstableDefault
@@ -104,8 +105,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     ?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Handler().post { initializeInterAds() }
         super.onCreate(savedInstanceState)
+        restoreUiMode()
         //use recycler view instead
         setContentView(R.layout.front_page_activity)
         setSupportActionBar(app_bar)
@@ -161,43 +162,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         setCornerColors()
         initialiseDidYouKnow()
         onCreateCalled = true
+        AdsManager.initializeInterstitialAd()
         grid setSelectionListener this
     }
-
-
-    private fun showInterAd(): Boolean {
-        if (!::interstitialAd.isInitialized) return false
-        val shouldLoad = Random.nextBoolean()
-        val willShow = interstitialAd.isLoaded && shouldLoad
-        if (willShow) interstitialAd.show()
-        return willShow
-    }
-
-    private var adFailedToLoad
-            by ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
-
-    private lateinit var interstitialAd: InterstitialAd
-    private fun initializeInterAds() {
-        //display the ad after some time
-        // probably at on resume
-        interstitialAd = InterstitialAd(this)
-        interstitialAd.adUnitId = "ca-app-pub-4310207592097894/5534122118"
-        interstitialAd.loadAd(ConvertActivity.adRequest)
-        interstitialAd.adListener =
-                object : AdListener() {
-                    override fun onAdClosed() {
-                        if (!interstitialAd.isLoaded) {
-                            //means it was inter that was closed
-                            interstitialAd.loadAd(ConvertActivity.adRequest)
-                        }
-                    }
-
-                    override fun onAdFailedToLoad(p0: Int) {
-                        adFailedToLoad = true
-                    }
-                }
-    }
-
 
     private fun setCornerColors() {
         val color =
@@ -441,7 +408,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
         R.id.prefixes -> {
             buildIntent<ConvertActivity> {
-                showInterAd()
                 putExtra(TextMessage, "Prefix")
                 putExtra(ViewIdMessage, R.id.prefixes)
                 startActivity(this)
@@ -469,6 +435,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     override fun onSearchRequested(): Boolean {
         buildIntent<SearchActivity> {
             putExtra("MAIN_ACTIVITY", true)
+            AdsManager.showInterstitialAd()
             startActivity(this)
         }
         return true
@@ -512,7 +479,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     private fun onFavouritesClicked() =
             buildIntent<FavouritesActivity> {
-                showInterAd()
+                AdsManager.showInterstitialAd()
                 sharedPreferences(favouritesPreferences) {
                     get<String?>("favouritesArray") {
                         favouritesCalled = true
@@ -565,9 +532,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     setEnterFadeDuration(300)
                     setExitFadeDuration(300)
                     start()
-                    Handler().postDelayed({
+                    launch {
+                        delay(600)
                         icon = getDrawable(R.drawable.ic_magnifying_glass)
-                    }, 600)
+                    }
                 }
             } else searchButton.apply {
             title = getString(R.string.add_to_favourites)
@@ -664,11 +632,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                         networkIsAvailable = true
                         if (didYouKnowUrls.isNotEmpty() && ::networkFragment.isInitialized)
                             networkFragment.startDownload()
-                        if (adFailedToLoad && ::interstitialAd.isInitialized)
-                            launch {
-                                if (!interstitialAd.isLoaded)
-                                    interstitialAd.loadAd(ConvertActivity.adRequest)
-                            }
                     }
 
                     override fun onLost(network: Network) {
@@ -732,6 +695,21 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             //networkFragment.cancelDownload()
             //remove the one i have'nt yet filled
             didYouKnowUrls.remove(url)
+        }
+        Log.e("excep", "$url $exception")
+    }
+
+    private fun restoreUiMode() {
+        //the ad may prevent the ui from updating
+        PreferenceManager.getDefaultSharedPreferences(this).apply {
+            val mode =
+                    when (get<String?>("theme")) {
+                        "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                        "default" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                        "light" -> AppCompatDelegate.MODE_NIGHT_NO
+                        else -> return
+                    }
+            AppCompatDelegate.setDefaultNightMode(mode)
         }
     }
 

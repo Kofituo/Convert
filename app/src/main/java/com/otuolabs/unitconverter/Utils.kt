@@ -345,9 +345,17 @@ object Utils {
         for (element in (0 until size())) action(get(element))
     }
 
+    /**
+     * Converts the given [hours] to milliseconds
+     * */
     fun hoursToMilliSeconds(hours: Int) = 3_600_000 * hours
 
     fun daysToMilliSeconds(days: Int) = hoursToMilliSeconds(24 * days)
+
+    /**
+     * Returns the current time minus the [initialTime]
+     * */
+    fun timeDiffFromCurrentTime(initialTime: Long) = System.currentTimeMillis() - initialTime
 
     @OptIn(ExperimentalTime::class)
     inline fun <T> RecyclerView.Adapter<RecyclerView.ViewHolder>.applyDifference(
@@ -387,6 +395,8 @@ object Utils {
      * @return Returns true if the device is a Tablet
      */
     fun Activity.isTablet(): Boolean {
+        if (isTablet.isNotNull()) return isTablet as Boolean
+
         // Verifies if the Generalized Size of the device is XLARGE to be
         // considered a Tablet
         val xlarge =
@@ -407,11 +417,19 @@ object Utils {
                     || metrics.densityDpi == DisplayMetrics.DENSITY_TV
                     || metrics.densityDpi == DisplayMetrics.DENSITY_XHIGH) {
                 // Yes, this is a tablet!
+                isTablet = true
                 return true
             }
         }
 
         // No, this is not a tablet!
+        isTablet = false
         return false
     }
+
+    private var isTablet: Boolean? = null
+
+    val isPortrait
+        get() =
+            ApplicationLoader.applicationContext?.resources?.configuration?.orientation == Configuration.ORIENTATION_PORTRAIT
 }
