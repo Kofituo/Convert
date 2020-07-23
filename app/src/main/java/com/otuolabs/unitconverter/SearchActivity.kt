@@ -13,23 +13,22 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.util.forEach
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.otuolabs.unitconverter.AdditionItems.ToolbarColor
-import com.otuolabs.unitconverter.AdditionItems.viewsMap
 import com.otuolabs.unitconverter.Utils.applyDifference
-import com.otuolabs.unitconverter.Utils.name
+import com.otuolabs.unitconverter.Utils.forEachItem
 import com.otuolabs.unitconverter.builders.add
 import com.otuolabs.unitconverter.builders.buildIntent
 import com.otuolabs.unitconverter.builders.buildMutableMap
 import com.otuolabs.unitconverter.builders.put
 import com.otuolabs.unitconverter.miscellaneous.*
 import com.otuolabs.unitconverter.recyclerViewData.*
-import com.otuolabs.unitconverter.subclasses.*
+import com.otuolabs.unitconverter.subclasses.FavouritesAdapter
+import com.otuolabs.unitconverter.subclasses.FavouritesData
+import com.otuolabs.unitconverter.subclasses.SearchAdapter
+import com.otuolabs.unitconverter.subclasses.SortedArray
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.Json
@@ -41,7 +40,7 @@ import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 import kotlin.time.ExperimentalTime
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "EXPERIMENTAL_API_USAGE")
 @OptIn(ExperimentalTime::class)
 class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
         FavouritesAdapter.FavouritesItem, SearchAdapter.UnitItem {
@@ -100,19 +99,6 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
             }
         }
         setCornerColors()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!::quantityList.isInitialized)
-            getQuantityList().apply {
-                //hopefully it solves the no data problem
-                showToast {
-                    text = "here"
-                    duration = Toast.LENGTH_LONG
-                }
-                adapter.notifyItemRangeChanged(0, adapter.itemCount)
-            }
     }
 
     override fun finish() {
@@ -174,18 +160,17 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
         o1.topText!!.toString().compareTo(o2.topText!!.toString())
     }
 
+    private val viewDataMap get() = MainActivity.viewNameToViewData
+
     private fun getQuantityList(): SortedArray<FavouritesData> {
-        val sortedArray = SortedArray(quantityComparator, viewsMap.size())
-        viewsMap.forEach { key: Int, value: View ->
+        val sortedArray = SortedArray(quantityComparator, viewDataMap.size)
+        viewDataMap.forEachItem { viewName: String, viewData: ViewData ->
             sortedArray.add {
-                value as MyCardView
-                val textView = (value.getChildAt(1) as DataTextView)
                 FavouritesData.favouritesBuilder {
-                    @Suppress("EXPERIMENTAL_API_USAGE")
-                    drawableId = MainActivity.drawableIds[key] ?: -1
-                    topText = textView.text
-                    cardId = key
-                    cardName = value.name
+                    drawableId = MainActivity.drawableIds[viewData.id] ?: -1
+                    topText = viewData.text
+                    cardId = viewData.id
+                    cardName = viewName
                 }
             }
         }
@@ -237,11 +222,10 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
     }
 
     private fun currencyList(): List<RecyclerDataClass> {
-        val view = viewsMap[R.id.Currency]
         val sharedPreferences by sharedPreference {
             buildString {
                 append(AdditionItems.pkgName)
-                append(view.name)
+                append("Currency")
                 append(AdditionItems.Author) // to prevent name clashes with the fragment
             }
         }
@@ -255,12 +239,12 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
     @OptIn(ImplicitReflectionSerializer::class)
     private fun getCurrencyList(string: String): MutableList<RecyclerDataClass> {
         Json.parseMap<String, String>(string).apply {
-            val view = viewsMap[R.id.Currency]
             val list = ArrayList<RecyclerDataClass>(size)
             var start = 0
-            forEach {
+            val currencyData = viewDataMap.getValue("Currency")
+            forEachItem { key, value ->
                 list.add {
-                    RecyclerDataClass(it.key, it.value, start++, view)
+                    RecyclerDataClass(key, value, start++, currencyData)
                 }
             }
             return list
@@ -282,9 +266,8 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
 
     private fun MutableCollection<RecyclerDataClass>.addView(int: Int) =
             apply {
-                val view = viewsMap[int]
                 forEach {
-                    it.view = view
+                    it.view = viewDataMap.getValue(Utils.getViewName(int))
                 }
             }
 
@@ -334,7 +317,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
     private fun searchQuantity(newText: String) {
         adapter.applyDifference<FavouritesData>(1) {
             val quantity = getString(R.string._quantity)
-            val quantityList = adapterMap.getValue(quantity) as ArrayList
+            val quantityList = adapterMap[quantity]
             oldList = quantityList as List<FavouritesData>
             //adapter.notifyItemRangeChanged(0, adapter.itemCount)
             @Suppress("EXPERIMENTAL_API_USAGE")
@@ -396,18 +379,16 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
         }
     }
 
-    override fun onUnitClick(view: MyCardView, recyclerDataClass: RecyclerDataClass) {
+    override fun onUnitClick(viewData: ViewData, recyclerDataClass: RecyclerDataClass) {
         buildIntent<ConvertActivity> {
-            val textViewText = (view.getChildAt(1) as TextView).text
             val unit = recyclerDataClass.bottomText
             val unitIsSpans = unit is Spanned
-            putExtra(AdditionItems.TextMessage, textViewText)
+            putExtra(AdditionItems.TextMessage, viewData.text)
             putExtra(AdditionItems.SearchActivityCalledIt, true)
-            putExtra(AdditionItems.ViewIdMessage, view.id)
+            putExtra(AdditionItems.ViewIdMessage, viewData.id)
             putExtra(
                     AdditionItems.SearchActivityExtra,
                     recyclerDataClass.also {
-                        it.view = null
                         if (unitIsSpans) {
                             it.bottomText = unit.toString()
                             putExtra("IsSpans", true)
@@ -415,7 +396,6 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
                     }) //to make it serializable
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(this)
-            recyclerDataClass.view = view //reset it
             if (unitIsSpans)
                 recyclerDataClass.bottomText = unit
         }

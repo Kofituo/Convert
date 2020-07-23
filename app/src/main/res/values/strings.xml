@@ -2,8 +2,9 @@
     <string name="app_name">Unit Converter</string>
 
     <string name="header">Unit\nConverter</string>
-    <string name="version_number">Unit Converter\nVersion 1.0.0</string>
+    <string name="version_number">Unit Converter\nVersion 1.1.0</string>
     <string name="no_email_app">No Email Apps Available</string>
+    <string name="share_text">Hi, Check out this app</string>
     <string name="report_bug">Report A Bug</string>
     <string name="about">About</string>
     <string name="upgrade">Upgrade</string>

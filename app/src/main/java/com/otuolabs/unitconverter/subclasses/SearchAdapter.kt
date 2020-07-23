@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.otuolabs.unitconverter.FlattenMap
 import com.otuolabs.unitconverter.R
 import com.otuolabs.unitconverter.RecyclerDataClass
+import com.otuolabs.unitconverter.miscellaneous.ViewData
 import com.otuolabs.unitconverter.miscellaneous.inflate
 import com.otuolabs.unitconverter.miscellaneous.isNull
 import java.io.Serializable
@@ -125,7 +126,7 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
             val data = FlattenMap.getChildData(listData, position)
             if (data is FavouritesData)
                 favouritesItem.startActivity(data)
-            else unitClick.onUnitClick((data as RecyclerDataClass).view as MyCardView, data)
+            else unitClick.onUnitClick((data as RecyclerDataClass).view ?: return, data)
         }
     }
 
@@ -137,6 +138,6 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
     private lateinit var unitClick: UnitItem
 
     interface UnitItem {
-        fun onUnitClick(view: MyCardView, recyclerDataClass: RecyclerDataClass)
+        fun onUnitClick(viewData: ViewData, recyclerDataClass: RecyclerDataClass)
     }
 }

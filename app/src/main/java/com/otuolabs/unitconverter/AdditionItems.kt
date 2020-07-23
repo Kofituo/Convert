@@ -3,7 +3,6 @@ package com.otuolabs.unitconverter
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.os.Handler
-import android.util.SparseArray
 import android.view.View
 import com.otuolabs.unitconverter.subclasses.MyCardView
 import com.otuolabs.unitconverter.subclasses.MyPopupWindow
@@ -23,22 +22,6 @@ object AdditionItems {
     val isInitialized get() = AdditionItems::popupWindow.isInitialized
     lateinit var motionHandler: Handler
     var statusBarHeight = 0
-
-    /**
-     * To prevent find view by id.
-     * */
-    val viewsMap: SparseArray<View> = SparseArray(30)
-
-    /**
-     * Maps the view name to id
-     * */
-    val originalMap = LinkedHashMap<String, Int>(30)
-
-    /**
-     * Map which keeps track of opened activities
-     * in descending order (last open is the first in the map)
-     * */
-    lateinit var mRecentlyUsed: MutableMap<String, Int>
 
     //var viewArray: ArrayList<View> = arrayListOf()
     var card: MyCardView? = null

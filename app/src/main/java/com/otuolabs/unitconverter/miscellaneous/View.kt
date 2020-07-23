@@ -7,18 +7,18 @@ import android.view.ViewGroup
 import com.otuolabs.unitconverter.Utils.dpToInt
 
 inline fun <reified T : ViewGroup.LayoutParams> View.layoutParams(block: T.() -> Unit) =
-    (layoutParams as T).apply(block)
+        (layoutParams as T).apply(block)
 
 data class LayoutInflater(
-    var resourceId: Int? = null,
-    var root: ViewGroup? = null,
-    var attachToRoot: Boolean = root != null
+        var resourceId: Int = 0,
+        var root: ViewGroup? = null,
+        var attachToRoot: Boolean = root != null
 )
 
 inline fun android.view.LayoutInflater.inflate(values: LayoutInflater.() -> Unit): View =
-    LayoutInflater().apply(values).run {
-        inflate(resourceId!!, root, attachToRoot)
-    }
+        LayoutInflater().apply(values).run {
+            inflate(resourceId, root, attachToRoot)
+        }
 
 data class Toast(var stringId: Int = -1, var duration: Int = -1, var text: CharSequence? = null)
 
@@ -34,10 +34,10 @@ inline fun Context.showToast(block: Toast.() -> Unit) {
 fun View.setLeftPadding(context: Context, padding: Int) {
     apply {
         setPadding(
-            padding.dpToInt(context),
-            paddingTop,
-            paddingRight,
-            paddingBottom
+                padding.dpToInt(context),
+                paddingTop,
+                paddingRight,
+                paddingBottom
         )
     }
 }
@@ -45,10 +45,14 @@ fun View.setLeftPadding(context: Context, padding: Int) {
 fun View.setTopPadding(context: Context, padding: Int) {
     apply {
         setPadding(
-            paddingLeft,
-            padding.dpToInt(context),
-            paddingRight,
-            paddingBottom
+                paddingLeft,
+                padding.dpToInt(context),
+                paddingRight,
+                paddingBottom
         )
     }
+}
+
+data class ViewData(val id: Int, val name: String, val text: CharSequence, val metadata: CharSequence?) : JsonConvertible {
+    override fun toJson() = """["$id" , "$name", "$text", "$metadata"]"""
 }

@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
+import com.otuolabs.unitconverter.ApplicationLoader
 
 data class SharedPreferencesEdit<T>(
     var key: String? = null,
@@ -70,17 +72,15 @@ class SharedPreferencesLazy(
                 val activity = activity()
                 if (stringFunc.isNull())
                     activity.getPreferences(Context.MODE_PRIVATE)
+                            .also {
+                                cached = it
+                            }
+                else activity.getSharedPreferences(stringFunc!!(), Context.MODE_PRIVATE)
                         .also {
                             cached = it
+                            stringFunc = null
                         }
-                else activity.getSharedPreferences(stringFunc!!(), Context.MODE_PRIVATE)
-                    .also {
-                        cached = it
-                        stringFunc = null
-                    }
-            } else {
-                sharedPreferences
-            }
+            } else sharedPreferences
         }
 
     override fun isInitialized(): Boolean = cached != null
@@ -89,7 +89,13 @@ class SharedPreferencesLazy(
 fun Activity.defaultPreferences(): Lazy<SharedPreferences> = SharedPreferencesLazy({ this })
 
 fun Fragment.sharedPreferences(string: () -> String): Lazy<SharedPreferences> =
-    SharedPreferencesLazy({ this.requireActivity() }, string)
+        SharedPreferencesLazy({ this.requireActivity() }, string)
 
 fun Activity.sharedPreference(string: () -> String): Lazy<SharedPreferences> =
-    SharedPreferencesLazy({ this }, string)
+        SharedPreferencesLazy({ this }, string)
+
+inline val Context.globalPreferences: SharedPreferences
+    get() = PreferenceManager.getDefaultSharedPreferences(this)
+
+inline val globalPreferences: SharedPreferences
+    get() = PreferenceManager.getDefaultSharedPreferences(ApplicationLoader.applicationContext)

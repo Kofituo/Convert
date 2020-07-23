@@ -101,11 +101,12 @@ class SettingsActivity : AppCompatActivity() {
                 AdditionItems.pkgName + "for_preferences"
             }
             //quickly clear if retain is false and the rest are the default values
+            @Suppress("EXPERIMENTAL_API_USAGE")
             modifyPreferences(
                     prefSharedPreference,
                     forDecimalPlace,
                     forNotation,
-                    AdditionItems.originalMap.keys
+                    MainActivity.viewNameToViewData.keys
             )
         }
 

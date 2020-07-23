@@ -1,6 +1,8 @@
 package com.otuolabs.unitconverter
 
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -16,10 +18,14 @@ class About : AppCompatActivity(), SearchQuantityHolder.Quantity {
 
     private inline val Int.gS get() = getString(this)
 
+    companion object {
+        const val playStoreUrl = "https://play.google.com/store/apps/details?id=com.otuolabs.unitconverter"
+    }
+
     private val recyclerViewList by lazy(LazyThreadSafetyMode.NONE) {
         listOf(
-            RecyclerDataClass(R.string.share.gS, R.string.share_meta.gS),
-            RecyclerDataClass(R.string.rate.gS, R.string.rate_meta.gS)
+                RecyclerDataClass(R.string.share.gS, R.string.share_meta.gS),
+                RecyclerDataClass(R.string.rate.gS, R.string.rate_meta.gS)
         )
     }
 
@@ -47,6 +53,24 @@ class About : AppCompatActivity(), SearchQuantityHolder.Quantity {
     }
 
     override fun onQuantityClick(position: Int) {
+        when (position) {
+            0 ->
+                //share
+                Intent().apply {
+                    action = Intent.ACTION_SEND
+                    val text = R.string.share_text.gS + " $playStoreUrl"
+                    putExtra(Intent.EXTRA_TEXT, text)
+                    type = "text/plain"
+                    resolveActivity(packageManager)?.let { startActivity(Intent.createChooser(this, text)) }
+                }
+            1 ->
+                //rate
+                Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse(playStoreUrl)
+                    setPackage("com.android.vending")
+                    resolveActivity(packageManager)?.let { startActivity(this) }
+                }
+        }
     }
 
 }

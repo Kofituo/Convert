@@ -45,11 +45,7 @@
         <activity
             android:name=".MainActivity"
             android:resizeableActivity="false"
-            tools:targetApi="n">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+            tools:targetApi="n" />
         <activity android:name=".FavouritesActivity" />
         <activity android:name=".ConvertActivity" />
     </application>

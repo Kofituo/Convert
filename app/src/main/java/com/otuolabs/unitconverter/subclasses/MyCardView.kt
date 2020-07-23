@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -18,19 +19,19 @@ import com.otuolabs.unitconverter.AdditionItems.animationEnd
 import com.otuolabs.unitconverter.AdditionItems.card
 import com.otuolabs.unitconverter.AdditionItems.cardY
 import com.otuolabs.unitconverter.AdditionItems.longPress
-import com.otuolabs.unitconverter.AdditionItems.mRecentlyUsed
 import com.otuolabs.unitconverter.AdditionItems.popupWindow
 import com.otuolabs.unitconverter.ConvertActivity
+import com.otuolabs.unitconverter.MainActivity
 import com.otuolabs.unitconverter.R
 import com.otuolabs.unitconverter.Utils.name
+import com.otuolabs.unitconverter.builders.addAll
 import com.otuolabs.unitconverter.builders.buildIntent
-import com.otuolabs.unitconverter.builders.buildMutableMap
 import com.otuolabs.unitconverter.subclasses.MyPopupWindow.Companion.myPopUpWindow
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class MyCardView(context: Context, attributeSet: AttributeSet) :
-    MaterialCardView(context, attributeSet), MyPopupWindow.PopupListener {
+        MaterialCardView(context, attributeSet), MyPopupWindow.PopupListener {
 
     private val checkBox: MaterialCheckBox
 
@@ -84,29 +85,29 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?) =
-        if (checkBoxIsEnabled) {
-            getChildAt(0).dispatchTouchEvent(ev)
-            true
-        } else
-            super.dispatchTouchEvent(ev)
+            if (checkBoxIsEnabled) {
+                getChildAt(0).dispatchTouchEvent(ev)
+                true
+            } else
+                super.dispatchTouchEvent(ev)
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         card = this@MyCardView
         animationEnd =
-            AnimatorInflater
-                .loadAnimator(context, R.animator.animation1_end)
-                .apply { setTarget(this@MyCardView) }
+                AnimatorInflater
+                        .loadAnimator(context, R.animator.animation1_end)
+                        .apply { setTarget(this@MyCardView) }
 
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 // Apply animation
                 cardY = this.y
                 AnimatorInflater
-                    .loadAnimator(context, R.animator.animation1_start)
-                    .apply {
-                        setTarget(this@MyCardView)
-                        start()
-                    }
+                        .loadAnimator(context, R.animator.animation1_start)
+                        .apply {
+                            setTarget(this@MyCardView)
+                            start()
+                        }
                 popupWindow = myPopUpWindow {
                     mContext = context
                     anchor = this@MyCardView
@@ -122,12 +123,12 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
                 if (longPress)
                 // bouncing animation
                     animateStart =
-                        AnimatorInflater
-                            .loadAnimator(context, R.animator.animation2)
-                            .apply {
-                                setTarget(this@MyCardView)
-                                start()
-                            }
+                            AnimatorInflater
+                                    .loadAnimator(context, R.animator.animation2)
+                                    .apply {
+                                        setTarget(this@MyCardView)
+                                        start()
+                                    }
                 else animationEnd?.start()
             }
         }
@@ -156,29 +157,35 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
         }
     }
 
+    @Suppress("EXPERIMENTAL_API_USAGE")
     fun updateArray() {
-        mRecentlyUsed = buildMutableMap {
-            put(this@MyCardView.name, id)
-            putAll(mRecentlyUsed)
+        MainActivity.leastRecentlyUsed.apply {
+            if (isEmpty()) {
+                //means it's the first time
+                addAll { MainActivity.viewNameToViewData.keys }
+            }
+            Log.e("this", "$this")
+            remove(name)
+            add(name)
         }
     }
 
     fun shrinkSize() {
         AnimatorInflater
-            .loadAnimator(context, R.animator.selection_animaton)
-            .apply {
-                setTarget(this@MyCardView)
-                start()
-            }
+                .loadAnimator(context, R.animator.selection_animaton)
+                .apply {
+                    setTarget(this@MyCardView)
+                    start()
+                }
     }
 
     fun restoreSize() {
         AnimatorInflater
-            .loadAnimator(context, R.animator.animation1_end)
-            .apply {
-                setTarget(this@MyCardView)
-                start()
-            }
+                .loadAnimator(context, R.animator.animation1_end)
+                .apply {
+                    setTarget(this@MyCardView)
+                    start()
+                }
         checkBox.apply {
             visibility = View.INVISIBLE
             isChecked = false

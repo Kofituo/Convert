@@ -20,4 +20,12 @@ class MutableLazy<T>(private val initializer: () -> T) : Lazy<T> {
     companion object {
         fun <T> resettableLazy(value: () -> T) = MutableLazy(value)
     }
+
+    /**
+     * should be called after [reset] so new value would take effect
+     * */
+    fun setValue(value: T) {
+        if (cached.isNull()) cached = value
+    }
+
 }

@@ -69,7 +69,7 @@ object AdsManager {
 
     private inline val adRequest get() = ConvertActivity.adRequest
 
-    private var interstitialAdWaitingTime = -1L
+    private var interstitialAdLoadedTime = -1L
 
     fun initializeInterstitialAd(): InterstitialAd {
         if (interstitialAd.isNull()) {
@@ -90,7 +90,7 @@ object AdsManager {
                     }
 
                     override fun onAdLoaded() {
-                        interstitialAdWaitingTime = System.currentTimeMillis()
+                        interstitialAdLoadedTime = System.currentTimeMillis()
                     }
                 }
             }
@@ -100,7 +100,7 @@ object AdsManager {
 
     private val interElapsedIsLessThanOneHour
         get() =
-            Utils.timeDiffFromCurrentTime(interstitialAdWaitingTime) < Utils.hoursToMilliSeconds(1)
+            Utils.timeDiffFromCurrentTime(interstitialAdLoadedTime) < Utils.hoursToMilliSeconds(1)
 
     /**
      * Returns whether the ad was shown or not
@@ -111,7 +111,7 @@ object AdsManager {
              * If it is loaded show
              * else decide whether to load for the next try
              * */
-            Log.e("lo", "$isLoaded")
+            Log.e("lo", "$isLoaded  $interElapsedIsLessThanOneHour")
             /**
              * Note: While pre-fetching ads is a great technique,
              * it's important that publishers not keep old ads around too

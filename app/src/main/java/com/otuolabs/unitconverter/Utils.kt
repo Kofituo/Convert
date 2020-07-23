@@ -9,10 +9,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.InputFilter
-import android.util.DisplayMetrics
-import android.util.SparseArray
-import android.util.SparseBooleanArray
-import android.util.TypedValue
+import android.util.*
 import android.view.View
 import androidx.core.util.forEach
 import androidx.recyclerview.widget.RecyclerView
@@ -21,10 +18,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.otuolabs.unitconverter.builders.buildMutableList
 import com.otuolabs.unitconverter.builders.buildMutableMap
 import com.otuolabs.unitconverter.builders.put
-import com.otuolabs.unitconverter.miscellaneous.DecimalFormatFactory
-import com.otuolabs.unitconverter.miscellaneous.hasValue
-import com.otuolabs.unitconverter.miscellaneous.isNotNull
-import com.otuolabs.unitconverter.miscellaneous.isNull
+import com.otuolabs.unitconverter.miscellaneous.*
 import com.otuolabs.unitconverter.subclasses.RecyclerViewUpdater
 import java.math.BigDecimal
 import java.text.DecimalFormat
@@ -81,8 +75,30 @@ object Utils {
     /*fun Int.toDp(context: Context): Int {
         return this.div((context.resources.displayMetrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT)
     }*/
+    /**
+     * Applies the given [transform] function to each element of the original collection
+     * and appends the results to the given [destination].
+     */
+    inline fun <K, V, T, C : MutableMap<K, V>> Iterable<T>.mapTo(destination: C, transform: (T) -> Pair<K, V>): C {
+        for (item in this)
+            destination.put {
+                val pair = transform(item)
+                key = pair.first
+                value = pair.second
+            }
+        return destination
+    }
 
-    private val nameToViews = LinkedHashMap<String, View>(30) // what i should have done a long time
+    /**
+     * return name of view
+     * */
+    fun getViewName(viewId: Int) =
+            viewNames[viewId]
+                    ?: ApplicationLoader.applicationContext?.resources?.getResourceEntryName(viewId)
+                            ?.apply {
+                                viewNames[viewId] = this
+                            }
+                    ?: ""
 
     /**
      * A map which holds view ids and view names
@@ -90,8 +106,6 @@ object Utils {
      * resources.getResourceEntryName(view.id)
      * */
     private val viewNames = LinkedHashMap<Int, String>(30)
-
-    fun getNameToViewMap(): Map<String, View> = nameToViews
 
     /**
      * Used to get name from id
@@ -105,8 +119,13 @@ object Utils {
                     ?: resources.getResourceEntryName(this.id) //returns a string
                             .apply {
                                 viewNames[this@name.id] = this //updates the map
-                                nameToViews[this] = this@name
                             }
+
+    inline fun <K, V> Map<K, V>.forEachItem(action: (key: K, value: V) -> Unit) {
+        forEach {
+            action(it.key, it.value)
+        }
+    }
 
     fun CharSequence.removeCommas(decimalSeparator: Char): String? {
         if (this.isBlank()) return ""
@@ -354,6 +373,8 @@ object Utils {
 
     /**
      * Returns the current time minus the [initialTime]
+     *
+     * Return value in milliseconds
      * */
     fun timeDiffFromCurrentTime(initialTime: Long) = System.currentTimeMillis() - initialTime
 
@@ -383,9 +404,26 @@ object Utils {
             else if (sizeDifference > 0)
                 notifyItemRangeInserted(listStartIndex + oldSize, sizeDifference)
             //update affected ones
-            for (i in shorterList.indices)
-                if (shorterList[i] != longerList[i])
+            val startIndex = MutableLazy.resettableLazy { 0 }
+            startIndex.reset()
+            var initiated = false
+            for (i in shorterList.indices) {
+                Log.e("here", "i $i")
+                if (shorterList[i] != longerList[i]) {
+                    initiated = true
+                    startIndex.setValue(listStartIndex + i)
+                    Log.e("s", "change ${listStartIndex + i} $listStartIndex ")
                     notifyItemChanged(listStartIndex + i)
+                } else {
+                    if (initiated) {
+                        //apply changes
+                        initiated = false
+                        Log.e("ssta", "$startIndex  $listStartIndex")
+                        startIndex.reset()
+                    }
+                }
+            }
+            Log.e("enddddddddddddd", "enddddddddddd  ${startIndex.value}  ${shorterList.size}")
         }
     }
 

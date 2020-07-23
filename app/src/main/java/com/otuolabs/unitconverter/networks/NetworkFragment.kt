@@ -20,8 +20,8 @@ import kotlin.collections.ArrayList
 
 class NetworkFragment : Fragment() {
 
-    private var callback: DownloadCallback<*>? = null
-    lateinit var urls: List<String>
+    private var callback: DownloadCallback<String>? = null
+    var urls: List<String>? = null
     private lateinit var downloadTask: DownloadTask
 
     companion object {
@@ -30,8 +30,9 @@ class NetworkFragment : Fragment() {
                 fragmentManager: FragmentManager,
                 action: NetworkFragment.() -> Unit
         ): NetworkFragment {
-            return fragmentManager
-                    .findFragmentByTag(TAG) as? NetworkFragment
+            return (fragmentManager
+                    .findFragmentByTag(TAG) as? NetworkFragment)
+                    ?.apply { if (urls.isNullOrEmpty()) this.apply(action) }
                     ?: NetworkFragment().apply(action)
                             .also {
                                 fragmentManager.beginTransaction().add(it, TAG).commitNow()
@@ -46,7 +47,7 @@ class NetworkFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callback = context as DownloadCallback<*>
+        callback = context as DownloadCallback<String>
     }
 
     override fun onDetach() {
@@ -62,14 +63,12 @@ class NetworkFragment : Fragment() {
                 downloadTask.status == AsyncTask.Status.FINISHED ||
                 downloadTask.isCancelled
         ) {
-            callback?.also {
+            callback?.apply {
                 cancelDownload()
                 @Suppress("UNCHECKED_CAST")
-                it as DownloadCallback<String>
-                if (::urls.isInitialized)
-                    downloadTask = DownloadTask(it).apply {
-                        execute(*urls.toTypedArray())
-                    }
+                urls?.let {
+                    downloadTask = DownloadTask(this).apply { execute(*it.toTypedArray()) }
+                }
             }
         }
     }

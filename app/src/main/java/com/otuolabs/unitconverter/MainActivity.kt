@@ -21,51 +21,44 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.getSystemService
-import androidx.preference.PreferenceManager
 import com.otuolabs.unitconverter.AdditionItems.MyEmail
 import com.otuolabs.unitconverter.AdditionItems.TextMessage
 import com.otuolabs.unitconverter.AdditionItems.ViewIdMessage
 import com.otuolabs.unitconverter.AdditionItems.bugDetected
 import com.otuolabs.unitconverter.AdditionItems.endAnimation
 import com.otuolabs.unitconverter.AdditionItems.isInitialized
-import com.otuolabs.unitconverter.AdditionItems.mRecentlyUsed
 import com.otuolabs.unitconverter.AdditionItems.motionHandler
-import com.otuolabs.unitconverter.AdditionItems.originalMap
 import com.otuolabs.unitconverter.AdditionItems.pkgName
 import com.otuolabs.unitconverter.AdditionItems.popupWindow
 import com.otuolabs.unitconverter.AdditionItems.statusBarHeight
-import com.otuolabs.unitconverter.AdditionItems.viewsMap
 import com.otuolabs.unitconverter.Utils.app_bar_bottom
 import com.otuolabs.unitconverter.Utils.daysToMilliSeconds
-import com.otuolabs.unitconverter.Utils.getNameToViewMap
-import com.otuolabs.unitconverter.Utils.name
-import com.otuolabs.unitconverter.Utils.reversed
-import com.otuolabs.unitconverter.Utils.toJson
-import com.otuolabs.unitconverter.Utils.values
 import com.otuolabs.unitconverter.ads.AdsManager
+import com.otuolabs.unitconverter.builders.addAll
 import com.otuolabs.unitconverter.builders.buildIntent
 import com.otuolabs.unitconverter.builders.buildMutableMap
 import com.otuolabs.unitconverter.builders.put
-import com.otuolabs.unitconverter.builders.putAll
 import com.otuolabs.unitconverter.miscellaneous.*
 import com.otuolabs.unitconverter.networks.DownloadCallback
 import com.otuolabs.unitconverter.networks.NetworkFragment
 import com.otuolabs.unitconverter.networks.Token
-import com.otuolabs.unitconverter.subclasses.*
+import com.otuolabs.unitconverter.subclasses.FavouritesData
 import com.otuolabs.unitconverter.subclasses.FavouritesData.Companion.favouritesBuilder
+import com.otuolabs.unitconverter.subclasses.GridConstraintLayout
+import com.otuolabs.unitconverter.subclasses.MyMotionLayout
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.parseList
 import kotlinx.serialization.stringify
 import java.io.FileNotFoundException
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
-import kotlin.collections.LinkedHashMap
-import kotlin.collections.set
 
 //change manifest setting to backup allow true
 @UnstableDefault
@@ -91,7 +84,14 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     private val sharedPreferences by defaultPreferences()
 
-    private lateinit var mSelectedOrderArray: Map<String, Int>
+    private lateinit var mSelectedOrderArray: Collection<String>
+
+    private val originalList by lazy(LazyThreadSafetyMode.NONE) {
+        //should never be null
+        globalPreferences.get<String>("originalList").let {
+            Json.parseList<String>(it)
+        }
+    }
 
     private val waitingArrayDeque by lazy(LazyThreadSafetyMode.NONE) {
         ArrayDeque<String>(30)
@@ -109,6 +109,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         restoreUiMode()
         //use recycler view instead
         setContentView(R.layout.front_page_activity)
+        grid { saveLists() }
         setSupportActionBar(app_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         val rect = Rect()
@@ -131,31 +132,28 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                  * recently used would also be a map : String -> Int
                  * when some ids have changed it would get updated ...keeping the order intact
                  * */
-
                 get<String?>("mRecentlyUsed") {
-                    mRecentlyUsed =
-                            if (this.hasValue())
-                                Json.parse(DeserializeStringIntMap, this)
-                            else originalMap.apply {
-                                put<String> {
-                                    key = "mRecentlyUsed"
-                                    value = toJson()
-                                }
-                            }
+                    if (this.hasValue())
+                        leastRecentlyUsed.addAll {
+                            leastRecentlyUsed.clear() // to prevent duplicates
+                            Json.parseList(this)
+                        }
                 }
-                get<String?>("mSelectedOrder") {
-                    mSelectedOrderArray =
-                            if (this.hasValue()) {
-                                //sorting occurred
-                                //so we have to keep it like that
-                                val selectedOrder =
-                                        Json.parse(DeserializeStringIntMap, this)
-                                grid.sort(selectedOrder)
-                                selectedOrder
-                            } else mapOf()
-                }
-                descending = get("descending")
                 recentlyUsedBool = get("recentlyUsedBoolean")
+                descending = get("descending")
+                if (recentlyUsedBool)
+                    mSelectedOrderArray = if (descending) leastRecentlyUsed.asReversed() else leastRecentlyUsed
+                else
+                    get<String?>("mSelectedOrder") {
+                        mSelectedOrderArray =
+                                if (this.hasValue()) {
+                                    //sorting occurred
+                                    //so we have to keep it like that
+                                    Json.parseList(this)
+                                } else emptyList()
+                    }
+                if (mSelectedOrderArray.isNotEmpty())
+                    grid { sort(mSelectedOrderArray) }
                 apply()
             }
         }
@@ -224,31 +222,27 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         recentlyUsedBool = false /// reset the value
         if (firstSelection == -1) {
             // use default
-            grid.sort(originalMap)
-            mSelectedOrderArray = originalMap
+            grid.sort(originalList)
+            mSelectedOrderArray = originalList
             return
         }
-        val temporalMap = LinkedHashMap<String, Int>(30)
+        val list: Collection<String>
         descending = secondSelection == R.id.descending
         if (firstSelection == R.id.titleButton) {
             //sort by title
-            viewsMap.values {
-                sortWith(
-                        if (descending)
-                            compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
-                        else compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                )
-                for (i in this)
-                    temporalMap[i.name] = i.id
-            }
+            list =
+                    if (descending)
+                        originalList.toSortedSet(compareByDescending(String.CASE_INSENSITIVE_ORDER) { it })
+                    else originalList.toSortedSet()
         } else {
             recentlyUsedBool = true
-            temporalMap.putAll {
-                if (descending) mRecentlyUsed
-                else mRecentlyUsed.reversed()
-            }
+            list =
+                    if (descending) leastRecentlyUsed.asReversed()
+                    else leastRecentlyUsed
+
         }
-        temporalMap.also {
+        val listToUse = if (list.isEmpty()) originalList else list
+        listToUse.also {
             grid.sort(it)
             mSelectedOrderArray = it
         }
@@ -268,12 +262,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         /**
          * called when from convert activity
          * */
-        if (recentlyUsedBool && !onCreateCalled && mRecentlyUsed.values != originalMap.values) {
+        if (recentlyUsedBool && !onCreateCalled && leastRecentlyUsed.isNotEmpty()) { //should'nt be empty though
             if (descending)
-                grid.sort(mRecentlyUsed)
-            //since the problem of different ids is corrected right from onCreate
-            //it's safe to do the following
-            else grid.sort(mRecentlyUsed.reversed())
+                grid.sort(leastRecentlyUsed.asReversed())
+            else grid.sort(leastRecentlyUsed)
         }
         onCreateCalled = false
 
@@ -297,18 +289,13 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     override fun onPause() {
         super.onPause()
         editPreferences {
-            val recentlyUsed = mRecentlyUsed.toJson()
             put<String> {
                 key = "mRecentlyUsed"
-                value = recentlyUsed
+                value = Json.stringify(leastRecentlyUsed)
             }
-            val arrayHasChanged = mRecentlyUsed.values != originalMap.values
             put<String> {
                 key = "mSelectedOrder"
-                value = if (arrayHasChanged && recentlyUsedBool) {
-                    if (descending) recentlyUsed
-                    else mRecentlyUsed.reversed().toJson()
-                } else mSelectedOrderArray.toJson()
+                value = Json.stringify(mSelectedOrderArray.toList())
             }
             put<Boolean> {
                 key = "descending"
@@ -501,19 +488,15 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 if (waitingArrayDeque.isNotEmpty()) {
                     //send the list to the activity
                     val favouritesList: List<FavouritesData?>
-                    getNameToViewMap().apply {
+                    viewNameToViewData.apply {
                         favouritesList = waitingArrayDeque.map {
-                            val view = this[it] //shouldn't be null though
-                            view?.run {
-                                this as MyCardView
-                                val textView = (this@run.getChildAt(1) as DataTextView)
-                                favouritesBuilder {
-                                    drawableId = drawableIds[this@run.id] ?: -1
-                                    topText = textView.text
-                                    metadata = textView.metadata
-                                    cardId = this@run.id
-                                    cardName = this@run.name
-                                }
+                            favouritesBuilder {
+                                val viewData = getValue(it)
+                                drawableId = drawableIds[viewData.id] ?: -1
+                                topText = viewData.text
+                                metadata = viewData.metadata
+                                cardId = viewData.id
+                                cardName = it
                             }
                         }
                     }
@@ -592,8 +575,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                  * */
                 completedOnes =
                         get<Set<String>?>("completedUpdates")?.toMutableSet()
-                                ?: HashSet(originalMap.size)
-                val onesToUpdate = originalMap.keys subtract completedOnes
+                                ?: HashSet(originalList.size)
+                val onesToUpdate = originalList subtract completedOnes
                 didYouKnowUrls = onesToUpdate.map {
                     appendString {
                         add { "${Token.Repository}/currency_conversions/contents/didYouKnow/$it.json" }
@@ -664,7 +647,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     override fun networkAvailable(): Boolean = networkIsAvailable
 
     override fun finishDownloading() {
-        if (completedOnes.size == originalMap.size) {
+        if (completedOnes.size == originalList.size) {
             //means all has been updated
             editPreferences {
                 put<Set<String>> {
@@ -701,7 +684,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     private fun restoreUiMode() {
         //the ad may prevent the ui from updating
-        PreferenceManager.getDefaultSharedPreferences(this).apply {
+        globalPreferences.apply {
             val mode =
                     when (get<String?>("theme")) {
                         "dark" -> AppCompatDelegate.MODE_NIGHT_YES
@@ -714,6 +697,13 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 
     companion object {
+        val leastRecentlyUsed = ArrayList<String>(30)
+        val viewNameToViewData by lazy(LazyThreadSafetyMode.NONE) {
+            globalPreferences.get<String>("viewData").run {
+                Json.parse(DeserializeViewDataMap, this)
+            }
+        }
+
         const val FAVOURITES = "$pkgName.favourites_activity_list"
         val drawableIds by lazy(LazyThreadSafetyMode.NONE) {
             buildMutableMap<Int, Int>(30) {
