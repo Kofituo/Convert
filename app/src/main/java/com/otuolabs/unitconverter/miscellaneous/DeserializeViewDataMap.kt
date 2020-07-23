@@ -32,6 +32,4 @@ object DeserializeViewDataMap : DeserializationStrategy<MutableMap<String, ViewD
 
     override fun patch(decoder: Decoder, old: MutableMap<String, ViewData>): MutableMap<String, ViewData> =
             TODO("I don't know what this does")
-
-
 }

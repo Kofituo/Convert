@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -164,7 +163,6 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
                 //means it's the first time
                 addAll { MainActivity.viewNameToViewData.keys }
             }
-            Log.e("this", "$this")
             remove(name)
             add(name)
         }

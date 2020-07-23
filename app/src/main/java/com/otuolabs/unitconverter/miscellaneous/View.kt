@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import com.otuolabs.unitconverter.Utils.dpToInt
+import java.io.Serializable
 
 inline fun <reified T : ViewGroup.LayoutParams> View.layoutParams(block: T.() -> Unit) =
         (layoutParams as T).apply(block)
@@ -53,6 +54,7 @@ fun View.setTopPadding(context: Context, padding: Int) {
     }
 }
 
-data class ViewData(val id: Int, val name: String, val text: CharSequence, val metadata: CharSequence?) : JsonConvertible {
+data class ViewData(val id: Int, val name: String, val text: CharSequence, val metadata: CharSequence?)
+    : JsonConvertible, Serializable {
     override fun toJson() = """["$id" , "$name", "$text", "$metadata"]"""
 }

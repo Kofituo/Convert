@@ -25,7 +25,6 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 import kotlin.math.absoluteValue
 import kotlin.math.round
@@ -244,6 +243,7 @@ object Utils {
 
     fun lengthFilter() = InputFilter.LengthFilter(68)//for atm
 
+/*
     fun <K, V> Map<K, V>.toJson(): String {
         if (isEmpty()) return "[]"
         return buildString {
@@ -256,11 +256,15 @@ object Utils {
             append("]")
         }
     }
+*/
+/*
 
+    */
     /**
      * Returns are new [MutableMap] where the key / values are reversed.
      * i.e. the last pair becomes the first pair
-     * */
+     * *//*
+
     fun <K, V> Map<K, V>.reversed() =
             if (size < 2) toMap() // fast return
             else ArrayList(entries).run {
@@ -271,6 +275,7 @@ object Utils {
                     }
                 reversedMap
             }
+*/
 
     @Suppress("NOTHING_TO_INLINE")
     inline infix fun StringBuilder.appendWithSpace(string: String): StringBuilder {

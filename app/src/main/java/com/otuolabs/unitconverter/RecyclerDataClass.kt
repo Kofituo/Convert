@@ -7,5 +7,5 @@ data class RecyclerDataClass(
         val topText: String,
         var bottomText: CharSequence,
         var id: Int = -1,
-        var view: ViewData? = null
+        var viewData: ViewData? = null
 ) : Serializable

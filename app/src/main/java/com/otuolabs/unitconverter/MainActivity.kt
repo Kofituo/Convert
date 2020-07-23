@@ -703,7 +703,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 Json.parse(DeserializeViewDataMap, this)
             }
         }
-
         const val FAVOURITES = "$pkgName.favourites_activity_list"
         val drawableIds by lazy(LazyThreadSafetyMode.NONE) {
             buildMutableMap<Int, Int>(30) {

@@ -126,7 +126,7 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
             val data = FlattenMap.getChildData(listData, position)
             if (data is FavouritesData)
                 favouritesItem.startActivity(data)
-            else unitClick.onUnitClick((data as RecyclerDataClass).view ?: return, data)
+            else unitClick.onUnitClick((data as RecyclerDataClass).viewData ?: return, data)
         }
     }
 

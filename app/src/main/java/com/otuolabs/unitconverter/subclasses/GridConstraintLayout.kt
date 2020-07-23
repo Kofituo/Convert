@@ -71,13 +71,8 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
 
     @ImplicitReflectionSerializer
     fun saveLists() {
-        super.onAttachedToWindow()
         //save the list to shared preferences
         context.globalPreferences.edit {
-            put<String> {
-                key = "viewNameToId"
-                value = Json.stringify(viewNameToId)
-            }
             put<String> {
                 key = "viewData"
                 value = viewData.toJson()
@@ -97,7 +92,6 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
 
     fun sort(list: Collection<String>) {
         val number = sortValue //gets value ones per function call
-
         @Suppress("UNCHECKED_CAST")
         val viewIds = list.map { viewNameToId[it] } as List<Int>
         buildConstraintSet {

@@ -267,7 +267,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
     private fun MutableCollection<RecyclerDataClass>.addView(int: Int) =
             apply {
                 forEach {
-                    it.view = viewDataMap.getValue(Utils.getViewName(int))
+                    it.viewData = viewDataMap.getValue(Utils.getViewName(int))
                 }
             }
 
