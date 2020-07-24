@@ -3,7 +3,6 @@ package com.otuolabs.unitconverter
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.LayerDrawable
@@ -13,13 +12,17 @@ import android.net.NetworkRequest
 import android.net.Uri
 import android.os.*
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import com.otuolabs.unitconverter.AdditionItems.MyEmail
 import com.otuolabs.unitconverter.AdditionItems.TextMessage
@@ -33,6 +36,7 @@ import com.otuolabs.unitconverter.AdditionItems.popupWindow
 import com.otuolabs.unitconverter.AdditionItems.statusBarHeight
 import com.otuolabs.unitconverter.Utils.app_bar_bottom
 import com.otuolabs.unitconverter.Utils.daysToMilliSeconds
+import com.otuolabs.unitconverter.Utils.isNightMode
 import com.otuolabs.unitconverter.ads.AdsManager
 import com.otuolabs.unitconverter.builders.addAll
 import com.otuolabs.unitconverter.builders.buildIntent
@@ -45,7 +49,6 @@ import com.otuolabs.unitconverter.networks.Token
 import com.otuolabs.unitconverter.subclasses.FavouritesData
 import com.otuolabs.unitconverter.subclasses.FavouritesData.Companion.favouritesBuilder
 import com.otuolabs.unitconverter.subclasses.GridConstraintLayout
-import com.otuolabs.unitconverter.subclasses.MyMotionLayout
 import kotlinx.android.synthetic.main.front_page_activity.*
 import kotlinx.android.synthetic.main.scroll.*
 import kotlinx.coroutines.*
@@ -97,19 +100,11 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         ArrayDeque<String>(30)
     }
 
-    private val isNightMode
-        get() =
-            resources
-                    ?.configuration
-                    ?.uiMode
-                    ?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         restoreUiMode()
+        super.onCreate(savedInstanceState)
         //use recycler view instead
         setContentView(R.layout.front_page_activity)
-        grid { saveLists() }
         setSupportActionBar(app_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         val rect = Rect()
@@ -132,7 +127,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                  * recently used would also be a map : String -> Int
                  * when some ids have changed it would get updated ...keeping the order intact
                  * */
-                get<String?>("mRecentlyUsed") {
+                get<String?>("leastRecentlyUsed") {
                     if (this.hasValue())
                         leastRecentlyUsed.addAll {
                             leastRecentlyUsed.clear() // to prevent duplicates
@@ -144,7 +139,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 if (recentlyUsedBool)
                     mSelectedOrderArray = if (descending) leastRecentlyUsed.asReversed() else leastRecentlyUsed
                 else
-                    get<String?>("mSelectedOrder") {
+                    get<String?>("selectedOrder") {
                         mSelectedOrderArray =
                                 if (this.hasValue()) {
                                     //sorting occurred
@@ -152,8 +147,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                                     Json.parseList(this)
                                 } else emptyList()
                     }
-                if (mSelectedOrderArray.isNotEmpty())
-                    grid { sort(mSelectedOrderArray) }
                 apply()
             }
         }
@@ -161,15 +154,11 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         initialiseDidYouKnow()
         onCreateCalled = true
         AdsManager.initializeInterstitialAd()
-        grid setSelectionListener this
+//        grid setSelectionListener this
     }
 
     private fun setCornerColors() {
-        val color =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                    getColor(R.color.front_page)
-                else
-                    resources.getColor(R.color.front_page)
+        val color = ContextCompat.getColor(this, R.color.front_page)
         (right_corner.background as LayerDrawable)
                 .findDrawableByLayerId(R.id.top_color)
                 .setTint(color)
@@ -179,7 +168,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     }
 
     private fun motionLayoutTuning(savedInstanceState: Bundle?) {
-        motion {
+        motionLayout {
             motionHandler = object : Handler(Looper.getMainLooper()) {
                 override fun handleMessage(msg: Message) {
                     when (msg.what) {
@@ -215,8 +204,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
     }
 
-    private inline fun motion(block: MyMotionLayout.() -> Unit) =
-            motion?.apply(block)
+    private inline fun motionLayout(block: MotionLayout.() -> Unit) =
+            (motion as? MotionLayout)?.apply(block)
 
     override fun selection(firstSelection: Int, secondSelection: Int) {
         recentlyUsedBool = false /// reset the value
@@ -259,6 +248,22 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
 
     override fun onResume() {
         super.onResume()
+        restoreUiModeOnResume()
+        //for smoother animations
+        scrollable.apply {
+            this as ViewGroup
+            if (childCount > 0) return@apply
+            LayoutInflater.from(this@MainActivity).inflate {
+                resourceId = R.layout.scroll
+                root = this@apply
+            }.apply { addView(this) }
+            grid {
+                saveLists()
+                if (mSelectedOrderArray.isNotEmpty())
+                    sort(mSelectedOrderArray)
+                setSelectionListener(this@MainActivity)
+            }
+        }
         /**
          * called when from convert activity
          * */
@@ -290,11 +295,11 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         super.onPause()
         editPreferences {
             put<String> {
-                key = "mRecentlyUsed"
+                key = "leastRecentlyUsed"
                 value = Json.stringify(leastRecentlyUsed)
             }
             put<String> {
-                key = "mSelectedOrder"
+                key = "selectedOrder"
                 value = Json.stringify(mSelectedOrderArray.toList())
             }
             put<Boolean> {
@@ -682,21 +687,35 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         Log.e("excep", "$url $exception")
     }
 
-    private fun restoreUiMode() {
-        //the ad may prevent the ui from updating
-        globalPreferences.apply {
-            val mode =
-                    when (get<String?>("theme")) {
-                        "dark" -> AppCompatDelegate.MODE_NIGHT_YES
-                        "default" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                        "light" -> AppCompatDelegate.MODE_NIGHT_NO
-                        else -> return
-                    }
-            AppCompatDelegate.setDefaultNightMode(mode)
-        }
-    }
-
     companion object {
+        fun restoreUiMode() {
+            //the ad may prevent the ui from updating
+            globalPreferences.apply {
+                val mode =
+                        when (get<String?>("theme")) {
+                            "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                            "default" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                            "light" -> AppCompatDelegate.MODE_NIGHT_NO
+                            else -> return
+                        }
+                AppCompatDelegate.setDefaultNightMode(mode)
+            }
+        }
+
+        fun AppCompatActivity.restoreUiModeOnResume() {
+            val previousMode = AppCompatDelegate.getDefaultNightMode()
+            globalPreferences.apply {
+                val mode =
+                        when (get<String?>("theme")) {
+                            "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                            "default" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                            "light" -> AppCompatDelegate.MODE_NIGHT_NO
+                            else -> return
+                        }
+                delegate.localNightMode = mode
+            }
+        }
+
         val leastRecentlyUsed = ArrayList<String>(30)
         val viewNameToViewData by lazy(LazyThreadSafetyMode.NONE) {
             globalPreferences.get<String>("viewData").run {

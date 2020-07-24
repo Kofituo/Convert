@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.otuolabs.unitconverter.MainActivity.Companion.restoreUiModeOnResume
 import com.otuolabs.unitconverter.miscellaneous.layoutParams
 import com.otuolabs.unitconverter.subclasses.AboutAdapter
 import com.otuolabs.unitconverter.subclasses.SearchQuantityHolder
@@ -50,6 +51,12 @@ class About : AppCompatActivity(), SearchQuantityHolder.Quantity {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         finish()
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        @Suppress("EXPERIMENTAL_API_USAGE")
+        restoreUiModeOnResume()
     }
 
     override fun onQuantityClick(position: Int) {

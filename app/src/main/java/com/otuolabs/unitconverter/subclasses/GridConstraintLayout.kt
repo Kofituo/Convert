@@ -201,7 +201,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
 
     fun getArray() = selectionMap
 
-    infix fun setSelectionListener(selection: Selection) {
+    fun setSelectionListener(selection: Selection) {
         this.selection = selection
     }
 

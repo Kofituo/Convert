@@ -9,7 +9,10 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.InputFilter
-import android.util.*
+import android.util.DisplayMetrics
+import android.util.SparseArray
+import android.util.SparseBooleanArray
+import android.util.TypedValue
 import android.view.View
 import androidx.core.util.forEach
 import androidx.recyclerview.widget.RecyclerView
@@ -18,14 +21,26 @@ import com.google.android.material.textfield.TextInputEditText
 import com.otuolabs.unitconverter.builders.buildMutableList
 import com.otuolabs.unitconverter.builders.buildMutableMap
 import com.otuolabs.unitconverter.builders.put
-import com.otuolabs.unitconverter.miscellaneous.*
+import com.otuolabs.unitconverter.miscellaneous.DecimalFormatFactory
+import com.otuolabs.unitconverter.miscellaneous.hasValue
+import com.otuolabs.unitconverter.miscellaneous.isNotNull
+import com.otuolabs.unitconverter.miscellaneous.isNull
 import com.otuolabs.unitconverter.subclasses.RecyclerViewUpdater
 import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.Collection
+import kotlin.collections.Iterable
 import kotlin.collections.LinkedHashMap
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.forEach
+import kotlin.collections.indices
+import kotlin.collections.set
 import kotlin.math.absoluteValue
 import kotlin.math.round
 import kotlin.time.ExperimentalTime
@@ -195,9 +210,7 @@ object Utils {
     }
 
     // temperature filter
-    fun temperatureFilters(
-            editText: TextInputEditText
-    ): Array<InputFilter> {
+    fun temperatureFilters(editText: TextInputEditText): Array<InputFilter> {
         val filter = InputFilter { source, start, end, _, _, _ ->
             val stringBuilder = StringBuilder(end - start)
             var count = 0
@@ -409,26 +422,9 @@ object Utils {
             else if (sizeDifference > 0)
                 notifyItemRangeInserted(listStartIndex + oldSize, sizeDifference)
             //update affected ones
-            val startIndex = MutableLazy.resettableLazy { 0 }
-            startIndex.reset()
-            var initiated = false
-            for (i in shorterList.indices) {
-                Log.e("here", "i $i")
-                if (shorterList[i] != longerList[i]) {
-                    initiated = true
-                    startIndex.setValue(listStartIndex + i)
-                    Log.e("s", "change ${listStartIndex + i} $listStartIndex ")
+            for (i in shorterList.indices)
+                if (shorterList[i] != longerList[i])
                     notifyItemChanged(listStartIndex + i)
-                } else {
-                    if (initiated) {
-                        //apply changes
-                        initiated = false
-                        Log.e("ssta", "$startIndex  $listStartIndex")
-                        startIndex.reset()
-                    }
-                }
-            }
-            Log.e("enddddddddddddd", "enddddddddddd  ${startIndex.value}  ${shorterList.size}")
         }
     }
 
@@ -475,4 +471,14 @@ object Utils {
     val isPortrait
         get() =
             ApplicationLoader.applicationContext?.resources?.configuration?.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    inline val context get() = ApplicationLoader.applicationContext!!
+
+    val isNightMode
+        get() =
+            context.resources
+                    ?.configuration
+                    ?.uiMode
+                    ?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
 }

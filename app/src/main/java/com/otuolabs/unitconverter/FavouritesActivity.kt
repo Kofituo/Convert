@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -17,6 +16,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +25,7 @@ import com.otuolabs.unitconverter.AdditionItems.FavouritesCalledIt
 import com.otuolabs.unitconverter.AdditionItems.TextMessage
 import com.otuolabs.unitconverter.AdditionItems.ViewIdMessage
 import com.otuolabs.unitconverter.AdditionItems.pkgName
+import com.otuolabs.unitconverter.MainActivity.Companion.restoreUiModeOnResume
 import com.otuolabs.unitconverter.Utils.containsIgnoreCase
 import com.otuolabs.unitconverter.builders.addAll
 import com.otuolabs.unitconverter.builders.buildIntent
@@ -90,15 +91,15 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 initialiseLayout()
                 rootGroup.addView(constraintLayout)
             }
-            setContentView(rootGroup)
-            if (!::constraintLayout.isInitialized)
-                recyclerView = recyclerView {
-                    layoutManager = LinearLayoutManager(this@FavouritesActivity)
-                    adapter = favouritesAdapter
-                    setTopPadding(this@FavouritesActivity, 20)
-                }
         }
 
+        setContentView(rootGroup)
+        if (!::constraintLayout.isInitialized)
+            recyclerView = recyclerView {
+                layoutManager = LinearLayoutManager(this@FavouritesActivity)
+                adapter = favouritesAdapter
+                setTopPadding(this@FavouritesActivity, 20)
+            }
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -106,10 +107,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         }
         window {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            statusBarColor =
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                        resources.getColor(android.R.color.transparent, null)
-                    else resources.getColor(android.R.color.transparent)
+            statusBarColor = ContextCompat.getColor(this@FavouritesActivity, android.R.color.transparent)
             setBackgroundDrawable(resources.getDrawable(R.drawable.test, null))
         }
         motionLayout?.apply {
@@ -258,7 +256,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
             setEnterFadeDuration(300)
             setExitFadeDuration(500)
             start()
-            Handler().postDelayed({
+            Handler(mainLooper).postDelayed({
                 icon = getDrawable(R.drawable.ic_magnifying_glass)
             }, 812)
         }
@@ -375,6 +373,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
 
     override fun onResume() {
         super.onResume()
+        restoreUiModeOnResume()
         val createCalled = onCreateCalled
         if (adapterIsInit && createCalled)
             recyclerView.post { refreshRecyclerView() }

@@ -1,5 +1,6 @@
 package com.otuolabs.unitconverter.ads
 
+import android.app.Activity
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
@@ -9,6 +10,9 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.getSystemService
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdCallback
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.otuolabs.unitconverter.ApplicationLoader
 import com.otuolabs.unitconverter.ConvertActivity
 import com.otuolabs.unitconverter.R
@@ -49,6 +53,8 @@ object AdsManager {
                                 bannerAd?.apply {
                                     if (!isLoading) loadAd(adRequest)
                                 }
+                            if (rewardedAdFailedToLoad)
+                                rewardedAd?.loadAd(adRequest, rewardedAdLoadCallback)
                         }
                     }
                 }
@@ -186,5 +192,33 @@ object AdsManager {
                 bannerAd?.resume()
             }
         }
+    }
+
+    private var rewardedAd: RewardedAd? = null
+    private var rewardedAdFailedToLoad
+            by ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
+
+    private val rewardedAdLoadCallback by lazy(LazyThreadSafetyMode.NONE) {
+        object : RewardedAdLoadCallback() {
+            override fun onRewardedAdFailedToLoad(loadAdError: LoadAdError?) {
+                rewardedAdFailedToLoad = true
+            }
+        }
+    }
+
+    fun loadRewardedAd() =
+            rewardedAd ?: RewardedAd(context, "ca-app-pub-3940256099942544/5224354917").apply {
+                loadAd(adRequest, rewardedAdLoadCallback)
+                rewardedAd = this
+            }
+
+    fun showRewardedAd(activity: Activity, rewardedAdCallback: RewardedAdCallback): Boolean {
+        rewardedAd?.apply {
+            val isLoaded = isLoaded
+            if (isLoaded)
+                show(activity, rewardedAdCallback)
+            return isLoaded
+        }
+        return false
     }
 }

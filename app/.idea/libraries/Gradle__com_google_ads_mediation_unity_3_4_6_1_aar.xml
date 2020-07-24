@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.ads.mediation:unity:3.4.6.1@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8280b6f33ff5011d16bf120dedd67c63/jetified-unity-3.4.6.1/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8280b6f33ff5011d16bf120dedd67c63/jetified-unity-3.4.6.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8280b6f33ff5011d16bf120dedd67c63/jetified-unity-3.4.6.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8280b6f33ff5011d16bf120dedd67c63/jetified-unity-3.4.6.1/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.ads.mediation/unity/3.4.6.1/f494a7034ad48f5a271cccc9a5711f92ce3553a5/unity-3.4.6.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

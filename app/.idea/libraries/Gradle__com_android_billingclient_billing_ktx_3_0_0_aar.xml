@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.android.billingclient:billing-ktx:3.0.0@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/10d497f0e3dbd1984c8f9597d945d15c/jetified-billing-ktx-3.0.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/10d497f0e3dbd1984c8f9597d945d15c/jetified-billing-ktx-3.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/10d497f0e3dbd1984c8f9597d945d15c/jetified-billing-ktx-3.0.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.billingclient/billing-ktx/3.0.0/f0cb2515ec21ca3886ceeff59d571db3c647d611/billing-ktx-3.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

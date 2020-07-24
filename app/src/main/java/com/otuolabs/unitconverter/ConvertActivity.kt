@@ -38,6 +38,7 @@ import com.otuolabs.unitconverter.AdditionItems.TextMessage
 import com.otuolabs.unitconverter.AdditionItems.ToolbarColor
 import com.otuolabs.unitconverter.AdditionItems.ViewIdMessage
 import com.otuolabs.unitconverter.AdditionItems.pkgName
+import com.otuolabs.unitconverter.MainActivity.Companion.restoreUiModeOnResume
 import com.otuolabs.unitconverter.Utils.dpToInt
 import com.otuolabs.unitconverter.Utils.filters
 import com.otuolabs.unitconverter.Utils.hoursToMilliSeconds
@@ -222,6 +223,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     override fun onResume() {
         //restoreUiMode()
         super.onResume()
+        restoreUiModeOnResume()
         AdsManager.bannerAdCallbackListener.onResume()
         if (onCreateCalled) {
             if (isNumberBase) {

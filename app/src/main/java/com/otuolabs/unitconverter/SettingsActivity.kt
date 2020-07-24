@@ -1,6 +1,8 @@
 package com.otuolabs.unitconverter
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -8,31 +10,51 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
+import com.otuolabs.unitconverter.MainActivity.Companion.restoreUiMode
 import com.otuolabs.unitconverter.ads.AdsManager
 import com.otuolabs.unitconverter.builders.buildMutableMap
-import com.otuolabs.unitconverter.miscellaneous.get
-import com.otuolabs.unitconverter.miscellaneous.hasValue
-import com.otuolabs.unitconverter.miscellaneous.put
-import com.otuolabs.unitconverter.miscellaneous.sharedPreferences
+import com.otuolabs.unitconverter.miscellaneous.*
 import kotlinx.android.synthetic.main.settings_activity.*
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.parseMap
 import kotlinx.serialization.stringify
+import kotlin.collections.set
 
 class SettingsActivity : AppCompatActivity() {
 
+    private lateinit var settingsFragment: SettingsFragment
     override fun onCreate(savedInstanceState: Bundle?) {
+        restoreUiMode()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        if (shouldWatchVideo()) AdsManager.loadRewardedAd()
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.settings, SettingsFragment())
+                .replace(R.id.settings, SettingsFragment().also { settingsFragment = it })
                 .commit()
         if (Utils.isPortrait)
             AdsManager.initializeBannerAd(settings_parent)
+    }
+
+    private var disabled = false
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus && !disabled) {
+            settingsFragment.disableUiModeChange()
+            disabled = true
+        }
+    }
+
+    fun shouldWatchVideo(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            //load the ad if not already loaded
+            globalPreferences.get<String?>("adLoadedBefore") {
+                return isNullOrBlank()
+            }
+        }
+        return false
     }
 
     override fun onPause() {
@@ -58,31 +80,45 @@ class SettingsActivity : AppCompatActivity() {
     class SettingsFragment : PreferenceFragmentCompat() {
         private var uiMode: Any? = null
         private val sharedPreferences by lazy(LazyThreadSafetyMode.NONE) {
-            PreferenceManager.getDefaultSharedPreferences(context)
+            context?.globalPreferences ?: globalPreferences // don't like crashes
         }
+
+        private val shouldWatchVideo
+            get() = (activity as SettingsActivity).shouldWatchVideo()
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             retainInstance = true
         }
 
+        @SuppressLint("ClickableViewAccessibility")
+        fun disableUiModeChange() {
+            //first view is the text view
+            // listView[listPreference.order + 1].isClickable = false
+        }
+
+        private lateinit var listPreference: ListPreference
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
             uiMode = sharedPreferences.get<String?>("theme")
             findPreference<ListPreference>("theme")
-                    ?.setOnPreferenceChangeListener { _, newValue ->
-                        newValue as CharSequence?
-                        val shouldSave: Boolean
-                        if (uiMode != newValue) {
-                            shouldSave = true
-                            when (newValue) {
-                                "default" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                                "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                                "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                            }
-                            uiMode = newValue
-                        } else shouldSave = false
-                        shouldSave
+                    ?.apply {
+                        listPreference = this
+                        setOnPreferenceChangeListener { _, newValue ->
+                            newValue as CharSequence?
+                            val shouldSave: Boolean
+                            if (uiMode != newValue) {
+                                shouldSave = true
+                                when (newValue) {
+                                    "default" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                                    "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                                    "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                                }
+                                uiMode = newValue
+                            } else shouldSave = false
+                            shouldSave
+                        }
                     }
         }
 
