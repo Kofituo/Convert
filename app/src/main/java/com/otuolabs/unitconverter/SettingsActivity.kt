@@ -1,7 +1,6 @@
 package com.otuolabs.unitconverter
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.GestureDetector
@@ -56,13 +55,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private var disabled = false
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (hasFocus && disabled.inverse && shouldWatchVideo()) {
-            settingsFragment.disableUiModeChange()
-            disabled = true
-        }
-    }
 
     private fun shouldWatchVideo(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -80,6 +72,10 @@ class SettingsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         AdsManager.bannerAdCallbackListener.onResume()
+        if (disabled.inverse && shouldWatchVideo()) {
+            settingsFragment.disableUiModeChange()
+            disabled = true
+        }
     }
 
     override fun onDestroy() {
@@ -135,7 +131,7 @@ class SettingsActivity : AppCompatActivity() {
         fun disableUiModeChange() {
             rewardedAd // loads it
             initializeConnections()
-            listView[listPreference.order + 1].setOnTouchListener(this)
+            listView.post { listView[listPreference.order + 1].setOnTouchListener(this) }
             disable = true
         }
 
@@ -169,38 +165,22 @@ class SettingsActivity : AppCompatActivity() {
             saveData()
         }
 
+        @OptIn(ImplicitReflectionSerializer::class)
         private fun saveData() {
             //save the data
             val forNotation = //preferences for notation
                     sharedPreferences.get("notation") ?: "decimal"
             val forDecimalPlace =
                     sharedPreferences.get("sliderValue") ?: 5
-            val prefSharedPreference by sharedPreferences {
-                AdditionItems.pkgName + "for_preferences"
-            }
             //quickly clear if retain is false and the rest are the default values
             @Suppress("EXPERIMENTAL_API_USAGE")
-            modifyPreferences(
-                    prefSharedPreference,
-                    forDecimalPlace,
-                    forNotation,
-                    MainActivity.viewNameToViewData.keys
-            )
-        }
-
-        @OptIn(ImplicitReflectionSerializer::class)
-        private fun modifyPreferences(
-                sharedPreferences: SharedPreferences,
-                sliderValue: Int,
-                notation: String,
-                collection: Collection<String>
-        ) {
-            //for the individual preference put the data
-            for (viewName in collection) {
+            for (viewName in MainActivity.viewNameToViewData.keys) {
                 val activitySharedPreferences by sharedPreferences {
                     buildString {
                         append(AdditionItems.pkgName)
+                        append(".")
                         append(viewName)
+                        append(".")
                         append(AdditionItems.Author) // to prevent name clashes with the fragment
                     }
                 }
@@ -208,11 +188,11 @@ class SettingsActivity : AppCompatActivity() {
                 activitySharedPreferences.edit {
                     put<Int> {
                         key = "sliderValue"
-                        value = sliderValue
+                        value = forDecimalPlace
                     }
                     put<Boolean> {
                         key = "isEngineering"
-                        value = getIndex(notation) == 2
+                        value = getIndex(forNotation) == 2
                     }
                     activitySharedPreferences
                             .get<String?>("preferences_selections") {
@@ -225,35 +205,12 @@ class SettingsActivity : AppCompatActivity() {
                                             put(3, 11)
                                         }
                                 map as MutableMap
-                                map[0] = getIndex(notation)
+                                map[0] = getIndex(forNotation)
                                 put<String> {
                                     key = "preferences_selections"
                                     value = Json.stringify(map)
                                 }
                             }
-                }
-                sharedPreferences.edit {
-                    put<Float> {
-                        key = "$viewName.preference_slider_value"
-                        value = sliderValue.toFloat()
-                    }
-                    sharedPreferences.get<String?>("$viewName.preferences_for_activity") {
-                        val map =
-                                if (this.hasValue()) Json.parseMap<Int, Int>(this)
-                                else
-                                    buildMutableMap(4) {
-                                        put(0, 0)
-                                        put(1, 3)
-                                        put(2, 7)
-                                        put(3, 11)
-                                    }
-                        map as MutableMap
-                        map[0] = getIndex(notation)
-                        put<String> {
-                            key = "$viewName.preferences_for_activity"
-                            value = Json.stringify(map)
-                        }
-                    }
                 }
             }
         }

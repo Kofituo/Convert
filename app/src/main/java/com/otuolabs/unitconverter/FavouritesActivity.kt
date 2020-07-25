@@ -24,6 +24,7 @@ import androidx.transition.TransitionManager
 import com.otuolabs.unitconverter.AdditionItems.FavouritesCalledIt
 import com.otuolabs.unitconverter.AdditionItems.TextMessage
 import com.otuolabs.unitconverter.AdditionItems.ViewIdMessage
+import com.otuolabs.unitconverter.AdditionItems.ViewNameExtra
 import com.otuolabs.unitconverter.AdditionItems.pkgName
 import com.otuolabs.unitconverter.MainActivity.Companion.restoreUiModeOnResume
 import com.otuolabs.unitconverter.Utils.containsIgnoreCase
@@ -203,8 +204,9 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
                 }
                 R.id.prefixes ->
                     buildIntent<ConvertActivity> {
-                        putExtra(TextMessage, "Prefix")
+                        putExtra(TextMessage, getString(R.string.prefix))
                         putExtra(ViewIdMessage, R.id.prefixes)
+                        putExtra(ViewNameExtra, "Prefix")
                         putExtra(FavouritesCalledIt, true)
                         startActivity(this)
                     }
@@ -266,6 +268,7 @@ class FavouritesActivity : AppCompatActivity(), FavouritesAdapter.FavouritesItem
         buildIntent<ConvertActivity> {
             putExtra(TextMessage, data.topText)
             putExtra(ViewIdMessage, data.cardId)
+            putExtra(ViewNameExtra, data.cardName)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(this)
         }

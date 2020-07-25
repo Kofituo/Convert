@@ -15,6 +15,7 @@ import android.os.Vibrator
 import android.text.InputFilter
 import android.util.*
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.getSystemService
 import androidx.core.util.forEach
 import androidx.recyclerview.widget.RecyclerView
@@ -427,20 +428,20 @@ object Utils {
      *
      * @return Returns true if the device is a Tablet
      */
-    fun Activity.isTablet(): Boolean {
+    fun isTablet(activity: Activity): Boolean {
         if (isTablet.isNotNull()) return isTablet as Boolean
 
         // Verifies if the Generalized Size of the device is XLARGE to be
         // considered a Tablet
         val xlarge =
-                resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK ==
+                activity.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK ==
                         Configuration.SCREENLAYOUT_SIZE_XLARGE
 
         // If XLarge, checks if the Generalized Density is at least MDPI
         // (160dpi)
         if (xlarge) {
             val metrics = DisplayMetrics()
-            windowManager.defaultDisplay.getMetrics(metrics)
+            activity.windowManager.defaultDisplay.getMetrics(metrics)
 
             // MDPI=160, DEFAULT=160, DENSITY_HIGH=240, DENSITY_MEDIUM=160,
             // DENSITY_TV=213, DENSITY_XHIGH=320
@@ -474,6 +475,9 @@ object Utils {
                     ?.configuration
                     ?.uiMode
                     ?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
+    val darkModeSelected
+        get() = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
     interface Connectivity {
         fun initializeConnections() {

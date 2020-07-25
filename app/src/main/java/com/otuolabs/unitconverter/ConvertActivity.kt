@@ -37,6 +37,7 @@ import com.otuolabs.unitconverter.AdditionItems.SearchActivityExtra
 import com.otuolabs.unitconverter.AdditionItems.TextMessage
 import com.otuolabs.unitconverter.AdditionItems.ToolbarColor
 import com.otuolabs.unitconverter.AdditionItems.ViewIdMessage
+import com.otuolabs.unitconverter.AdditionItems.ViewNameExtra
 import com.otuolabs.unitconverter.AdditionItems.pkgName
 import com.otuolabs.unitconverter.MainActivity.Companion.restoreUiModeOnResume
 import com.otuolabs.unitconverter.Utils.dpToInt
@@ -66,7 +67,6 @@ import kotlinx.coroutines.*
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.parseMap
-import kotlinx.serialization.stringify
 import java.io.Serializable
 import java.net.SocketTimeoutException
 import java.util.*
@@ -79,7 +79,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         DownloadCallback<String>, CoroutineScope by MainScope(), PreferenceFragment.PreferenceFragment {
 
     private var swap = false
-    private var randomColor = -1
+    private var randomColor = 0
     private var viewId = -1
     private lateinit var dialog: ConvertFragment
     private var isPrefix = false
@@ -91,7 +91,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private inline val isCurrency get() = viewId == R.id.Currency
     private lateinit var networkFragment: NetworkFragment
     private val isNumberBase get() = viewId == R.id.number_base
-    private val activityCallbacks: ActivityCallbacks? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,11 +113,11 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         // for setting the text
         intent {
             getStringExtra(TextMessage)?.also {
-                bundle.putString("viewName", it)
                 convert_header?.text = it
                 app_bar_text.text = it
-                viewName = it
             }
+            viewName = getStringExtra(ViewNameExtra)!!
+            bundle.putString("viewName", viewName)
             viewId = getIntExtra(ViewIdMessage, -1).apply {
                 isPrefix = equals(R.id.prefixes)
                 bundle.putInt("viewId", this)
@@ -393,8 +392,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
             R.id.prefixes ->
                 buildIntent<ConvertActivity> {
-                    putExtra(TextMessage, "Prefix")
+                    putExtra(TextMessage, getString(R.string.prefix))
                     putExtra(ViewIdMessage, R.id.prefixes)
+                    putExtra(ViewNameExtra, "Prefix")
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(this)
                 }
@@ -642,10 +642,12 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         }
     }
 
-    private val sharedPreferences by sharedPreference {
+    val sharedPreferences by sharedPreference {
         buildString {
             append(pkgName)
+            append(".")
             append(viewName)
+            append(".")
             append(Author) // to prevent name clashes with the fragment
         }
     }
@@ -672,7 +674,8 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
                         else this
             }
             secondBox.hint =
-                    get<String?>("bottomEditTextText") ?: resources.getString(R.string.select_unit)
+                    get<String?>("bottomEditTextText")
+                            ?: resources.getString(R.string.select_unit)
             firstBox.hint =
                     get<String?>("topEditTextText") ?: resources.getString(R.string.select_unit)
 
@@ -817,14 +820,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             put<Int> {
                 key = "downPosition"
                 value = positionArray["bottomPosition"]!!
-            }
-            put<String> {
-                key = "preferences_selections"
-                value = Json.stringify(preferencesSelected)
-            }
-            put<Int> {
-                key = "sliderValue"
-                value = sliderValue
             }
             put<Boolean> {
                 key = "isEngineering"

@@ -1,6 +1,5 @@
 package com.otuolabs.unitconverter.subclasses
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.util.AttributeSet
@@ -17,7 +16,6 @@ import androidx.transition.TransitionManager
 import com.google.android.material.card.MaterialCardView
 import com.otuolabs.unitconverter.R
 import com.otuolabs.unitconverter.Utils.dpToInt
-import com.otuolabs.unitconverter.Utils.isTablet
 import com.otuolabs.unitconverter.Utils.name
 import com.otuolabs.unitconverter.builders.add
 import com.otuolabs.unitconverter.builders.buildConstraintSet
@@ -38,8 +36,6 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
         ConstraintLayout(context, attributeSet) {
 
     private data class GuideLines(val left: Int, val right: Int, val top: Int)
-
-    private var activity: Activity? = null
 
     private var guideLine = GuideLines(-1, -1, -1)
 
@@ -86,12 +82,13 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
 
     private inline val sortValue
         get() =
-            if (activity?.isTablet() == true ||
-                    resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 5
+            if (selection.isTablet() || resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+                5
             else 3
 
     fun sort(list: Collection<String>) {
         val number = sortValue //gets value ones per function call
+
         @Suppress("UNCHECKED_CAST")
         val viewIds = list.map { viewNameToId[it] } as List<Int>
         buildConstraintSet {
@@ -212,5 +209,7 @@ class GridConstraintLayout(context: Context, attributeSet: AttributeSet? = null)
         fun changeSearchButton(useDefault: Boolean)
         fun addOneToFavourites(viewName: String)
         fun convertInfo(viewId: Int, viewName: String)
+        fun isTablet(): Boolean
+
     }
 }

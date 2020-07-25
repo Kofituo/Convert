@@ -41,9 +41,8 @@ class PreferenceFragment : DialogFragment() {
     private var done = false
     private lateinit var viewName: String
 
-    //to prevent unwanted saving and refreshes
-    private val sharedPreferences by sharedPreferences {
-        AdditionItems.pkgName + "for_preferences"
+    private val sharedPreferences by lazy(LazyThreadSafetyMode.NONE) {
+        (activity as ConvertActivity).sharedPreferences
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,19 +53,19 @@ class PreferenceFragment : DialogFragment() {
         sharedPreferences.apply {
             viewModel.apply {
                 if (groupToCheckedId.isNull())
-                    get<String?>("$viewName.preferences_for_activity") {
+                    get<String?>("preferences_selections") {
                         groupToCheckedId =
-                            if (this.hasValue()) Json.parseMap(this)
-                            else buildMutableMap(4) {
-                                put(0, 0)
-                                put(1, 3)
-                                put(2, 7)
-                                put(3, 11)
-                            }
+                                if (this.hasValue()) Json.parseMap(this)
+                                else buildMutableMap(4) {
+                                    put(0, 0)
+                                    put(1, 3)
+                                    put(2, 7)
+                                    put(3, 11)
+                                }
                     }
                 if (sliderValue.isNull())
-                    get<Float>("$viewName.preference_slider_value") {
-                        sliderValue = if (this == -1f) 5f else this
+                    get<Int>("sliderValue") {
+                        sliderValue = if (this == -1) 5f else this.toFloat()
                     }
             }
             //get group id to enabled id
@@ -74,7 +73,7 @@ class PreferenceFragment : DialogFragment() {
                 viewModel.mGroupToEnabledID = buildMutableMap(3)
                 //either all is there or none is there
                 for (i in 1..3) {
-                    get<String?>("$viewName.mGroupToEnabledID$i") {
+                    get<String?>("$viewName.preferences_mGroupToEnabledID$i") {
                         if (this.hasValue()) {
                             val sparseBooleanArray = SparseBooleanArray(2)
                             Json.parseMap<Int, Boolean>(this).forEach {
@@ -122,20 +121,21 @@ class PreferenceFragment : DialogFragment() {
         }.apply {
             dialog.setContentView(this)
             findViewById<ConstraintLayout>(R.id.expanded_menu)
-                .apply {
-                    layoutParams<ConstraintLayout.LayoutParams> {
-                        matchConstraintMaxHeight = (screenHeight * 0.6).toInt()
+                    .apply {
+                        layoutParams<ConstraintLayout.LayoutParams> {
+                            matchConstraintMaxHeight = (screenHeight * 0.6).toInt()
+                        }
                     }
-                }
             recyclerView =
-                findViewById<ConstraintLayout>(R.id.expanded_menu).findViewById(R.id.recycler_view)
+                    findViewById<ConstraintLayout>(R.id.expanded_menu).findViewById(R.id.recycler_view)
             layoutParams<ViewGroup.LayoutParams> {
                 width =
-                    if (isPortrait) (screenWidth / 8) * 7
-                    else round(screenWidth / 1.6).toInt()
+                        if (isPortrait) (screenWidth / 8) * 7
+                        else round(screenWidth / 1.6).toInt()
             }
             val map =
-                viewModel.preferenceMap ?: buildDataMap().apply { viewModel.preferenceMap = this }
+                    viewModel.preferenceMap
+                            ?: buildDataMap().apply { viewModel.preferenceMap = this }
             val colour = viewModel.randomInt
             recyclerView.apply {
                 //setHasFixedSize(true)
@@ -171,24 +171,24 @@ class PreferenceFragment : DialogFragment() {
     }
 
     private fun defaultIdToIsChecked(separators: Separators, groupToCheckedId: Map<Int, Int>) =
-        buildMutableMap<Int, Boolean>(2) {
-            separators.apply {
-                val firstChecked = groupToCheckedId[1] ?: error("the hell??")
-                val secondChecked = groupToCheckedId.getValue(2)
-                groupingSeparatorId?.also {
-                    if (it == firstChecked)
-                        put(3, false)
-                    else if (it == secondChecked)
-                        put(3, false)
-                }
-                decimalSeparatorId?.also {
-                    if (it == firstChecked)
-                        put(7, false)
-                    else if (it == secondChecked)
-                        put(7, false)
+            buildMutableMap<Int, Boolean>(2) {
+                separators.apply {
+                    val firstChecked = groupToCheckedId[1] ?: error("the hell??")
+                    val secondChecked = groupToCheckedId.getValue(2)
+                    groupingSeparatorId?.also {
+                        if (it == firstChecked)
+                            put(3, false)
+                        else if (it == secondChecked)
+                            put(3, false)
+                    }
+                    decimalSeparatorId?.also {
+                        if (it == firstChecked)
+                            put(7, false)
+                        else if (it == secondChecked)
+                            put(7, false)
+                    }
                 }
             }
-        }
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
@@ -198,32 +198,23 @@ class PreferenceFragment : DialogFragment() {
                 val checkedChange = groupToCheckedId != viewModel.initialMap
                 val sliderValueChanged = viewModel.initialSliderValue != sliderValue
                 if (checkedChange || sliderValueChanged) {
-                    val modifiedOnes =
-                        sharedPreferences
-                            .get<Set<String>?>("modified_preferences")?.toMutableSet()
-                            ?: mutableSetOf()
-                    modifiedOnes.add(viewName)
                     sharedPreferences.edit {
                         if (checkedChange)
                             put<String> {
-                                key = "$viewName.preferences_for_activity"
+                                key = "preferences_selections"
                                 value = Json.stringify(groupToCheckedId)
                             }
                         if (sliderValueChanged)
-                            put<Float> {
-                                key = "$viewName.preference_slider_value"
-                                value = sliderValue
+                            put<Int> {
+                                key = "sliderValue"
+                                value = sliderValue.toInt()
                             }
-                        put<Set<String>> {
-                            key = "modified_preferences"
-                            value = modifiedOnes
-                        }
 
                         for (i in 1..3) {
                             put<String> {
-                                key = "$viewName.mGroupToEnabledID$i"
+                                key = "$viewName.preferences_mGroupToEnabledID$i"
                                 value =
-                                    Json.stringify(mGroupToEnabledID[i]!!.toMap()) //for my custom group to enabled id
+                                        Json.stringify(mGroupToEnabledID[i]!!.toMap()) //for my custom group to enabled id
                             }
                         }
                     }
@@ -238,46 +229,46 @@ class PreferenceFragment : DialogFragment() {
     }
 
     private fun buildDataMap() =
-        buildMutableMap<String, List<PreferenceData>>(5) {
-            var start = 0
-            put {
-                key = getString(R.string.notation).toUpperCase(Locale.getDefault())
-                value = mutableListOf(
-                    PreferenceData(getString(R.string.decimal_notation), start++, 0),
-                    PreferenceData(getString(R.string.scientific_notation), start++, 0),
-                    PreferenceData(getString(R.string.engineering_notation), start++, 0)
-                )
+            buildMutableMap<String, List<PreferenceData>>(5) {
+                var start = 0
+                put {
+                    key = getString(R.string.notation).toUpperCase(Locale.getDefault())
+                    value = mutableListOf(
+                            PreferenceData(getString(R.string.decimal_notation), start++, 0),
+                            PreferenceData(getString(R.string.scientific_notation), start++, 0),
+                            PreferenceData(getString(R.string.engineering_notation), start++, 0)
+                    )
+                }
+                put {
+                    key = getString(R.string.grouping_separator)
+                    value = mutableListOf(
+                            PreferenceData(getString(R.string._default), start++, 1),
+                            PreferenceData(getString(R.string.comma), start++, 1),
+                            PreferenceData(getString(R.string.dot), start++, 1),
+                            PreferenceData(getString(R.string.space), start++, 1)
+                    )
+                }
+                put {
+                    key = getString(R.string.decimal_separator)
+                    value = mutableListOf(
+                            PreferenceData(getString(R.string._default), start++, 2),
+                            PreferenceData(getString(R.string.comma), start++, 2),
+                            PreferenceData(getString(R.string.dot), start++, 2),
+                            PreferenceData(getString(R.string.space), start++, 2)
+                    )
+                }
+                put {
+                    key = getString(R.string.exponent_separator)
+                    value = mutableListOf(
+                            PreferenceData(getString(R.string.e_symbol), start++, 3),
+                            PreferenceData(getString(R.string.small_ten), start++, 3)
+                    )
+                }
+                put {
+                    key = getString(R.string.decimal_place)
+                    value = mutableListOf()
+                }
             }
-            put {
-                key = getString(R.string.grouping_separator)
-                value = mutableListOf(
-                    PreferenceData(getString(R.string._default), start++, 1),
-                    PreferenceData(getString(R.string.comma), start++, 1),
-                    PreferenceData(getString(R.string.dot), start++, 1),
-                    PreferenceData(getString(R.string.space), start++, 1)
-                )
-            }
-            put {
-                key = getString(R.string.decimal_separator)
-                value = mutableListOf(
-                    PreferenceData(getString(R.string._default), start++, 2),
-                    PreferenceData(getString(R.string.comma), start++, 2),
-                    PreferenceData(getString(R.string.dot), start++, 2),
-                    PreferenceData(getString(R.string.space), start++, 2)
-                )
-            }
-            put {
-                key = getString(R.string.exponent_separator)
-                value = mutableListOf(
-                    PreferenceData(getString(R.string.e_symbol), start++, 3),
-                    PreferenceData(getString(R.string.small_ten), start++, 3)
-                )
-            }
-            put {
-                key = getString(R.string.decimal_place)
-                value = mutableListOf()
-            }
-        }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -286,17 +277,17 @@ class PreferenceFragment : DialogFragment() {
 
     private var defaultSeparators: Separators? = null //just to prevent double calling
     private fun defaultIntToBooleanArray() =
-        buildMutableMap<Int, SparseBooleanArray>(3) {
-            put(1, SparseBooleanArray(2).apply { append(4, true); append(8, true) })
-            put(2, SparseBooleanArray(2).apply { append(5, true); append(9, true) })
-            put(3, SparseBooleanArray(2).apply { append(6, true); append(10, true) })
-            defaultSeparators().apply {
-                //they could be null
-                decimalSeparatorId?.let { get(decimalGroup)!!.put(it, false) }
-                groupingSeparatorId?.let { get(groupingGroup)!!.put(it, false) }
-                defaultSeparators = this
+            buildMutableMap<Int, SparseBooleanArray>(3) {
+                put(1, SparseBooleanArray(2).apply { append(4, true); append(8, true) })
+                put(2, SparseBooleanArray(2).apply { append(5, true); append(9, true) })
+                put(3, SparseBooleanArray(2).apply { append(6, true); append(10, true) })
+                defaultSeparators().apply {
+                    //they could be null
+                    decimalSeparatorId?.let { get(decimalGroup)!!.put(it, false) }
+                    groupingSeparatorId?.let { get(groupingGroup)!!.put(it, false) }
+                    defaultSeparators = this
+                }
             }
-        }
 
     private fun defaultSeparators(): Separators {
         val decimalFormatSymbols = DecimalFormatSymbols.getInstance()
@@ -345,10 +336,10 @@ class PreferenceFragment : DialogFragment() {
     }
 
     data class Separators(
-        var decimalSeparatorId: Int? = null,
-        var groupingSeparatorId: Int? = null,
-        var decimalGroup: Int? = null,
-        var groupingGroup: Int? = null
+            var decimalSeparatorId: Int? = null,
+            var groupingSeparatorId: Int? = null,
+            var decimalGroup: Int? = null,
+            var groupingGroup: Int? = null
     )
 
     interface PreferenceFragment {

@@ -13,6 +13,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.otuolabs.unitconverter.AdditionItems.TextMessage
 import com.otuolabs.unitconverter.AdditionItems.ViewIdMessage
+import com.otuolabs.unitconverter.AdditionItems.ViewNameExtra
 import com.otuolabs.unitconverter.AdditionItems.animateStart
 import com.otuolabs.unitconverter.AdditionItems.animationEnd
 import com.otuolabs.unitconverter.AdditionItems.card
@@ -199,6 +200,7 @@ class MyCardView(context: Context, attributeSet: AttributeSet) :
             val textViewText = (this@MyCardView.getChildAt(1) as TextView).text
             putExtra(TextMessage, textViewText)
             putExtra(ViewIdMessage, this@MyCardView.id)
+            putExtra(ViewNameExtra, name)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             context.startActivity(this)
         }

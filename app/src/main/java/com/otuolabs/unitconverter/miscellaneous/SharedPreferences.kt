@@ -72,9 +72,7 @@ class SharedPreferencesLazy(
                 val activity = activity()
                 if (stringFunc.isNull())
                     activity.getPreferences(Context.MODE_PRIVATE)
-                            .also {
-                                cached = it
-                            }
+                            .also { cached = it }
                 else activity.getSharedPreferences(stringFunc!!(), Context.MODE_PRIVATE)
                         .also {
                             cached = it

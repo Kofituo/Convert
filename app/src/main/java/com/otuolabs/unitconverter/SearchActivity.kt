@@ -372,6 +372,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
     override fun startActivity(data: FavouritesData) {
         buildIntent<ConvertActivity> {
             putExtra(AdditionItems.TextMessage, data.topText)
+            putExtra(AdditionItems.ViewNameExtra, data.cardName)
             putExtra(AdditionItems.ViewIdMessage, data.cardId)
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra(AdditionItems.SearchActivityCalledIt, true)
@@ -384,6 +385,7 @@ class SearchActivity : AppCompatActivity(), SearchView.OnQueryTextListener,
             val unit = recyclerDataClass.bottomText
             val unitIsSpans = unit is Spanned
             putExtra(AdditionItems.TextMessage, viewData.text)
+            putExtra(AdditionItems.ViewNameExtra, viewData.name)
             putExtra(AdditionItems.SearchActivityCalledIt, true)
             putExtra(AdditionItems.ViewIdMessage, viewData.id)
             putExtra(

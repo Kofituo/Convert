@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import com.otuolabs.unitconverter.AdditionItems.MyEmail
 import com.otuolabs.unitconverter.AdditionItems.TextMessage
 import com.otuolabs.unitconverter.AdditionItems.ViewIdMessage
+import com.otuolabs.unitconverter.AdditionItems.ViewNameExtra
 import com.otuolabs.unitconverter.AdditionItems.bugDetected
 import com.otuolabs.unitconverter.AdditionItems.endAnimation
 import com.otuolabs.unitconverter.AdditionItems.isInitialized
@@ -30,8 +31,10 @@ import com.otuolabs.unitconverter.AdditionItems.pkgName
 import com.otuolabs.unitconverter.AdditionItems.popupWindow
 import com.otuolabs.unitconverter.AdditionItems.statusBarHeight
 import com.otuolabs.unitconverter.Utils.app_bar_bottom
+import com.otuolabs.unitconverter.Utils.darkModeSelected
 import com.otuolabs.unitconverter.Utils.daysToMilliSeconds
 import com.otuolabs.unitconverter.Utils.isNightMode
+import com.otuolabs.unitconverter.Utils.isTablet
 import com.otuolabs.unitconverter.ads.AdsManager
 import com.otuolabs.unitconverter.builders.addAll
 import com.otuolabs.unitconverter.builders.buildIntent
@@ -109,7 +112,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 statusBarHeight = rect.top
                 if (Build.VERSION.SDK_INT > 22)
                     systemUiVisibility =
-                            if (isNightMode) systemUiVisibility and SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                            if (isNightMode || darkModeSelected)
+                                systemUiVisibility and SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                             else systemUiVisibility or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
@@ -252,10 +256,10 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 root = this@apply
             }.apply { addView(this) }
             grid {
+                setSelectionListener(this@MainActivity)
                 saveLists()
                 if (mSelectedOrderArray.isNotEmpty())
                     sort(mSelectedOrderArray)
-                setSelectionListener(this@MainActivity)
             }
             initialiseDidYouKnow()
         }
@@ -395,8 +399,9 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
         R.id.prefixes -> {
             buildIntent<ConvertActivity> {
-                putExtra(TextMessage, "Prefix")
+                putExtra(TextMessage, getString(R.string.prefix))
                 putExtra(ViewIdMessage, R.id.prefixes)
+                putExtra(ViewNameExtra, "Prefix")
                 startActivity(this)
             }
         }
@@ -670,6 +675,8 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
     }
 
+    override fun isTablet(): Boolean = isTablet(this)
+
     companion object {
         fun restoreUiMode() {
             //the ad may prevent the ui from updating
@@ -705,6 +712,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                 Json.parse(DeserializeViewDataMap, this)
             }
         }
+
         const val FAVOURITES = "$pkgName.favourites_activity_list"
         val drawableIds by lazy(LazyThreadSafetyMode.NONE) {
             buildMutableMap<Int, Int>(30) {

@@ -110,9 +110,7 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.ViewHolder>() {
                         selectedItems.apply {
                             if (containsKey(pos)) {
                                 remove(pos)
-                                ifEmpty {
-                                    favouritesItem.sizeIsZero()
-                                }
+                                ifEmpty { favouritesItem.sizeIsZero() }
                             } else put(pos, dataSet[pos])
                             notifyItemChanged(pos)
                         }

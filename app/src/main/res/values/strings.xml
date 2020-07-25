@@ -36,6 +36,7 @@
     <string name="engineering_notation">Engineering notation</string>
     <string name="done">Done</string>
     <string name="prefixes">Prefixes</string>
+    <string name="prefix">Prefix</string>
     <string name="preferences">Preferences</string>
     <string name="angle">Angle</string>
     <string name="angle_def">An angle is the figure formed by two rays, called the sides of the angle,

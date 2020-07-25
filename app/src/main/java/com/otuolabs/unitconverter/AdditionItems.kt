@@ -32,6 +32,7 @@ object AdditionItems {
     const val pkgName = "com.otuolabs.unit_converter"
     const val TextMessage = "$pkgName.TextMessage"
     const val ViewIdMessage = "$pkgName.ViewIdMessage"
+    const val ViewNameExtra = "$pkgName.ViewName"
     const val FavouritesCalledIt = "$pkgName.favourites_favourites_called_it"
     const val ToolbarColor = "$pkgName.toolbarColor"
     const val Author = "Kofi Otuo"

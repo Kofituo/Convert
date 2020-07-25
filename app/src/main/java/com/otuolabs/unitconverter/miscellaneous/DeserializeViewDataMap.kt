@@ -24,7 +24,7 @@ object DeserializeViewDataMap : DeserializationStrategy<MutableMap<String, ViewD
                     @Suppress("UNCHECKED_CAST")
                     val content = it.content as List<JsonLiteral>
                     key = content[1].content
-                    value = ViewData(content[0].int, key!!, content[2].content, content[3].content)
+                    value = ViewData(id = content[0].int, name = key!!, text = content[2].content, metadata = content[3].content)
                 }
             }
         }
