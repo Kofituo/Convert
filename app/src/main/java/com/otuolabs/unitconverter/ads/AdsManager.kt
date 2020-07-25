@@ -2,13 +2,9 @@ package com.otuolabs.unitconverter.ads
 
 import android.app.Activity
 import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkRequest
-import android.os.Handler
 import android.util.Log
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.getSystemService
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
@@ -38,31 +34,27 @@ object AdsManager {
 
     fun initializeNetworkCallBack(): Boolean {
         if (networkCallback.isNull()) {
-            context?.getSystemService<ConnectivityManager>()?.apply {
-                networkCallback = object : ConnectivityManager.NetworkCallback() {
-                    override fun onAvailable(network: Network) {
-                        val looper = context?.mainLooper ?: return
-                        Handler(looper).post {
-                            if (interstitialAdFailedToLoad) //it was supposed to load an ad but it didn't
-                                interstitialAd?.apply {
-                                    val shouldReload = !isLoaded || !isLoading || !interElapsedIsLessThanOneHour
-                                    // since it might get called many times
-                                    if (shouldReload) loadAd(adRequest) // compulsory loading of ad
-                                }
-                            if (bannerAdFailedToLoad)
-                                bannerAd?.apply {
-                                    if (!isLoading) loadAd(adRequest)
-                                }
-                            if (rewardedAdFailedToLoad)
-                                rewardedAd?.loadAd(adRequest, rewardedAdLoadCallback)
-                        }
-                    }
+            object : Utils.DefaultConnectivity {
+                override fun initializeConnections() {
+                    super.initializeConnections()
+                    AdsManager.networkCallback = networkCallback
                 }
-                registerNetworkCallback(
-                        NetworkRequest.Builder().build(), networkCallback ?: return@apply
-                )
-            }
+
+                override fun onNetworkAvailable() {
+                    if (interstitialAdFailedToLoad) //it was supposed to load an ad but it didn't
+                        interstitialAd?.apply {
+                            val shouldReload = !isLoaded || !isLoading || !interElapsedIsLessThanOneHour
+                            // since it might get called many times
+                            if (shouldReload) loadAd(adRequest) // compulsory loading of ad
+                        }
+                    if (bannerAdFailedToLoad)
+                        bannerAd?.apply {
+                            if (!isLoading) loadAd(adRequest)
+                        }
+                }
+            }.initializeConnections()
         }
+
         return networkCallback.isNotNull()
     }
 
@@ -195,22 +187,27 @@ object AdsManager {
     }
 
     private var rewardedAd: RewardedAd? = null
-    private var rewardedAdFailedToLoad
-            by ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
+
+    var rewardedAdError: LoadAdError? = null
 
     private val rewardedAdLoadCallback by lazy(LazyThreadSafetyMode.NONE) {
         object : RewardedAdLoadCallback() {
             override fun onRewardedAdFailedToLoad(loadAdError: LoadAdError?) {
-                rewardedAdFailedToLoad = true
+                rewardedAdError = loadAdError
             }
         }
     }
 
-    fun loadRewardedAd() =
-            rewardedAd ?: RewardedAd(context, "ca-app-pub-3940256099942544/5224354917").apply {
+    private fun initializeRewardedAd() =
+            rewardedAd
+                    ?: RewardedAd(context, "ca-app-pub-3940256099942544/5224354917").also { rewardedAd = it }
+
+    fun loadRewardedAd() {
+        initializeRewardedAd().apply {
+            if (!isLoaded)
                 loadAd(adRequest, rewardedAdLoadCallback)
-                rewardedAd = this
-            }
+        }
+    }
 
     fun showRewardedAd(activity: Activity, rewardedAdCallback: RewardedAdCallback): Boolean {
         rewardedAd?.apply {

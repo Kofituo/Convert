@@ -7,6 +7,9 @@
     <string name="share_text">Hi, Check out this app</string>
     <string name="report_bug">Report A Bug</string>
     <string name="about">About</string>
+    <string name="watch">Watch</string>
+    <string name="unable_to_get_video">Unable To Get Video At This Time</string>
+    <string name="watch_to_reward">Watch Ad To Unlock Content</string>
     <string name="upgrade">Upgrade</string>
     <string name="first_bracket">(</string>
     <string name="close">Close</string>

@@ -5,15 +5,17 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Build
+import android.os.Handler
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.InputFilter
-import android.util.DisplayMetrics
-import android.util.SparseArray
-import android.util.SparseBooleanArray
-import android.util.TypedValue
+import android.util.*
 import android.view.View
+import androidx.core.content.getSystemService
 import androidx.core.util.forEach
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
@@ -31,15 +33,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.*
-import kotlin.collections.Collection
-import kotlin.collections.Iterable
 import kotlin.collections.LinkedHashMap
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.MutableList
-import kotlin.collections.MutableMap
-import kotlin.collections.forEach
-import kotlin.collections.indices
 import kotlin.collections.set
 import kotlin.math.absoluteValue
 import kotlin.math.round
@@ -481,4 +475,38 @@ object Utils {
                     ?.uiMode
                     ?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
+    interface Connectivity {
+        fun initializeConnections() {
+            setUpConnectivityManager()
+        }
+
+        fun setUpConnectivityManager(): ConnectivityManager?
+        fun onNetworkAvailable() {}
+        fun onNetworkLost() {}
+    }
+
+    interface DefaultConnectivity : Connectivity {
+
+        override fun setUpConnectivityManager() =
+                context.getSystemService<ConnectivityManager>()?.apply {
+                    Log.e("here", "$context  ${context.mainLooper}")
+                    val looper = context.mainLooper ?: return@apply
+                    object : ConnectivityManager.NetworkCallback() {
+                        override fun onAvailable(network: Network) {
+                            Handler(looper).post {
+                                Log.e("ne", "post")
+                                onNetworkAvailable()
+                            }
+                        }
+
+                        override fun onLost(network: Network) {
+                            Handler(looper).post {
+                                onNetworkLost()
+                            }
+                        }
+                    }.let {
+                        registerNetworkCallback(NetworkRequest.Builder().build(), it)
+                    }
+                }
+    }
 }

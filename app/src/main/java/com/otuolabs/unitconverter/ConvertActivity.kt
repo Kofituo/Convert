@@ -94,7 +94,6 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     private val activityCallbacks: ActivityCallbacks? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //restoreUiMode()
         super.onCreate(savedInstanceState)
         if (intent.getBooleanExtra(SearchActivityCalledIt, false))
             overridePendingTransition(R.anim.scale_out, android.R.anim.fade_out)

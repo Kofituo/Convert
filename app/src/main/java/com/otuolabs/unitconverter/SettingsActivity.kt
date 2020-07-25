@@ -1,15 +1,25 @@
 package com.otuolabs.unitconverter
 
-import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.get
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.otuolabs.unitconverter.MainActivity.Companion.restoreUiMode
 import com.otuolabs.unitconverter.ads.AdsManager
 import com.otuolabs.unitconverter.builders.buildMutableMap
@@ -41,18 +51,16 @@ class SettingsActivity : AppCompatActivity() {
     private var disabled = false
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus && !disabled) {
+        if (hasFocus && !disabled && shouldWatchVideo()) {
             settingsFragment.disableUiModeChange()
             disabled = true
         }
     }
 
-    fun shouldWatchVideo(): Boolean {
+    private fun shouldWatchVideo(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             //load the ad if not already loaded
-            globalPreferences.get<String?>("adLoadedBefore") {
-                return isNullOrBlank()
-            }
+            return globalPreferences.get("adLoadedBefore")
         }
         return false
     }
@@ -77,24 +85,23 @@ class SettingsActivity : AppCompatActivity() {
         return true
     }
 
-    class SettingsFragment : PreferenceFragmentCompat() {
+    class SettingsFragment : PreferenceFragmentCompat(), View.OnTouchListener, Utils.DefaultConnectivity {
         private var uiMode: Any? = null
         private val sharedPreferences by lazy(LazyThreadSafetyMode.NONE) {
             context?.globalPreferences ?: globalPreferences // don't like crashes
         }
 
-        private val shouldWatchVideo
-            get() = (activity as SettingsActivity).shouldWatchVideo()
-
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
+            initializeConnections()
             retainInstance = true
         }
 
-        @SuppressLint("ClickableViewAccessibility")
+        private var disable = false
+
         fun disableUiModeChange() {
-            //first view is the text view
-            // listView[listPreference.order + 1].isClickable = false
+            listView[listPreference.order + 1].setOnTouchListener(this)
+            disable = true
         }
 
         private lateinit var listPreference: ListPreference
@@ -108,7 +115,7 @@ class SettingsActivity : AppCompatActivity() {
                         setOnPreferenceChangeListener { _, newValue ->
                             newValue as CharSequence?
                             val shouldSave: Boolean
-                            if (uiMode != newValue) {
+                            if (uiMode != newValue && !disable) {
                                 shouldSave = true
                                 when (newValue) {
                                     "default" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
@@ -117,7 +124,7 @@ class SettingsActivity : AppCompatActivity() {
                                 }
                                 uiMode = newValue
                             } else shouldSave = false
-                            shouldSave
+                            shouldSave && !disable
                         }
                     }
         }
@@ -223,5 +230,74 @@ class SettingsActivity : AppCompatActivity() {
                     "eng" -> 2
                     else -> TODO()
                 }
+
+        private var rewardedAdFailedToLoad
+                by ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
+
+        override fun onNetworkAvailable() {
+            if (rewardedAdFailedToLoad)
+                AdsManager.loadRewardedAd()
+        }
+
+        private val simpleOnGestureListener by lazy(LazyThreadSafetyMode.NONE) {
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                    AlertDialog
+                            .Builder(requireContext(), R.style.sortDialogStyle)
+                            .setPositiveButton(R.string.watch) { _, _ ->
+                                val shown = AdsManager.showRewardedAd(requireActivity(), rewardedAdCallback)
+                                if (!shown) {
+                                    rewardedAdFailedToLoad = true
+                                    when (AdsManager.rewardedAdError?.code) {
+                                        AdRequest.ERROR_CODE_NETWORK_ERROR ->
+                                            context?.showToast {
+                                                stringId = R.string.no_connection
+                                                duration = Toast.LENGTH_LONG
+                                            }
+                                        else -> context?.showToast {
+                                            stringId = R.string.unable_to_get_video
+                                            duration = Toast.LENGTH_LONG
+                                        }
+                                    }
+                                }
+                            }
+                            .setMessage(R.string.watch_to_reward)
+                            .show()
+                    return true
+                }
+
+                override fun onDown(e: MotionEvent?): Boolean {
+                    return true
+                }
+            }.let {
+                GestureDetectorCompat(context, it)
+            }
+        }
+
+        private val rewardedAdCallback
+            get() = object : RewardedAdCallback() {
+                override fun onUserEarnedReward(rewardItem: RewardItem) {
+                    disable = false
+                    sharedPreferences.edit {
+                        put<Boolean> {
+                            key = "adLoadedBefore"
+                            value = true
+                        }
+                    }
+                }
+
+                override fun onRewardedAdFailedToShow(error: AdError?) {
+                    context?.showToast {
+                        stringId = R.string.unable_to_get_video
+                        duration = Toast.LENGTH_LONG
+                    }
+                }
+            }
+
+        override fun onTouch(p0: View?, motionEvent: MotionEvent): Boolean {
+            if (disable)
+                simpleOnGestureListener.onTouchEvent(motionEvent)
+            return disable
+        }
     }
 }

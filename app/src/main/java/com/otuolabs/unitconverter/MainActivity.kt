@@ -6,9 +6,6 @@ import android.content.SharedPreferences
 import android.graphics.Rect
 import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.LayerDrawable
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkRequest
 import android.net.Uri
 import android.os.*
 import android.util.Log
@@ -23,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
 import com.otuolabs.unitconverter.AdditionItems.MyEmail
 import com.otuolabs.unitconverter.AdditionItems.TextMessage
 import com.otuolabs.unitconverter.AdditionItems.ViewIdMessage
@@ -67,7 +63,7 @@ import kotlin.collections.HashSet
 @UnstableDefault
 @OptIn(ImplicitReflectionSerializer::class)
 class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface,
-        GridConstraintLayout.Selection, CoroutineScope by MainScope(), DownloadCallback<String> {
+        GridConstraintLayout.Selection, CoroutineScope by MainScope(), DownloadCallback<String>, Utils.DefaultConnectivity {
 
     private val downTime get() = SystemClock.uptimeMillis()
     private val eventTime get() = SystemClock.uptimeMillis() + 10
@@ -597,8 +593,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         return difference > daysToMilliSeconds(numberOfDays)
     }
 
-    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
-
     private var networkIsAvailable = false
 
     private lateinit var networkFragment: NetworkFragment
@@ -606,29 +600,20 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
     //private var retry = false
 
     private fun downloadData(list: List<String>) {
-        setNetworkCallback()
+        initializeConnections()
         networkFragment =
                 NetworkFragment.createFragment(supportFragmentManager) { urls = list }
         networkFragment.startDownload()
     }
 
-    private fun setNetworkCallback() {
-        if (!::networkCallback.isInitialized) {
-            getSystemService<ConnectivityManager>()?.apply {
-                networkCallback = object : ConnectivityManager.NetworkCallback() {
-                    override fun onAvailable(network: Network) {
-                        networkIsAvailable = true
-                        if (didYouKnowUrls.isNotEmpty() && ::networkFragment.isInitialized)
-                            networkFragment.startDownload()
-                    }
+    override fun onNetworkAvailable() {
+        networkIsAvailable = true
+        if (didYouKnowUrls.isNotEmpty() && ::networkFragment.isInitialized)
+            networkFragment.startDownload()
+    }
 
-                    override fun onLost(network: Network) {
-                        networkIsAvailable = false
-                    }
-                }
-                registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
-            }
-        }
+    override fun onNetworkLost() {
+        networkIsAvailable = false
     }
 
     override fun updateFromDownload(url: String?, result: String?) {
@@ -703,7 +688,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         }
 
         fun AppCompatActivity.restoreUiModeOnResume() {
-            val previousMode = AppCompatDelegate.getDefaultNightMode()
+            AppCompatDelegate.getDefaultNightMode()
             globalPreferences.apply {
                 val mode =
                         when (get<String?>("theme")) {
