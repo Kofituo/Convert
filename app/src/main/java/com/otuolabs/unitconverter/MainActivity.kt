@@ -8,7 +8,6 @@ import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.*
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -147,7 +146,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             }
         }
         setCornerColors()
-        initialiseDidYouKnow()
         onCreateCalled = true
         AdsManager.initializeInterstitialAd()
 //        grid setSelectionListener this
@@ -259,6 +257,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
                     sort(mSelectedOrderArray)
                 setSelectionListener(this@MainActivity)
             }
+            initialiseDidYouKnow()
         }
         /**
          * called when from convert activity
@@ -669,7 +668,6 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
             //remove the one i have'nt yet filled
             didYouKnowUrls.remove(url)
         }
-        Log.e("excep", "$url $exception")
     }
 
     companion object {

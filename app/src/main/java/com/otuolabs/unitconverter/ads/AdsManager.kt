@@ -1,6 +1,7 @@
 package com.otuolabs.unitconverter.ads
 
 import android.app.Activity
+import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
 import android.view.ViewGroup
@@ -186,36 +187,27 @@ object AdsManager {
         }
     }
 
-    private var rewardedAd: RewardedAd? = null
+    var rewardedAd: RewardedAd? = null // keep it just in case the user goes and comes
 
-    var rewardedAdError: LoadAdError? = null
-
-    private val rewardedAdLoadCallback by lazy(LazyThreadSafetyMode.NONE) {
-        object : RewardedAdLoadCallback() {
-            override fun onRewardedAdFailedToLoad(loadAdError: LoadAdError?) {
-                rewardedAdError = loadAdError
-            }
+    fun createAndLoadRewardedAd(context: Context?, rewardedAdLoadCallback: RewardedAdLoadCallback): RewardedAd {
+        val localContext = context ?: this.context
+        RewardedAd(localContext, "ca-app-pub-3940256099942544/5224354917").apply {
+            load(rewardedAdLoadCallback)
+            return this
         }
     }
 
-    private fun initializeRewardedAd() =
-            rewardedAd
-                    ?: RewardedAd(context, "ca-app-pub-3940256099942544/5224354917").also { rewardedAd = it }
-
-    fun loadRewardedAd() {
-        initializeRewardedAd().apply {
-            if (!isLoaded)
-                loadAd(adRequest, rewardedAdLoadCallback)
+    fun RewardedAd.load(rewardedAdLoadCallback: RewardedAdLoadCallback) {
+        if (!isLoaded) {
+            loadAd(adRequest, rewardedAdLoadCallback)
+            Log.e("relo", "ad")
         }
     }
 
-    fun showRewardedAd(activity: Activity, rewardedAdCallback: RewardedAdCallback): Boolean {
-        rewardedAd?.apply {
-            val isLoaded = isLoaded
-            if (isLoaded)
-                show(activity, rewardedAdCallback)
-            return isLoaded
-        }
-        return false
+    fun RewardedAd.showRewardedAd(activity: Activity, rewardedAdCallback: RewardedAdCallback): Boolean {
+        val isLoaded = isLoaded
+        if (isLoaded)
+            show(activity, rewardedAdCallback)
+        return isLoaded
     }
 }

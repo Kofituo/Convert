@@ -204,6 +204,7 @@
     <string name="feedback">Feedback</string>
     <string name="remove">Remove From Favourites</string>
     <string name="no_connection">No Internet Connection</string>
+    <string name="please_wait_while_ad_load">Please Wait While Ad Loads</string>
     <string name="retry">Retry</string>
     <string name="getting_currencies_rates">Getting Currencies And Conversion Rates</string>
     <string name="unable_to_get">Unable To Get Conversions</string>

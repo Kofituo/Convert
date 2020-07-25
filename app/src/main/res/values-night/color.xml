@@ -8,4 +8,5 @@
     <color name="scroll_card_text">#000</color>
     <color name="near_white">#141414</color>
     <color name="green">#37432A</color>
+    <color name="my_text_color">#fff</color>
 </resources>

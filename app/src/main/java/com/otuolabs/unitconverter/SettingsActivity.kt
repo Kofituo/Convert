@@ -1,5 +1,6 @@
 package com.otuolabs.unitconverter
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -18,10 +19,16 @@ import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.otuolabs.unitconverter.MainActivity.Companion.restoreUiMode
+import com.otuolabs.unitconverter.Utils.inverse
 import com.otuolabs.unitconverter.ads.AdsManager
+import com.otuolabs.unitconverter.ads.AdsManager.load
+import com.otuolabs.unitconverter.ads.AdsManager.showRewardedAd
 import com.otuolabs.unitconverter.builders.buildMutableMap
 import com.otuolabs.unitconverter.miscellaneous.*
 import kotlinx.android.synthetic.main.settings_activity.*
@@ -35,11 +42,11 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var settingsFragment: SettingsFragment
     override fun onCreate(savedInstanceState: Bundle?) {
+        @Suppress("EXPERIMENTAL_API_USAGE")
         restoreUiMode()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if (shouldWatchVideo()) AdsManager.loadRewardedAd()
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.settings, SettingsFragment().also { settingsFragment = it })
@@ -51,7 +58,7 @@ class SettingsActivity : AppCompatActivity() {
     private var disabled = false
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus && !disabled && shouldWatchVideo()) {
+        if (hasFocus && disabled.inverse && shouldWatchVideo()) {
             settingsFragment.disableUiModeChange()
             disabled = true
         }
@@ -60,7 +67,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun shouldWatchVideo(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             //load the ad if not already loaded
-            return globalPreferences.get("adLoadedBefore")
+            return globalPreferences.get<Boolean>("adLoadedBefore").inverse
         }
         return false
     }
@@ -93,13 +100,41 @@ class SettingsActivity : AppCompatActivity() {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            initializeConnections()
             retainInstance = true
         }
 
         private var disable = false
+        private var rewardedAd: RewardedAd? = null
+            get() {
+                if (field.isNull()) {
+                    field = AdsManager.rewardedAd
+                            ?: AdsManager
+                                    .createAndLoadRewardedAd(context, rewardedAdLoadCallback)
+                                    .also { AdsManager.rewardedAd = it }
+                }
+                return field
+            }
+            set(value) {
+                AdsManager.rewardedAd = value
+                field = value
+            }
+
+        private var loadAdError: LoadAdError? = null
+        private val rewardedAdLoadCallback
+            get() = object : RewardedAdLoadCallback() {
+                override fun onRewardedAdFailedToLoad(loadAdError: LoadAdError?) {
+                    this@SettingsFragment.loadAdError = loadAdError
+                    rewardedAdFailedToLoad = true
+                }
+
+                override fun onRewardedAdLoaded() {
+                    rewardedAdFailedToLoad = false
+                }
+            }
 
         fun disableUiModeChange() {
+            rewardedAd // loads it
+            initializeConnections()
             listView[listPreference.order + 1].setOnTouchListener(this)
             disable = true
         }
@@ -231,38 +266,51 @@ class SettingsActivity : AppCompatActivity() {
                     else -> TODO()
                 }
 
+        private var alertDialog: AlertDialog? = null
+
         private var rewardedAdFailedToLoad
                 by ResetAfterNGets.resetAfterGet(initialValue = false, resetValue = false)
 
         override fun onNetworkAvailable() {
-            if (rewardedAdFailedToLoad)
-                AdsManager.loadRewardedAd()
+            super.onNetworkAvailable()
+            loadAdError = null // to show it's loading
+            if (rewardedAdFailedToLoad) rewardedAd!!.load(rewardedAdLoadCallback)
         }
 
         private val simpleOnGestureListener by lazy(LazyThreadSafetyMode.NONE) {
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                    AlertDialog
-                            .Builder(requireContext(), R.style.sortDialogStyle)
+                    alertDialog?.apply {
+                        if (!isShowing) show()
+                    } ?: AlertDialog
+                            .Builder(requireContext(), R.style.watch_dialog)
                             .setPositiveButton(R.string.watch) { _, _ ->
-                                val shown = AdsManager.showRewardedAd(requireActivity(), rewardedAdCallback)
+                                val shown = rewardedAd!!.showRewardedAd(requireActivity(), rewardedAdCallback)
                                 if (!shown) {
-                                    rewardedAdFailedToLoad = true
-                                    when (AdsManager.rewardedAdError?.code) {
-                                        AdRequest.ERROR_CODE_NETWORK_ERROR ->
+                                    when (loadAdError?.code) {
+                                        AdRequest.ERROR_CODE_NETWORK_ERROR, AdRequest.ERROR_CODE_INTERNAL_ERROR ->
                                             context?.showToast {
                                                 stringId = R.string.no_connection
-                                                duration = Toast.LENGTH_LONG
+                                                duration = Toast.LENGTH_SHORT
                                             }
+                                        null -> {
+                                            //it is now loading the video
+                                            context?.showToast {
+                                                duration = Toast.LENGTH_SHORT
+                                                stringId = R.string.please_wait_while_ad_load
+                                            }
+                                        }
                                         else -> context?.showToast {
                                             stringId = R.string.unable_to_get_video
-                                            duration = Toast.LENGTH_LONG
+                                            duration = Toast.LENGTH_SHORT
                                         }
                                     }
-                                }
+                                    //load new one
+                                    rewardedAd!!.load(rewardedAdLoadCallback)
+                                } else loadAdError = null
                             }
                             .setMessage(R.string.watch_to_reward)
-                            .show()
+                            .show().also { alertDialog = it }
                     return true
                 }
 
@@ -289,11 +337,17 @@ class SettingsActivity : AppCompatActivity() {
                 override fun onRewardedAdFailedToShow(error: AdError?) {
                     context?.showToast {
                         stringId = R.string.unable_to_get_video
-                        duration = Toast.LENGTH_LONG
+                        duration = Toast.LENGTH_SHORT
                     }
+                }
+
+                override fun onRewardedAdClosed() {
+                    rewardedAd = null
+                    if (disable) rewardedAd //load new one just in case user changes the mind to watch
                 }
             }
 
+        @SuppressLint("ClickableViewAccessibility")
         override fun onTouch(p0: View?, motionEvent: MotionEvent): Boolean {
             if (disable)
                 simpleOnGestureListener.onTouchEvent(motionEvent)

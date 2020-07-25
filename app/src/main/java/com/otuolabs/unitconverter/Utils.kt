@@ -489,12 +489,10 @@ object Utils {
 
         override fun setUpConnectivityManager() =
                 context.getSystemService<ConnectivityManager>()?.apply {
-                    Log.e("here", "$context  ${context.mainLooper}")
                     val looper = context.mainLooper ?: return@apply
                     object : ConnectivityManager.NetworkCallback() {
                         override fun onAvailable(network: Network) {
                             Handler(looper).post {
-                                Log.e("ne", "post")
                                 onNetworkAvailable()
                             }
                         }
@@ -509,4 +507,6 @@ object Utils {
                     }
                 }
     }
+
+    inline val Boolean.inverse get() = !this
 }
