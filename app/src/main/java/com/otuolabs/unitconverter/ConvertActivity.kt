@@ -221,6 +221,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     override fun onResume() {
         //restoreUiMode()
         super.onResume()
+        @Suppress("EXPERIMENTAL_API_USAGE")
         restoreUiModeOnResume()
         AdsManager.bannerAdCallbackListener.onResume()
         if (onCreateCalled) {
@@ -378,6 +379,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     }
 
     private var preferenceFragment: PreferenceFragment? = null
+    private var settingsClicked = false
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         @Suppress("EXPERIMENTAL_API_USAGE")
@@ -419,6 +421,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             R.id.feedback -> MainActivity.sendFeedback(this)
 
             R.id.settings -> buildIntent<SettingsActivity> {
+                settingsClicked = true
                 startActivity(this)
                 finish()
             }
@@ -536,9 +539,9 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
         else {
             val getPosition = getPositions()
             when {
-                getPosition.isNull() && isNumberBase ->
-                    f(Positions(topPosition, bottomPosition, x))
-                getPosition.isNull() -> x.insertCommas()
+                getPosition.isNull() ->
+                    if (isNumberBase) f(Positions(topPosition, bottomPosition, x))
+                    else x.insertCommas()
                 !getPosition -> ""
                 else -> f(Positions(topPosition, bottomPosition, x))
             }
@@ -648,7 +651,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             append(".")
             append(viewName)
             append(".")
-            append(Author) // to prevent name clashes with the fragment
+            append(Author)
         }
     }
 
@@ -707,8 +710,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
             }
             Utils.isEngineering = get("isEngineering")
             get<Int>("sliderValue") {
-                if (this != -1)
-                    sliderValue = this
+                if (this != -1) sliderValue = this
             }
             get<String?>("preferences_selections") {
                 if (this.hasValue())
@@ -838,7 +840,7 @@ class ConvertActivity : AppCompatActivity(), ConvertFragment.ConvertDialogInterf
     override fun onPause() {
         super.onPause()
         AdsManager.bannerAdCallbackListener.onPause()
-        if (isFinishing && !AdsManager.showInterstitialAd())  //don't play animation if the add is about to show
+        if (isFinishing && !AdsManager.showInterstitialAd() && !settingsClicked)  //don't play animation if the add is about to show or settings was clicked
             if (intent.getBooleanExtra(SearchActivityCalledIt, false))
                 ScaleTransition.mergeAnimators(
                         ObjectAnimator.ofFloat(convert_parent, View.SCALE_X, 0.3f),

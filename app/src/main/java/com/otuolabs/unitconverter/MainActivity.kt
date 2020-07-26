@@ -65,7 +65,8 @@ import kotlin.collections.HashSet
 @UnstableDefault
 @OptIn(ImplicitReflectionSerializer::class)
 class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterface,
-        GridConstraintLayout.Selection, CoroutineScope by MainScope(), DownloadCallback<String>, Utils.DefaultConnectivity {
+        GridConstraintLayout.Selection, CoroutineScope by MainScope(), DownloadCallback<String>,
+        Utils.DefaultConnectivity {
 
     private val downTime get() = SystemClock.uptimeMillis()
     private val eventTime get() = SystemClock.uptimeMillis() + 10
@@ -79,7 +80,7 @@ class MainActivity : AppCompatActivity(), BottomSheetFragment.SortDialogInterfac
         get() = MotionEvent
                 .obtain(downTime, eventTime, MotionEvent.ACTION_UP, xPoint, yPoint, metaState)
 
-    private val motionEventMove: MotionEvent
+    private val motionEventMove
         get() = MotionEvent
                 .obtain(downTime, eventTime, MotionEvent.ACTION_MOVE, xPoint, yPoint, metaState)
 

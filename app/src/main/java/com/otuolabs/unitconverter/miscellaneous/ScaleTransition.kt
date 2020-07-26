@@ -46,10 +46,10 @@ class ScaleTransition(context: Context, attrs: AttributeSet) : Visibility(contex
     }
 
     private fun createAnimation(
-        view: View,
-        startScale: Float,
-        endScale: Float,
-        values: TransitionValues?
+            view: View,
+            startScale: Float,
+            endScale: Float,
+            values: TransitionValues?
     ): Animator {
         val initialScaleX = view.scaleX
         val initialScaleY = view.scaleY
@@ -74,8 +74,8 @@ class ScaleTransition(context: Context, attrs: AttributeSet) : Visibility(contex
         view.scaleX = startScaleX
         view.scaleY = startScaleY
         val animator: Animator = mergeAnimators(
-            ObjectAnimator.ofFloat(view, View.SCALE_X, startScaleX, endScaleX),
-            ObjectAnimator.ofFloat(view, View.SCALE_Y, startScaleY, endScaleY)
+                ObjectAnimator.ofFloat(view, View.SCALE_X, startScaleX, endScaleX),
+                ObjectAnimator.ofFloat(view, View.SCALE_Y, startScaleY, endScaleY)
         )
         addListener(object : TransitionListener {
             override fun onTransitionEnd(transition: Transition) {
@@ -107,20 +107,17 @@ class ScaleTransition(context: Context, attrs: AttributeSet) : Visibility(contex
     ): Animator = createAnimation(view, mDisappearedScale, 1f, startValues)
 
     override fun onDisappear(
-        sceneRoot: ViewGroup,
-        view: View,
-        startValues: TransitionValues?,
-        endValues: TransitionValues?
+            sceneRoot: ViewGroup,
+            view: View,
+            startValues: TransitionValues?,
+            endValues: TransitionValues?
     ): Animator = createAnimation(view, 1f, mDisappearedScale, startValues)
 
     companion object {
         const val PROPERTY_NAME_SCALE_X = "${AdditionItems.pkgName}scale:scaleX"
         const val PROPERTY_NAME_SCALE_Y = "${AdditionItems.pkgName}scale:scaleY"
 
-        fun mergeAnimators(animator2: Animator, animator1: Animator): Animator = run {
-            val animatorSet = AnimatorSet()
-            animatorSet.playTogether(animator1, animator2)
-            animatorSet
-        }
+        fun mergeAnimators(vararg animators: Animator) =
+                AnimatorSet().apply { playTogether(*animators) }
     }
 }

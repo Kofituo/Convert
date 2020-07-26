@@ -25,7 +25,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), GroupViewHolder.GroupClickListener,
     ChildViewHolder.ChildClickListener, DecimalPlaceHolder.SliderListener {
 
-    var color: Int? = null
+    var color: Int = 0
     var visibleItemsPerGroup: MutableMap<Int, Int> = LinkedHashMap(dataSet.size)
     lateinit var separators: PreferenceFragment.Separators
     private val headerToIndex: LinkedHashMap<Int, String>
@@ -79,7 +79,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                     root = parent
                 }
                 viewHolder =
-                    GroupViewHolder(view, color!!)
+                        GroupViewHolder(view, color)
                         .apply { setOnGroupClickListener(this@PreferencesAdapter) }
             }
             FlattenMap.CHILD -> {
@@ -89,7 +89,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                     root = parent
                 }
                 viewHolder =
-                    ChildViewHolder(view, color!!)
+                        ChildViewHolder(view, color)
                         .apply { setOnChildClickedListener(this@PreferencesAdapter) }
             }
             FlattenMap.UNSPECIFIED -> {
@@ -99,7 +99,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
                     root = parent
                 }
                 viewHolder =
-                    DecimalPlaceHolder(view, color!!)
+                        DecimalPlaceHolder(view, color)
                         .apply {
                             setSliderListener(this@PreferencesAdapter)
                             setSliderInitialValue(sliderValue)
@@ -539,7 +539,7 @@ class PreferencesAdapter(private val dataSet: Map<String, Collection<PreferenceD
 
     private fun enableRadioButton(radioButton: MyRadioButton) {
         radioButton.isEnabled = true
-        radioButton.buttonTintList = ColorStateList.valueOf(color!!)
+        radioButton.buttonTintList = ColorStateList.valueOf(color)
     }
 
     private fun disableRadioButton(radioButton: MyRadioButton) {

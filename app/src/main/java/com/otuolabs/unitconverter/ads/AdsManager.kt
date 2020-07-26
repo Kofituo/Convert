@@ -3,7 +3,6 @@ package com.otuolabs.unitconverter.ads
 import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
-import android.util.Log
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.gms.ads.*
@@ -110,7 +109,6 @@ object AdsManager {
              * If it is loaded show
              * else decide whether to load for the next try
              * */
-            Log.e("lo", "$isLoaded  $interElapsedIsLessThanOneHour")
             /**
              * Note: While pre-fetching ads is a great technique,
              * it's important that publishers not keep old ads around too
@@ -198,10 +196,7 @@ object AdsManager {
     }
 
     fun RewardedAd.load(rewardedAdLoadCallback: RewardedAdLoadCallback) {
-        if (!isLoaded) {
-            loadAd(adRequest, rewardedAdLoadCallback)
-            Log.e("relo", "ad")
-        }
+        if (!isLoaded) loadAd(adRequest, rewardedAdLoadCallback)
     }
 
     fun RewardedAd.showRewardedAd(activity: Activity, rewardedAdCallback: RewardedAdCallback): Boolean {

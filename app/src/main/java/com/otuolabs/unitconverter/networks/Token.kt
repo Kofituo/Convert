@@ -1,6 +1,5 @@
 package com.otuolabs.unitconverter.networks
 
-import com.otuolabs.unitconverter.builders.buildMutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -8,57 +7,48 @@ import kotlinx.coroutines.withContext
 object Token {
     //wrap in co routine to make it hard to decompiles
     suspend fun init() = withContext(Dispatchers.Default) {
-        buildMutableList<Int>(40) {
-            runBlocking {
-                add(289)
-                add(282)
-                add(286)
-                add(285)
-                add(334)
-                add(334)
-                add(282)
-                add(281)
-            }
-            runBlocking {
-                add(331)
-                add(283)
-                add(332)
-                add(335)
-                add(284)
-                add(290)
-                add(285)
-                add(282)
-            }
-            runBlocking {
-                add(288)
-                add(289)
-                add(332)
-                add(287)
-                add(283)
-                add(332)
-                add(334)
-                add(333)
-                add(287)
-            }
-            runBlocking {
-                add(286)
-                add(290)
-                add(290)
-                add(285)
-                add(287)
-                add(287)
-                add(333)
-                add(283)
-                add(330)
-            }
-            runBlocking {
-                add(335)
-                add(289)
-                add(288)
-                add(331)
-                add(331)
-                add(282)
-            }
+        IntArray(40) { it }.apply {
+            var start = 0
+            set(start++, 289)
+            set(start++, 282)
+            set(start++, 286)
+            set(start++, 285)
+            set(start++, 334)
+            set(start++, 334)
+            set(start++, 282)
+            set(start++, 281)
+            set(start++, 331)
+            set(start++, 283)
+            set(start++, 332)
+            set(start++, 335)
+            set(start++, 284)
+            set(start++, 290)
+            set(start++, 285)
+            set(start++, 282)
+            set(start++, 288)
+            set(start++, 289)
+            set(start++, 332)
+            set(start++, 287)
+            set(start++, 283)
+            set(start++, 332)
+            set(start++, 334)
+            set(start++, 333)
+            set(start++, 287)
+            set(start++, 286)
+            set(start++, 290)
+            set(start++, 290)
+            set(start++, 285)
+            set(start++, 287)
+            set(start++, 287)
+            set(start++, 333)
+            set(start++, 283)
+            set(start++, 330)
+            set(start++, 335)
+            set(start++, 289)
+            set(start++, 288)
+            set(start++, 331)
+            set(start++, 331)
+            set(start, 282)
         }
     }
 
@@ -67,10 +57,11 @@ object Token {
             val array = init()
             val stringBuilder = StringBuilder(array.size)
             array.forEach { stringBuilder.append((it - 233).toChar()) }
-            "8154ee10b2cf394178c62ced6599466d2af87bb1"
+            stringBuilder.toString()
         }
     }
     const val Repository = "https://api.github.com/repos/otuounitc"
     //password Jeremiah01 to sha-256
     //token 8154ee10b2cf394178c62ced6599466d2af87bb1
+    // "8154ee10b2cf394178c62ced6599466d2af87bb1"
 }
